@@ -1,0 +1,15 @@
+{
+  "name": "hugme",
+  "version": "0.0.1",
+  "description": "A game where hugging helps you grow!",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/server.js"
+  },
+  "author": "Scripta Games, Inc.",
+  "dependencies": {
+    "express": "^4.13.3",
+    "socket.io": "^1.3.7"
+  }
+}
