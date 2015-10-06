@@ -1,0 +1,6 @@
+{
+    "libs": [ "browser", "ecma5" ],
+    "loadEagerly": [
+        "bower_components/babylonjs/dist/babylon.2.2.max.js"
+    ]
+}
