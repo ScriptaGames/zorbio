@@ -19,7 +19,7 @@ io.on('connection', function (socket) {
     var type = socket.handshake.query.type;
     // TODO: figure out radius an mass, do we need them for spheres?
     var radius = util.massToRadius(config.defaultPlayerMass);
-    //TODO: algorithm to place users initial position
+    // TODO: algorithm to place users initial position
     //var position = config.newPlayerInitialPosition == 'farthest' ? util.uniformPosition(users, radius) : util.randomPosition(radius);
     var position = {x: 0, y: 0, z: 0};
     var cells = [];
