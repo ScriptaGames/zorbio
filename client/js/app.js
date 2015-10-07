@@ -41,7 +41,7 @@ function validNick() {
     return regex.exec(playerNameInput.value) !== null;
 }
 
-window.onload = function() {
+window.onload = function () {
     'use strict';
 
     var btn = document.getElementById('startButton'),
@@ -71,7 +71,7 @@ window.onload = function() {
 };
 
 function SetupSocket(socket) {
-  game.handleNetwork(socket);
+    game.handleNetwork(socket);
 }
 
 // This begins the creation of a function that we will 'call' just after it's built
@@ -144,7 +144,6 @@ var createScene = function () {
     sphere2.isBlocker = true; // For intercepting lens flare
 
 
-
     // This creates and positions a camera
     // var camera = new BABYLON.ArcFollowCamera("camera1", 1, 1, 100, sphere, scene);
     var camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 10, new BABYLON.Vector3(0, 5, -10), scene);
@@ -172,7 +171,7 @@ var createScene = function () {
     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     skybox.material = skyboxMaterial;
 
-    scene.registerBeforeRender( function updateSpherePosition() {
+    scene.registerBeforeRender(function updateSpherePosition() {
         // move forward in the direction the camera is facing
         var move_speed = MOVE_SPEED_SCALE / sphere.scaling.x;
         var camera_angle_vector = camera.position.subtract(sphere.position).normalize();
@@ -181,7 +180,7 @@ var createScene = function () {
         sphere.scaling.x += 0.001;
         sphere.scaling.y += 0.001;
         sphere.scaling.z += 0.001;
-    } );
+    });
 
     //scene.registerBeforeRender(function() {
     //    camera.alpha += 0.01 * scene.getAnimationRatio();
