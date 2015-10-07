@@ -1,8 +1,42 @@
-var playerName;
-var playerNameInput = document.getElementById('playerNameInput');
-var socket;
-
+// Canvas
 var canvas = document.getElementById('renderCanvas');
+var screenWidth = 0;
+var screenHeight = 0;
+setScreenDimensions();
+
+// Player
+var playerName;
+var playerType;
+var playerNameInput = document.getElementById('playerNameInput');
+var player = {
+    id: -1,
+    x: 0,
+    y: 0,
+    z: 0,
+    screenWidth: screenWidth,
+    screenHeight: screenHeight,
+    target: {
+        x: 0,
+        y: 0,
+        z: 0
+    }
+};
+var target = {
+    x: player.x,
+    y: player.y,
+    Z: player.z
+};
+
+// Game state
+var gameStart = false;
+//var disconnected = false;
+//var died = false;
+//var kicked = false;
+
+// Network
+//TODO: figure out why this is not working
+//var io = require('socket.io-client');
+var socket;
 
 // Load the BABYLON 3D engine
 var engine = new BABYLON.Engine(canvas, true);
@@ -13,16 +47,20 @@ var KEY_ENTER = 13;
 
 var game = new Game();
 
-function startGame() {
+function startGame(type) {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
+    playerType = type;
+
     document.getElementById('gameAreaWrapper').style.display = 'block';
     document.getElementById('startMenuWrapper').style.display = 'none';
-    socket = io();
-    SetupSocket(socket);
 
-    canvas = document.getElementById('renderCanvas');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    setScreenDimensions();
+
+    // Init the socket
+    if (!socket) {
+        socket = io({query: "type=" + type});
+        setupSocket(socket);
+    }
 
     // create the scene
     var scene = createScene();
@@ -32,6 +70,8 @@ function startGame() {
         scene.render();
         gameLoop();
     });
+
+    socket.emit('respawn');
 }
 
 // check if nick is valid alphanumeric characters (and underscores)
@@ -51,7 +91,7 @@ window.onload = function () {
 
         // check if the nick is valid
         if (validNick()) {
-            startGame();
+            startGame('player');
         } else {
             nickErrorText.style.display = 'inline';
         }
@@ -70,7 +110,7 @@ window.onload = function () {
     });
 };
 
-function SetupSocket(socket) {
+function setupSocket(socket) {
     game.handleNetwork(socket);
 }
 
@@ -192,11 +232,18 @@ var createScene = function () {
 };  // End of createScene function
 
 function gameLoop() {
-    game.handleLogic();
-    game.handleGraphics(canvas);
+    if (gameStart) {
+        game.handleLogic();
+        game.handleGraphics(canvas);
+    }
 }
 
 // Watch for browser/canvas resize events
 window.addEventListener("resize", function () {
     engine.resize();
 });
+
+function setScreenDimensions() {
+    screenWidth = canvas.width = window.innerWidth;
+    screenHeight = canvas.height = window.innerHeight;
+}
