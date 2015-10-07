@@ -1,4 +1,5 @@
 // Canvas
+var scene;
 var canvas = document.getElementById('renderCanvas');
 var screenWidth = 0;
 var screenHeight = 0;
@@ -118,7 +119,7 @@ function setupSocket(socket) {
 var createScene = function () {
 
     // Now create a basic Babylon Scene object
-    var scene = new BABYLON.Scene(engine);
+    scene = new BABYLON.Scene(engine);
 
     // Change the scene background color to green.
     scene.clearColor = new BABYLON.Color3(1, 1, 1);
