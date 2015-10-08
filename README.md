@@ -1,5 +1,5 @@
-# Hug me
-A game where hugging helps you grow!
+# Zor.bio
+Absorb the Orbs!
 
 ## Install
 1. bower install

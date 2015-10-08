@@ -13,14 +13,14 @@ navigator = {};
 var BABYLON = require('babylonjs');
 // Woot, now we have BABYLON in node!
 
-var HUG = require('../common/hug.js');
+var Zorbio = require('../common/zorbio.js');
 
 // this array holds multiple game instances.  when one fills up, a new one is
 // created.
-var HUGS = [];
+//var Zorbios = [];
 
 // max players per game instance
-var MAX_PLAYERS = 32;
+//var MAX_PLAYERS = 32;
 
 var users = [];
 

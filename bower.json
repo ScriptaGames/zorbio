@@ -1,8 +1,9 @@
 {
-  "name": "hugme",
+  "name": "zorbio",
   "version": "0.0.0",
   "homepage": "https://github.com/mwcz/hugme",
   "authors": [
+    "Jared Sprague <jared@scripta.co>",
     "mwcz <mwc@clayto.com>"
   ],
   "description": "",

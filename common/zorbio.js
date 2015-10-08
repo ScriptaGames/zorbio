@@ -5,28 +5,28 @@ if (typeof module !== 'undefined' && module.exports) {
     var BABYLON = require('babylonjs');
 }
 
-var HUG = {};
+var Zorbio = {};
 
 /**
- * HUG.Model is a constructor that creates a new game model.  The model is
+ * Zorbio.Model is a constructor that creates a new game model.  The model is
  * responsible for storing the state of the game world.  Players, positions,
  * sizes, etc.  The model will be synchronized between the server and all the
  * clients, and the same Model code will be running on both server and clients.
  */
-HUG.Model = function HUGModel() {
+Zorbio.Model = function ZorbioModel() {
     this.actors = [];
     this.worldsize = new BABYLON.Vector3(200, 200, 200);
 };
 
-HUG.Model.prototype.addActor = function HUGModelAddActor(actor) {
+Zorbio.Model.prototype.addActor = function ZorbioModelAddActor(actor) {
     this.actors.push(actor);
 };
 
 /**
- * HUG.Actor represents any physical entity in the game world.  A player's
+ * Zorbio.Actor represents any physical entity in the game world.  A player's
  * sphere, a bit of food, a portal, etc.
  */
-HUG.Actor = function HUGActor() {
+Zorbio.Actor = function ZorbioActor() {
     this.position = new BABYLON.Vector3(0,0,0);
     this.velocity = new BABYLON.Vector3(0,0,0);
     this.geos = [];
@@ -37,32 +37,32 @@ HUG.Actor = function HUGActor() {
  * Adds a BabylonJS geometry (sphere, cube, whatever kind of 3d object) to this
  * actor.  This is a way of adding a reference from an Actor to its 3d object.
  */
-HUG.Actor.prototype.addGeometry = function HUGActorAddGeometry(geometry) {
+Zorbio.Actor.prototype.addGeometry = function ZorbioActorAddGeometry(geometry) {
     this.geos.push(geometry);
 };
 
 /**
- * HUG.PlayerSphere is a constructor for creating a player's sphere.
+ * Zorbio.PlayerSphere is a constructor for creating a player's sphere.
  */
-HUG.PlayerSphere = function HUGPlayerSphere() {
-    HUG.Actor.call(this); // call super class constructor
+Zorbio.PlayerSphere = function ZorbioPlayerSphere() {
+    Zorbio.Actor.call(this); // call super class constructor
     this.diameter = 1;
 };
 
-HUG.PlayerSphere.prototype = Object.create(HUG.Actor.prototype);
-HUG.PlayerSphere.constructor = HUG.PlayerSphere;
+Zorbio.PlayerSphere.prototype = Object.create(Zorbio.Actor.prototype);
+Zorbio.PlayerSphere.constructor = Zorbio.PlayerSphere;
 
 
 /**
- * HUG.Player is a constructor for creating a new player object.
+ * Zorbio.Player is a constructor for creating a new player object.
  */
-HUG.Player = function HUGPlayer(id, name) {
+Zorbio.Player = function ZorbioPlayer(id, name) {
     this.id = id;
     this.name = name;
-    this.sphere = new HUG.PlayerSphere();
+    this.sphere = new Zorbio.PlayerSphere();
 };
 
 
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = HUG;
+    module.exports = Zorbio;
 }

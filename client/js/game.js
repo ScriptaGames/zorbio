@@ -1,8 +1,8 @@
 var users = [];
 
-function HUG() {}
+function Zorbio() {}
 
-HUG.prototype.handleNetwork = function (socket) {
+Zorbio.prototype.handleNetwork = function (socket) {
     console.log('Game handleNetwork');
 
     // Handle connection
@@ -203,12 +203,12 @@ HUG.prototype.handleNetwork = function (socket) {
      */
 };
 
-HUG.prototype.handleLogic = function () {
+Zorbio.prototype.handleLogic = function () {
     // console.log('Game is running');
     // This is where you update your game logic
 };
 
-HUG.prototype.handleGraphics = function (gfx) {
+Zorbio.prototype.handleGraphics = function (gfx) {
     // This is where you draw everything
     drawPlayers();
 };
