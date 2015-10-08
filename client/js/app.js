@@ -46,7 +46,7 @@ var MOVE_SPEED_SCALE = 0.08;
 
 var KEY_ENTER = 13;
 
-var game = new Game();
+var game = new HUG();
 
 function startGame(type) {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');

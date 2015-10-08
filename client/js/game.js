@@ -1,9 +1,8 @@
 var users = [];
 
-function Game() {
-}
+function HUG() {}
 
-Game.prototype.handleNetwork = function (socket) {
+HUG.prototype.handleNetwork = function (socket) {
     console.log('Game handleNetwork');
 
     // Handle connection
@@ -204,12 +203,12 @@ Game.prototype.handleNetwork = function (socket) {
      */
 };
 
-Game.prototype.handleLogic = function () {
-    console.log('Game is running');
+HUG.prototype.handleLogic = function () {
+    // console.log('Game is running');
     // This is where you update your game logic
 };
 
-Game.prototype.handleGraphics = function (gfx) {
+HUG.prototype.handleGraphics = function (gfx) {
     // This is where you draw everything
     drawPlayers();
 };

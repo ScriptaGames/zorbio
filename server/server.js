@@ -5,6 +5,23 @@ var io = require('socket.io')(http);
 var config = require('./config.json');
 var util = require('./lib/util');
 
+// Simulate a browser environment so we can load BABYLON in nodejs
+// This will be really useful since it gives us access to BABYLON's vector and
+// matrix functions.
+window = global;
+navigator = {};
+var BABYLON = require('babylonjs');
+// Woot, now we have BABYLON in node!
+
+var HUG = require('../common/hug.js');
+
+// this array holds multiple game instances.  when one fills up, a new one is
+// created.
+var HUGS = [];
+
+// max players per game instance
+var MAX_PLAYERS = 32;
+
 var users = [];
 
 //TODO: figure out why this is assigned as an object and not an array
@@ -24,6 +41,7 @@ io.on('connection', function (socket) {
     var position = {x: 0, y: 0, z: 0};
     var cells = [];
     var massTotal = 0;
+
 
     if (type === 'player') {
         cells = [{
