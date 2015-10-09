@@ -24,7 +24,7 @@ var Zorbio = require('../common/zorbio.js');
 
 var users = [];
 
-//TODO: figure out why this is assigned as an object and not an array
+// Define sockets as a hash so we can use string indexes
 var sockets = {};
 
 app.use(express.static(__dirname + '/../client'));
@@ -54,6 +54,7 @@ io.on('connection', function (socket) {
         massTotal = config.defaultPlayerMass;
     }
 
+    //TODO: refactor this to use ZOR.PlayerSphere
     var currentPlayer = {
         id: socket.id,
         x: position.x,
@@ -99,7 +100,8 @@ io.on('connection', function (socket) {
             //TODO: algorithm to place users initial position
             //var position = config.newPlayerInitialPosition == 'farthest' ? util.uniformPosition(users, radius) : util.randomPosition(radius);
             var position = {x: 0, y: 0, z: 0};
-            // TODO: is this duplicated code from above? refactor into function maybe?
+
+            //TODO: refactor this to use ZOR.PlayerSphere
             player.x = position.x;
             player.y = position.y;
             player.z = position.z;
@@ -137,7 +139,7 @@ io.on('connection', function (socket) {
 
     socket.on('error', function (err) {
         console.error(err.stack);
-        //TODO: handle error
+        //TODO: handle error cleanup
     });
 });
 
