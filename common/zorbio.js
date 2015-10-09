@@ -1,68 +1,86 @@
+var NODEJS = typeof module !== 'undefined' && module.exports;
 
 // if we're running in nodejs, import BABYLON.  for browser, assume it's
 // already there.
-if (typeof module !== 'undefined' && module.exports) {
-    var BABYLON = require('babylonjs');
-}
+if (NODEJS) var BABYLON = require('babylonjs');
 
-var Zorbio = {};
+var ZOR = {};
 
 /**
- * Zorbio.Model is a constructor that creates a new game model.  The model is
+ * ZOR.Model is a constructor that creates a new game model.  The model is
  * responsible for storing the state of the game world.  Players, positions,
  * sizes, etc.  The model will be synchronized between the server and all the
  * clients, and the same Model code will be running on both server and clients.
  */
-Zorbio.Model = function ZorbioModel() {
+ZOR.Model = function ZORModel() {
     this.actors = [];
     this.worldsize = new BABYLON.Vector3(200, 200, 200);
 };
 
-Zorbio.Model.prototype.addActor = function ZorbioModelAddActor(actor) {
+ZOR.Model.prototype.applyDiff = function ZORModelApplyDiff(newmodel) {
     this.actors.push(actor);
 };
 
 /**
- * Zorbio.Actor represents any physical entity in the game world.  A player's
- * sphere, a bit of food, a portal, etc.
+ * ZOR.ActorTypes is a lookup table (enum basically) of all the types of actors
+ * in Zorbio.
  */
-Zorbio.Actor = function ZorbioActor() {
+ZOR.ActorTypes = Object.freeze({
+    UNDEFINED : 'UNDEFINED',
+    PLAYER    : 'PLAYER',
+    FOOD      : 'FOOD',
+    PORTAL    : 'PORTAL',
+});
+
+/**
+ * ZOR.Actor represents any physical entity in the game world.  A player's
+ * sphere, a bit of food, a portal, etc.  Anything that appears inside the game
+ * world.
+ */
+ZOR.Actor = function ZORActor() {
     this.position = new BABYLON.Vector3(0,0,0);
     this.velocity = new BABYLON.Vector3(0,0,0);
     this.geos = [];
     this.scale = 1;
+    this.type = ZOR.ActorTypes.UNDEFINED;
 };
 
 /**
  * Adds a BabylonJS geometry (sphere, cube, whatever kind of 3d object) to this
  * actor.  This is a way of adding a reference from an Actor to its 3d object.
  */
-Zorbio.Actor.prototype.addGeometry = function ZorbioActorAddGeometry(geometry) {
+ZOR.Actor.prototype.addGeometry = function ZORActorAddGeometry(geometry) {
     this.geos.push(geometry);
 };
 
 /**
- * Zorbio.PlayerSphere is a constructor for creating a player's sphere.
+ * ZOR.PlayerSphere is a constructor for creating a player's sphere.
  */
-Zorbio.PlayerSphere = function ZorbioPlayerSphere() {
-    Zorbio.Actor.call(this); // call super class constructor
+ZOR.PlayerSphere = function ZORPlayerSphere(player) {
+
+    // call super class constructor
+    ZOR.Actor.call(this);
+
     this.diameter = 1;
+    this.type     = ZOR.ActorTypes.PLAYER;
+
+    // maintain a reference to the player who owns this sphere
+    this.player   = player;
+
 };
 
-Zorbio.PlayerSphere.prototype = Object.create(Zorbio.Actor.prototype);
-Zorbio.PlayerSphere.constructor = Zorbio.PlayerSphere;
+ZOR.PlayerSphere.prototype = Object.create(ZOR.Actor.prototype);
+ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
 
 
 /**
- * Zorbio.Player is a constructor for creating a new player object.
+ * ZOR.Player is a constructor for creating a new player object.
  */
-Zorbio.Player = function ZorbioPlayer(id, name) {
+ZOR.Player = function ZORPlayer(id, name) {
     this.id = id;
     this.name = name;
-    this.sphere = new Zorbio.PlayerSphere();
+    this.sphere = new ZOR.PlayerSphere();
 };
 
-
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = Zorbio;
-}
+// if we're in nodejs, export the root ZOR object
+if (NODEJS) module.exports = ZOR;
