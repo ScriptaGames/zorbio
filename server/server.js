@@ -34,43 +34,10 @@ io.on('connection', function (socket) {
 
     // Handle new connection
     var type = socket.handshake.query.type;
-    // TODO: figure out radius an mass, do we need them for spheres?
-    var radius = util.massToRadius(config.defaultPlayerMass);
-    // TODO: algorithm to place users initial position
-    //var position = config.newPlayerInitialPosition == 'farthest' ? util.uniformPosition(users, radius) : util.randomPosition(radius);
-    var position = {x: 0, y: 0, z: 0};
-    var cells = [];
-    var massTotal = 0;
+    var name = socket.handshake.query.name;
 
-
-    if (type === 'player') {
-        cells = [{
-            mass: config.defaultPlayerMass,
-            x: position.x,
-            y: position.y,
-            z: position.z,
-            radius: radius
-        }];
-        massTotal = config.defaultPlayerMass;
-    }
-
-    //TODO: refactor this to use ZOR.PlayerSphere
-    var currentPlayer = {
-        id: socket.id,
-        x: position.x,
-        y: position.y,
-        z: position.z,
-        cells: cells,
-        massTotal: massTotal,
-        hue: Math.round(Math.random() * 360),
-        type: type,
-        lastHeartbeat: new Date().getTime(),
-        target: {
-            x: 0,
-            y: 0,
-            z: 0
-        }
-    };
+    // Create the Player
+    var currentPlayer = new Zorbio.Player(socket.id, name);
 
     socket.on('respawn', function () {
         var userIndex = util.findIndex(users, currentPlayer.id);
@@ -95,37 +62,9 @@ io.on('connection', function (socket) {
         } else {
             console.log('Player ' + player.id + ' connected!');
             sockets[player.id] = socket;
-
-            var radius = util.massToRadius(config.defaultPlayerMass);
-            //TODO: algorithm to place users initial position
-            //var position = config.newPlayerInitialPosition == 'farthest' ? util.uniformPosition(users, radius) : util.randomPosition(radius);
-            var position = {x: 0, y: 0, z: 0};
-
-            //TODO: refactor this to use ZOR.PlayerSphere
-            player.x = position.x;
-            player.y = position.y;
-            player.z = position.z;
-            player.target.x = 0;
-            player.target.y = 0;
-            player.target.z = 0;
-            if (type === 'player') {
-                player.cells = [{
-                    mass: config.defaultPlayerMass,
-                    x: position.x,
-                    y: position.y,
-                    z: position.z,
-                    radius: radius
-                }];
-                player.massTotal = config.defaultPlayerMass;
-            }
-            else {
-                player.cells = [];
-                player.massTotal = 0;
-            }
-            player.hue = Math.round(Math.random() * 360);
-            currentPlayer = player;
             currentPlayer.lastHeartbeat = new Date().getTime();
 
+            // Add the player to the players array
             users.push(currentPlayer);
 
             io.emit('playerJoin', {name: currentPlayer.name});

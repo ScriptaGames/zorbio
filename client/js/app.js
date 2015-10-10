@@ -59,7 +59,7 @@ function startGame(type) {
 
     // Init the socket
     if (!socket) {
-        socket = io({query: "type=" + type});
+        socket = io({query: "type=" + type + "&name=" + playerName});
         setupSocket(socket);
     }
 

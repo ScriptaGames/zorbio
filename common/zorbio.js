@@ -30,6 +30,8 @@ ZOR.ActorTypes = Object.freeze({
     PLAYER    : 'PLAYER',
     FOOD      : 'FOOD',
     PORTAL    : 'PORTAL',
+    OBSTACLE  : 'OBSTACLE',
+    SPECTATOR : 'SPECTATOR'
 });
 
 /**
@@ -56,22 +58,44 @@ ZOR.Actor.prototype.addGeometry = function ZORActorAddGeometry(geometry) {
 /**
  * ZOR.PlayerSphere is a constructor for creating a player's sphere.
  */
-ZOR.PlayerSphere = function ZORPlayerSphere(player) {
+ZOR.PlayerSphere = function ZORPlayerSphere(playerId) {
 
     // call super class constructor
     ZOR.Actor.call(this);
 
+    // TODO: algorithm to place users initial position, This was copied from agar.io.clone
+    //var position = config.newPlayerInitialPosition == 'farthest' ? util.uniformPosition(users, radius) : util.randomPosition(radius);
+
     this.diameter = 1;
     this.type     = ZOR.ActorTypes.PLAYER;
 
-    // maintain a reference to the player who owns this sphere
-    this.player   = player;
+    //TODO: make color customizable
+    this.color    = BABYLON.Color3.Red();
 
+    // maintain a reference to the player who owns this sphere
+    this.playerId   = playerId;
+
+    //TODO: get rid of these fields or port it into ZOR, these were used in agar.io clone
+    /*
+     var radius = util.massToRadius(config.defaultPlayerMass);
+     var position = {x: 0, y: 0, z: 0};
+     var cells = [];
+     var massTotal = 0;
+     if (type === 'player') {
+     cells = [{
+     mass: config.defaultPlayerMass,
+     x: position.x,
+     y: position.y,
+     z: position.z,
+     radius: radius
+     }];
+     massTotal = config.defaultPlayerMass;
+     }
+     */
 };
 
 ZOR.PlayerSphere.prototype = Object.create(ZOR.Actor.prototype);
 ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
-
 
 /**
  * ZOR.Player is a constructor for creating a new player object.
@@ -79,7 +103,8 @@ ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
 ZOR.Player = function ZORPlayer(id, name) {
     this.id = id;
     this.name = name;
-    this.sphere = new ZOR.PlayerSphere();
+    this.lastHeartbeat = new Date().getTime();
+    this.sphere = new ZOR.PlayerSphere(this.id);
 };
 
 // if we're in nodejs, export the root ZOR object
