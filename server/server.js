@@ -24,6 +24,8 @@ var Zorbio = require('../common/zorbio.js');
 
 var users = [];
 
+var model = new Zorbio.Model(100);
+
 // Define sockets as a hash so we can use string indexes
 var sockets = {};
 
@@ -38,6 +40,7 @@ io.on('connection', function (socket) {
 
     // Create the Player
     var currentPlayer = new Zorbio.Player(socket.id, name);
+    model.addActor(currentPlayer.sphere);
 
     socket.on('respawn', function () {
         var userIndex = util.findIndex(users, currentPlayer.id);
@@ -46,7 +49,7 @@ io.on('connection', function (socket) {
             users.splice(userIndex, 1);
         }
 
-        socket.emit('welcome', currentPlayer);
+        socket.emit('welcome', currentPlayer, model);
         console.log('User #' + currentPlayer.id + ' respawned');
     });
 

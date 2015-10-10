@@ -16,12 +16,13 @@ function setupSocket(socket) {
     console.log('Game handleNetwork');
 
     // Handle connection
-    socket.on('welcome', function (playerSettings) {
+    socket.on('welcome', function (playerSettings, model) {
         player = playerSettings;
+        zorbioModel = model;
+
         socket.emit('gotit', player);
         gameStart = true;
         console.log('Game is started: ' + gameStart);
-
 
         // create the scene
         var scene = createScene();

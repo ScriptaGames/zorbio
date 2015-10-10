@@ -20,7 +20,10 @@ var gameStart = false;
 // Load the BABYLON 3D engine
 var engine = new BABYLON.Engine(canvas, true);
 
-var MOVE_SPEED_SCALE = 0.5;
+// Model that represents all of the visual elements of the game
+var zorbioModel;
+
+var MOVE_SPEED_SCALE = 0.3;
 
 function startGame(type) {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
@@ -91,17 +94,9 @@ var createScene = function () {
 
     // Let's try our built-in 'sphere' shape. Params: name, subdivisions, size, scene
     var sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, scene);
-    var sphere2 = BABYLON.Mesh.CreateSphere("sphere2", 16, 2, scene);
-
-    // TODO: EXPIREMENTAL CODE CLEANUP
-    //(name, height, diameter, tessellation, scene, updatable)
-    var cylinder = BABYLON.Mesh.CreateCylinder("cylinder", 0.3, 0.4, 0.4, 6, 1, scene);
-    cylinder.position.x += 1;
-    cylinder.position.y += 5;
 
     // Move the sphere upward 1/2 its height
     sphere.position.y = 1;
-    sphere2.position.z -= 5;
 
     // sphere material
     material.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid_small", scene);
@@ -109,7 +104,6 @@ var createScene = function () {
     material.emissiveColor = new BABYLON.Color3.White();
     material.alpha = 0.4;
     material.specularPower = 0;
-
 
     // Fresnel
     material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
@@ -126,46 +120,6 @@ var createScene = function () {
     material.opacityFresnelParameters.rightColor = BABYLON.Color3.Black();
 
     sphere.material = material;
-
-    // sphere 2 material
-    material = new BABYLON.StandardMaterial("kosh3", scene);
-    material.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid_small", scene);
-    material.diffuseColor = new BABYLON.Color3(0, 0, 0);
-    material.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-    material.specularPower = 32;
-
-    // Fresnel sphere 2
-    material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
-    material.reflectionFresnelParameters.bias = 0.1;
-
-    material.emissiveFresnelParameters = new BABYLON.FresnelParameters();
-    material.emissiveFresnelParameters.bias = 0.5;
-    material.emissiveFresnelParameters.power = 4;
-    material.emissiveFresnelParameters.leftColor = BABYLON.Color3.White();
-    material.emissiveFresnelParameters.rightColor = BABYLON.Color3.Black();
-
-    sphere2.material = material;
-    sphere2.isBlocker = true; // For intercepting lens flare
-
-    //TODO: remove experimental food material code
-    material = new BABYLON.StandardMaterial("kosh2", scene);
-    material.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid_small", scene);
-    material.diffuseColor = new BABYLON.Color3(0, 0, 0);
-    material.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-    material.specularPower = 32;
-    material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
-    material.reflectionFresnelParameters.bias = 0.1;
-    material.emissiveFresnelParameters = new BABYLON.FresnelParameters();
-    material.emissiveFresnelParameters.bias = 0.6;
-    material.emissiveFresnelParameters.power = 4;
-    material.emissiveFresnelParameters.leftColor = BABYLON.Color3.White();
-    material.emissiveFresnelParameters.rightColor = BABYLON.Color3.Green();
-    material.opacityFresnelParameters = new BABYLON.FresnelParameters();
-    material.opacityFresnelParameters.leftColor = BABYLON.Color3.White();
-    material.opacityFresnelParameters.rightColor = BABYLON.Color3.Black();
-    cylinder.material = material;
-    cylinder.rotation.x = Math.PI/4;
-
 
     // This creates and positions a camera
     // var camera = new BABYLON.ArcFollowCamera("camera1", 1, 1, 100, sphere, scene);
@@ -185,9 +139,7 @@ var createScene = function () {
     //camera.setPosition(new BABYLON.Vector3(-15, 3, 0));
 
     // Skybox
-    //TODO: figure out why ZOR is undefinied here, even though it is included in index.html
-    //var skybox = BABYLON.Mesh.CreateBox("skyBox", ZOR.WORLD_SIZE, scene);
-    var skybox = BABYLON.Mesh.CreateBox("skyBox", 100, scene);
+    var skybox = BABYLON.Mesh.CreateBox("skyBox", zorbioModel.worldSize.x, scene);
     var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
     skyboxMaterial.backFaceCulling = false;
     skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid", scene);
@@ -195,6 +147,8 @@ var createScene = function () {
     skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     skybox.material = skyboxMaterial;
+
+    drawActors();
 
     scene.registerBeforeRender(function updateSpherePosition() {
         // move forward in the direction the camera is facing
@@ -204,8 +158,6 @@ var createScene = function () {
         sphere.position.subtractInPlace(camera_angle_vector);
 
         console.log(JSON.stringify(sphere.position));
-
-        cylinder.rotation.x += 0.05;
     });
 
     //scene.registerBeforeRender(function() {
@@ -217,19 +169,57 @@ var createScene = function () {
 
 };  // End of createScene function
 
+function drawActors() {
+    var actors = zorbioModel.actors;
+    for (var i = 0; i < actors.length; i++) {
+        var actor = actors[i];
+        if (actor.type === ZOR.ActorTypes.FOOD) {
+            drawFood(actor);
+        }
+    }
+}
+
+function drawFood(food) {
+    //TODO: draw correct shape based on food.shape 'triangle', 'cube', 'hexigon' etc
+    //(name, height, diameter, tessellation, scene, updatable)
+    var cylinder = BABYLON.Mesh.CreateCylinder("cylinder", 0.3, 0.4, 0.4, 6, 1, scene);
+    cylinder.position.x += food.position.x;
+    cylinder.position.y += food.position.y;
+    cylinder.position.z += food.position.z;
+
+    var material = new BABYLON.StandardMaterial("food", scene);
+    material.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid_small", scene);
+    material.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    material.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+    material.specularPower = 32;
+    material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
+    material.reflectionFresnelParameters.bias = 0.1;
+    material.emissiveFresnelParameters = new BABYLON.FresnelParameters();
+    material.emissiveFresnelParameters.bias = 0.6;
+    material.emissiveFresnelParameters.power = 4;
+    material.emissiveFresnelParameters.leftColor = BABYLON.Color3.White();
+    material.emissiveFresnelParameters.rightColor = food.color;
+    material.opacityFresnelParameters = new BABYLON.FresnelParameters();
+    material.opacityFresnelParameters.leftColor = BABYLON.Color3.White();
+    material.opacityFresnelParameters.rightColor = BABYLON.Color3.Black();
+    cylinder.material = material;
+}
+
 // Watch for browser/canvas resize events
 window.addEventListener("resize", function () {
     engine.resize();
 });
 
-window.addEventListener("keydown", handleKeydown);
+window.addEventListener("keydown", handlePlayerControlKeydown);
 
-function handleKeydown(evt) {
+function handlePlayerControlKeydown(evt) {
+    if (!gameStart) {
+        return;
+    }
+
     var W_KEY = 87;
     var S_KEY = 83;
     var THROTTLE_STEP = 10;
-
-    console.log('Throttle: ' + player.sphere.throttle);
 
     switch (evt.keyCode) {
         case W_KEY:

@@ -12,15 +12,24 @@ var ZOR = {};
  * sizes, etc.  The model will be synchronized between the server and all the
  * clients, and the same Model code will be running on both server and clients.
  */
-ZOR.Model = function ZORModel() {
+ZOR.Model = function ZORModel(worldSize) {
     this.actors = [];
-    this.worldSize = 100;
-    this.worldsize = new BABYLON.Vector3(this.worldSize, this.worldSize, this.worldSize);
+    this.worldSize = new BABYLON.Vector3(worldSize, worldSize, worldSize);
 
     // Generate initial food actors based on world size
+    this.initFood();
 };
 
-ZOR.Model.prototype.applyDiff = function ZORModelApplyDiff(newmodel) {
+/**
+ *  Initializes food for a new ZOR.Model
+ */
+ZOR.Model.prototype.initFood = function ZORInitFood() {
+    this.addActor(new ZOR.Food(2, 2, 2, 'cube', BABYLON.Color3.Blue(), 2, 0, 0));
+    this.addActor(new ZOR.Food(-2, -2, -2, 'cube', BABYLON.Color3.Green(), 0, 2, 0));
+    this.addActor(new ZOR.Food(2, -2, -2, 'cube', BABYLON.Color3.Yellow(), 0 , 0, 2));
+}
+
+ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
     this.actors.push(actor);
 };
 
@@ -100,6 +109,30 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId) {
 
 ZOR.PlayerSphere.prototype = Object.create(ZOR.Actor.prototype);
 ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
+
+/**
+ * ZOR.Food is a constructor for creating a Food object.
+ */
+ZOR.Food = function ZORFood(x, y, z, shape, color, rotate_x, rotate_y, rotate_z) {
+    // call super class constructor
+    ZOR.Actor.call(this);
+
+    this.type = ZOR.ActorTypes.FOOD;
+
+    // Set the position
+    this.position.x = x;
+    this.position.y = y;
+    this.position.z = z;
+
+    this.rotation = new BABYLON.Vector3(rotate_x, rotate_y, rotate_z);
+
+    this.color = color;
+    this.shape = shape;
+
+};
+ZOR.Food.prototype = Object.create(ZOR.Actor.prototype);
+ZOR.Food.constructor = ZOR.Food;
+
 
 /**
  * ZOR.Player is a constructor for creating a new player object.
