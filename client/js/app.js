@@ -156,8 +156,6 @@ var createScene = function () {
         var camera_angle_vector = camera.position.subtract(sphere.position).normalize();
         camera_angle_vector.multiplyInPlace(new BABYLON.Vector3(move_speed, move_speed, move_speed));
         sphere.position.subtractInPlace(camera_angle_vector);
-
-        console.log(JSON.stringify(sphere.position));
     });
 
     //scene.registerBeforeRender(function() {

@@ -24,9 +24,27 @@ ZOR.Model = function ZORModel(worldSize) {
  *  Initializes food for a new ZOR.Model
  */
 ZOR.Model.prototype.initFood = function ZORInitFood() {
-    this.addActor(new ZOR.Food(2, 2, 2, 'cube', BABYLON.Color3.Blue(), 2, 0, 0));
-    this.addActor(new ZOR.Food(-2, -2, -2, 'cube', BABYLON.Color3.Green(), 0, 2, 0));
-    this.addActor(new ZOR.Food(2, -2, -2, 'cube', BABYLON.Color3.Yellow(), 0 , 0, 2));
+    var halfSize = this.worldSize.y / 2;
+
+    for (var i = 0; i < 10; i++) {
+        for (var j = 0; j < 10; j++) {
+            for (var k = 0; k < 10; k++) {
+                var food_x = halfSize - (i * 10);
+                var food_y = halfSize - (j * 10);
+                var food_z = halfSize - (k * 10);
+                console.log('adding food: ', food_x, food_y, food_z);
+                var red = getRandomIntInclusive(0, 255);
+                var green = getRandomIntInclusive(0, 255);
+                var blue = getRandomIntInclusive(0, 255);
+                var food = new ZOR.Food(food_x, food_y, food_z, 'cube', BABYLON.Color3.FromInts(red, green, blue), 2, 0, 0);
+                this.addActor(food);
+            }
+        }
+    }
+
+    //this.addActor(new ZOR.Food(45, 45, 45, 'cube', BABYLON.Color3.Blue(), 2, 0, 0));
+    //this.addActor(new ZOR.Food(-2, -2, -2, 'cube', BABYLON.Color3.Green(), 0, 2, 0));
+    //this.addActor(new ZOR.Food(2, -2, -2, 'cube', BABYLON.Color3.Yellow(), 0 , 0, 2));
 }
 
 ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
@@ -146,3 +164,10 @@ ZOR.Player = function ZORPlayer(id, name) {
 
 // if we're in nodejs, export the root ZOR object
 if (NODEJS) module.exports = ZOR;
+
+
+// Returns a random integer between min (included) and max (included)
+// Using Math.round() will give you a non-uniform distribution!
+function getRandomIntInclusive(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
