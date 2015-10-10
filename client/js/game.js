@@ -11,6 +11,17 @@ Zorbio.prototype.handleNetwork = function (socket) {
         socket.emit('gotit', player);
         gameStart = true;
         console.log('Game is started: ' + gameStart);
+
+
+        // create the scene
+        var scene = createScene();
+
+        // Register a render loop to repeatedly render the scene
+        engine.runRenderLoop(function () {
+            scene.render();
+            gameLoop();
+        });
+
         //TODO: add chat system
         //chat.addSystemLine('Connected to the game!');
         //chat.addSystemLine('Type <b>-help</b> for a list of commands');

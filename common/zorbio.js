@@ -14,7 +14,10 @@ var ZOR = {};
  */
 ZOR.Model = function ZORModel() {
     this.actors = [];
-    this.worldsize = new BABYLON.Vector3(200, 200, 200);
+    this.worldSize = 100;
+    this.worldsize = new BABYLON.Vector3(this.worldSize, this.worldSize, this.worldSize);
+
+    // Generate initial food actors based on world size
 };
 
 ZOR.Model.prototype.applyDiff = function ZORModelApplyDiff(newmodel) {
@@ -67,6 +70,7 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId) {
     //var position = config.newPlayerInitialPosition == 'farthest' ? util.uniformPosition(users, radius) : util.randomPosition(radius);
 
     this.diameter = 1;
+    this.throttle = 100; // 100% throttle default
     this.type     = ZOR.ActorTypes.PLAYER;
 
     //TODO: make color customizable

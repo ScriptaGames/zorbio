@@ -25,7 +25,7 @@ var socket;
 // Load the BABYLON 3D engine
 var engine = new BABYLON.Engine(canvas, true);
 
-var MOVE_SPEED_SCALE = 0.08;
+var MOVE_SPEED_SCALE = 0.5;
 
 var KEY_ENTER = 13;
 
@@ -45,16 +45,6 @@ function startGame(type) {
         socket = io({query: "type=" + type + "&name=" + playerName});
         setupSocket(socket);
     }
-
-    // create the scene
-    var scene = createScene();
-
-    // Register a render loop to repeatedly render the scene
-    engine.runRenderLoop(function () {
-        scene.render();
-        gameLoop();
-    });
-
     socket.emit('respawn');
 }
 
@@ -123,6 +113,7 @@ var createScene = function () {
     //(name, height, diameter, tessellation, scene, updatable)
     var cylinder = BABYLON.Mesh.CreateCylinder("cylinder", 0.3, 0.4, 0.4, 6, 1, scene);
     cylinder.position.x += 1;
+    cylinder.position.y += 5;
 
     // Move the sphere upward 1/2 its height
     sphere.position.y = 1;
@@ -210,7 +201,9 @@ var createScene = function () {
     //camera.setPosition(new BABYLON.Vector3(-15, 3, 0));
 
     // Skybox
-    var skybox = BABYLON.Mesh.CreateBox("skyBox", 100.0, scene);
+    //TODO: figure out why ZOR is undefinied here, even though it is included in index.html
+    //var skybox = BABYLON.Mesh.CreateBox("skyBox", ZOR.WORLD_SIZE, scene);
+    var skybox = BABYLON.Mesh.CreateBox("skyBox", 100, scene);
     var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
     skyboxMaterial.backFaceCulling = false;
     skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid", scene);
@@ -221,10 +214,12 @@ var createScene = function () {
 
     scene.registerBeforeRender(function updateSpherePosition() {
         // move forward in the direction the camera is facing
-        var move_speed = MOVE_SPEED_SCALE / sphere.scaling.x;
+        var move_speed = MOVE_SPEED_SCALE * (player.sphere.throttle / 100);
         var camera_angle_vector = camera.position.subtract(sphere.position).normalize();
         camera_angle_vector.multiplyInPlace(new BABYLON.Vector3(move_speed, move_speed, move_speed));
-        //sphere.position.subtractInPlace(camera_angle_vector);
+        sphere.position.subtractInPlace(camera_angle_vector);
+
+        console.log(JSON.stringify(sphere.position));
 
         cylinder.rotation.x += 0.05;
     });
@@ -249,6 +244,41 @@ function gameLoop() {
 window.addEventListener("resize", function () {
     engine.resize();
 });
+
+window.addEventListener("keydown", handleKeydown);
+
+function handleKeydown(evt) {
+    var W_KEY = 87;
+    var S_KEY = 83;
+    var THROTTLE_STEP = 10;
+
+    console.log('Throttle: ' + player.sphere.throttle);
+
+    switch (evt.keyCode) {
+        case W_KEY:
+            // Increase throttle
+            if (player.sphere.throttle < 100) {
+                player.sphere.throttle += THROTTLE_STEP;
+
+                if (player.sphere.throttle > 100) {
+                    player.sphere.throttle = 100;
+                }
+            }
+            break;
+        case S_KEY:
+            // Decrease throttle
+            if (player.sphere.throttle > 0) {
+                player.sphere.throttle -= THROTTLE_STEP;
+
+                if (player.sphere.throttle < 0) {
+                    player.sphere.throttle = 0;
+                }
+            }
+            break;
+        default:
+            break;
+    }
+}
 
 function setScreenDimensions() {
     screenWidth = canvas.width = window.innerWidth;
