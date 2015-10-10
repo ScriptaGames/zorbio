@@ -17,19 +17,10 @@ var gameStart = false;
 //var died = false;
 //var kicked = false;
 
-// Network
-//TODO: figure out why this is not working
-//var io = require('socket.io-client');
-var socket;
-
 // Load the BABYLON 3D engine
 var engine = new BABYLON.Engine(canvas, true);
 
 var MOVE_SPEED_SCALE = 0.5;
-
-var KEY_ENTER = 13;
-
-var game = new Zorbio();
 
 function startGame(type) {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
@@ -41,11 +32,7 @@ function startGame(type) {
     setScreenDimensions();
 
     // Init the socket
-    if (!socket) {
-        socket = io({query: "type=" + type + "&name=" + playerName});
-        setupSocket(socket);
-    }
-    socket.emit('respawn');
+    connectToServer(playerType, playerName);
 }
 
 // check if nick is valid alphanumeric characters (and underscores)
@@ -73,6 +60,7 @@ window.onload = function () {
 
     playerNameInput.addEventListener('keypress', function (e) {
         var key = e.which || e.keyCode;
+        var KEY_ENTER = 13;
 
         if (key === KEY_ENTER) {
             if (validNick()) {
@@ -83,10 +71,6 @@ window.onload = function () {
         }
     });
 };
-
-function setupSocket(socket) {
-    game.handleNetwork(socket);
-}
 
 // This begins the creation of a function that we will 'call' just after it's built
 var createScene = function () {
@@ -232,13 +216,6 @@ var createScene = function () {
     return scene;
 
 };  // End of createScene function
-
-function gameLoop() {
-    if (gameStart) {
-        game.handleLogic();
-        game.handleGraphics(canvas);
-    }
-}
 
 // Watch for browser/canvas resize events
 window.addEventListener("resize", function () {

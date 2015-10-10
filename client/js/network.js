@@ -1,8 +1,18 @@
-var users = [];
+/**
+ * Client network related functions
+ */
 
-function Zorbio() {}
+var socket;
 
-Zorbio.prototype.handleNetwork = function (socket) {
+function connectToServer(playerType, playerName) {
+    if (!socket) {
+        socket = io({query: "type=" + playerType + "&name=" + playerName});
+        setupSocket(socket);
+    }
+    socket.emit('respawn');
+}
+
+function setupSocket(socket) {
     console.log('Game handleNetwork');
 
     // Handle connection
@@ -19,7 +29,6 @@ Zorbio.prototype.handleNetwork = function (socket) {
         // Register a render loop to repeatedly render the scene
         engine.runRenderLoop(function () {
             scene.render();
-            gameLoop();
         });
 
         //TODO: add chat system
@@ -35,39 +44,6 @@ Zorbio.prototype.handleNetwork = function (socket) {
     socket.on('playerJoin', function (data) {
         //TODO: implement chat system
         //chat.addSystemLine('Player <b>' + data.name + '</b> joined!');
-
-
-        // TODO:  JUST EXIEREMENTAL CODE delete this
-        var material = new BABYLON.StandardMaterial("kosh", scene);
-
-        // Let's try our built-in 'sphere' shape. Params: name, subdivisions, size, scene
-        var sphere = BABYLON.Mesh.CreateSphere('sphere' + data.name, 16, 2, scene);
-
-        // sphere material
-        material.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid_small", scene);
-        material.diffuseColor = new BABYLON.Color3.White();
-        material.emissiveColor = new BABYLON.Color3.White();
-        material.alpha = 0.4;
-        material.specularPower = 0;
-
-        // Fresnel
-        material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
-        material.reflectionFresnelParameters.bias = 0.1;
-
-        material.emissiveFresnelParameters = new BABYLON.FresnelParameters();
-        material.emissiveFresnelParameters.bias = 0.6;
-        material.emissiveFresnelParameters.power = 4;
-        material.emissiveFresnelParameters.leftColor = BABYLON.Color3.White();
-        material.emissiveFresnelParameters.rightColor = BABYLON.Color3.Purple();
-
-        material.opacityFresnelParameters = new BABYLON.FresnelParameters();
-        material.opacityFresnelParameters.leftColor = BABYLON.Color3.White();
-        material.opacityFresnelParameters.rightColor = BABYLON.Color3.Black();
-
-        sphere.material = material;
-
-        users.push(sphere);
-
         console.log('Player ' + data.name + ' joined!');
     });
 
@@ -208,21 +184,4 @@ Zorbio.prototype.handleNetwork = function (socket) {
      socket.close();
      });
      */
-};
-
-Zorbio.prototype.handleLogic = function () {
-    // console.log('Game is running');
-    // This is where you update your game logic
-};
-
-Zorbio.prototype.handleGraphics = function (gfx) {
-    // This is where you draw everything
-    drawPlayers();
-};
-
-function drawPlayers() {
-    for (var i = 0; i < users.length; i++) {
-        var sphere = users[i];
-        sphere.position.z += 0.005;
-    }
 }
