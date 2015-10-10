@@ -8,10 +8,6 @@ Zorbio.prototype.handleNetwork = function (socket) {
     // Handle connection
     socket.on('welcome', function (playerSettings) {
         player = playerSettings;
-        player.name = playerName;
-        player.screenWidth = screenWidth;
-        player.screenHeight = screenHeight;
-        player.target = target;
         socket.emit('gotit', player);
         gameStart = true;
         console.log('Game is started: ' + gameStart);
