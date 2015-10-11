@@ -81,6 +81,12 @@ var createScene = function () {
     // Now create a basic Babylon Scene object
     scene = new BABYLON.Scene(engine);
 
+    // IF fog enabled
+    // scene.fogMode = BABYLON.Scene._FOGMODE_LINEAR;
+    // scene.fogColor = new BABYLON.Color3(1.0, 1.0, 1.0);
+    // scene.fogStart = 40;
+    // scene.fogEnd = 100;
+
     // Change the scene background color to green.
     scene.clearColor = new BABYLON.Color3(1, 1, 1);
 
