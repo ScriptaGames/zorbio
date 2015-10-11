@@ -12,9 +12,10 @@ var ZOR = {};
  * sizes, etc.  The model will be synchronized between the server and all the
  * clients, and the same Model code will be running on both server and clients.
  */
-ZOR.Model = function ZORModel(worldSize) {
+ZOR.Model = function ZORModel(worldSize, foodDensity) {
     this.actors = [];
     this.worldSize = new BABYLON.Vector3(worldSize, worldSize, worldSize);
+    this.foodDensity = foodDensity;
 
     // Generate initial food actors based on world size
     this.initFood();
@@ -25,27 +26,24 @@ ZOR.Model = function ZORModel(worldSize) {
  */
 ZOR.Model.prototype.initFood = function ZORInitFood() {
     var halfSize = this.worldSize.y / 2;
+    var blockSize = this.worldSize.y / this.foodDensity;
 
-    for (var i = 0; i < 10; i++) {
-        for (var j = 0; j < 10; j++) {
-            for (var k = 0; k < 10; k++) {
-                var food_x = halfSize - (i * 10);
-                var food_y = halfSize - (j * 10);
-                var food_z = halfSize - (k * 10);
-                console.log('adding food: ', food_x, food_y, food_z);
+    for (var i = 1; i < this.foodDensity; i++) {
+        for (var j = 1; j < this.foodDensity; j++) {
+            for (var k = 1; k < this.foodDensity; k++) {
+                var food_x = halfSize - (i * blockSize) + getRandomIntInclusive(-blockSize, blockSize);
+                var food_y = halfSize - (j * blockSize) + getRandomIntInclusive(-blockSize, blockSize);
+                var food_z = halfSize - (k * blockSize) + getRandomIntInclusive(-blockSize, blockSize);
                 var red = getRandomIntInclusive(0, 255);
                 var green = getRandomIntInclusive(0, 255);
                 var blue = getRandomIntInclusive(0, 255);
-                var food = new ZOR.Food(food_x, food_y, food_z, 'cube', BABYLON.Color3.FromInts(red, green, blue), 2, 0, 0);
+                var color = BABYLON.Color3.FromInts(red, green, blue);
+                var food = new ZOR.Food(food_x, food_y, food_z, 'cube', color, 2, 0, 0);
                 this.addActor(food);
             }
         }
     }
-
-    //this.addActor(new ZOR.Food(45, 45, 45, 'cube', BABYLON.Color3.Blue(), 2, 0, 0));
-    //this.addActor(new ZOR.Food(-2, -2, -2, 'cube', BABYLON.Color3.Green(), 0, 2, 0));
-    //this.addActor(new ZOR.Food(2, -2, -2, 'cube', BABYLON.Color3.Yellow(), 0 , 0, 2));
-}
+};
 
 ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
     this.actors.push(actor);

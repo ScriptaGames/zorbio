@@ -5,7 +5,7 @@
   "main": "server/server.js",
   "scripts": {
     "test": "karma start",
-    "start": "cp ./common/zorbio.js ./client/lib/; node server/server.js"
+    "start": "mkdir ./client/lib/ & cp ./common/zorbio.js ./client/lib/; node server/server.js"
   },
   "author": "Scripta Games, Inc.",
   "dependencies": {

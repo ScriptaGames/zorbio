@@ -24,7 +24,7 @@ var Zorbio = require('../common/zorbio.js');
 
 var users = [];
 
-var model = new Zorbio.Model(100);
+var model = new Zorbio.Model(config.world_size, config.food_density);
 
 // Define sockets as a hash so we can use string indexes
 var sockets = {};

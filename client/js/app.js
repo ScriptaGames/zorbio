@@ -95,8 +95,10 @@ var createScene = function () {
     // Let's try our built-in 'sphere' shape. Params: name, subdivisions, size, scene
     var sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, scene);
 
-    // Move the sphere upward 1/2 its height
-    sphere.position.y = 1;
+    // Set player sphere position
+    sphere.position.x = player.sphere.position.x;
+    sphere.position.y = player.sphere.position.y;
+    sphere.position.z = player.sphere.position.z;
 
     // sphere material
     material.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid_small", scene);
