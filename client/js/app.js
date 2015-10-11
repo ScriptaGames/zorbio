@@ -158,6 +158,8 @@ var createScene = function () {
         var camera_angle_vector = camera.position.subtract(sphere.position).normalize();
         camera_angle_vector.multiplyInPlace(new BABYLON.Vector3(move_speed, move_speed, move_speed));
         sphere.position.subtractInPlace(camera_angle_vector);
+
+        updateActors();
     });
 
     //scene.registerBeforeRender(function() {
@@ -179,30 +181,33 @@ function drawActors() {
     }
 }
 
+
+function updateActors() {
+    var actors = zorbioModel.actors;
+    for (var i = 0; i < actors.length; i++) {
+        var actor = actors[i];
+        if (actor.type === ZOR.ActorTypes.FOOD) {
+            actor.geo.rotation.x += actor.rotation.x;
+            actor.geo.rotation.y += actor.rotation.y;
+            actor.geo.rotation.z += actor.rotation.z;
+        }
+    }
+}
+
 function drawFood(food) {
     //TODO: draw correct shape based on food.shape 'triangle', 'cube', 'hexigon' etc
     //(name, height, diameter, tessellation, scene, updatable)
-    var cylinder = BABYLON.Mesh.CreateCylinder("cylinder", 0.3, 0.4, 0.4, 6, 1, scene);
-    cylinder.position.x += food.position.x;
-    cylinder.position.y += food.position.y;
-    cylinder.position.z += food.position.z;
+    var foodGeo = BABYLON.Mesh.CreateCylinder("cylinder", 0.3, 0.4, 0.4, 6, 1, scene);
+    foodGeo.position.x += food.position.x;
+    foodGeo.position.y += food.position.y;
+    foodGeo.position.z += food.position.z;
 
+    //TODO: improve food material?
     var material = new BABYLON.StandardMaterial("food", scene);
-    material.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid_small", scene);
-    material.diffuseColor = new BABYLON.Color3(0, 0, 0);
-    material.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-    material.specularPower = 32;
-    material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
-    material.reflectionFresnelParameters.bias = 0.1;
-    material.emissiveFresnelParameters = new BABYLON.FresnelParameters();
-    material.emissiveFresnelParameters.bias = 0.6;
-    material.emissiveFresnelParameters.power = 4;
-    material.emissiveFresnelParameters.leftColor = BABYLON.Color3.White();
-    material.emissiveFresnelParameters.rightColor = food.color;
-    material.opacityFresnelParameters = new BABYLON.FresnelParameters();
-    material.opacityFresnelParameters.leftColor = BABYLON.Color3.White();
-    material.opacityFresnelParameters.rightColor = BABYLON.Color3.Black();
-    cylinder.material = material;
+    material.emissiveColor = food.color;
+    foodGeo.material = material;
+
+    food.geo = foodGeo;
 }
 
 // Watch for browser/canvas resize events

@@ -37,8 +37,13 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
                 var red = getRandomIntInclusive(0, 255);
                 var green = getRandomIntInclusive(0, 255);
                 var blue = getRandomIntInclusive(0, 255);
+                var r_max = 0.09;
+                var r_min = -0.02;
+                var rotate_x = getRandomArbitrary(r_min, r_max);
+                var rotate_y = getRandomArbitrary(r_min, r_max);
+                var rotate_z = getRandomArbitrary(r_min, r_max);
                 var color = BABYLON.Color3.FromInts(red, green, blue);
-                var food = new ZOR.Food(food_x, food_y, food_z, 'cube', color, 2, 0, 0);
+                var food = new ZOR.Food(food_x, food_y, food_z, 'cube', color, rotate_x, rotate_y, rotate_z);
                 this.addActor(food);
             }
         }
@@ -168,4 +173,9 @@ if (NODEJS) module.exports = ZOR;
 // Using Math.round() will give you a non-uniform distribution!
 function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Returns a random number between min (inclusive) and max (exclusive)
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
 }
