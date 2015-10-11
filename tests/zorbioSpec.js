@@ -11,10 +11,14 @@ describe('ZOR.Model', function () {
         expect(model.actors.length).toEqual(0);
     });
 
-    it('should have a positive world size', function () {
-        expect(model.worldsize.x).toBeGreaterThan(0);
-        expect(model.worldsize.y).toBeGreaterThan(0);
-        expect(model.worldsize.z).toBeGreaterThan(0);
+    it('should accept worldsize and food density', function () {
+        var size = 200;
+        var food = 200;
+        model = new ZOR.Model(size, food);
+        expect(model.worldSize.x).toEqual(size);
+        expect(model.worldSize.y).toEqual(size);
+        expect(model.worldSize.z).toEqual(size);
+        expect(model.foodDensity).toEqual(food);
     });
 
 });
