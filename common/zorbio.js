@@ -108,24 +108,6 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId) {
 
     // maintain a reference to the player who owns this sphere
     this.playerId   = playerId;
-
-    //TODO: get rid of these fields or port it into ZOR, these were used in agar.io clone
-    /*
-     var radius = util.massToRadius(config.defaultPlayerMass);
-     var position = {x: 0, y: 0, z: 0};
-     var cells = [];
-     var massTotal = 0;
-     if (type === 'player') {
-     cells = [{
-     mass: config.defaultPlayerMass,
-     x: position.x,
-     y: position.y,
-     z: position.z,
-     radius: radius
-     }];
-     massTotal = config.defaultPlayerMass;
-     }
-     */
 };
 
 ZOR.PlayerSphere.prototype = Object.create(ZOR.Actor.prototype);
