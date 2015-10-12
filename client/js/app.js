@@ -82,10 +82,10 @@ var createScene = function () {
     scene = new BABYLON.Scene(engine);
 
     // IF fog enabled
-    // scene.fogMode = BABYLON.Scene._FOGMODE_LINEAR;
-    // scene.fogColor = new BABYLON.Color3(1.0, 1.0, 1.0);
-    // scene.fogStart = 40;
-    // scene.fogEnd = 100;
+     scene.fogMode = BABYLON.Scene._FOGMODE_LINEAR;
+     scene.fogColor = new BABYLON.Color3(1.0, 1.0, 1.0);
+     scene.fogStart = 50;
+     scene.fogEnd = 70;
 
     // Change the scene background color to green.
     scene.clearColor = new BABYLON.Color3(1, 1, 1);
@@ -139,6 +139,7 @@ var createScene = function () {
     camera.upperRadiusLimit = 150;
     camera.speed = 5;
     camera.angularSensibility = 200;
+    camera.maxZ = 70; // View distance
 
     //This attaches the camera to the canvas
     camera.attachControl(canvas, false);
@@ -201,9 +202,8 @@ function updateActors() {
 }
 
 function drawFood(food) {
-    //TODO: draw correct shape based on food.shape 'triangle', 'cube', 'hexigon' etc
-    //(name, height, diameter, tessellation, scene, updatable)
-    var foodGeo = BABYLON.Mesh.CreateCylinder("cylinder", 0.3, 0.4, 0.4, 6, 1, scene);
+    //TODO: change food to particles
+    var foodGeo = BABYLON.Mesh.CreateSphere("food", 3, 0.4, scene);
     foodGeo.position.x += food.position.x;
     foodGeo.position.y += food.position.y;
     foodGeo.position.z += food.position.z;
