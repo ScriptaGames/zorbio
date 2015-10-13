@@ -139,7 +139,7 @@ var createScene = function () {
     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     skybox.material = skyboxMaterial;
 
-    drawActors();
+    //drawActors();
 
     // Save a reference to the sphere created for the player
     player.sphere.geo = sphereRef;
@@ -159,7 +159,7 @@ var createScene = function () {
         player.sphere.position = sphereGeo.position;
         zorbioModel.actors[player.sphere.id] = player.sphere;
 
-        updateActors();
+        //updateActors();
         updateOtherPlayerSpheres();
     });
 

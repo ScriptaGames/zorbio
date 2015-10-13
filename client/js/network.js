@@ -38,8 +38,8 @@ function setupSocket(socket) {
         gameStart = true;
         console.log('Game is started: ' + gameStart);
 
-        // start sending the players position every 1/10 of a second
-        window.setInterval(sendPlayerSpherePosition, 70);
+        // start sending the players position
+        window.setInterval(sendPlayerSpherePosition, 50);
 
         // create the scene
         var scene = createScene();
