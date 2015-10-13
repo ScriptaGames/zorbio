@@ -14,11 +14,12 @@ var ZOR = {};
  */
 ZOR.Model = function ZORModel(worldSize, foodDensity) {
     this.actors = {};
+    this.players = {};
     this.worldSize = new BABYLON.Vector3(worldSize, worldSize, worldSize);
     this.foodDensity = foodDensity;
 
     // Generate initial food actors based on world size
-    this.initFood();
+    //this.initFood();
 };
 
 /**
@@ -64,7 +65,7 @@ ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
  */
 ZOR.ActorTypes = Object.freeze({
     UNDEFINED : 'UNDEFINED',
-    PLAYER    : 'PLAYER',
+    PLAYER_SPHERE    : 'PLAYER_SPHERE',
     FOOD      : 'FOOD',
     PORTAL    : 'PORTAL',
     OBSTACLE  : 'OBSTACLE',
@@ -79,17 +80,9 @@ ZOR.ActorTypes = Object.freeze({
 ZOR.Actor = function ZORActor() {
     this.position = new BABYLON.Vector3(0,0,0);
     this.velocity = new BABYLON.Vector3(0,0,0);
-    this.geos = [];
+    this.geo = null;
     this.scale = 1;
     this.type = ZOR.ActorTypes.UNDEFINED;
-};
-
-/**
- * Adds a BabylonJS geometry (sphere, cube, whatever kind of 3d object) to this
- * actor.  This is a way of adding a reference from an Actor to its 3d object.
- */
-ZOR.Actor.prototype.addGeometry = function ZORActorAddGeometry(geometry) {
-    this.geos.push(geometry);
 };
 
 /**
@@ -104,7 +97,7 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color) {
 
     this.diameter = 1;
     this.throttle = 100; // 100% throttle default
-    this.type     = ZOR.ActorTypes.PLAYER;
+    this.type     = ZOR.ActorTypes.PLAYER_SPHERE;
 
     //TODO: make color customizable
     this.color    = color;
@@ -114,7 +107,6 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color) {
 
     this.id = this.type + '-' + this.playerId;
 };
-
 ZOR.PlayerSphere.prototype = Object.create(ZOR.Actor.prototype);
 ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
 
@@ -163,11 +155,20 @@ ZOR.Food.constructor = ZOR.Food;
 
 
 /**
+ * ZOR.PlayerTypes Types of players
+ */
+ZOR.PlayerTypes = Object.freeze({
+    SPECTATOR : 'SPECTATOR',
+    PLAYER    : 'PLAYER'
+});
+
+/**
  * ZOR.Player is a constructor for creating a new player object.
  */
-ZOR.Player = function ZORPlayer(id, name, color) {
+ZOR.Player = function ZORPlayer(id, name, color, type) {
     this.id = id;
     this.name = name;
+    this.type = type;
     this.lastHeartbeat = new Date().getTime();
     this.sphere = new ZOR.PlayerSphere(this.id, color);
 };

@@ -10,7 +10,6 @@ var playerName;
 var playerType;
 var playerNameInput = document.getElementById('playerNameInput');
 var player;
-var playerSphereColor;
 
 // Game state
 var gameStart = false;
@@ -23,11 +22,10 @@ var engine = new BABYLON.Engine(canvas, true);
 
 // Model that represents all of the visual elements of the game
 var zorbioModel;
-//TODO: refactor this into the model after talking with MC
-var playerSpherePositions = {};
 
 var MOVE_SPEED_SCALE = 0.3;
 
+//TODO: add more colors, only select ones not used.
 var COLORS = [
     BABYLON.Color3.Red(),
     BABYLON.Color3.Blue(),
@@ -80,7 +78,8 @@ window.onload = function () {
 
         if (key === KEY_ENTER) {
             if (validNick()) {
-                startGame();
+                //TODO: allow ZOR.PlayerTypes.SPECTATOR type
+                startGame(ZOR.PlayerTypes.PLAYER);
             } else {
                 nickErrorText.style.display = 'inline';
             }
@@ -139,11 +138,11 @@ var createScene = function () {
     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     skybox.material = skyboxMaterial;
 
-    //drawActors();
+    drawActors();
 
     // Save a reference to the sphere created for the player
     player.sphere.geo = sphereRef;
-    playerSpherePositions[player.sphere.id] = player.sphere;
+    zorbioModel.actors[player.sphere.id] = player.sphere;
 
     scene.registerBeforeRender(function updateSpherePosition() {
         var sphereGeo = player.sphere.geo;
@@ -159,8 +158,7 @@ var createScene = function () {
         player.sphere.position = sphereGeo.position;
         zorbioModel.actors[player.sphere.id] = player.sphere;
 
-        //updateActors();
-        updateOtherPlayerSpheres();
+        updateActors();
     });
 
     //scene.registerBeforeRender(function() {
@@ -174,37 +172,18 @@ var createScene = function () {
 
 function drawActors() {
     var actors = zorbioModel.actors;
-
     // Iterate over actor properties in the actors object
-    Object.getOwnPropertyNames(actors).forEach(function(val) {
-        var actor = actors[val];
+    Object.getOwnPropertyNames(actors).forEach(function(id) {
+        var actor = actors[id];
         if (actor.type === ZOR.ActorTypes.FOOD) {
             drawFood(actor);
         }
-    });
-}
-
-
-function drawOtherPlayerSpheres() {
-    Object.getOwnPropertyNames(playerSpherePositions).forEach(function(id) {
-        if (id === player.sphere.id) {
-            return;  // don't draw own sphere
-        }
-
-        var otherPlayerSphere = playerSpherePositions[id];
-        var sphereRef = drawPlayerSphere(otherPlayerSphere);
-        playerSpherePositions[id].geo = sphereRef;
-    });
-}
-
-function updateOtherPlayerSpheres() {
-    Object.getOwnPropertyNames(playerSpherePositions).forEach(function(id) {
-        if (id === player.sphere.id) {
-            return;  // don't draw own sphere
-        }
-
-        if (playerSpherePositions[id].geo) {
-            playerSpherePositions[id].geo.position = playerSpherePositions[id].position;
+        else if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
+            // Only draw other players
+            if (id !== player.sphere.id) {
+                var sphereRef = drawPlayerSphere(actor);
+                actors[id].geo = sphereRef;
+            }
         }
     });
 }
@@ -252,12 +231,20 @@ function updateActors() {
     var actors = zorbioModel.actors;
 
     // Iterate over actor properties in the actors object
-    Object.getOwnPropertyNames(actors).forEach(function(val) {
-        var actor = actors[val];
+    Object.getOwnPropertyNames(actors).forEach(function(id) {
+        var actor = actors[id];
         if (actor.type === ZOR.ActorTypes.FOOD) {
             actor.geo.rotation.x += actor.rotation.x;
             actor.geo.rotation.y += actor.rotation.y;
             actor.geo.rotation.z += actor.rotation.z;
+        }
+        else if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
+            if (id !== player.sphere.id) {
+                if (actors[id].geo) {
+                    // update players sphere geo position
+                    actors[id].geo.position = actors[id].position;
+                }
+            }
         }
     });
 }

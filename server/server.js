@@ -22,11 +22,6 @@ var Zorbio = require('../common/zorbio.js');
 // max players per game instance
 //var MAX_PLAYERS = 32;
 
-var users = {};
-
-//TODO: refactor into model.playersSpheres
-var playerSpherePositions = {};
-
 var model = new Zorbio.Model(config.world_size, config.food_density);
 
 // Define sockets as a hash so we can use string indexes
@@ -43,29 +38,24 @@ io.on('connection', function (socket) {
     var color = socket.handshake.query.color;
 
     // Create the Player
-    var currentPlayer = new Zorbio.Player(socket.id, name, color);
+    var currentPlayer = new Zorbio.Player(socket.id, name, color, type);
     model.addActor(currentPlayer.sphere);
 
-    playerSpherePositions[currentPlayer.sphere.id] = {
-        position: currentPlayer.sphere.position,
-        color: currentPlayer.sphere.color
-    };
-
     socket.on('respawn', function () {
-        if (users[currentPlayer.id]) {
-            // if current player is already in the users remove them
-            users[currentPlayer.id] = null;
-            delete users[currentPlayer.id];
+        if (model.players[currentPlayer.id]) {
+            // if current player is already in the players remove them
+            model.players[currentPlayer.id] = null;
+            delete model.players[currentPlayer.id];
          }
 
-        socket.emit('welcome', currentPlayer, model, playerSpherePositions);
+        socket.emit('welcome', currentPlayer, model);
         console.log('User ' + currentPlayer.id + ' respawned');
     });
 
     socket.on('gotit', function (player) {
         console.log('Player ' + player.id + ' connecting');
 
-        if (users[player.id]) {
+        if (model.players[player.id]) {
             console.log('That playerID is already connected, kicking');
             socket.disconnect();
         } else if (!util.validNick(player.name)) {
@@ -77,25 +67,22 @@ io.on('connection', function (socket) {
             currentPlayer.lastHeartbeat = new Date().getTime();
 
             // Add the player to the players object
-            users[player.id] = currentPlayer;
+            model.players[player.id] = currentPlayer;
 
             io.emit('playerJoin', currentPlayer);
 
             // Pass any data to the for final setup
             socket.emit('gameSetup', {});
 
-            console.log('Total players: ' + Object.getOwnPropertyNames(users).length);
+            console.log('Total players: ' + Object.getOwnPropertyNames(model.players).length);
         }
     });
 
     socket.on('myPosition', function (sphere) {
         if (model.actors[sphere.id]) {
-            // update the players possition in the model
+            // update the players position in the model
             model.actors[sphere.id].position = sphere.p;
         }
-
-        //TODO: refactor actorPositions to model.playersSpheres
-        playerSpherePositions[sphere.id].position = sphere.p;
     });
 
     socket.on('error', function (err) {
@@ -105,9 +92,8 @@ io.on('connection', function (socket) {
 });
 
 function sendUpdates() {
-    //TODO: refactor model to separate food actors from player actors so we can send model.playersSpheres
-    io.emit('playerPositions', playerSpherePositions);
-    //console.log('playerPositions', JSON.stringify(playerSpherePositions));
+    // Send actors to the client for updates
+    io.emit('actorPositions', model.actors);
 }
 
 setInterval(sendUpdates, config.networkUpdateInterval);
