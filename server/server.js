@@ -106,10 +106,6 @@ io.on('connection', function (socket) {
 
 function sendUpdates() {
     //TODO: refactor model to separate food actors from player actors so we can send model.playersSpheres
-    //Object.getOwnPropertyNames(sockets).forEach(function(id) {
-    //    sockets[id].emit('playerPositions', playerSpherePositions);
-    //});
-
     io.emit('playerPositions', playerSpherePositions);
     //console.log('playerPositions', JSON.stringify(playerSpherePositions));
 }
