@@ -13,7 +13,7 @@ var ZOR = {};
  * clients, and the same Model code will be running on both server and clients.
  */
 ZOR.Model = function ZORModel(worldSize, foodDensity) {
-    this.actors = [];
+    this.actors = {};
     this.worldSize = new BABYLON.Vector3(worldSize, worldSize, worldSize);
     this.foodDensity = foodDensity;
 
@@ -51,7 +51,11 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
 };
 
 ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
-    this.actors.push(actor);
+    if (!actor.id) {
+        throw 'Actors must have an ID';
+    }
+
+    this.actors[actor.id] = actor;
 };
 
 /**
@@ -92,7 +96,6 @@ ZOR.Actor.prototype.addGeometry = function ZORActorAddGeometry(geometry) {
  * ZOR.PlayerSphere is a constructor for creating a player's sphere.
  */
 ZOR.PlayerSphere = function ZORPlayerSphere(playerId) {
-
     // call super class constructor
     ZOR.Actor.call(this);
 
@@ -108,6 +111,8 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId) {
 
     // maintain a reference to the player who owns this sphere
     this.playerId   = playerId;
+
+    this.id = this.type + '-' + this.playerId;
 };
 
 ZOR.PlayerSphere.prototype = Object.create(ZOR.Actor.prototype);
@@ -115,12 +120,32 @@ ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
 
 /**
  * ZOR.Food is a constructor for creating a Food object.
+ * @param [x]
+ * @param [y]
+ * @param [z]
+ * @param [shape]
+ * @param [color]
+ * @param [rotate_x]
+ * @param [rotate_y]
+ * @param [rotate_z]
+ * @constructor
  */
 ZOR.Food = function ZORFood(x, y, z, shape, color, rotate_x, rotate_y, rotate_z) {
+    x = x || 0;
+    y = y || 0;
+    z = z || 0;
+    shape = shape || 'sphere';
+    color = color || BABYLON.Color3.Red();
+    rotate_x = rotate_x || 0;
+    rotate_y = rotate_y || 0;
+    rotate_z = rotate_z || 0;
+
     // call super class constructor
     ZOR.Actor.call(this);
 
     this.type = ZOR.ActorTypes.FOOD;
+
+    this.id = this.type + '-' + x + ',' + y + ',' + z;
 
     // Set the position
     this.position.x = x;

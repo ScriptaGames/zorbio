@@ -180,25 +180,29 @@ var createScene = function () {
 
 function drawActors() {
     var actors = zorbioModel.actors;
-    for (var i = 0; i < actors.length; i++) {
-        var actor = actors[i];
+
+    // Iterate over actor properties in the actors object
+    Object.getOwnPropertyNames(actors).forEach(function(val) {
+        var actor = actors[val];
         if (actor.type === ZOR.ActorTypes.FOOD) {
             drawFood(actor);
         }
-    }
+    });
 }
 
 
 function updateActors() {
     var actors = zorbioModel.actors;
-    for (var i = 0; i < actors.length; i++) {
-        var actor = actors[i];
+
+    // Iterate over actor properties in the actors object
+    Object.getOwnPropertyNames(actors).forEach(function(val) {
+        var actor = actors[val];
         if (actor.type === ZOR.ActorTypes.FOOD) {
             actor.geo.rotation.x += actor.rotation.x;
             actor.geo.rotation.y += actor.rotation.y;
             actor.geo.rotation.z += actor.rotation.z;
         }
-    }
+    });
 }
 
 function drawFood(food) {

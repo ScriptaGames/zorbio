@@ -22,7 +22,7 @@ var Zorbio = require('../common/zorbio.js');
 // max players per game instance
 //var MAX_PLAYERS = 32;
 
-var users = [];
+var users = {};
 
 var model = new Zorbio.Model(config.world_size, config.food_density);
 
@@ -43,20 +43,20 @@ io.on('connection', function (socket) {
     model.addActor(currentPlayer.sphere);
 
     socket.on('respawn', function () {
-        var userIndex = util.findIndex(users, currentPlayer.id);
-        if (userIndex > -1) {
-            // if current player is already in the users array remove them
-            users.splice(userIndex, 1);
-        }
+        if (users[currentPlayer.id]) {
+            // if current player is already in the users remove them
+            users[currentPlayer.id] = null;
+            delete users[currentPlayer.id];
+         }
 
         socket.emit('welcome', currentPlayer, model);
-        console.log('User #' + currentPlayer.id + ' respawned');
+        console.log('User ' + currentPlayer.id + ' respawned');
     });
 
     socket.on('gotit', function (player) {
         console.log('Player ' + player.id + ' connecting');
 
-        if (util.findIndex(users, player.id) > -1) {
+        if (users[player.id]) {
             console.log('That playerID is already connected, kicking');
             socket.disconnect();
         } else if (!util.validNick(player.name)) {
@@ -67,15 +67,15 @@ io.on('connection', function (socket) {
             sockets[player.id] = socket;
             currentPlayer.lastHeartbeat = new Date().getTime();
 
-            // Add the player to the players array
-            users.push(currentPlayer);
+            // Add the player to the players object
+            users[player.id] = currentPlayer;
 
             io.emit('playerJoin', {name: currentPlayer.name});
 
             // Pass any data to the for final setup
             socket.emit('gameSetup', {});
 
-            console.log('Total player: ' + users.length);
+            console.log('Total players: ' + Object.getOwnPropertyNames(users).length);
         }
     });
 
