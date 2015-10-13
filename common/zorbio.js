@@ -95,7 +95,7 @@ ZOR.Actor.prototype.addGeometry = function ZORActorAddGeometry(geometry) {
 /**
  * ZOR.PlayerSphere is a constructor for creating a player's sphere.
  */
-ZOR.PlayerSphere = function ZORPlayerSphere(playerId) {
+ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color) {
     // call super class constructor
     ZOR.Actor.call(this);
 
@@ -107,7 +107,7 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId) {
     this.type     = ZOR.ActorTypes.PLAYER;
 
     //TODO: make color customizable
-    this.color    = BABYLON.Color3.Red();
+    this.color    = color;
 
     // maintain a reference to the player who owns this sphere
     this.playerId   = playerId;
@@ -165,11 +165,11 @@ ZOR.Food.constructor = ZOR.Food;
 /**
  * ZOR.Player is a constructor for creating a new player object.
  */
-ZOR.Player = function ZORPlayer(id, name) {
+ZOR.Player = function ZORPlayer(id, name, color) {
     this.id = id;
     this.name = name;
     this.lastHeartbeat = new Date().getTime();
-    this.sphere = new ZOR.PlayerSphere(this.id);
+    this.sphere = new ZOR.PlayerSphere(this.id, color);
 };
 
 // if we're in nodejs, export the root ZOR object

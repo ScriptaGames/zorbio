@@ -4,28 +4,48 @@
 
 var socket;
 
-function connectToServer(playerType, playerName) {
+function connectToServer(playerType, playerName, color) {
     if (!socket) {
-        socket = io({query: "type=" + playerType + "&name=" + playerName});
+        socket = io({query: "type=" + playerType + "&name=" + playerName + "&color=" + color});
         setupSocket(socket);
     }
     socket.emit('respawn');
+}
+
+function sendPlayerSpherePosition() {
+    // cut down on the number of bytes sent across the wire
+    var position = {
+        x: player.sphere.geo.position.x.toFixed(4),
+        y: player.sphere.geo.position.y.toFixed(4),
+        z: player.sphere.geo.position.z.toFixed(4)
+    };
+    var sphere = {"id": player.sphere.id, "p": position};
+    socket.emit('myPosition', sphere);
+
+    //TODO: only send if the player is moving.  If their position hasn't changed, don't send.
 }
 
 function setupSocket(socket) {
     console.log('Game handleNetwork');
 
     // Handle connection
-    socket.on('welcome', function (playerSettings, model) {
+    socket.on('welcome', function (playerSettings, model, playerSpheres) {
         player = playerSettings;
         zorbioModel = model;
+        playerSpherePositions = playerSpheres;
 
         socket.emit('gotit', player);
         gameStart = true;
         console.log('Game is started: ' + gameStart);
 
+        // start sending the players position every 1/10 of a second
+        window.setInterval(sendPlayerSpherePosition, 70);
+
         // create the scene
         var scene = createScene();
+
+        // Add the other players currently in the game to the scene
+        drawOtherPlayerSpheres();
 
         // Register a render loop to repeatedly render the scene
         engine.runRenderLoop(function () {
@@ -42,14 +62,35 @@ function setupSocket(socket) {
         document.getElementById('renderCanvas').focus();
     });
 
-    socket.on('playerJoin', function (data) {
+    socket.on('playerJoin', function (newPlayer) {
         //TODO: implement chat system
         //chat.addSystemLine('Player <b>' + data.name + '</b> joined!');
-        console.log('Player ' + data.name + ' joined!');
+
+        //TODO: should the client also keep track of ZOR.Player objects and not just actors?
+        zorbioModel.actors[newPlayer.sphere.id] = newPlayer.sphere;
+
+        //TODO: refactor otherPlayers into the model somehow, it's late and I'm just trying to see other players
+        if (newPlayer.id !== player.id) {
+            playerSpherePositions[newPlayer.sphere.id] = newPlayer.sphere;
+            var newSphereGeo = drawPlayerSphere(newPlayer.sphere);
+            playerSpherePositions[newPlayer.sphere.id].geo = newSphereGeo;
+        }
+
+        console.log('Player ' + newPlayer.name + ' joined!');
     });
 
     socket.on('gameSetup', function (data) {
         console.log('Games finished setting up', data);
+    });
+
+    socket.on('playerPositions', function (newPlayerSpheresPositions) {
+        if (!gameStart) {
+            return; // don't start updating player positions in the client until their game has started
+        }
+
+        Object.getOwnPropertyNames(newPlayerSpheresPositions).forEach(function(id) {
+            playerSpherePositions[id].position = newPlayerSpheresPositions[id].position;
+        });
     });
 
     /*

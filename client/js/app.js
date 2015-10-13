@@ -10,6 +10,7 @@ var playerName;
 var playerType;
 var playerNameInput = document.getElementById('playerNameInput');
 var player;
+var playerSphereColor;
 
 // Game state
 var gameStart = false;
@@ -22,8 +23,19 @@ var engine = new BABYLON.Engine(canvas, true);
 
 // Model that represents all of the visual elements of the game
 var zorbioModel;
+//TODO: refactor this into the model after talking with MC
+var playerSpherePositions = {};
 
 var MOVE_SPEED_SCALE = 0.3;
+
+var COLORS = [
+    BABYLON.Color3.Red(),
+    BABYLON.Color3.Blue(),
+    BABYLON.Color3.Yellow(),
+    BABYLON.Color3.Green(),
+    BABYLON.Color3.Purple(),
+    BABYLON.Color3.Magenta()
+];
 
 function startGame(type) {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
@@ -34,8 +46,9 @@ function startGame(type) {
 
     setScreenDimensions();
 
-    // Init the socket
-    connectToServer(playerType, playerName);
+    // Connect to the server
+    var colorCode = getRandomIntInclusive(0, 5);
+    connectToServer(playerType, playerName, colorCode);
 }
 
 // check if nick is valid alphanumeric characters (and underscores)
@@ -82,10 +95,10 @@ var createScene = function () {
     scene = new BABYLON.Scene(engine);
 
     // IF fog enabled
-     scene.fogMode = BABYLON.Scene._FOGMODE_LINEAR;
-     scene.fogColor = new BABYLON.Color3(1.0, 1.0, 1.0);
-     scene.fogStart = 50;
-     scene.fogEnd = 70;
+    scene.fogMode = BABYLON.Scene._FOGMODE_LINEAR;
+    scene.fogColor = new BABYLON.Color3(1.0, 1.0, 1.0);
+    scene.fogStart = 50;
+    scene.fogEnd = 70;
 
     // Change the scene background color to green.
     scene.clearColor = new BABYLON.Color3(1, 1, 1);
@@ -96,45 +109,14 @@ var createScene = function () {
     // Dim the light a small amount
     // light.intensity = 0.5;
 
-    var material = new BABYLON.StandardMaterial("kosh", scene);
-
-    // Let's try our built-in 'sphere' shape. Params: name, subdivisions, size, scene
-    var sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, scene);
-
-    // Set player sphere position
-    sphere.position.x = player.sphere.position.x;
-    sphere.position.y = player.sphere.position.y;
-    sphere.position.z = player.sphere.position.z;
-
-    // sphere material
-    material.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid_small", scene);
-    material.diffuseColor = new BABYLON.Color3.White();
-    material.emissiveColor = new BABYLON.Color3.White();
-    material.alpha = 0.4;
-    material.specularPower = 0;
-
-    // Fresnel
-    material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
-    material.reflectionFresnelParameters.bias = 0.1;
-
-    material.emissiveFresnelParameters = new BABYLON.FresnelParameters();
-    material.emissiveFresnelParameters.bias = 0.6;
-    material.emissiveFresnelParameters.power = 4;
-    material.emissiveFresnelParameters.leftColor = BABYLON.Color3.White();
-    material.emissiveFresnelParameters.rightColor = BABYLON.Color3.Red();
-
-    material.opacityFresnelParameters = new BABYLON.FresnelParameters();
-    material.opacityFresnelParameters.leftColor = BABYLON.Color3.White();
-    material.opacityFresnelParameters.rightColor = BABYLON.Color3.Black();
-
-    sphere.material = material;
+    var sphereRef = drawPlayerSphere(player.sphere);
 
     // This creates and positions a camera
     // var camera = new BABYLON.ArcFollowCamera("camera1", 1, 1, 100, sphere, scene);
     var camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 10, new BABYLON.Vector3(0, 5, -10), scene);
     // var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
     camera.inertia = 0.01;
-    camera.target = sphere;
+    camera.target = sphereRef;
     camera.lowerRadiusLimit = 4;
     camera.upperRadiusLimit = 150;
     camera.speed = 5;
@@ -159,14 +141,26 @@ var createScene = function () {
 
     drawActors();
 
+    // Save a reference to the sphere created for the player
+    player.sphere.geo = sphereRef;
+    playerSpherePositions[player.sphere.id] = player.sphere;
+
     scene.registerBeforeRender(function updateSpherePosition() {
+        var sphereGeo = player.sphere.geo;
+
         // move forward in the direction the camera is facing
         var move_speed = MOVE_SPEED_SCALE * (player.sphere.throttle / 100);
-        var camera_angle_vector = camera.position.subtract(sphere.position).normalize();
+        var camera_angle_vector = camera.position.subtract(sphereGeo.position).normalize();
         camera_angle_vector.multiplyInPlace(new BABYLON.Vector3(move_speed, move_speed, move_speed));
-        sphere.position.subtractInPlace(camera_angle_vector);
+        sphereGeo.position.subtractInPlace(camera_angle_vector);
+
+        //TODO: talk to MC about this not sure if I have to re-assign the geo after changing it
+        player.sphere.geo = sphereGeo;
+        player.sphere.position = sphereGeo.position;
+        zorbioModel.actors[player.sphere.id] = player.sphere;
 
         updateActors();
+        updateOtherPlayerSpheres();
     });
 
     //scene.registerBeforeRender(function() {
@@ -189,6 +183,69 @@ function drawActors() {
         }
     });
 }
+
+
+function drawOtherPlayerSpheres() {
+    Object.getOwnPropertyNames(playerSpherePositions).forEach(function(id) {
+        if (id === player.sphere.id) {
+            return;  // don't draw own sphere
+        }
+
+        var otherPlayerSphere = playerSpherePositions[id];
+        var sphereRef = drawPlayerSphere(otherPlayerSphere);
+        playerSpherePositions[id].geo = sphereRef;
+    });
+}
+
+function updateOtherPlayerSpheres() {
+    Object.getOwnPropertyNames(playerSpherePositions).forEach(function(id) {
+        if (id === player.sphere.id) {
+            return;  // don't draw own sphere
+        }
+
+        if (playerSpherePositions[id].geo) {
+            playerSpherePositions[id].geo.position = playerSpherePositions[id].position;
+        }
+    });
+}
+
+function drawPlayerSphere(sphereToDraw) {
+    var material = new BABYLON.StandardMaterial("kosh", scene);
+
+    // Let's try our built-in 'sphere' shape. Params: name, subdivisions, size, scene
+    var newSphere = BABYLON.Mesh.CreateSphere("sphere-" + sphereToDraw.id, 16, 2, scene);
+
+    // Set player sphere position
+    newSphere.position.x = sphereToDraw.position.x;
+    newSphere.position.y = sphereToDraw.position.y;
+    newSphere.position.z = sphereToDraw.position.z;
+
+    // sphere material
+    material.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid_small", scene);
+    material.diffuseColor = new BABYLON.Color3.White();
+    material.emissiveColor = new BABYLON.Color3.White();
+    material.alpha = 0.4;
+    material.specularPower = 0;
+
+    // Fresnel
+    material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
+    material.reflectionFresnelParameters.bias = 0.1;
+
+    material.emissiveFresnelParameters = new BABYLON.FresnelParameters();
+    material.emissiveFresnelParameters.bias = 0.6;
+    material.emissiveFresnelParameters.power = 4;
+    material.emissiveFresnelParameters.leftColor = BABYLON.Color3.White();
+    material.emissiveFresnelParameters.rightColor = COLORS[sphereToDraw.color];
+
+    material.opacityFresnelParameters = new BABYLON.FresnelParameters();
+    material.opacityFresnelParameters.leftColor = BABYLON.Color3.White();
+    material.opacityFresnelParameters.rightColor = BABYLON.Color3.Black();
+
+    newSphere.material = material;
+
+    return newSphere;
+}
+
 
 
 function updateActors() {

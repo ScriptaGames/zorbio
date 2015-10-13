@@ -24,6 +24,9 @@ var Zorbio = require('../common/zorbio.js');
 
 var users = {};
 
+//TODO: refactor into model.playersSpheres
+var playerSpherePositions = {};
+
 var model = new Zorbio.Model(config.world_size, config.food_density);
 
 // Define sockets as a hash so we can use string indexes
@@ -37,10 +40,16 @@ io.on('connection', function (socket) {
     // Handle new connection
     var type = socket.handshake.query.type;
     var name = socket.handshake.query.name;
+    var color = socket.handshake.query.color;
 
     // Create the Player
-    var currentPlayer = new Zorbio.Player(socket.id, name);
+    var currentPlayer = new Zorbio.Player(socket.id, name, color);
     model.addActor(currentPlayer.sphere);
+
+    playerSpherePositions[currentPlayer.sphere.id] = {
+        position: currentPlayer.sphere.position,
+        color: currentPlayer.sphere.color
+    };
 
     socket.on('respawn', function () {
         if (users[currentPlayer.id]) {
@@ -49,7 +58,7 @@ io.on('connection', function (socket) {
             delete users[currentPlayer.id];
          }
 
-        socket.emit('welcome', currentPlayer, model);
+        socket.emit('welcome', currentPlayer, model, playerSpherePositions);
         console.log('User ' + currentPlayer.id + ' respawned');
     });
 
@@ -70,7 +79,7 @@ io.on('connection', function (socket) {
             // Add the player to the players object
             users[player.id] = currentPlayer;
 
-            io.emit('playerJoin', {name: currentPlayer.name});
+            io.emit('playerJoin', currentPlayer);
 
             // Pass any data to the for final setup
             socket.emit('gameSetup', {});
@@ -79,11 +88,33 @@ io.on('connection', function (socket) {
         }
     });
 
+    socket.on('myPosition', function (sphere) {
+        if (model.actors[sphere.id]) {
+            // update the players possition in the model
+            model.actors[sphere.id].position = sphere.p;
+        }
+
+        //TODO: refactor actorPositions to model.playersSpheres
+        playerSpherePositions[sphere.id].position = sphere.p;
+    });
+
     socket.on('error', function (err) {
         console.error(err.stack);
         //TODO: handle error cleanup
     });
 });
+
+function sendUpdates() {
+    //TODO: refactor model to separate food actors from player actors so we can send model.playersSpheres
+    //Object.getOwnPropertyNames(sockets).forEach(function(id) {
+    //    sockets[id].emit('playerPositions', playerSpherePositions);
+    //});
+
+    io.emit('playerPositions', playerSpherePositions);
+    //console.log('playerPositions', JSON.stringify(playerSpherePositions));
+}
+
+setInterval(sendUpdates, config.networkUpdateInterval);
 
 var serverPort = process.env.PORT || config.port;
 http.listen(serverPort, function () {
