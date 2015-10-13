@@ -85,6 +85,12 @@ io.on('connection', function (socket) {
         }
     });
 
+    socket.on('playerHeartbeat', function (id) {
+        if (model.players[id]) {
+            model.players[id].lastHeartbeat = new Date().getTime();
+        }
+    });
+
     socket.on('error', function (err) {
         console.error(err.stack);
         //TODO: handle error cleanup

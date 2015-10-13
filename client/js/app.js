@@ -23,7 +23,10 @@ var engine = new BABYLON.Engine(canvas, true);
 // Model that represents all of the visual elements of the game
 var zorbioModel;
 
-var MOVE_SPEED_SCALE = 0.3;
+// constants
+var MOVE_SPEED_SCALE         = 0.3;
+var PLAYER_POSITION_INTERVAL = 50;    // 50 milliseconds or 20 times per second
+var HEARTBEAT_INTERVAL       = 3000;  // How long to wait between sending heartbeat milliseconds
 
 //TODO: add more colors, only select ones not used.
 var COLORS = [

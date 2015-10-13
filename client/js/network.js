@@ -25,6 +25,10 @@ function sendPlayerSpherePosition() {
     //TODO: only send if the player is moving.  If their position hasn't changed, don't send.
 }
 
+function sendHeartbeat() {
+    socket.emit('playerHeartbeat', player.id);
+}
+
 function setupSocket(socket) {
     console.log('Game handleNetwork');
 
@@ -38,7 +42,10 @@ function setupSocket(socket) {
         console.log('Game is started: ' + gameStart);
 
         // start sending the players position
-        window.setInterval(sendPlayerSpherePosition, 50);
+        window.setInterval(sendPlayerSpherePosition, PLAYER_POSITION_INTERVAL);
+
+        // start sending heartbeat
+        window.setInterval(sendHeartbeat, HEARTBEAT_INTERVAL);
 
         // create the scene
         var scene = createScene();
@@ -91,7 +98,9 @@ function setupSocket(socket) {
 
         // sync the actors positions from the server model to the client model
         Object.getOwnPropertyNames(actors).forEach(function(id) {
-            zorbioModel.actors[id].position = actors[id].position;
+            if (zorbioModel.actors[id]) {
+                zorbioModel.actors[id].position = actors[id].position;
+            }
         });
     });
 
