@@ -1,14 +1,11 @@
 describe('ZOR.Model', function () {
-
-    var mode;
-
     it('should be constructable', function () {
         model = new ZOR.Model();
         expect(model instanceof ZOR.Model).toBe(true);
     });
 
     it('should have no actors at first', function () {
-        expect(model.actors.length).toEqual(0);
+        expect(Object.getOwnPropertyNames(model.actors).length).toEqual(0);
     });
 
     it('should accept worldsize and food density', function () {
@@ -20,5 +17,4 @@ describe('ZOR.Model', function () {
         expect(model.worldSize.z).toEqual(size);
         expect(model.foodDensity).toEqual(food);
     });
-
 });

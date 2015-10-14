@@ -49,7 +49,7 @@ exports.uniformPosition = function (points, radius) {
         return exports.randomPosition(radius);
     }
 
-    // Generate the cadidates
+    // Generate the candidate
     for (var ci = 0; ci < numberOfCandidates; ci++) {
         var minDistance = Infinity;
         var candidate = exports.randomPosition(radius);

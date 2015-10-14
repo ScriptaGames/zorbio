@@ -79,10 +79,8 @@ function setupSocket(socket) {
 
         //Draw the new player if it's not the current player
         if (newPlayer.id !== player.id) {
-            var newSphereGeo = drawPlayerSphere(newPlayer.sphere);
-
             // save reference to the new players geometry
-            zorbioModel.actors[newPlayer.sphere.id].geo = newSphereGeo;
+            zorbioModel.actors[newPlayer.sphere.id].geo = drawPlayerSphere(newPlayer.sphere);
         }
 
         console.log('Player ' + newPlayer.name + ' joined!');
@@ -98,7 +96,7 @@ function setupSocket(socket) {
         }
 
         // sync the actors positions from the server model to the client model
-        Object.getOwnPropertyNames(actors).forEach(function(id) {
+        Object.getOwnPropertyNames(actors).forEach(function (id) {
             if (zorbioModel.actors[id]) {
                 zorbioModel.actors[id].position = actors[id].position;
             }

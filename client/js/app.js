@@ -177,7 +177,7 @@ var createScene = function () {
 function drawActors() {
     var actors = zorbioModel.actors;
     // Iterate over actor properties in the actors object
-    Object.getOwnPropertyNames(actors).forEach(function(id) {
+    Object.getOwnPropertyNames(actors).forEach(function (id) {
         var actor = actors[id];
         if (actor.type === ZOR.ActorTypes.FOOD) {
             drawFood(actor);
@@ -185,8 +185,7 @@ function drawActors() {
         else if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
             // Only draw other players
             if (id !== player.sphere.id) {
-                var sphereRef = drawPlayerSphere(actor);
-                actors[id].geo = sphereRef;
+                actors[id].geo = drawPlayerSphere(actor);
             }
         }
     });
@@ -233,7 +232,7 @@ function updateActors() {
     var actors = zorbioModel.actors;
 
     // Iterate over actor properties in the actors object
-    Object.getOwnPropertyNames(actors).forEach(function(id) {
+    Object.getOwnPropertyNames(actors).forEach(function (id) {
         var actor = actors[id];
         if (actor.type === ZOR.ActorTypes.FOOD) {
             actor.geo.rotation.x += actor.rotation.x;

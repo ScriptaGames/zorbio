@@ -46,7 +46,7 @@ io.on('connection', function (socket) {
             // if current player is already in the players remove them
             model.players[currentPlayer.id] = null;
             delete model.players[currentPlayer.id];
-         }
+        }
 
         socket.emit('welcome', currentPlayer, model);
         console.log('User ' + currentPlayer.id + ' respawned');
@@ -110,7 +110,7 @@ function sendUpdates() {
 function checkHeartbeats() {
     var time = new Date().getTime();
 
-    Object.getOwnPropertyNames(model.players).forEach(function(id) {
+    Object.getOwnPropertyNames(model.players).forEach(function (id) {
         var player = model.players[id];
         if (player && player.lastHeartbeat) {
             if ((time - player.lastHeartbeat) > config.heartBeatTimeout) {
