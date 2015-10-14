@@ -3,6 +3,7 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 // if we're running in nodejs, import BABYLON.  for browser, assume it's
 // already there.
 if (NODEJS) var BABYLON = require('babylonjs');
+if (NODEJS) var UTIL = require('./util.js');
 
 var ZOR = {};
 
@@ -32,17 +33,17 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
     for (var i = 1; i < this.foodDensity; i++) {
         for (var j = 1; j < this.foodDensity; j++) {
             for (var k = 1; k < this.foodDensity; k++) {
-                var food_x = halfSize - (i * blockSize) + getRandomIntInclusive(-blockSize, blockSize);
-                var food_y = halfSize - (j * blockSize) + getRandomIntInclusive(-blockSize, blockSize);
-                var food_z = halfSize - (k * blockSize) + getRandomIntInclusive(-blockSize, blockSize);
-                var red = getRandomIntInclusive(0, 255);
-                var green = getRandomIntInclusive(0, 255);
-                var blue = getRandomIntInclusive(0, 255);
+                var food_x = halfSize - (i * blockSize) + UTIL.getRandomIntInclusive(-blockSize, blockSize);
+                var food_y = halfSize - (j * blockSize) + UTIL.getRandomIntInclusive(-blockSize, blockSize);
+                var food_z = halfSize - (k * blockSize) + UTIL.getRandomIntInclusive(-blockSize, blockSize);
+                var red = UTIL.getRandomIntInclusive(0, 255);
+                var green = UTIL.getRandomIntInclusive(0, 255);
+                var blue = UTIL.getRandomIntInclusive(0, 255);
                 var r_max = 0.09;
                 var r_min = -0.02;
-                var rotate_x = getRandomArbitrary(r_min, r_max);
-                var rotate_y = getRandomArbitrary(r_min, r_max);
-                var rotate_z = getRandomArbitrary(r_min, r_max);
+                var rotate_x = UTIL.getRandomArbitrary(r_min, r_max);
+                var rotate_y = UTIL.getRandomArbitrary(r_min, r_max);
+                var rotate_z = UTIL.getRandomArbitrary(r_min, r_max);
                 var color = BABYLON.Color3.FromInts(red, green, blue);
                 var food = new ZOR.Food(food_x, food_y, food_z, 'cube', color, rotate_x, rotate_y, rotate_z);
                 this.addActor(food);
@@ -176,14 +177,3 @@ ZOR.Player = function ZORPlayer(id, name, color, type) {
 // if we're in nodejs, export the root ZOR object
 if (NODEJS) module.exports = ZOR;
 
-
-// Returns a random integer between min (included) and max (included)
-// Using Math.round() will give you a non-uniform distribution!
-function getRandomIntInclusive(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-// Returns a random number between min (inclusive) and max (exclusive)
-function getRandomArbitrary(min, max) {
-    return Math.random() * (max - min) + min;
-}

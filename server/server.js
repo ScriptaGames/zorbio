@@ -3,7 +3,6 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var config = require('./config.json');
-var util = require('./lib/util');
 
 // Simulate a browser environment so we can load BABYLON in nodejs
 // This will be really useful since it gives us access to BABYLON's vector and
@@ -14,6 +13,7 @@ var BABYLON = require('babylonjs');
 // Woot, now we have BABYLON in node!
 
 var Zorbio = require('../common/zorbio.js');
+var UTIL = require('../common/util.js');
 
 // this array holds multiple game instances.  when one fills up, a new one is
 // created.
@@ -58,7 +58,7 @@ io.on('connection', function (socket) {
         if (model.players[player.id]) {
             console.log('That playerID is already connected, kicking');
             socket.disconnect();
-        } else if (!util.validNick(player.name)) {
+        } else if (!UTIL.validNick(player.name)) {
             socket.emit('kick', 'Invalid username');
             socket.disconnect();
         } else {

@@ -48,7 +48,7 @@ function startGame(type) {
     setScreenDimensions();
 
     // Connect to the server
-    var colorCode = getRandomIntInclusive(0, 5);
+    var colorCode = UTIL.getRandomIntInclusive(0, 5);
     connectToServer(playerType, playerName, colorCode);
 }
 
