@@ -114,37 +114,6 @@ var createScene = function () {
     var sphereRef = drawPlayerSphere(player.sphere);
     var material = new BABYLON.StandardMaterial("kosh", scene);
 
-    // Let's try our built-in 'sphere' shape. Params: name, subdivisions, size, scene
-    var sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, scene);
-
-    // Set player sphere position
-    sphere.position.x = player.sphere.position.x;
-    sphere.position.y = player.sphere.position.y;
-    sphere.position.z = player.sphere.position.z;
-
-    // sphere material
-    material.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid_small", scene);
-    material.diffuseColor = new BABYLON.Color3.White();
-    material.emissiveColor = new BABYLON.Color3.White();
-    material.alpha = 0.5;
-    material.specularPower = 0;
-
-    // Fresnel
-    material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
-    material.reflectionFresnelParameters.bias = 0.1;
-
-    material.emissiveFresnelParameters = new BABYLON.FresnelParameters();
-    material.emissiveFresnelParameters.bias = 0.6;
-    material.emissiveFresnelParameters.power = 4;
-    material.emissiveFresnelParameters.leftColor = BABYLON.Color3.White();
-    material.emissiveFresnelParameters.rightColor = BABYLON.Color3.Red();
-
-    material.opacityFresnelParameters = new BABYLON.FresnelParameters();
-    material.opacityFresnelParameters.leftColor = BABYLON.Color3.White();
-    material.opacityFresnelParameters.rightColor = BABYLON.Color3.Black();
-
-    sphere.material = material;
-
     // This creates and positions a camera
     // var camera = new BABYLON.ArcFollowCamera("camera1", 1, 1, 100, sphere, scene);
     var camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 10, new BABYLON.Vector3(0, 5, -10), scene);
