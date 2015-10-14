@@ -111,7 +111,38 @@ var createScene = function () {
     // Dim the light a small amount
     // light.intensity = 0.5;
 
-    var sphereRef = drawPlayerSphere(player.sphere);
+    var material = new BABYLON.StandardMaterial("kosh", scene);
+
+    // Let's try our built-in 'sphere' shape. Params: name, subdivisions, size, scene
+    var sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, scene);
+
+    // Set player sphere position
+    sphere.position.x = player.sphere.position.x;
+    sphere.position.y = player.sphere.position.y;
+    sphere.position.z = player.sphere.position.z;
+
+    // sphere material
+    material.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid_small", scene);
+    material.diffuseColor = new BABYLON.Color3.White();
+    material.emissiveColor = new BABYLON.Color3.White();
+    material.alpha = 0.5;
+    material.specularPower = 0;
+
+    // Fresnel
+    material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
+    material.reflectionFresnelParameters.bias = 0.1;
+
+    material.emissiveFresnelParameters = new BABYLON.FresnelParameters();
+    material.emissiveFresnelParameters.bias = 0.6;
+    material.emissiveFresnelParameters.power = 4;
+    material.emissiveFresnelParameters.leftColor = BABYLON.Color3.White();
+    material.emissiveFresnelParameters.rightColor = BABYLON.Color3.Red();
+
+    material.opacityFresnelParameters = new BABYLON.FresnelParameters();
+    material.opacityFresnelParameters.leftColor = BABYLON.Color3.White();
+    material.opacityFresnelParameters.rightColor = BABYLON.Color3.Black();
+
+    sphere.material = material;
 
     // This creates and positions a camera
     // var camera = new BABYLON.ArcFollowCamera("camera1", 1, 1, 100, sphere, scene);
@@ -143,6 +174,7 @@ var createScene = function () {
 
     // Draw other actors currently in the game to the scene
     drawActors();
+    drawFood(zorbioModel, scene);
 
     // Save a reference to the sphere created for the player
     player.sphere.geo = sphereRef;
@@ -179,10 +211,7 @@ function drawActors() {
     // Iterate over actor properties in the actors object
     Object.getOwnPropertyNames(actors).forEach(function (id) {
         var actor = actors[id];
-        if (actor.type === ZOR.ActorTypes.FOOD) {
-            drawFood(actor);
-        }
-        else if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
+        if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
             // Only draw other players
             if (id !== player.sphere.id) {
                 actors[id].geo = drawPlayerSphere(actor);
@@ -234,12 +263,7 @@ function updateActors() {
     // Iterate over actor properties in the actors object
     Object.getOwnPropertyNames(actors).forEach(function (id) {
         var actor = actors[id];
-        if (actor.type === ZOR.ActorTypes.FOOD) {
-            actor.geo.rotation.x += actor.rotation.x;
-            actor.geo.rotation.y += actor.rotation.y;
-            actor.geo.rotation.z += actor.rotation.z;
-        }
-        else if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
+        if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
             if (id !== player.sphere.id) {
                 if (actors[id].geo) {
                     // update players sphere geo position
@@ -250,19 +274,67 @@ function updateActors() {
     });
 }
 
-function drawFood(food) {
-    //TODO: change food to particles
-    var foodGeo = BABYLON.Mesh.CreateSphere("food", 3, 0.4, scene);
-    foodGeo.position.x += food.position.x;
-    foodGeo.position.y += food.position.y;
-    foodGeo.position.z += food.position.z;
+function drawFood(model, scene) {
+    // The object from which food particles are emitted
+    var grocery = BABYLON.Mesh.CreateBox("foutain", 1.0, scene);
+    grocery.isVisible = false;
 
-    //TODO: improve food material?
-    var material = new BABYLON.StandardMaterial("food", scene);
-    material.emissiveColor = food.color;
-    foodGeo.material = material;
+    // Create a particle system
+    particleSystem = new BABYLON.ParticleSystem("particles", model.foodCount, scene);
 
-    food.geo = foodGeo;
+    //Texture of each particle
+    particleSystem.particleTexture = new BABYLON.Texture("textures/solid-particle.png", scene);
+
+    // Where the particles come from
+    particleSystem.emitter = grocery; // the starting object, the emitter
+    particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0); // Starting all from
+    particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0); // To...
+
+    // Colors of all particles
+    particleSystem.color1 = new BABYLON.Color4(1.0, 0.0, 1.0, 1.0);
+    particleSystem.color2 = new BABYLON.Color4(0.0, 1.0, 1.0, 1.0);
+    //particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+
+    // Size of each particle (random between...
+    particleSystem.minSize = 1;
+    particleSystem.maxSize = 1;
+
+    // Life time of each particle (random between...
+    particleSystem.minLifeTime = Infinity;
+    particleSystem.maxLifeTime = Infinity;
+
+    // Emission rate
+    particleSystem.emitRate = model.foodCount;
+
+    // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
+    particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_STANDARD;
+
+    // Set the gravity of all particles
+    particleSystem.gravity = new BABYLON.Vector3(0,0,0);
+
+    // Direction of each particle after it has been emitted
+    particleSystem.direction1 = new BABYLON.Vector3(0,0,0);
+    particleSystem.direction2 = new BABYLON.Vector3(0,0,0);
+
+    // Angular speed, in radians
+    particleSystem.minAngularSpeed = 0;
+    particleSystem.maxAngularSpeed = 0;
+
+    // Speed
+    particleSystem.updateSpeed = 1.000;
+
+    var offset = 0;
+    var size = 6;
+    particleSystem.startPositionFunction = function (worldMatrix, positionToUpdate) {
+        var randX = model.food[offset];
+        var randY = model.food[offset + 1];
+        var randZ = model.food[offset + 2];
+        offset += size;
+        BABYLON.Vector3.TransformCoordinatesFromFloatsToRef(randX, randY, randZ, worldMatrix, positionToUpdate);
+    };
+
+    // Start the particle system
+    particleSystem.start();
 }
 
 // Watch for browser/canvas resize events

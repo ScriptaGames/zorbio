@@ -19,8 +19,8 @@ ZOR.Model = function ZORModel(worldSize, foodDensity) {
     this.worldSize = new BABYLON.Vector3(worldSize, worldSize, worldSize);
     this.foodDensity = foodDensity;
 
-    // Generate initial food actors based on world size
-    //this.initFood();
+    // Generate initial food positions and colors based on world size
+    this.initFood();
 };
 
 /**
@@ -30,23 +30,26 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
     var halfSize = this.worldSize.y / 2;
     var blockSize = this.worldSize.y / this.foodDensity;
 
+    var size = 6; // 6 for XYZRGB
+    var offset = 0;
+
+    this.foodCount = Math.pow(this.foodDensity, 3);
+    this.food = [];
+
     for (var i = 1; i < this.foodDensity; i++) {
         for (var j = 1; j < this.foodDensity; j++) {
             for (var k = 1; k < this.foodDensity; k++) {
-                var food_x = halfSize - (i * blockSize) + UTIL.getRandomIntInclusive(-blockSize, blockSize);
-                var food_y = halfSize - (j * blockSize) + UTIL.getRandomIntInclusive(-blockSize, blockSize);
-                var food_z = halfSize - (k * blockSize) + UTIL.getRandomIntInclusive(-blockSize, blockSize);
-                var red = UTIL.getRandomIntInclusive(0, 255);
-                var green = UTIL.getRandomIntInclusive(0, 255);
-                var blue = UTIL.getRandomIntInclusive(0, 255);
-                var r_max = 0.09;
-                var r_min = -0.02;
-                var rotate_x = UTIL.getRandomArbitrary(r_min, r_max);
-                var rotate_y = UTIL.getRandomArbitrary(r_min, r_max);
-                var rotate_z = UTIL.getRandomArbitrary(r_min, r_max);
-                var color = BABYLON.Color3.FromInts(red, green, blue);
-                var food = new ZOR.Food(food_x, food_y, food_z, 'cube', color, rotate_x, rotate_y, rotate_z);
-                this.addActor(food);
+                // set food position
+                this.food[offset]     = halfSize - (i * blockSize) + getRandomIntInclusive(-blockSize, blockSize);
+                this.food[offset + 1] = halfSize - (j * blockSize) + getRandomIntInclusive(-blockSize, blockSize);
+                this.food[offset + 2] = halfSize - (k * blockSize) + getRandomIntInclusive(-blockSize, blockSize);
+
+                // set food color
+                this.food[offset + 3] = getRandomIntInclusive(0, 255);
+                this.food[offset + 4] = getRandomIntInclusive(0, 255);
+                this.food[offset + 5] = getRandomIntInclusive(0, 255);
+
+                offset += size;
             }
         }
     }
@@ -65,12 +68,12 @@ ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
  * in Zorbio.
  */
 ZOR.ActorTypes = Object.freeze({
-    UNDEFINED : 'UNDEFINED',
-    PLAYER_SPHERE    : 'PLAYER_SPHERE',
-    FOOD      : 'FOOD',
-    PORTAL    : 'PORTAL',
-    OBSTACLE  : 'OBSTACLE',
-    SPECTATOR : 'SPECTATOR'
+    UNDEFINED     : 'UNDEFINED',
+    PLAYER_SPHERE : 'PLAYER_SPHERE',
+    FOOD          : 'FOOD',
+    PORTAL        : 'PORTAL',
+    OBSTACLE      : 'OBSTACLE',
+    SPECTATOR     : 'SPECTATOR'
 });
 
 /**
