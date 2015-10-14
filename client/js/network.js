@@ -30,6 +30,7 @@ function sendHeartbeat() {
 }
 
 function handleNetworkTermination() {
+    engine.stopRenderLoop();
     gameStart = false;
     cleanupMemory();
     showGame(false);
@@ -105,9 +106,9 @@ function setupSocket(socket) {
 
     socket.on('kick', function (msg) {
         socket.close();
+        handleNetworkTermination();
         kicked = true;
         displayModalMessage(msg);
-        handleNetworkTermination();
         console.log('you were kicked', msg);
     });
 
@@ -122,16 +123,16 @@ function setupSocket(socket) {
 
     socket.on('disconnect', function () {
         socket.close();
-        disconnected = true;
         handleNetworkTermination();
+        disconnected = true;
         console.log('You were disconnected');
     });
 
     // Handle error
     socket.on('connect_failed', function () {
         socket.close();
-        disconnected = true;
         handleNetworkTermination();
+        disconnected = true;
         console.log('WebSocket Connection failed');
     });
 
