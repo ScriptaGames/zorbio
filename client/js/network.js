@@ -50,9 +50,6 @@ function setupSocket(socket) {
         // create the scene
         var scene = createScene();
 
-        // Draw other actors currently in the game to the scene
-        drawActors();
-
         // Register a render loop to repeatedly render the scene
         engine.runRenderLoop(function () {
             scene.render();
@@ -102,6 +99,21 @@ function setupSocket(socket) {
                 zorbioModel.actors[id].position = actors[id].position;
             }
         });
+    });
+
+    socket.on('kick', function (msg) {
+        gameStart = false;
+        kicked = true;
+        showGame(false);
+        displayModalMessage(msg);
+        cleanupMemory();
+        socket.close();
+        console.log('you were kicked', msg);
+    });
+
+    socket.on('playerKicked', function (playerId) {
+        console.log('player kicked', playerId);
+        removePlayerFromGame(playerId);
     });
 
     /*

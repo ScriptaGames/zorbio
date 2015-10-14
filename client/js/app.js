@@ -13,9 +13,10 @@ var player;
 
 // Game state
 var gameStart = false;
+var kicked = false;
 //var disconnected = false;
 //var died = false;
-//var kicked = false;
+
 
 // Load the BABYLON 3D engine
 var engine = new BABYLON.Engine(canvas, true);
@@ -42,8 +43,7 @@ function startGame(type) {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
     playerType = type;
 
-    document.getElementById('gameAreaWrapper').style.display = 'block';
-    document.getElementById('startMenuWrapper').style.display = 'none';
+    showGame(true);
 
     setScreenDimensions();
 
@@ -141,6 +141,7 @@ var createScene = function () {
     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     skybox.material = skyboxMaterial;
 
+    // Draw other actors currently in the game to the scene
     drawActors();
 
     // Save a reference to the sphere created for the player
@@ -228,8 +229,6 @@ function drawPlayerSphere(sphereToDraw) {
     return newSphere;
 }
 
-
-
 function updateActors() {
     var actors = zorbioModel.actors;
 
@@ -312,4 +311,28 @@ function handlePlayerControlKeydown(evt) {
 function setScreenDimensions() {
     screenWidth = canvas.width = window.innerWidth;
     screenHeight = canvas.height = window.innerHeight;
+}
+
+function cleanupMemory() {
+    zorbioModel = null;
+    scene = null;
+}
+
+function removePlayerFromGame(playerId) {
+    var kickedPlayer = zorbioModel.players[playerId];
+
+    if (kickedPlayer && kickedPlayer.sphere) {
+        var geo = zorbioModel.actors[kickedPlayer.sphere.id].geo;
+
+        // remove player from model
+        zorbioModel.actors[kickedPlayer.sphere.id] = null;
+        delete zorbioModel.actors[kickedPlayer.sphere.id];
+        zorbioModel.players[playerId] = null;
+        delete zorbioModel.players[playerId];
+
+        // remove from babalon scene
+        geo.dispose();
+
+        console.log('removed player from game', kickedPlayer.sphere.id);
+    }
 }

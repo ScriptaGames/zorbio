@@ -102,7 +102,43 @@ function sendUpdates() {
     io.emit('actorPositions', model.actors);
 }
 
+function checkHeartbeats() {
+    var time = new Date().getTime();
+
+    Object.getOwnPropertyNames(model.players).forEach(function(id) {
+        var player = model.players[id];
+        if (player && player.lastHeartbeat) {
+            if ((time - player.lastHeartbeat) > config.heartBeatTimeout) {
+                var msg = "You were kicked because last heartbeat was over " + (config.heartBeatTimeout / 1000) + " seconds ago.";
+                console.log('kicking player', id, msg);
+                kickPlayer(id, msg);
+            }
+        }
+    });
+}
+
+function kickPlayer(playerId, reason) {
+    // notify player
+    sockets[playerId].emit('kick', reason);
+
+    // notify other clients
+    io.emit('playerKicked', playerId);
+
+    // remove player from model
+    var actorId = model.players[playerId].sphere.id;
+    model.players[playerId] = null;
+    delete model.players[playerId];
+    model.actors[actorId] = null;
+    delete model.actors[actorId];
+
+    // clean up socket
+    sockets[playerId].disconnect();
+    sockets[playerId] = null;
+    delete sockets[playerId];
+}
+
 setInterval(sendUpdates, config.networkUpdateInterval);
+setInterval(checkHeartbeats, config.checkHeartbeats);
 
 var serverPort = process.env.PORT || config.port;
 http.listen(serverPort, function () {
