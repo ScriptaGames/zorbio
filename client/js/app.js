@@ -111,6 +111,7 @@ var createScene = function () {
     // Dim the light a small amount
     // light.intensity = 0.5;
 
+    var sphereRef = drawPlayerSphere(player.sphere);
     var material = new BABYLON.StandardMaterial("kosh", scene);
 
     // Let's try our built-in 'sphere' shape. Params: name, subdivisions, size, scene
@@ -221,6 +222,7 @@ function drawActors() {
 }
 
 function drawPlayerSphere(sphereToDraw) {
+
     var material = new BABYLON.StandardMaterial("kosh", scene);
 
     // Let's try our built-in 'sphere' shape. Params: name, subdivisions, size, scene

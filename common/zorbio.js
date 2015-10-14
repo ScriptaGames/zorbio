@@ -40,14 +40,14 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
         for (var j = 1; j < this.foodDensity; j++) {
             for (var k = 1; k < this.foodDensity; k++) {
                 // set food position
-                this.food[offset]     = halfSize - (i * blockSize) + getRandomIntInclusive(-blockSize, blockSize);
-                this.food[offset + 1] = halfSize - (j * blockSize) + getRandomIntInclusive(-blockSize, blockSize);
-                this.food[offset + 2] = halfSize - (k * blockSize) + getRandomIntInclusive(-blockSize, blockSize);
+                this.food[offset]     = halfSize - (i * blockSize) + UTIL.getRandomIntInclusive(-blockSize, blockSize);
+                this.food[offset + 1] = halfSize - (j * blockSize) + UTIL.getRandomIntInclusive(-blockSize, blockSize);
+                this.food[offset + 2] = halfSize - (k * blockSize) + UTIL.getRandomIntInclusive(-blockSize, blockSize);
 
                 // set food color
-                this.food[offset + 3] = getRandomIntInclusive(0, 255);
-                this.food[offset + 4] = getRandomIntInclusive(0, 255);
-                this.food[offset + 5] = getRandomIntInclusive(0, 255);
+                this.food[offset + 3] = UTIL.getRandomIntInclusive(0, 255);
+                this.food[offset + 4] = UTIL.getRandomIntInclusive(0, 255);
+                this.food[offset + 5] = UTIL.getRandomIntInclusive(0, 255);
 
                 offset += size;
             }
