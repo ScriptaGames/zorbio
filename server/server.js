@@ -72,7 +72,7 @@ io.on('connection', function (socket) {
             io.emit('playerJoin', currentPlayer);
 
             // Pass any data to the for final setup
-            socket.emit('gameSetup', {});
+            socket.emit('gameSetup');
 
             console.log('Total players: ' + Object.getOwnPropertyNames(model.players).length);
         }
@@ -94,6 +94,11 @@ io.on('connection', function (socket) {
     socket.on('error', function (err) {
         console.error(err.stack);
         //TODO: handle error cleanup
+    });
+
+    socket.on('disconnect', function () {
+        // don't remove player on disconnect, let heartbeat clean them up, this should prevent logout griefing
+        console.log('User ' + currentPlayer.id + ' disconnected');
     });
 });
 

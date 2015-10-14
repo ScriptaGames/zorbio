@@ -29,9 +29,13 @@ function sendHeartbeat() {
     socket.emit('playerHeartbeat', player.id);
 }
 
-function setupSocket(socket) {
-    console.log('Game handleNetwork');
+function handleNetworkTermination() {
+    gameStart = false;
+    cleanupMemory();
+    showGame(false);
+}
 
+function setupSocket(socket) {
     // Handle connection
     socket.on('welcome', function (playerSettings, model) {
         player = playerSettings;
@@ -84,8 +88,8 @@ function setupSocket(socket) {
         console.log('Player ' + newPlayer.name + ' joined!');
     });
 
-    socket.on('gameSetup', function (data) {
-        console.log('Games finished setting up', data);
+    socket.on('gameSetup', function () {
+        console.log('Games finished setting up');
     });
 
     socket.on('actorPositions', function (actors) {
@@ -102,18 +106,35 @@ function setupSocket(socket) {
     });
 
     socket.on('kick', function (msg) {
-        gameStart = false;
-        kicked = true;
-        showGame(false);
-        displayModalMessage(msg);
-        cleanupMemory();
         socket.close();
+        kicked = true;
+        displayModalMessage(msg);
+        handleNetworkTermination();
         console.log('you were kicked', msg);
     });
 
     socket.on('playerKicked', function (playerId) {
         console.log('player kicked', playerId);
         removePlayerFromGame(playerId);
+    });
+
+    socket.on('connect', function () {
+        console.log("Successfully connected to WebSocket");
+    });
+
+    socket.on('disconnect', function () {
+        socket.close();
+        disconnected = true;
+        handleNetworkTermination();
+        console.log('You were disconnected');
+    });
+
+    // Handle error
+    socket.on('connect_failed', function () {
+        socket.close();
+        disconnected = true;
+        handleNetworkTermination();
+        console.log('WebSocket Connection failed');
     });
 
     /*
@@ -124,51 +145,8 @@ function setupSocket(socket) {
      chat.addSystemLine('Ping: ' + latency + 'ms');
      });
 
-     // Handle error
-     socket.on('connect_failed', function () {
-     socket.close();
-     disconnected = true;
-     });
-
-     socket.on('disconnect', function () {
-     socket.close();
-     disconnected = true;
-     });
-
-     // Handle connection
-     socket.on('welcome', function (playerSettings) {
-     player = playerSettings;
-     player.name = playerName;
-     player.screenWidth = screenWidth;
-     player.screenHeight = screenHeight;
-     player.target = target;
-     socket.emit('gotit', player);
-     gameStart = true;
-     debug('Game is started: ' + gameStart);
-     chat.addSystemLine('Connected to the game!');
-     chat.addSystemLine('Type <b>-help</b> for a list of commands');
-     if (mobile) {
-     document.getElementById('gameAreaWrapper').removeChild(document.getElementById('chatbox'));
-     }
-     document.getElementById('cvs').focus();
-     });
-
-     socket.on('gameSetup', function(data) {
-     gameWidth = data.gameWidth;
-     gameHeight = data.gameHeight;
-     resize();
-     });
-
      socket.on('playerDied', function (data) {
      chat.addSystemLine('Player <b>' + data.name + '</b> died!');
-     });
-
-     socket.on('playerDisconnect', function (data) {
-     chat.addSystemLine('Player <b>' + data.name + '</b> disconnected!');
-     });
-
-     socket.on('playerJoin', function (data) {
-     chat.addSystemLine('Player <b>' + data.name + '</b> joined!');
      });
 
      socket.on('leaderboard', function (data) {
@@ -201,32 +179,6 @@ function setupSocket(socket) {
      chat.addChatLine(data.sender, data.message, false);
      });
 
-     // Handle movement
-     socket.on('serverTellPlayerMove', function (userData, foodsList, massList) {
-     var playerData;
-     for(var i =0; i< userData.length; i++) {
-     if(typeof(userData[i].id) == "undefined") {
-     playerData = userData[i];
-     i = userData.length;
-     }
-     }
-     if(playerType == 'player') {
-     var xoffset = player.x - playerData.x;
-     var yoffset = player.y - playerData.y;
-
-     player.x = playerData.x;
-     player.y = playerData.y;
-     player.hue = playerData.hue;
-     player.massTotal = playerData.massTotal;
-     player.cells = playerData.cells;
-     player.xoffset = isNaN(xoffset) ? 0 : xoffset;
-     player.yoffset = isNaN(yoffset) ? 0 : yoffset;
-     }
-     users = userData;
-     foods = foodsList;
-     fireFood = massList;
-     });
-
      // Die
      socket.on('RIP', function () {
      gameStart = false;
@@ -242,11 +194,5 @@ function setupSocket(socket) {
      }, 2500);
      });
 
-     socket.on('kick', function (data) {
-     gameStart = false;
-     reason = data;
-     kicked = true;
-     socket.close();
-     });
      */
 }

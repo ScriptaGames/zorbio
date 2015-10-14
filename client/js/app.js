@@ -14,7 +14,7 @@ var player;
 // Game state
 var gameStart = false;
 var kicked = false;
-//var disconnected = false;
+var disconnected = false;
 //var died = false;
 
 
