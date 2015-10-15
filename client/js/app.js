@@ -25,7 +25,7 @@ var engine = new BABYLON.Engine(canvas, true);
 var zorbioModel;
 
 // constants
-var MOVE_SPEED_SCALE         = 0.3;
+var MOVE_SPEED_SCALE         = 0.5;
 var PLAYER_POSITION_INTERVAL = 50;    // 50 milliseconds or 20 times per second
 var HEARTBEAT_INTERVAL       = 3000;  // How long to wait between sending heartbeat milliseconds
 
@@ -97,10 +97,10 @@ var createScene = function () {
     scene = new BABYLON.Scene(engine);
 
     // IF fog enabled
-    scene.fogMode = BABYLON.Scene._FOGMODE_LINEAR;
-    scene.fogColor = new BABYLON.Color3(1.0, 1.0, 1.0);
-    scene.fogStart = 50;
-    scene.fogEnd = 70;
+    //scene.fogMode = BABYLON.Scene._FOGMODE_LINEAR;
+    //scene.fogColor = new BABYLON.Color3(1.0, 1.0, 1.0);
+    //scene.fogStart = 100;
+    //scene.fogEnd = 120;
 
     // Change the scene background color to green.
     scene.clearColor = new BABYLON.Color3(1, 1, 1);
@@ -112,7 +112,6 @@ var createScene = function () {
     // light.intensity = 0.5;
 
     var sphereRef = drawPlayerSphere(player.sphere);
-    var material = new BABYLON.StandardMaterial("kosh", scene);
 
     // This creates and positions a camera
     // var camera = new BABYLON.ArcFollowCamera("camera1", 1, 1, 100, sphere, scene);
@@ -124,7 +123,7 @@ var createScene = function () {
     camera.upperRadiusLimit = 150;
     camera.speed = 5;
     camera.angularSensibility = 200;
-    camera.maxZ = 70; // View distance
+    //camera.maxZ = 120; // View distance
 
     //This attaches the camera to the canvas
     camera.attachControl(canvas, false);
@@ -245,67 +244,91 @@ function updateActors() {
     });
 }
 
-function drawFood(model, scene) {
-    // The object from which food particles are emitted
-    var grocery = BABYLON.Mesh.CreateBox("foutain", 1.0, scene);
-    grocery.isVisible = false;
+function drawFood() {
 
-    // Create a particle system
-    particleSystem = new BABYLON.ParticleSystem("particles", model.foodCount, scene);
+    //Create a manager for the player's sprite animation
+    var spriteManager = new BABYLON.SpriteManager("playerManager", "textures/solid-particle.png", zorbioModel.foodCount, 64, scene);
 
-    //Texture of each particle
-    particleSystem.particleTexture = new BABYLON.Texture("textures/solid-particle.png", scene);
-
-    // Where the particles come from
-    particleSystem.emitter = grocery; // the starting object, the emitter
-    particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0); // Starting all from
-    particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0); // To...
-
-    // Colors of all particles
-    particleSystem.color1 = new BABYLON.Color4(1.0, 0.0, 1.0, 1.0);
-    particleSystem.color2 = new BABYLON.Color4(0.0, 1.0, 1.0, 1.0);
-    //particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
-
-    // Size of each particle (random between...
-    particleSystem.minSize = 1;
-    particleSystem.maxSize = 1;
-
-    // Life time of each particle (random between...
-    particleSystem.minLifeTime = Infinity;
-    particleSystem.maxLifeTime = Infinity;
-
-    // Emission rate
-    particleSystem.emitRate = model.foodCount;
-
-    // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
-    particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_STANDARD;
-
-    // Set the gravity of all particles
-    particleSystem.gravity = new BABYLON.Vector3(0,0,0);
-
-    // Direction of each particle after it has been emitted
-    particleSystem.direction1 = new BABYLON.Vector3(0,0,0);
-    particleSystem.direction2 = new BABYLON.Vector3(0,0,0);
-
-    // Angular speed, in radians
-    particleSystem.minAngularSpeed = 0;
-    particleSystem.maxAngularSpeed = 0;
-
-    // Speed
-    particleSystem.updateSpeed = 1.000;
-
-    var offset = 0;
+    // create sprite
     var size = 6;
-    particleSystem.startPositionFunction = function (worldMatrix, positionToUpdate) {
-        var randX = model.food[offset];
-        var randY = model.food[offset + 1];
-        var randZ = model.food[offset + 2];
+    var offset = 0;
+    for (var i = 0; i < zorbioModel.foodCount; i++) {
+        var randX = zorbioModel.food[offset];
+        var randY = zorbioModel.food[offset + 1];
+        var randZ = zorbioModel.food[offset + 2];
+        var randR = zorbioModel.food[offset + 3];
+        var randG = zorbioModel.food[offset + 4];
+        var randB = zorbioModel.food[offset + 5];
+        var foodSprite = new BABYLON.Sprite("food" + i, spriteManager);
+        foodSprite.color = new BABYLON.Color4.FromInts(randR, randG, randB, 255);
+        foodSprite.position.x = randX;
+        foodSprite.position.y = randY;
+        foodSprite.position.z = randZ;
+        //foodSprite.size = 0.3;
+        //foodSprite.playAnimation(0, 40, true, 100);
         offset += size;
-        BABYLON.Vector3.TransformCoordinatesFromFloatsToRef(randX, randY, randZ, worldMatrix, positionToUpdate);
-    };
+    }
 
-    // Start the particle system
-    particleSystem.start();
+    //// The object from which food particles are emitted
+    //var grocery = BABYLON.Mesh.CreateBox("foutain", 1.0, scene);
+    //grocery.isVisible = false;
+    //
+    //// Create a particle system
+    //particleSystem = new BABYLON.ParticleSystem("particles", model.foodCount, scene);
+    //
+    ////Texture of each particle
+    //particleSystem.particleTexture = new BABYLON.Texture("textures/solid-particle.png", scene);
+    //
+    //// Where the particles come from
+    //particleSystem.emitter = grocery; // the starting object, the emitter
+    //particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0); // Starting all from
+    //particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0); // To...
+    //
+    //// Colors of all particles
+    //particleSystem.color1 = new BABYLON.Color4(1.0, 0.0, 1.0, 1.0);
+    //particleSystem.color2 = new BABYLON.Color4(0.0, 1.0, 1.0, 1.0);
+    ////particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+    //
+    //// Size of each particle (random between...
+    //particleSystem.minSize = 1;
+    //particleSystem.maxSize = 1;
+    //
+    //// Life time of each particle (random between...
+    //particleSystem.minLifeTime = Infinity;
+    //particleSystem.maxLifeTime = Infinity;
+    //
+    //// Emission rate
+    //particleSystem.emitRate = model.foodCount;
+    //
+    //// Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
+    //particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_STANDARD;
+    //
+    //// Set the gravity of all particles
+    //particleSystem.gravity = new BABYLON.Vector3(0,0,0);
+    //
+    //// Direction of each particle after it has been emitted
+    //particleSystem.direction1 = new BABYLON.Vector3(0,0,0);
+    //particleSystem.direction2 = new BABYLON.Vector3(0,0,0);
+    //
+    //// Angular speed, in radians
+    //particleSystem.minAngularSpeed = 0;
+    //particleSystem.maxAngularSpeed = 0;
+    //
+    //// Speed
+    //particleSystem.updateSpeed = 1.000;
+    //
+    //var offset = 0;
+    //var size = 6;
+    //particleSystem.startPositionFunction = function (worldMatrix, positionToUpdate) {
+    //    var randX = model.food[offset];
+    //    var randY = model.food[offset + 1];
+    //    var randZ = model.food[offset + 2];
+    //    offset += size;
+    //    BABYLON.Vector3.TransformCoordinatesFromFloatsToRef(randX, randY, randZ, worldMatrix, positionToUpdate);
+    //};
+    //
+    //// Start the particle system
+    //particleSystem.start();
 }
 
 // Watch for browser/canvas resize events
