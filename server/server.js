@@ -4,13 +4,10 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var config = require('./config.json');
 
-// Simulate a browser environment so we can load BABYLON in nodejs
-// This will be really useful since it gives us access to BABYLON's vector and
-// matrix functions.
-window = global;
-navigator = {};
-var BABYLON = require('babylonjs');
-// Woot, now we have BABYLON in node!
+// Load ThreeJS, so we have access to the same vector and matrix functions the
+// client uses
+var self = {}; // threejs expects there to be a global named 'self'... for some reason..
+var THREE = require('three.js');
 
 var Zorbio = require('../common/zorbio.js');
 var UTIL = require('../common/util.js');
