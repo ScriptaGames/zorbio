@@ -1,8 +1,10 @@
 // Canvas
 var scene;
+var camera;
 var canvas = document.getElementById('renderCanvas');
 var screenWidth = 0;
 var screenHeight = 0;
+
 setScreenDimensions();
 
 // Player
@@ -17,9 +19,8 @@ var kicked = false;
 var disconnected = false;
 //var died = false;
 
+var renderer;
 
-// Load the BABYLON 3D engine
-var engine = new BABYLON.Engine(canvas, true);
 
 // Model that represents all of the visual elements of the game
 var zorbioModel;
@@ -91,32 +92,25 @@ window.onload = function () {
 };
 
 // This begins the creation of a function that we will 'call' just after it's built
-var createScene = function () {
+function createScene() {
 
     // Now create a basic Babylon Scene object
-    scene = new BABYLON.Scene(engine);
+    scene = new THREE.Scene();
 
-    // IF fog enabled
-    //scene.fogMode = BABYLON.Scene._FOGMODE_LINEAR;
-    //scene.fogColor = new BABYLON.Color3(1.0, 1.0, 1.0);
-    //scene.fogStart = 100;
-    //scene.fogEnd = 120;
+    scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
 
-    // Change the scene background color to green.
-    scene.clearColor = new BABYLON.Color3(1, 1, 1);
-
-    // This creates a light, aiming 0,1,0 - to the sky.
-    // var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-
-    // Dim the light a small amount
-    // light.intensity = 0.5;
+    renderer = new THREE.WebGLRenderer();
+    renderer.setClearColor( scene.fog.color );
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( screenWidth, screenHeight );
 
     var sphereRef = drawPlayerSphere(player.sphere);
 
+
     // This creates and positions a camera
-    // var camera = new BABYLON.ArcFollowCamera("camera1", 1, 1, 100, sphere, scene);
-    var camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 10, new BABYLON.Vector3(0, 5, -10), scene);
-    // var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+    camera = new THREE.PerspectiveCamera( 60, screenWidth, screenHeight, 1, 1000);
+    controls = new THREE.OrbitControls( camera, renderer.domElement);
     camera.inertia = 0.01;
     camera.target = sphereRef;
     camera.lowerRadiusLimit = 4;
@@ -173,7 +167,7 @@ var createScene = function () {
     // Leave this function
     return scene;
 
-};  // End of createScene function
+}
 
 function drawActors() {
     var actors = zorbioModel.actors;
@@ -191,40 +185,12 @@ function drawActors() {
 
 function drawPlayerSphere(sphereToDraw) {
 
-    var material = new BABYLON.StandardMaterial("kosh", scene);
+    var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+    var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+    var sphere = new THREE.Mesh( geometry, material );
+    scene.add( sphere );
 
-    // Let's try our built-in 'sphere' shape. Params: name, subdivisions, size, scene
-    var newSphere = BABYLON.Mesh.CreateSphere("sphere-" + sphereToDraw.id, 16, 2, scene);
-
-    // Set player sphere position
-    newSphere.position.x = sphereToDraw.position.x;
-    newSphere.position.y = sphereToDraw.position.y;
-    newSphere.position.z = sphereToDraw.position.z;
-
-    // sphere material
-    material.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid_small", scene);
-    material.diffuseColor = new BABYLON.Color3.White();
-    material.emissiveColor = new BABYLON.Color3.White();
-    material.alpha = 0.4;
-    material.specularPower = 0;
-
-    // Fresnel
-    material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
-    material.reflectionFresnelParameters.bias = 0.1;
-
-    material.emissiveFresnelParameters = new BABYLON.FresnelParameters();
-    material.emissiveFresnelParameters.bias = 0.6;
-    material.emissiveFresnelParameters.power = 4;
-    material.emissiveFresnelParameters.leftColor = BABYLON.Color3.White();
-    material.emissiveFresnelParameters.rightColor = COLORS[sphereToDraw.color];
-
-    material.opacityFresnelParameters = new BABYLON.FresnelParameters();
-    material.opacityFresnelParameters.leftColor = BABYLON.Color3.White();
-    material.opacityFresnelParameters.rightColor = BABYLON.Color3.Black();
-
-    newSphere.material = material;
-
-    return newSphere;
+    return sphere;
 }
 
 function updateActors() {

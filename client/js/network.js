@@ -104,13 +104,13 @@ function setupSocket(socket) {
         });
     });
 
-    socket.on('kick', function (msg) {
-        socket.close();
-        handleNetworkTermination();
-        kicked = true;
-        displayModalMessage(msg);
-        console.log('you were kicked', msg);
-    });
+    // socket.on('kick', function (msg) {
+    //     socket.close();
+    //     handleNetworkTermination();
+    //     kicked = true;
+    //     displayModalMessage(msg);
+    //     console.log('you were kicked', msg);
+    // });
 
     socket.on('playerKicked', function (playerId) {
         console.log('player kicked', playerId);
