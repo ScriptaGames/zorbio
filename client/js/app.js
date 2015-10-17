@@ -33,10 +33,8 @@ var HEARTBEAT_INTERVAL       = 3000;  // How long to wait between sending heartb
 var COLORS = [
     BABYLON.Color3.Red(),
     BABYLON.Color3.Blue(),
-    BABYLON.Color3.Yellow(),
     BABYLON.Color3.Green(),
-    BABYLON.Color3.Purple(),
-    BABYLON.Color3.Magenta()
+    BABYLON.Color3.Purple()
 ];
 
 function startGame(type) {
@@ -48,7 +46,7 @@ function startGame(type) {
     setScreenDimensions();
 
     // Connect to the server
-    var colorCode = UTIL.getRandomIntInclusive(0, 5);
+    var colorCode = UTIL.getRandomIntInclusive(0, COLORS.length - 1);
     connectToServer(playerType, playerName, colorCode);
 }
 
