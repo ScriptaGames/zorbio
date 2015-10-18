@@ -1,11 +1,10 @@
 // Canvas
 var scene;
 var camera;
+var sphere;
 var canvas = document.getElementById('renderCanvas');
-var screenWidth = 0;
-var screenHeight = 0;
-
-setScreenDimensions();
+var screenWidth = window.innerWidth;
+var screenHeight = window.innerHeight;
 
 // Player
 var playerName;
@@ -32,12 +31,12 @@ var HEARTBEAT_INTERVAL       = 3000;  // How long to wait between sending heartb
 
 //TODO: add more colors, only select ones not used.
 var COLORS = [
-    BABYLON.Color3.Red(),
-    BABYLON.Color3.Blue(),
-    BABYLON.Color3.Yellow(),
-    BABYLON.Color3.Green(),
-    BABYLON.Color3.Purple(),
-    BABYLON.Color3.Magenta()
+    new THREE.Color(THREE.ColorKeywords.red),
+    new THREE.Color(THREE.ColorKeywords.blue),
+    new THREE.Color(THREE.ColorKeywords.yellow),
+    new THREE.Color(THREE.ColorKeywords.green),
+    new THREE.Color(THREE.ColorKeywords.purple),
+    new THREE.Color(THREE.ColorKeywords.magenta),
 ];
 
 function startGame(type) {
@@ -45,8 +44,6 @@ function startGame(type) {
     playerType = type;
 
     showGame(true);
-
-    setScreenDimensions();
 
     // Connect to the server
     var colorCode = UTIL.getRandomIntInclusive(0, 5);
@@ -91,83 +88,165 @@ window.onload = function () {
     });
 };
 
-// This begins the creation of a function that we will 'call' just after it's built
+var camera, controls, scene, renderer;
 function createScene() {
 
-    // Now create a basic Babylon Scene object
-    scene = new THREE.Scene();
+    init();
+    animate();
 
-    scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
+    function init() {
 
-    renderer = new THREE.WebGLRenderer();
-    renderer.setClearColor( scene.fog.color );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( screenWidth, screenHeight );
+        scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
 
-    var sphereRef = drawPlayerSphere(player.sphere);
+        renderer = new THREE.WebGLRenderer({ canvas: canvas });
+        renderer.setClearColor( scene.fog.color );
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( window.innerWidth, window.innerHeight );
 
+        camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
+        camera.position.z = 200;
 
-    // This creates and positions a camera
-    camera = new THREE.PerspectiveCamera( 60, screenWidth, screenHeight, 1, 1000);
-    controls = new THREE.OrbitControls( camera, renderer.domElement);
-    camera.inertia = 0.01;
-    camera.target = sphereRef;
-    camera.lowerRadiusLimit = 4;
-    camera.upperRadiusLimit = 150;
-    camera.speed = 5;
-    camera.angularSensibility = 200;
-    //camera.maxZ = 120; // View distance
+        controls = new THREE.OrbitControls( camera, renderer.domElement );
+        //controls.addEventListener( 'change', render ); // add this only if there is no animation loop (requestAnimationFrame)
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+        controls.enableZoom = true;
 
-    //This attaches the camera to the canvas
-    camera.attachControl(canvas, false);
+        // world
 
-    //var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 10, BABYLON.Vector3.Zero(), scene);
-    //camera.setPosition(new BABYLON.Vector3(-15, 3, 0));
+        // var sphereRef = drawPlayerSphere(player.sphere);
+        var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+        var material = new THREE.MeshBasicMaterial( {color: THREE.ColorKeywords.red } );
+        sphere = new THREE.Mesh( geometry, material );
+        scene.add( sphere );
 
-    // Skybox
-    var skybox = BABYLON.Mesh.CreateBox("skyBox", zorbioModel.worldSize.x, scene);
-    var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
-    skyboxMaterial.backFaceCulling = false;
-    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid", scene);
-    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-    skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-    skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-    skybox.material = skyboxMaterial;
+        // lights
 
-    // Draw other actors currently in the game to the scene
-    drawActors();
-    drawFood(zorbioModel, scene);
+        light = new THREE.AmbientLight( 0x222222 );
+        scene.add( light );
 
-    // Save a reference to the sphere created for the player
-    player.sphere.geo = sphereRef;
-    zorbioModel.actors[player.sphere.id] = player.sphere;
+        window.addEventListener( 'resize', onWindowResize, false );
 
-    scene.registerBeforeRender(function updateSpherePosition() {
-        var sphereGeo = player.sphere.geo;
+    }
 
-        // move forward in the direction the camera is facing
-        var move_speed = MOVE_SPEED_SCALE * (player.sphere.throttle / 100);
-        var camera_angle_vector = camera.position.subtract(sphereGeo.position).normalize();
-        camera_angle_vector.multiplyInPlace(new BABYLON.Vector3(move_speed, move_speed, move_speed));
-        sphereGeo.position.subtractInPlace(camera_angle_vector);
+    function onWindowResize() {
 
-        //TODO: talk to MC about this not sure if I have to re-assign the geo after changing it
-        player.sphere.geo = sphereGeo;
-        player.sphere.position = sphereGeo.position;
-        zorbioModel.actors[player.sphere.id] = player.sphere;
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
 
-        updateActors();
-    });
+        renderer.setSize( window.innerWidth, window.innerHeight );
 
-    //scene.registerBeforeRender(function() {
-    //    camera.alpha += 0.01 * scene.getAnimationRatio();
-    //});
+    }
 
-    // Leave this function
-    return scene;
+    function animate() {
 
+        requestAnimationFrame( animate );
+        controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
+        render();
+
+    }
+
+    function render() {
+
+        renderer.render( scene, camera );
+
+    }
 }
+
+// This begins the creation of a function that we will 'call' just after it's built
+//function createScene() {
+
+//    // Now create a basic Babylon Scene object
+//    scene = new THREE.Scene();
+
+//    scene = new THREE.Scene();
+//    // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
+
+//    renderer = new THREE.WebGLRenderer({ canvas: canvas });
+//    renderer.setClearColor( THREE.ColorKeywords.white );
+//    renderer.setPixelRatio( window.devicePixelRatio );
+//    renderer.setSize( screenWidth, screenHeight );
+
+//    // var sphereRef = drawPlayerSphere(player.sphere);
+//    var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+//    var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+//    sphere = new THREE.Mesh( geometry, material );
+//    scene.add( sphere );
+
+//    // This creates and positions a camera
+//    camera = new THREE.PerspectiveCamera( 60, screenWidth, screenHeight, 1, 1000);
+//    camera.position.z = 500;
+//    camera.lookAt(sphere);
+//    // controls = new THREE.OrbitControls( camera, renderer.domElement);
+//    // camera.inertia = 0.01;
+//    // camera.target = sphereRef;
+//    // camera.lowerRadiusLimit = 4;
+//    // camera.upperRadiusLimit = 150;
+//    // camera.speed = 5;
+//    // camera.angularSensibility = 200;
+
+//    //This attaches the camera to the canvas
+//    // camera.attachControl(canvas, false);
+
+//    //var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 10, BABYLON.Vector3.Zero(), scene);
+//    //camera.setPosition(new BABYLON.Vector3(-15, 3, 0));
+
+//    // Skybox
+//    // var skybox = BABYLON.Mesh.CreateBox("skyBox", zorbioModel.worldSize.x, scene);
+//    // var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+//    // skyboxMaterial.backFaceCulling = false;
+//    // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid", scene);
+//    // skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+//    // skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+//    // skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+//    // skybox.material = skyboxMaterial;
+
+//    // Draw other actors currently in the game to the scene
+//    drawActors();
+//    drawFood(zorbioModel, scene);
+
+//    // Save a reference to the sphere created for the player
+//    // player.sphere.geo = sphereRef;
+//    // zorbioModel.actors[player.sphere.id] = player.sphere;
+
+//    //scene.registerBeforeRender(function updateSpherePosition() {
+//    //    var sphereGeo = player.sphere.geo;
+
+//    //    // move forward in the direction the camera is facing
+//    //    var move_speed = MOVE_SPEED_SCALE * (player.sphere.throttle / 100);
+//    //    var camera_angle_vector = camera.position.subtract(sphereGeo.position).normalize();
+//    //    camera_angle_vector.multiplyInPlace(new BABYLON.Vector3(move_speed, move_speed, move_speed));
+//    //    sphereGeo.position.subtractInPlace(camera_angle_vector);
+
+//    //    //TODO: talk to MC about this not sure if I have to re-assign the geo after changing it
+//    //    player.sphere.geo = sphereGeo;
+//    //    player.sphere.position = sphereGeo.position;
+//    //    zorbioModel.actors[player.sphere.id] = player.sphere;
+
+//    //    updateActors();
+//    //});
+
+//    //scene.registerBeforeRender(function() {
+//    //    camera.alpha += 0.01 * scene.getAnimationRatio();
+//    //});
+
+//    // Leave this function
+
+//    function animate() {
+//        requestAnimationFrame( animate );
+//        // controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
+//        render();
+//    }
+
+//    function render() {
+//        renderer.render(scene, camera);
+//    }
+
+//    animate();
+
+//    return scene;
+//}
 
 function drawActors() {
     var actors = zorbioModel.actors;
@@ -183,7 +262,7 @@ function drawActors() {
     });
 }
 
-function drawPlayerSphere(sphereToDraw) {
+function drawPlayerSphere() {
 
     var geometry = new THREE.SphereGeometry( 5, 32, 32 );
     var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
@@ -212,89 +291,28 @@ function updateActors() {
 
 function drawFood() {
 
-    //Create a manager for the player's sprite animation
-    var spriteManager = new BABYLON.SpriteManager("playerManager", "textures/solid-particle.png", zorbioModel.foodCount, 64, scene);
+    ////Create a manager for the player's sprite animation
+    //var spriteManager = new BABYLON.SpriteManager("playerManager", "textures/solid-particle.png", zorbioModel.foodCount, 64, scene);
 
-    // create sprite
-    var size = 6;
-    var offset = 0;
-    for (var i = 0; i < zorbioModel.foodCount; i++) {
-        var randX = zorbioModel.food[offset];
-        var randY = zorbioModel.food[offset + 1];
-        var randZ = zorbioModel.food[offset + 2];
-        var randR = zorbioModel.food[offset + 3];
-        var randG = zorbioModel.food[offset + 4];
-        var randB = zorbioModel.food[offset + 5];
-        var foodSprite = new BABYLON.Sprite("food" + i, spriteManager);
-        foodSprite.color = new BABYLON.Color4.FromInts(randR, randG, randB, 255);
-        foodSprite.position.x = randX;
-        foodSprite.position.y = randY;
-        foodSprite.position.z = randZ;
-        //foodSprite.size = 0.3;
-        //foodSprite.playAnimation(0, 40, true, 100);
-        offset += size;
-    }
-
-    //// The object from which food particles are emitted
-    //var grocery = BABYLON.Mesh.CreateBox("foutain", 1.0, scene);
-    //grocery.isVisible = false;
-    //
-    //// Create a particle system
-    //particleSystem = new BABYLON.ParticleSystem("particles", model.foodCount, scene);
-    //
-    ////Texture of each particle
-    //particleSystem.particleTexture = new BABYLON.Texture("textures/solid-particle.png", scene);
-    //
-    //// Where the particles come from
-    //particleSystem.emitter = grocery; // the starting object, the emitter
-    //particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0); // Starting all from
-    //particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0); // To...
-    //
-    //// Colors of all particles
-    //particleSystem.color1 = new BABYLON.Color4(1.0, 0.0, 1.0, 1.0);
-    //particleSystem.color2 = new BABYLON.Color4(0.0, 1.0, 1.0, 1.0);
-    ////particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
-    //
-    //// Size of each particle (random between...
-    //particleSystem.minSize = 1;
-    //particleSystem.maxSize = 1;
-    //
-    //// Life time of each particle (random between...
-    //particleSystem.minLifeTime = Infinity;
-    //particleSystem.maxLifeTime = Infinity;
-    //
-    //// Emission rate
-    //particleSystem.emitRate = model.foodCount;
-    //
-    //// Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
-    //particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_STANDARD;
-    //
-    //// Set the gravity of all particles
-    //particleSystem.gravity = new BABYLON.Vector3(0,0,0);
-    //
-    //// Direction of each particle after it has been emitted
-    //particleSystem.direction1 = new BABYLON.Vector3(0,0,0);
-    //particleSystem.direction2 = new BABYLON.Vector3(0,0,0);
-    //
-    //// Angular speed, in radians
-    //particleSystem.minAngularSpeed = 0;
-    //particleSystem.maxAngularSpeed = 0;
-    //
-    //// Speed
-    //particleSystem.updateSpeed = 1.000;
-    //
-    //var offset = 0;
+    //// create sprite
     //var size = 6;
-    //particleSystem.startPositionFunction = function (worldMatrix, positionToUpdate) {
-    //    var randX = model.food[offset];
-    //    var randY = model.food[offset + 1];
-    //    var randZ = model.food[offset + 2];
+    //var offset = 0;
+    //for (var i = 0; i < zorbioModel.foodCount; i++) {
+    //    var randX = zorbioModel.food[offset];
+    //    var randY = zorbioModel.food[offset + 1];
+    //    var randZ = zorbioModel.food[offset + 2];
+    //    var randR = zorbioModel.food[offset + 3];
+    //    var randG = zorbioModel.food[offset + 4];
+    //    var randB = zorbioModel.food[offset + 5];
+    //    var foodSprite = new BABYLON.Sprite("food" + i, spriteManager);
+    //    foodSprite.color = new BABYLON.Color4.FromInts(randR, randG, randB, 255);
+    //    foodSprite.position.x = randX;
+    //    foodSprite.position.y = randY;
+    //    foodSprite.position.z = randZ;
+    //    //foodSprite.size = 0.3;
+    //    //foodSprite.playAnimation(0, 40, true, 100);
     //    offset += size;
-    //    BABYLON.Vector3.TransformCoordinatesFromFloatsToRef(randX, randY, randZ, worldMatrix, positionToUpdate);
-    //};
-    //
-    //// Start the particle system
-    //particleSystem.start();
+    //}
 }
 
 // Watch for browser/canvas resize events
@@ -337,11 +355,6 @@ function handlePlayerControlKeydown(evt) {
         default:
             break;
     }
-}
-
-function setScreenDimensions() {
-    screenWidth = canvas.width = window.innerWidth;
-    screenHeight = canvas.height = window.innerHeight;
 }
 
 function cleanupMemory() {

@@ -6,7 +6,7 @@ var config = require('./config.json');
 
 // Load ThreeJS, so we have access to the same vector and matrix functions the
 // client uses
-var self = {}; // threejs expects there to be a global named 'self'... for some reason..
+global.self = {}; // threejs expects there to be a global named 'self'... for some reason..
 var THREE = require('three.js');
 
 var Zorbio = require('../common/zorbio.js');
