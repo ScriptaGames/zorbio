@@ -97,14 +97,20 @@ function createScene() {
     function init() {
 
         scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
+        // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
 
         renderer = new THREE.WebGLRenderer({ canvas: canvas });
-        renderer.setClearColor( scene.fog.color );
+        // renderer.setClearColor( scene.fog.color );
+        renderer.setClearColor( THREE.ColorKeywords.white );
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize( window.innerWidth, window.innerHeight );
 
-        camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
+        camera = new THREE.PerspectiveCamera(
+            65,
+            window.innerWidth / window.innerHeight,
+            1,
+            4*Math.max(zorbioModel.worldSize.x, Math.max(zorbioModel.worldSize.y, zorbioModel.worldSize.z))
+        );
         camera.position.z = 200;
 
         controls = new THREE.OrbitControls( camera, renderer.domElement );
@@ -113,13 +119,32 @@ function createScene() {
         controls.dampingFactor = 0.25;
         controls.enableZoom = true;
 
-        // world
+        // sphere
 
         // var sphereRef = drawPlayerSphere(player.sphere);
         var geometry = new THREE.SphereGeometry( 5, 32, 32 );
         var material = new THREE.MeshBasicMaterial( {color: THREE.ColorKeywords.red } );
+        material.transparent = true;
+        material.depthTest = true;
+        material.opacity = 0.5;
         sphere = new THREE.Mesh( geometry, material );
         scene.add( sphere );
+
+
+        // food
+
+        drawFood();
+
+        // skybox
+        var materialArray = [];
+        for (i = 0; i < 6; i++) {
+            materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/skybox_grid.jpg' ) }));
+            materialArray[i].side = THREE.BackSide;
+        }
+        var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
+        var skyboxGeom = new THREE.BoxGeometry( zorbioModel.worldSize.x, zorbioModel.worldSize.y, zorbioModel.worldSize.z, 1, 1, 1 );
+        var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
+        scene.add( skybox );
 
         // register sphere with player object who owns it
 
@@ -295,28 +320,58 @@ function updateActors() {
 
 function drawFood() {
 
+    var material = new THREE.SpriteMaterial();
+    material.depthTest = true;
+    material.transparent = true;
+    material.opacity = 0.5;
+
+    var particle;
+    var size = 6;
+    var offset = 0;
+    for (var i = 0; i < zorbioModel.foodCount; i++) {
+
+        var X = zorbioModel.food[offset];
+        var Y = zorbioModel.food[offset + 1];
+        var Z = zorbioModel.food[offset + 2];
+        var R = zorbioModel.food[offset + 3];
+        var G = zorbioModel.food[offset + 4];
+        var B = zorbioModel.food[offset + 5];
+
+        material.color.r = R;
+        material.color.g = G;
+        material.color.b = B;
+
+        particle = new THREE.Sprite( material );
+        particle.scale.x = particle.scale.y = 10;
+        particle.position.x = X;
+        particle.position.y = Y;
+        particle.position.z = Z;
+
+        scene.add( particle );
+
+        offset += size;
+    }
+
     ////Create a manager for the player's sprite animation
     //var spriteManager = new BABYLON.SpriteManager("playerManager", "textures/solid-particle.png", zorbioModel.foodCount, 64, scene);
 
     //// create sprite
-    //var size = 6;
-    //var offset = 0;
-    //for (var i = 0; i < zorbioModel.foodCount; i++) {
-    //    var randX = zorbioModel.food[offset];
-    //    var randY = zorbioModel.food[offset + 1];
-    //    var randZ = zorbioModel.food[offset + 2];
-    //    var randR = zorbioModel.food[offset + 3];
-    //    var randG = zorbioModel.food[offset + 4];
-    //    var randB = zorbioModel.food[offset + 5];
-    //    var foodSprite = new BABYLON.Sprite("food" + i, spriteManager);
-    //    foodSprite.color = new BABYLON.Color4.FromInts(randR, randG, randB, 255);
-    //    foodSprite.position.x = randX;
-    //    foodSprite.position.y = randY;
-    //    foodSprite.position.z = randZ;
-    //    //foodSprite.size = 0.3;
-    //    //foodSprite.playAnimation(0, 40, true, 100);
-    //    offset += size;
-    //}
+    // for (var i = 0; i < zorbioModel.foodCount; i++) {
+    //     var randX = zorbioModel.food[offset];
+    //     var randY = zorbioModel.food[offset + 1];
+    //     var randZ = zorbioModel.food[offset + 2];
+    //     var randR = zorbioModel.food[offset + 3];
+    //     var randG = zorbioModel.food[offset + 4];
+    //     var randB = zorbioModel.food[offset + 5];
+    //     var foodSprite = new BABYLON.Sprite("food" + i, spriteManager);
+    //     foodSprite.color = new BABYLON.Color4.FromInts(randR, randG, randB, 255);
+    //     foodSprite.position.x = randX;
+    //     foodSprite.position.y = randY;
+    //     foodSprite.position.z = randZ;
+    //     //foodSprite.size = 0.3;
+    //     //foodSprite.playAnimation(0, 40, true, 100);
+    //     offset += size;
+    // }
 }
 
 window.addEventListener("keydown", handleKeydown);
@@ -324,10 +379,12 @@ window.addEventListener("keyup", handleKeyup);
 
 var KeysDown = {};
 var KeyCodes = {
-    87: 'w',
-    83: 'a',
-    65: 's',
-    68: 'd',
+    87 : 'w',
+    83 : 'a',
+    65 : 's',
+    68 : 'd',
+    32 : 'space',
+    16 : 'shift',
 };
 var ListenForKeys = Object.keys(KeyCodes);
 function handleKeydown(evt) {
@@ -379,9 +436,6 @@ function removePlayerFromGame(playerId) {
         delete zorbioModel.actors[kickedPlayer.sphere.id];
         zorbioModel.players[playerId] = null;
         delete zorbioModel.players[playerId];
-
-        // remove from babalon scene
-        geo.dispose();
 
         console.log('removed player from game', kickedPlayer.sphere.id);
     }
