@@ -121,6 +121,10 @@ function createScene() {
         sphere = new THREE.Mesh( geometry, material );
         scene.add( sphere );
 
+        // register sphere with player object who owns it
+
+        player.sphere.geo = sphere;
+
         // lights
 
         light = new THREE.AmbientLight( 0x222222 );
@@ -315,46 +319,48 @@ function drawFood() {
     //}
 }
 
-// Watch for browser/canvas resize events
-window.addEventListener("resize", function () {
-    engine.resize();
-});
+window.addEventListener("keydown", handleKeydown);
+window.addEventListener("keyup", handleKeyup);
 
-window.addEventListener("keydown", handlePlayerControlKeydown);
+var KeysDown = {};
+var KeyCodes = {
+    87: 'w',
+    83: 'a',
+    65: 's',
+    68: 'd',
+};
+var ListenForKeys = Object.keys(KeyCodes);
+function handleKeydown(evt) {
+    var we_care_about_this_key;
+    var already_pressed;
 
-function handlePlayerControlKeydown(evt) {
-    if (!gameStart) {
-        return;
+    if (!gameStart) return;
+
+    // if key exists in keycodes, set its 'down' state to true
+    we_care_about_this_key = ListenForKeys.indexOf(evt.keyCode+'') !== -1;
+    if (we_care_about_this_key) {
+        already_pressed = KeysDown[KeyCodes[evt.keyCode]];
+        if (!already_pressed) {
+            keyPressed(KeyCodes[evt.keyCode]);
+        }
+        KeysDown[KeyCodes[evt.keyCode]] = true;
     }
+}
+function handleKeyup(evt) {
+    if (!gameStart) return;
 
-    var W_KEY = 87;
-    var S_KEY = 83;
-    var THROTTLE_STEP = 10;
-
-    switch (evt.keyCode) {
-        case W_KEY:
-            // Increase throttle
-            if (player.sphere.throttle < 100) {
-                player.sphere.throttle += THROTTLE_STEP;
-
-                if (player.sphere.throttle > 100) {
-                    player.sphere.throttle = 100;
-                }
-            }
-            break;
-        case S_KEY:
-            // Decrease throttle
-            if (player.sphere.throttle > 0) {
-                player.sphere.throttle -= THROTTLE_STEP;
-
-                if (player.sphere.throttle < 0) {
-                    player.sphere.throttle = 0;
-                }
-            }
-            break;
-        default:
-            break;
+    // if key exists in keycodes, set its 'down' state to false
+    var we_care_about_this_key = ListenForKeys.indexOf(evt.keyCode+'') !== -1;
+    if (we_care_about_this_key) {
+        keyReleased(KeyCodes[evt.keyCode]);
+        KeysDown[KeyCodes[evt.keyCode]] = false;
     }
+}
+function keyPressed(key) {
+    console.log('key ' + key + ' just pressed');
+}
+function keyReleased(key) {
+    console.log('key ' + key + ' released');
 }
 
 function cleanupMemory() {

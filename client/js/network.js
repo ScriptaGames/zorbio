@@ -30,7 +30,6 @@ function sendHeartbeat() {
 }
 
 function handleNetworkTermination() {
-    engine.stopRenderLoop();
     gameStart = false;
     cleanupMemory();
     showGame(false);
