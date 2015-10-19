@@ -2,6 +2,7 @@
 var scene;
 var camera;
 var sphere;
+var foodParticleSystem;
 var canvas = document.getElementById('renderCanvas');
 var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
@@ -125,11 +126,11 @@ function createScene() {
         var geometry = new THREE.SphereGeometry( 5, 32, 32 );
         var material = new THREE.MeshBasicMaterial( {color: THREE.ColorKeywords.red } );
         material.transparent = true;
-        material.depthTest = false;
-        material.opacity = 0.8;
+        material.depthTest = true;
+        material.opacity = 0.5;
         sphere = new THREE.Mesh( geometry, material );
+        // sphere.renderOrder = -1;
         scene.add( sphere );
-
 
         // food
 
@@ -320,65 +321,107 @@ function updateActors() {
 
 function drawFood() {
 
-    var foodTexture = THREE.ImageUtils.loadTexture( 'textures/solid-particle.png' );
-    var material = new THREE.SpriteMaterial({ map: foodTexture, useScreenCoordinates: false});
-    //var material = new THREE.SpriteMaterial();
-    material.depthTest = false;
-    material.transparent = true;
-    material.opacity = 0.5;
+    var positions = new Float32Array( zorbioModel.foodCount * 3 );
+    var colors = new Float32Array( zorbioModel.foodCount * 3 );
+    var living = new Float32Array( zorbioModel.foodCount );
 
-    var particle;
-    var size = 6;
-    var offset = 0;
-    for (var i = 0; i < zorbioModel.foodCount; i++) {
+    // copy food position and food color values from the zorbioModel.food array
+    // into the typed arrays for the particle system
 
-        var X = zorbioModel.food[offset];
-        var Y = zorbioModel.food[offset + 1];
-        var Z = zorbioModel.food[offset + 2];
-        var R = zorbioModel.food[offset + 3];
-        var G = zorbioModel.food[offset + 4];
-        var B = zorbioModel.food[offset + 5];
+    var X, Y, Z, R, G, B;
+    var particle_index = 0;
+    var food_index = 0;
+    var i = 0;
+    for (i = 0; i < zorbioModel.foodCount; i++) {
 
-        //material.color.r = R;
-        //material.color.g = G;
-        //material.color.b = B;
+        X = zorbioModel.food[ food_index     ];
+        Y = zorbioModel.food[ food_index + 1 ];
+        Z = zorbioModel.food[ food_index + 2 ];
+        R = zorbioModel.food[ food_index + 3 ];
+        G = zorbioModel.food[ food_index + 4 ];
+        B = zorbioModel.food[ food_index + 5 ];
 
-        var colorStyle = R + ", " + G + ", " + B;
+        living[ i ] = 1;
 
-        //material.color = new THREE.Color("rgb(55, 222, 5)");
-        material.color = new THREE.Color("rgb(" + colorStyle + ")");
+        positions[ particle_index     ] = X;
+        positions[ particle_index + 1 ] = Y;
+        positions[ particle_index + 2 ] = Z;
 
-        particle = new THREE.Sprite( material );
-        particle.scale.x = particle.scale.y = 10;
-        particle.position.x = X;
-        particle.position.y = Y;
-        particle.position.z = Z;
+        colors[ particle_index     ] = R / 255;
+        colors[ particle_index + 1 ] = G / 255;
+        colors[ particle_index + 2 ] = B / 255;
 
-        scene.add( particle );
-
-        offset += size;
+        particle_index += 3;
+        food_index += 6;
     }
 
-    ////Create a manager for the player's sprite animation
-    //var spriteManager = new BABYLON.SpriteManager("playerManager", "textures/solid-particle.png", zorbioModel.foodCount, 64, scene);
+    var geometry = new THREE.BufferGeometry();
+    geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+    geometry.addAttribute( 'living', new THREE.BufferAttribute( living, 1 ) );
+    geometry.addAttribute( 'ca', new THREE.BufferAttribute( colors, 3 ) );
 
-    //// create sprite
-    // for (var i = 0; i < zorbioModel.foodCount; i++) {
-    //     var randX = zorbioModel.food[offset];
-    //     var randY = zorbioModel.food[offset + 1];
-    //     var randZ = zorbioModel.food[offset + 2];
-    //     var randR = zorbioModel.food[offset + 3];
-    //     var randG = zorbioModel.food[offset + 4];
-    //     var randB = zorbioModel.food[offset + 5];
-    //     var foodSprite = new BABYLON.Sprite("food" + i, spriteManager);
-    //     foodSprite.color = new BABYLON.Color4.FromInts(randR, randG, randB, 255);
-    //     foodSprite.position.x = randX;
-    //     foodSprite.position.y = randY;
-    //     foodSprite.position.z = randZ;
-    //     //foodSprite.size = 0.3;
-    //     //foodSprite.playAnimation(0, 40, true, 100);
-    //     offset += size;
-    // }
+    //
+
+    var texture = THREE.ImageUtils.loadTexture( "textures/solid-particle.png" );
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+
+    var material = new THREE.ShaderMaterial( {
+
+        uniforms: {
+            amplitude: { type: "f", value: 1.0 },
+            color:     { type: "c", value: new THREE.Color( 0xff0000 ) },
+            texture:   { type: "t", value: texture },
+            size:      { type: "f", value: 3000 }
+        },
+        vertexShader:   document.getElementById( 'vertexshader' ).textContent,
+        fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
+        transparent:    false,
+        depthTest:      true,
+
+    });
+
+    //
+
+    foodParticleSystem = new THREE.Points( geometry, material );
+    scene.add( foodParticleSystem );
+
+    //var foodTexture = THREE.ImageUtils.loadTexture( 'textures/solid-particle.png' );
+    //var material = new THREE.SpriteMaterial({ map: foodTexture, useScreenCoordinates: false});
+    ////var material = new THREE.SpriteMaterial();
+    //material.depthTest = true;
+    //material.transparent = false;
+    //material.opacity = 1.0;
+
+    //var particle;
+    //var size = 6;
+    //var offset = 0;
+    //for (var i = 0; i < zorbioModel.foodCount; i++) {
+
+    //    var X = zorbioModel.food[offset];
+    //    var Y = zorbioModel.food[offset + 1];
+    //    var Z = zorbioModel.food[offset + 2];
+    //    var R = zorbioModel.food[offset + 3];
+    //    var G = zorbioModel.food[offset + 4];
+    //    var B = zorbioModel.food[offset + 5];
+
+    //    material.color = new THREE.Color(R/255, G/255, B/255);
+
+    //    material.needsUpdate = true;
+
+    //    // material.color = new THREE.Color("rgb(" + colorStyle + ")");
+
+    //    particle = new THREE.Sprite( material );
+    //    particle.scale.x = particle.scale.y = 10;
+    //    particle.position.x = X;
+    //    particle.position.y = Y;
+    //    particle.position.z = Z;
+
+    //    scene.add( particle );
+
+    //    offset += size;
+    //}
+
 }
 
 window.addEventListener("keydown", handleKeydown);

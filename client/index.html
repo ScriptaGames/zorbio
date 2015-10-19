@@ -23,21 +23,24 @@
             </div>
         </div>
 
-
         <script type="x-shader/x-vertex" id="vertexshader">
 
-            attribute float size;
-            attribute vec3 customColor;
+            uniform float size;
+            attribute vec3 ca;
+            attribute float living;
 
             varying vec3 vColor;
+            varying float vLiving;
 
             void main() {
 
-                vColor = customColor;
+                vLiving = living;
+                vColor = ca;
 
                 vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
 
-                gl_PointSize = size * ( 300.0 / length( mvPosition.xyz ) );
+                // gl_PointSize = size * 3.0;
+                gl_PointSize = size / length( mvPosition.xyz );
 
                 gl_Position = projectionMatrix * mvPosition;
 
@@ -51,14 +54,18 @@
             uniform sampler2D texture;
 
             varying vec3 vColor;
+            varying float vLiving;
 
             void main() {
 
-                gl_FragColor = vec4( color * vColor, 1.0 );
+                if ( vLiving == 0.0 ) discard;
 
-                gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+                vec4 color = vec4( vColor, 1.0 ); // * texture2D( texture, gl_PointCoord );
+
+                gl_FragColor = color;
 
             }
+
         </script>
 
 
