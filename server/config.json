@@ -1,6 +1,6 @@
 {
   "port": 3000,
-  "world_size": 10000,
+  "world_size": 1000,
   "food_density": 10,
   "networkUpdateInterval": 50,
   "heartBeatTimeout": 30000,

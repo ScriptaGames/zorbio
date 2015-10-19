@@ -125,8 +125,8 @@ function createScene() {
         var geometry = new THREE.SphereGeometry( 5, 32, 32 );
         var material = new THREE.MeshBasicMaterial( {color: THREE.ColorKeywords.red } );
         material.transparent = true;
-        material.depthTest = true;
-        material.opacity = 0.5;
+        material.depthTest = false;
+        material.opacity = 0.8;
         sphere = new THREE.Mesh( geometry, material );
         scene.add( sphere );
 
@@ -320,8 +320,10 @@ function updateActors() {
 
 function drawFood() {
 
-    var material = new THREE.SpriteMaterial();
-    material.depthTest = true;
+    var foodTexture = THREE.ImageUtils.loadTexture( 'textures/solid-particle.png' );
+    var material = new THREE.SpriteMaterial({ map: foodTexture, useScreenCoordinates: false});
+    //var material = new THREE.SpriteMaterial();
+    material.depthTest = false;
     material.transparent = true;
     material.opacity = 0.5;
 
@@ -337,9 +339,14 @@ function drawFood() {
         var G = zorbioModel.food[offset + 4];
         var B = zorbioModel.food[offset + 5];
 
-        material.color.r = R;
-        material.color.g = G;
-        material.color.b = B;
+        //material.color.r = R;
+        //material.color.g = G;
+        //material.color.b = B;
+
+        var colorStyle = R + ", " + G + ", " + B;
+
+        //material.color = new THREE.Color("rgb(55, 222, 5)");
+        material.color = new THREE.Color("rgb(" + colorStyle + ")");
 
         particle = new THREE.Sprite( material );
         particle.scale.x = particle.scale.y = 10;
