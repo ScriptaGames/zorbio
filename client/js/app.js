@@ -2,7 +2,7 @@
 var scene;
 var camera;
 var sphere;
-var foodParticleSystem;
+var food = {};
 var canvas = document.getElementById('renderCanvas');
 var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
@@ -179,6 +179,13 @@ function createScene() {
 
     function render() {
 
+        // TODO: remove this, it's just a demo of toggling food particles
+        var time = (new Date()).getTime();
+        var fi = time % food.living.length;
+        hideFood(fi);
+        showFood( ( fi + food.living.length / 2 ) % food.living.length );
+        // ENDTODO: remove this, it's just a demo of toggling food particles
+
         renderer.render( scene, camera );
 
     }
@@ -319,11 +326,25 @@ function updateActors() {
     });
 }
 
+function hideFood(fi) {
+    food.living[fi] = 0;
+    food.particleSystem.geometry.attributes.living.needsUpdate = true;
+}
+
+function showFood(fi) {
+    food.living[fi] = 1;
+    food.particleSystem.geometry.attributes.living.needsUpdate = true;
+}
+
 function drawFood() {
 
-    var positions = new Float32Array( zorbioModel.foodCount * 3 );
-    var colors = new Float32Array( zorbioModel.foodCount * 3 );
-    var living = new Float32Array( zorbioModel.foodCount );
+    food.positions = new Float32Array( zorbioModel.foodCount * 3 );
+    food.colors = new Float32Array( zorbioModel.foodCount * 3 );
+    food.living = new Float32Array( zorbioModel.foodCount );
+
+    var positions = food.positions;
+    var colors = food.colors;
+    var living = food.living;
 
     // copy food position and food color values from the zorbioModel.food array
     // into the typed arrays for the particle system
@@ -383,8 +404,8 @@ function drawFood() {
 
     //
 
-    foodParticleSystem = new THREE.Points( geometry, material );
-    scene.add( foodParticleSystem );
+    food.particleSystem = new THREE.Points( geometry, material );
+    scene.add( food.particleSystem );
 
     //var foodTexture = THREE.ImageUtils.loadTexture( 'textures/solid-particle.png' );
     //var material = new THREE.SpriteMaterial({ map: foodTexture, useScreenCoordinates: false});
