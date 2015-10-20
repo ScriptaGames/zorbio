@@ -15,9 +15,9 @@ function connectToServer(playerType, playerName, color) {
 function sendPlayerSpherePosition() {
     // cut down on the number of bytes sent across the wire
     var position = {
-        x: player.sphere.geo.position.x.toFixed(4),
-        y: player.sphere.geo.position.y.toFixed(4),
-        z: player.sphere.geo.position.z.toFixed(4)
+        // x: player.sphere.geo.position.x.toFixed(4),
+        // y: player.sphere.geo.position.y.toFixed(4),
+        // z: player.sphere.geo.position.z.toFixed(4)
     };
     var sphere = {"id": player.sphere.id, "p": position};
     socket.emit('myPosition', sphere);
@@ -30,7 +30,6 @@ function sendHeartbeat() {
 }
 
 function handleNetworkTermination() {
-    engine.stopRenderLoop();
     gameStart = false;
     cleanupMemory();
     showGame(false);
@@ -54,11 +53,6 @@ function setupSocket(socket) {
 
         // create the scene
         var scene = createScene();
-
-        // Register a render loop to repeatedly render the scene
-        engine.runRenderLoop(function () {
-            scene.render();
-        });
 
         //TODO: add chat system
         //chat.addSystemLine('Connected to the game!');
@@ -104,13 +98,13 @@ function setupSocket(socket) {
         });
     });
 
-    socket.on('kick', function (msg) {
-        socket.close();
-        handleNetworkTermination();
-        kicked = true;
-        displayModalMessage(msg);
-        console.log('you were kicked', msg);
-    });
+    // socket.on('kick', function (msg) {
+    //     socket.close();
+    //     handleNetworkTermination();
+    //     kicked = true;
+    //     displayModalMessage(msg);
+    //     console.log('you were kicked', msg);
+    // });
 
     socket.on('playerKicked', function (playerId) {
         console.log('player kicked', playerId);

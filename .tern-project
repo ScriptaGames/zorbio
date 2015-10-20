@@ -1,6 +1,6 @@
 {
     "libs": [ "browser", "ecma5" ],
     "loadEagerly": [
-        "client/bower_components/babylonjs/dist/babylon.2.2.max.js"
+        "client/bower_components/three.js/build/three.js"
     ]
 }

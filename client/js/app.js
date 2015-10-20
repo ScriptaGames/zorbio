@@ -1,9 +1,11 @@
 // Canvas
 var scene;
+var camera;
+var sphere;
+var food = {};
 var canvas = document.getElementById('renderCanvas');
-var screenWidth = 0;
-var screenHeight = 0;
-setScreenDimensions();
+var screenWidth = window.innerWidth;
+var screenHeight = window.innerHeight;
 
 // Player
 var playerName;
@@ -17,9 +19,8 @@ var kicked = false;
 var disconnected = false;
 //var died = false;
 
+var renderer;
 
-// Load the BABYLON 3D engine
-var engine = new BABYLON.Engine(canvas, true);
 
 // Model that represents all of the visual elements of the game
 var zorbioModel;
@@ -28,13 +29,16 @@ var zorbioModel;
 var MOVE_SPEED_SCALE         = 0.5;
 var PLAYER_POSITION_INTERVAL = 50;    // 50 milliseconds or 20 times per second
 var HEARTBEAT_INTERVAL       = 3000;  // How long to wait between sending heartbeat milliseconds
+var SPHERE_INITIAL_RADIUS    = 5;
 
 //TODO: add more colors, only select ones not used.
 var COLORS = [
-    BABYLON.Color3.Red(),
-    BABYLON.Color3.Blue(),
-    BABYLON.Color3.Green(),
-    BABYLON.Color3.Purple()
+    new THREE.Color(THREE.ColorKeywords.red),
+    new THREE.Color(THREE.ColorKeywords.blue),
+    new THREE.Color(THREE.ColorKeywords.yellow),
+    new THREE.Color(THREE.ColorKeywords.green),
+    new THREE.Color(THREE.ColorKeywords.purple),
+    new THREE.Color(THREE.ColorKeywords.magenta),
 ];
 
 function startGame(type) {
@@ -42,8 +46,6 @@ function startGame(type) {
     playerType = type;
 
     showGame(true);
-
-    setScreenDimensions();
 
     // Connect to the server
     var colorCode = UTIL.getRandomIntInclusive(0, COLORS.length - 1);
@@ -88,90 +90,112 @@ window.onload = function () {
     });
 };
 
-// This begins the creation of a function that we will 'call' just after it's built
-var createScene = function () {
+var camera, controls, scene, renderer;
+function createScene() {
 
-    // Now create a basic Babylon Scene object
-    scene = new BABYLON.Scene(engine);
+    init();
+    animate();
 
-    // IF fog enabled
-    //scene.fogMode = BABYLON.Scene._FOGMODE_LINEAR;
-    //scene.fogColor = new BABYLON.Color3(1.0, 1.0, 1.0);
-    //scene.fogStart = 100;
-    //scene.fogEnd = 120;
+    function init() {
 
-    // Change the scene background color to green.
-    scene.clearColor = new BABYLON.Color3(1, 1, 1);
+        scene = new THREE.Scene();
+        // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
 
-    // This creates a light, aiming 0,1,0 - to the sky.
-    // var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+        renderer = new THREE.WebGLRenderer({ canvas: canvas });
+        // renderer.setClearColor( scene.fog.color );
+        renderer.setClearColor( THREE.ColorKeywords.white );
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( window.innerWidth, window.innerHeight );
 
-    // Dim the light a small amount
-    // light.intensity = 0.5;
+        // orbit camera
 
-    var sphereRef = drawPlayerSphere(player.sphere);
+        camera = new THREE.PerspectiveCamera(
+            50,
+            window.innerWidth / window.innerHeight,
+            1,
+            4*Math.max(zorbioModel.worldSize.x, Math.max(zorbioModel.worldSize.y, zorbioModel.worldSize.z))
+        );
+        camera.position.z = 200;
 
-    // This creates and positions a camera
-    // var camera = new BABYLON.ArcFollowCamera("camera1", 1, 1, 100, sphere, scene);
-    var camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 10, new BABYLON.Vector3(0, 5, -10), scene);
-    // var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
-    camera.inertia = 0.01;
-    camera.target = sphereRef;
-    camera.lowerRadiusLimit = 4;
-    camera.upperRadiusLimit = 150;
-    camera.speed = 5;
-    camera.angularSensibility = 200;
-    //camera.maxZ = 120; // View distance
+        controls = new THREE.FollowOrbitControls( camera, renderer.domElement );
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+        controls.enableZoom = false;
+        controls.minDistance = 30;
+        controls.maxDistance = 30;
+        // controls.minPolarAngle = Infinity; // radians
+        // controls.maxPolarAngle = -Infinity; // radians
 
-    //This attaches the camera to the canvas
-    camera.attachControl(canvas, false);
+        // sphere
 
-    //var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 10, BABYLON.Vector3.Zero(), scene);
-    //camera.setPosition(new BABYLON.Vector3(-15, 3, 0));
+        // var sphereRef = drawPlayerSphere(player.sphere);
+        var geometry = new THREE.SphereGeometry( SPHERE_INITIAL_RADIUS, 32, 32 );
+        var material = new THREE.MeshBasicMaterial( {color: THREE.ColorKeywords.red } );
+        material.transparent = true;
+        material.depthTest = true;
+        material.opacity = 0.5;
+        sphere = new THREE.Mesh( geometry, material );
+        // sphere.renderOrder = -1;
+        scene.add( sphere );
 
-    // Skybox
-    var skybox = BABYLON.Mesh.CreateBox("skyBox", zorbioModel.worldSize.x, scene);
-    var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
-    skyboxMaterial.backFaceCulling = false;
-    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid", scene);
-    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-    skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-    skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-    skybox.material = skyboxMaterial;
+        controls.target = sphere;
+        // food
 
-    // Draw other actors currently in the game to the scene
-    drawActors();
-    drawFood(zorbioModel, scene);
+        drawFood();
 
-    // Save a reference to the sphere created for the player
-    player.sphere.geo = sphereRef;
-    zorbioModel.actors[player.sphere.id] = player.sphere;
+        // skybox
+        var materialArray = [];
+        for (i = 0; i < 6; i++) {
+            materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/skybox_grid.jpg' ) }));
+            materialArray[i].side = THREE.BackSide;
+        }
+        var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
+        var skyboxGeom = new THREE.BoxGeometry( zorbioModel.worldSize.x, zorbioModel.worldSize.y, zorbioModel.worldSize.z, 1, 1, 1 );
+        var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
+        scene.add( skybox );
 
-    scene.registerBeforeRender(function updateSpherePosition() {
-        var sphereGeo = player.sphere.geo;
+        // register sphere with player object who owns it
 
-        // move forward in the direction the camera is facing
-        var move_speed = MOVE_SPEED_SCALE * (player.sphere.throttle / 100);
-        var camera_angle_vector = camera.position.subtract(sphereGeo.position).normalize();
-        camera_angle_vector.multiplyInPlace(new BABYLON.Vector3(move_speed, move_speed, move_speed));
-        sphereGeo.position.subtractInPlace(camera_angle_vector);
+        player.sphere.geo = sphere;
 
-        //TODO: talk to MC about this not sure if I have to re-assign the geo after changing it
-        player.sphere.geo = sphereGeo;
-        player.sphere.position = sphereGeo.position;
-        zorbioModel.actors[player.sphere.id] = player.sphere;
+        // lights
 
-        updateActors();
-    });
+        light = new THREE.AmbientLight( 0x222222 );
+        scene.add( light );
 
-    //scene.registerBeforeRender(function() {
-    //    camera.alpha += 0.01 * scene.getAnimationRatio();
-    //});
+        window.addEventListener( 'resize', onWindowResize, false );
 
-    // Leave this function
-    return scene;
+    }
 
-};  // End of createScene function
+    function onWindowResize() {
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+    }
+
+    function animate() {
+
+        requestAnimationFrame( animate );
+
+        handleKeysDown();
+
+        controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
+
+        checkFoodCaptures();
+
+        render();
+
+    }
+
+    function render() {
+
+        renderer.render( scene, camera );
+
+    }
+}
 
 function drawActors() {
     var actors = zorbioModel.actors;
@@ -187,42 +211,39 @@ function drawActors() {
     });
 }
 
-function drawPlayerSphere(sphereToDraw) {
+function drawPlayerSphere() {
 
-    var material = new BABYLON.StandardMaterial("kosh", scene);
+    var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+    var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+    var sphere = new THREE.Mesh( geometry, material );
+    scene.add( sphere );
 
-    // Let's try our built-in 'sphere' shape. Params: name, subdivisions, size, scene
-    var newSphere = BABYLON.Mesh.CreateSphere("sphere-" + sphereToDraw.id, 16, 2, scene);
+    return sphere;
+}
 
-    // Set player sphere position
-    newSphere.position.x = sphereToDraw.position.x;
-    newSphere.position.y = sphereToDraw.position.y;
-    newSphere.position.z = sphereToDraw.position.z;
+function checkFoodCaptures() {
 
-    // sphere material
-    material.reflectionTexture = new BABYLON.CubeTexture("textures/skybox_grid_small", scene);
-    material.diffuseColor = new BABYLON.Color3.White();
-    material.emissiveColor = new BABYLON.Color3.White();
-    material.alpha = 0.4;
-    material.specularPower = 0;
+    // this only captures one food per frame, but I think that's fine.  you
+    // can't eat everything at once.  PACE YOURSELF!
 
-    // Fresnel
-    material.reflectionFresnelParameters = new BABYLON.FresnelParameters();
-    material.reflectionFresnelParameters.bias = 0.1;
+    var x, y, z, i;
+    var vdist = new THREE.Vector3();
+    var dist = 0;
+    var sphere_radius = SPHERE_INITIAL_RADIUS * sphere.scale.x;// x, y, and z scale should all be the same, always
 
-    material.emissiveFresnelParameters = new BABYLON.FresnelParameters();
-    material.emissiveFresnelParameters.bias = 0.6;
-    material.emissiveFresnelParameters.power = 4;
-    material.emissiveFresnelParameters.leftColor = BABYLON.Color3.White();
-    material.emissiveFresnelParameters.rightColor = COLORS[sphereToDraw.color];
-
-    material.opacityFresnelParameters = new BABYLON.FresnelParameters();
-    material.opacityFresnelParameters.leftColor = BABYLON.Color3.White();
-    material.opacityFresnelParameters.rightColor = BABYLON.Color3.Black();
-
-    newSphere.material = material;
-
-    return newSphere;
+    for ( i = 0; i < food.positions.length; i += 3 ) {
+        if (aliveFood( i / 3 )) {
+            x = food.positions[ i     ];
+            y = food.positions[ i + 1 ];
+            z = food.positions[ i + 2 ];
+            vdist.set(x, y, z);
+            dist = vdist.distanceTo(sphere.position);
+            if (dist <= sphere_radius) {
+                console.log('food captured!');
+                hideFood( i / 3 );
+            }
+        }
+    }
 }
 
 function updateActors() {
@@ -242,138 +263,159 @@ function updateActors() {
     });
 }
 
+function aliveFood(fi) {
+    return food.living[fi] !== 0;
+}
+
+function hideFood(fi) {
+    food.living[fi] = 0;
+    food.particleSystem.geometry.attributes.living.needsUpdate = true;
+}
+
+function showFood(fi) {
+    food.living[fi] = 1;
+    food.particleSystem.geometry.attributes.living.needsUpdate = true;
+}
+
 function drawFood() {
 
-    //Create a manager for the player's sprite animation
-    var spriteManager = new BABYLON.SpriteManager("playerManager", "textures/solid-particle.png", zorbioModel.foodCount, 64, scene);
+    food.positions = new Float32Array( zorbioModel.foodCount * 3 );
+    food.colors = new Float32Array( zorbioModel.foodCount * 3 );
+    food.living = new Float32Array( zorbioModel.foodCount );
 
-    // create sprite
-    var size = 6;
-    var offset = 0;
-    for (var i = 0; i < zorbioModel.foodCount; i++) {
-        var randX = zorbioModel.food[offset];
-        var randY = zorbioModel.food[offset + 1];
-        var randZ = zorbioModel.food[offset + 2];
-        var randR = zorbioModel.food[offset + 3];
-        var randG = zorbioModel.food[offset + 4];
-        var randB = zorbioModel.food[offset + 5];
-        var foodSprite = new BABYLON.Sprite("food" + i, spriteManager);
-        foodSprite.color = new BABYLON.Color4.FromInts(randR, randG, randB, 255);
-        foodSprite.position.x = randX;
-        foodSprite.position.y = randY;
-        foodSprite.position.z = randZ;
-        //foodSprite.size = 0.3;
-        //foodSprite.playAnimation(0, 40, true, 100);
-        offset += size;
+    var positions = food.positions;
+    var colors = food.colors;
+    var living = food.living;
+
+    // copy food position and food color values from the zorbioModel.food array
+    // into the typed arrays for the particle system
+
+    var X, Y, Z, R, G, B;
+    var particle_index = 0;
+    var food_index = 0;
+    var i = 0;
+    for (i = 0; i < zorbioModel.foodCount; i++) {
+
+        X = zorbioModel.food[ food_index     ];
+        Y = zorbioModel.food[ food_index + 1 ];
+        Z = zorbioModel.food[ food_index + 2 ];
+        R = zorbioModel.food[ food_index + 3 ];
+        G = zorbioModel.food[ food_index + 4 ];
+        B = zorbioModel.food[ food_index + 5 ];
+
+        living[ i ] = 1;
+
+        positions[ particle_index     ] = X;
+        positions[ particle_index + 1 ] = Y;
+        positions[ particle_index + 2 ] = Z;
+
+        colors[ particle_index     ] = R / 255;
+        colors[ particle_index + 1 ] = G / 255;
+        colors[ particle_index + 2 ] = B / 255;
+
+        particle_index += 3;
+        food_index += 6;
     }
 
-    //// The object from which food particles are emitted
-    //var grocery = BABYLON.Mesh.CreateBox("foutain", 1.0, scene);
-    //grocery.isVisible = false;
+    var geometry = new THREE.BufferGeometry();
+    geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+    geometry.addAttribute( 'living', new THREE.BufferAttribute( living, 1 ) );
+    geometry.addAttribute( 'ca', new THREE.BufferAttribute( colors, 3 ) );
+
     //
-    //// Create a particle system
-    //particleSystem = new BABYLON.ParticleSystem("particles", model.foodCount, scene);
+
+    var texture = THREE.ImageUtils.loadTexture( "textures/solid-particle.png" );
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+
+    var material = new THREE.ShaderMaterial( {
+
+        uniforms: {
+            amplitude: { type: "f", value: 1.0 },
+            color:     { type: "c", value: new THREE.Color( 0xff0000 ) },
+            texture:   { type: "t", value: texture },
+            size:      { type: "f", value: 3000 }
+        },
+        vertexShader:   document.getElementById( 'vertexshader' ).textContent,
+        fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
+        transparent:    false,
+        depthTest:      true,
+
+    });
+
     //
-    ////Texture of each particle
-    //particleSystem.particleTexture = new BABYLON.Texture("textures/solid-particle.png", scene);
-    //
-    //// Where the particles come from
-    //particleSystem.emitter = grocery; // the starting object, the emitter
-    //particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0); // Starting all from
-    //particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0); // To...
-    //
-    //// Colors of all particles
-    //particleSystem.color1 = new BABYLON.Color4(1.0, 0.0, 1.0, 1.0);
-    //particleSystem.color2 = new BABYLON.Color4(0.0, 1.0, 1.0, 1.0);
-    ////particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
-    //
-    //// Size of each particle (random between...
-    //particleSystem.minSize = 1;
-    //particleSystem.maxSize = 1;
-    //
-    //// Life time of each particle (random between...
-    //particleSystem.minLifeTime = Infinity;
-    //particleSystem.maxLifeTime = Infinity;
-    //
-    //// Emission rate
-    //particleSystem.emitRate = model.foodCount;
-    //
-    //// Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
-    //particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_STANDARD;
-    //
-    //// Set the gravity of all particles
-    //particleSystem.gravity = new BABYLON.Vector3(0,0,0);
-    //
-    //// Direction of each particle after it has been emitted
-    //particleSystem.direction1 = new BABYLON.Vector3(0,0,0);
-    //particleSystem.direction2 = new BABYLON.Vector3(0,0,0);
-    //
-    //// Angular speed, in radians
-    //particleSystem.minAngularSpeed = 0;
-    //particleSystem.maxAngularSpeed = 0;
-    //
-    //// Speed
-    //particleSystem.updateSpeed = 1.000;
-    //
-    //var offset = 0;
-    //var size = 6;
-    //particleSystem.startPositionFunction = function (worldMatrix, positionToUpdate) {
-    //    var randX = model.food[offset];
-    //    var randY = model.food[offset + 1];
-    //    var randZ = model.food[offset + 2];
-    //    offset += size;
-    //    BABYLON.Vector3.TransformCoordinatesFromFloatsToRef(randX, randY, randZ, worldMatrix, positionToUpdate);
-    //};
-    //
-    //// Start the particle system
-    //particleSystem.start();
+
+    food.particleSystem = new THREE.Points( geometry, material );
+    scene.add( food.particleSystem );
+
 }
 
-// Watch for browser/canvas resize events
-window.addEventListener("resize", function () {
-    engine.resize();
-});
+window.addEventListener("keydown", handleKeydown);
+window.addEventListener("keyup", handleKeyup);
 
-window.addEventListener("keydown", handlePlayerControlKeydown);
+var KeysDown = {};
+var KeyCodes = {
+    87 : 'w',
+    83 : 's',
+    65 : 'a',
+    68 : 'd',
+    32 : 'space',
+    16 : 'shift',
+};
+var ListenForKeys = Object.keys(KeyCodes);
+function handleKeydown(evt) {
+    var we_care_about_this_key;
+    var already_pressed;
 
-function handlePlayerControlKeydown(evt) {
-    if (!gameStart) {
-        return;
-    }
+    if (!gameStart) return;
 
-    var W_KEY = 87;
-    var S_KEY = 83;
-    var THROTTLE_STEP = 10;
-
-    switch (evt.keyCode) {
-        case W_KEY:
-            // Increase throttle
-            if (player.sphere.throttle < 100) {
-                player.sphere.throttle += THROTTLE_STEP;
-
-                if (player.sphere.throttle > 100) {
-                    player.sphere.throttle = 100;
-                }
-            }
-            break;
-        case S_KEY:
-            // Decrease throttle
-            if (player.sphere.throttle > 0) {
-                player.sphere.throttle -= THROTTLE_STEP;
-
-                if (player.sphere.throttle < 0) {
-                    player.sphere.throttle = 0;
-                }
-            }
-            break;
-        default:
-            break;
+    // if key exists in keycodes, set its 'down' state to true
+    we_care_about_this_key = ListenForKeys.indexOf(evt.keyCode+'') !== -1;
+    if (we_care_about_this_key) {
+        already_pressed = KeysDown[KeyCodes[evt.keyCode]];
+        if (!already_pressed) {
+            keyJustPressed(KeyCodes[evt.keyCode]);
+        }
+        KeysDown[KeyCodes[evt.keyCode]] = true;
     }
 }
+function handleKeyup(evt) {
+    if (!gameStart) return;
 
-function setScreenDimensions() {
-    screenWidth = canvas.width = window.innerWidth;
-    screenHeight = canvas.height = window.innerHeight;
+    // if key exists in keycodes, set its 'down' state to false
+    var we_care_about_this_key = ListenForKeys.indexOf(evt.keyCode+'') !== -1;
+    if (we_care_about_this_key) {
+        keyReleased(KeyCodes[evt.keyCode]);
+        KeysDown[KeyCodes[evt.keyCode]] = false;
+    }
+}
+function handleKeysDown() {
+    for( var key in KeysDown ) {
+        if (KeysDown[key]) {
+            keyDown(key);
+        }
+    }
+}
+var keyDownMoveVector;
+function keyDown(key) {
+    keyDownMoveVector = sphere.position.clone();
+    if (key === 'w') {
+        keyDownMoveVector.sub(camera.position);
+        keyDownMoveVector.multiplyScalar(-1);
+        keyDownMoveVector.normalize();
+        sphere.position.sub(keyDownMoveVector);
+    }
+    else if (key === 's') {
+        keyDownMoveVector.sub(camera.position);
+        keyDownMoveVector.normalize();
+        sphere.position.sub(keyDownMoveVector);
+    }
+}
+function keyJustPressed(key) {
+    console.log('key ' + key + ' just pressed');
+}
+function keyReleased(key) {
+    console.log('key ' + key + ' released');
 }
 
 function cleanupMemory() {
@@ -392,9 +434,6 @@ function removePlayerFromGame(playerId) {
         delete zorbioModel.actors[kickedPlayer.sphere.id];
         zorbioModel.players[playerId] = null;
         delete zorbioModel.players[playerId];
-
-        // remove from babalon scene
-        geo.dispose();
 
         console.log('removed player from game', kickedPlayer.sphere.id);
     }

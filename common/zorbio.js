@@ -1,8 +1,8 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
-// if we're running in nodejs, import BABYLON.  for browser, assume it's
+// if we're running in nodejs, import THREE.  for browser, assume it's
 // already there.
-if (NODEJS) var BABYLON = require('babylonjs');
+if (NODEJS) var THREE = require('three.js');
 if (NODEJS) var UTIL = require('./util.js');
 
 var ZOR = {};
@@ -16,7 +16,7 @@ var ZOR = {};
 ZOR.Model = function ZORModel(worldSize, foodDensity) {
     this.actors = {};
     this.players = {};
-    this.worldSize = new BABYLON.Vector3(worldSize, worldSize, worldSize);
+    this.worldSize = new THREE.Vector3(worldSize, worldSize, worldSize);
     this.foodDensity = foodDensity;
 
     // Generate initial food positions and colors based on world size
@@ -33,7 +33,7 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
     var size = 6; // 6 for XYZRGB
     var offset = 0;
 
-    this.foodCount = Math.pow(this.foodDensity, 3);
+    this.foodCount = Math.pow(this.foodDensity - 1, 3);
     this.food = [];
 
     for (var i = 1; i < this.foodDensity; i++) {
@@ -82,8 +82,8 @@ ZOR.ActorTypes = Object.freeze({
  * world.
  */
 ZOR.Actor = function ZORActor() {
-    this.position = new BABYLON.Vector3(0,0,0);
-    this.velocity = new BABYLON.Vector3(0,0,0);
+    this.position = new THREE.Vector3(0,0,0);
+    this.velocity = new THREE.Vector3(0,0,0);
     this.geo = null;
     this.scale = 1;
     this.type = ZOR.ActorTypes.UNDEFINED;
@@ -131,7 +131,7 @@ ZOR.Food = function ZORFood(x, y, z, shape, color, rotate_x, rotate_y, rotate_z)
     y = y || 0;
     z = z || 0;
     shape = shape || 'sphere';
-    color = color || BABYLON.Color3.Red();
+    color = color || new THREE.Color(THREE.ColorKeywords.red);
     rotate_x = rotate_x || 0;
     rotate_y = rotate_y || 0;
     rotate_z = rotate_z || 0;
@@ -148,7 +148,7 @@ ZOR.Food = function ZORFood(x, y, z, shape, color, rotate_x, rotate_y, rotate_z)
     this.position.y = y;
     this.position.z = z;
 
-    this.rotation = new BABYLON.Vector3(rotate_x, rotate_y, rotate_z);
+    this.rotation = new THREE.Vector3(rotate_x, rotate_y, rotate_z);
 
     this.color = color;
     this.shape = shape;
