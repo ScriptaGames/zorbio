@@ -33,7 +33,7 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
     var size = 6; // 6 for XYZRGB
     var offset = 0;
 
-    this.foodCount = Math.pow(this.foodDensity, 3);
+    this.foodCount = Math.pow(this.foodDensity - 1, 3);
     this.food = [];
 
     for (var i = 1; i < this.foodDensity; i++) {
