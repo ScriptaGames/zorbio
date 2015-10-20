@@ -179,6 +179,8 @@ function createScene() {
 
         requestAnimationFrame( animate );
 
+        handleKeysDown();
+
         controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
 
         render();
@@ -186,8 +188,6 @@ function createScene() {
     }
 
     function render() {
-
-        handleKeysDown();
 
         renderer.render( scene, camera );
 
