@@ -29,6 +29,7 @@ var zorbioModel;
 var MOVE_SPEED_SCALE         = 0.5;
 var PLAYER_POSITION_INTERVAL = 50;    // 50 milliseconds or 20 times per second
 var HEARTBEAT_INTERVAL       = 3000;  // How long to wait between sending heartbeat milliseconds
+var SPHERE_INITIAL_RADIUS    = 5;
 
 //TODO: add more colors, only select ones not used.
 var COLORS = [
@@ -128,7 +129,7 @@ function createScene() {
         // sphere
 
         // var sphereRef = drawPlayerSphere(player.sphere);
-        var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+        var geometry = new THREE.SphereGeometry( SPHERE_INITIAL_RADIUS, 32, 32 );
         var material = new THREE.MeshBasicMaterial( {color: THREE.ColorKeywords.red } );
         material.transparent = true;
         material.depthTest = true;
@@ -183,6 +184,8 @@ function createScene() {
 
         controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
 
+        checkFoodCaptures();
+
         render();
 
     }
@@ -218,6 +221,31 @@ function drawPlayerSphere() {
     return sphere;
 }
 
+function checkFoodCaptures() {
+
+    // this only captures one food per frame, but I think that's fine.  you
+    // can't eat everything at once.  PACE YOURSELF!
+
+    var x, y, z, i;
+    var vdist = new THREE.Vector3();
+    var dist = 0;
+    var sphere_radius = SPHERE_INITIAL_RADIUS * sphere.scale.x;// x, y, and z scale should all be the same, always
+
+    for ( i = 0; i < food.positions.length; i += 3 ) {
+        if (aliveFood( i / 3 )) {
+            x = food.positions[ i     ];
+            y = food.positions[ i + 1 ];
+            z = food.positions[ i + 2 ];
+            vdist.set(x, y, z);
+            dist = vdist.distanceTo(sphere.position);
+            if (dist <= sphere_radius) {
+                console.log('food captured!');
+                hideFood( i / 3 );
+            }
+        }
+    }
+}
+
 function updateActors() {
     var actors = zorbioModel.actors;
 
@@ -233,6 +261,10 @@ function updateActors() {
             }
         }
     });
+}
+
+function aliveFood(fi) {
+    return food.living[fi] !== 0;
 }
 
 function hideFood(fi) {
