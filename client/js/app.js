@@ -109,7 +109,7 @@ function createScene() {
         // orbit camera
 
         camera = new THREE.PerspectiveCamera(
-            65,
+            50,
             window.innerWidth / window.innerHeight,
             1,
             4*Math.max(zorbioModel.worldSize.x, Math.max(zorbioModel.worldSize.y, zorbioModel.worldSize.z))
@@ -119,11 +119,11 @@ function createScene() {
         controls = new THREE.FollowOrbitControls( camera, renderer.domElement );
         controls.enableDamping = true;
         controls.dampingFactor = 0.25;
-        controls.enableZoom = true;
-        // controls.minDistance = 30;
-        // controls.maxDistance = 30;
-        // controls.minPolarAngle = 0; // radians
-        // controls.maxPolarAngle = Math.PI*2; // radians
+        controls.enableZoom = false;
+        controls.minDistance = 30;
+        controls.maxDistance = 30;
+        // controls.minPolarAngle = Infinity; // radians
+        // controls.maxPolarAngle = -Infinity; // radians
 
         // sphere
 
@@ -180,20 +180,12 @@ function createScene() {
         requestAnimationFrame( animate );
 
         controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
-        // controls.target.set( sphere.position );
 
         render();
 
     }
 
     function render() {
-
-        // // TODO: remove this, it's just a demo of toggling food particles
-        // var time = (new Date()).getTime();
-        // var fi = time % food.living.length;
-        // hideFood(fi);
-        // showFood( ( fi + food.living.length / 2 ) % food.living.length );
-        // // ENDTODO: remove this, it's just a demo of toggling food particles
 
         handleKeysDown();
 
