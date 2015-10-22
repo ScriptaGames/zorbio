@@ -9,14 +9,16 @@ var screenHeight = window.innerHeight;
 
 // constants
 var MOVE_SPEED_SCALE         = 0.5;
-var PLAYER_POSITION_INTERVAL = 50;    // 50 milliseconds or 20 times per second
-var HEARTBEAT_INTERVAL       = 3000;  // How long to wait between sending heartbeat milliseconds
+var PLAYER_POSITION_INTERVAL = 50;   // 50 milliseconds or 20 times per second
+var HEARTBEAT_INTERVAL       = 3000; // How long to wait between sending heartbeat milliseconds
 var FOOD_VALUE               = 0.08; // amount to increase sphere by when food is consumed
 var INITIAL_CAMERA_DISTANCE  = 50;
 var INITIAL_PLAYER_RADIUS    = 5;
 var MAX_PLAYER_RADIUS        = 150;
 var BASE_PLAYER_SPEED        = 2;
 var FOOD_RESPAWN_FRAMES      = 10*60;
+var FOG_NEAR                 = 100;
+var FOG_FAR                  = 1000;
 
 // Player
 var playerName;
@@ -39,12 +41,13 @@ var zorbioModel;
 
 //TODO: add more colors, only select ones not used.
 var COLORS = [
-    new THREE.Color(THREE.ColorKeywords.red),
-    new THREE.Color(THREE.ColorKeywords.blue),
-    new THREE.Color(THREE.ColorKeywords.yellow),
-    new THREE.Color(THREE.ColorKeywords.green),
-    new THREE.Color(THREE.ColorKeywords.purple),
-    new THREE.Color(THREE.ColorKeywords.magenta),
+    // THREE.ColorKeywords.red,
+    // THREE.ColorKeywords.blue,
+    // THREE.ColorKeywords.yellow,
+    // THREE.ColorKeywords.green,
+    // THREE.ColorKeywords.purple,
+    // THREE.ColorKeywords.magenta,
+    THREE.ColorKeywords.aliceblue,
 ];
 
 function startGame(type) {
@@ -105,7 +108,8 @@ function createScene() {
     function init() {
 
         scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
+        // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
+        scene.fog = new THREE.Fog( THREE.ColorKeywords.white, FOG_NEAR, FOG_FAR );
 
         renderer = new THREE.WebGLRenderer({ canvas: canvas });
         // renderer.setClearColor( scene.fog.color );
@@ -119,7 +123,7 @@ function createScene() {
             50,
             window.innerWidth / window.innerHeight,
             1,
-            4*Math.max(zorbioModel.worldSize.x, Math.max(zorbioModel.worldSize.y, zorbioModel.worldSize.z))
+            FOG_FAR
         );
         camera.position.z = 200;
 
