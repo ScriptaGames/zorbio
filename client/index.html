@@ -27,14 +27,14 @@
 
             uniform float size;
             attribute vec3 ca;
-            attribute float living;
+            attribute float respawning;
 
             varying vec3 vColor;
-            varying float vLiving;
+            varying float vRespawning;
 
             void main() {
 
-                vLiving = living;
+                vRespawning = respawning;
                 vColor = ca;
 
                 vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
@@ -54,13 +54,15 @@
             uniform sampler2D texture;
 
             varying vec3 vColor;
-            varying float vLiving;
+            varying float vRespawning;
 
             void main() {
 
-                if ( vLiving == 0.0 ) discard;
+                // when food's respawning value is > 0.0, it's still counting
+                // down to respawn
+                if ( vRespawning > 0.0 ) discard;
 
-                vec4 color = vec4( vColor, 1.0 ); // * texture2D( texture, gl_PointCoord );
+                vec4 color = vec4( vColor, 0.5 ); // * texture2D( texture, gl_PointCoord );
 
                 gl_FragColor = color;
 

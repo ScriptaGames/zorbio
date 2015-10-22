@@ -7,11 +7,23 @@ var canvas = document.getElementById('renderCanvas');
 var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
 
+// constants
+var MOVE_SPEED_SCALE         = 0.5;
+var PLAYER_POSITION_INTERVAL = 50;    // 50 milliseconds or 20 times per second
+var HEARTBEAT_INTERVAL       = 3000;  // How long to wait between sending heartbeat milliseconds
+var FOOD_VALUE               = 0.08; // amount to increase sphere by when food is consumed
+var INITIAL_CAMERA_DISTANCE  = 50;
+var INITIAL_PLAYER_RADIUS    = 5;
+var MAX_PLAYER_RADIUS        = 150;
+var BASE_PLAYER_SPEED        = 2;
+var FOOD_RESPAWN_FRAMES      = 10*60;
+
 // Player
 var playerName;
 var playerType;
 var playerNameInput = document.getElementById('playerNameInput');
 var player;
+var playerSpeed = BASE_PLAYER_SPEED;
 
 // Game state
 var gameStart = false;
@@ -24,12 +36,6 @@ var renderer;
 
 // Model that represents all of the visual elements of the game
 var zorbioModel;
-
-// constants
-var MOVE_SPEED_SCALE         = 0.5;
-var PLAYER_POSITION_INTERVAL = 50;    // 50 milliseconds or 20 times per second
-var HEARTBEAT_INTERVAL       = 3000;  // How long to wait between sending heartbeat milliseconds
-var SPHERE_INITIAL_RADIUS    = 5;
 
 //TODO: add more colors, only select ones not used.
 var COLORS = [
@@ -99,7 +105,7 @@ function createScene() {
     function init() {
 
         scene = new THREE.Scene();
-        // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
+        scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
 
         renderer = new THREE.WebGLRenderer({ canvas: canvas });
         // renderer.setClearColor( scene.fog.color );
@@ -121,22 +127,14 @@ function createScene() {
         controls.enableDamping = true;
         controls.dampingFactor = 0.25;
         controls.enableZoom = false;
-        controls.minDistance = 30;
-        controls.maxDistance = 30;
+        controls.minDistance = INITIAL_CAMERA_DISTANCE;
+        controls.maxDistance = INITIAL_CAMERA_DISTANCE;
         // controls.minPolarAngle = Infinity; // radians
         // controls.maxPolarAngle = -Infinity; // radians
 
         // sphere
 
-        // var sphereRef = drawPlayerSphere(player.sphere);
-        var geometry = new THREE.SphereGeometry( SPHERE_INITIAL_RADIUS, 32, 32 );
-        var material = new THREE.MeshBasicMaterial( {color: THREE.ColorKeywords.red } );
-        material.transparent = true;
-        material.depthTest = true;
-        material.opacity = 0.5;
-        sphere = new THREE.Mesh( geometry, material );
-        // sphere.renderOrder = -1;
-        scene.add( sphere );
+        sphere = drawPlayerSphere();
 
         controls.target = sphere;
         // food
@@ -184,6 +182,8 @@ function createScene() {
 
         controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
 
+        updateFoodRespawns();
+
         checkFoodCaptures();
 
         render();
@@ -212,10 +212,14 @@ function drawActors() {
 }
 
 function drawPlayerSphere() {
-
-    var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-    var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-    var sphere = new THREE.Mesh( geometry, material );
+    var sphere;
+    var geometry = new THREE.SphereGeometry( INITIAL_PLAYER_RADIUS, 32, 32 );
+    var material = new THREE.MeshBasicMaterial( {color: THREE.ColorKeywords.red } );
+    material.transparent = true;
+    material.depthTest = true;
+    material.opacity = 0.5;
+    sphere = new THREE.Mesh( geometry, material );
+    // sphere.renderOrder = -1;
     scene.add( sphere );
 
     return sphere;
@@ -223,15 +227,12 @@ function drawPlayerSphere() {
 
 function checkFoodCaptures() {
 
-    // this only captures one food per frame, but I think that's fine.  you
-    // can't eat everything at once.  PACE YOURSELF!
-
-    var x, y, z, i;
-    var vdist = new THREE.Vector3();
+    var x, y, z, i, l;
+    var vdist = checkFoodCaptures.vdist;
     var dist = 0;
-    var sphere_radius = SPHERE_INITIAL_RADIUS * sphere.scale.x;// x, y, and z scale should all be the same, always
+    var sphere_radius = INITIAL_PLAYER_RADIUS * sphere.scale.x; // x, y, and z scale should all be the same, always
 
-    for ( i = 0; i < food.positions.length; i += 3 ) {
+    for ( i = 0, l = food.positions.length; i < l; i += 3 ) {
         if (aliveFood( i / 3 )) {
             x = food.positions[ i     ];
             y = food.positions[ i + 1 ];
@@ -239,12 +240,13 @@ function checkFoodCaptures() {
             vdist.set(x, y, z);
             dist = vdist.distanceTo(sphere.position);
             if (dist <= sphere_radius) {
-                console.log('food captured!');
-                hideFood( i / 3 );
+                captureFood( i / 3 );
             }
         }
     }
 }
+checkFoodCaptures.vdist = new THREE.Vector3();
+
 
 function updateActors() {
     var actors = zorbioModel.actors;
@@ -263,29 +265,57 @@ function updateActors() {
     });
 }
 
+function captureFood(fi) {
+    if (aliveFood(fi)) {
+
+        captureFood.p = FOOD_VALUE / sphere.scale.x;
+
+        hideFood( fi );
+
+        // grow sphere, with diminishing returns on food as you get bigger.
+        // prevents runaway growth.
+
+        sphere.scale.addScalar( captureFood.p );
+        sphere.scale.clampScalar( 1, MAX_PLAYER_RADIUS );
+
+        // push camera back a bit
+
+        controls.minDistance += 16*captureFood.p;
+        controls.maxDistance = controls.minDistance;
+    }
+}
+captureFood.p = 0;
+
 function aliveFood(fi) {
-    return food.living[fi] !== 0;
+    return food.respawning[fi] === 0;
 }
 
 function hideFood(fi) {
-    food.living[fi] = 0;
-    food.particleSystem.geometry.attributes.living.needsUpdate = true;
+    food.respawning[fi] = FOOD_RESPAWN_FRAMES;
+    food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
 }
 
 function showFood(fi) {
-    food.living[fi] = 1;
-    food.particleSystem.geometry.attributes.living.needsUpdate = true;
+    food.respawning[fi] = 0;
+    food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
+}
+
+function updateFoodRespawns() {
+    for (var i = 0, l = food.respawning.length; i < l; ++i) {
+        food.respawning[i] = Math.max( food.respawning[i] - 1, 0 );
+        food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
+    }
 }
 
 function drawFood() {
 
     food.positions = new Float32Array( zorbioModel.foodCount * 3 );
     food.colors = new Float32Array( zorbioModel.foodCount * 3 );
-    food.living = new Float32Array( zorbioModel.foodCount );
+    food.respawning = new Float32Array( zorbioModel.foodCount );
 
     var positions = food.positions;
     var colors = food.colors;
-    var living = food.living;
+    var respawning = food.respawning;
 
     // copy food position and food color values from the zorbioModel.food array
     // into the typed arrays for the particle system
@@ -303,7 +333,7 @@ function drawFood() {
         G = zorbioModel.food[ food_index + 4 ];
         B = zorbioModel.food[ food_index + 5 ];
 
-        living[ i ] = 1;
+        respawning[ i ] = 0;
 
         positions[ particle_index     ] = X;
         positions[ particle_index + 1 ] = Y;
@@ -319,7 +349,7 @@ function drawFood() {
 
     var geometry = new THREE.BufferGeometry();
     geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-    geometry.addAttribute( 'living', new THREE.BufferAttribute( living, 1 ) );
+    geometry.addAttribute( 'respawning', new THREE.BufferAttribute( respawning, 1 ) );
     geometry.addAttribute( 'ca', new THREE.BufferAttribute( colors, 3 ) );
 
     //
@@ -397,18 +427,12 @@ function handleKeysDown() {
     }
 }
 var keyDownMoveVector;
-function keyDown(key) {
-    keyDownMoveVector = sphere.position.clone();
-    if (key === 'w') {
-        keyDownMoveVector.sub(camera.position);
-        keyDownMoveVector.multiplyScalar(-1);
-        keyDownMoveVector.normalize();
-        sphere.position.sub(keyDownMoveVector);
+function keyDown( key ) {
+    if ( key === 'w' ) {
+        moveForward();
     }
-    else if (key === 's') {
-        keyDownMoveVector.sub(camera.position);
-        keyDownMoveVector.normalize();
-        sphere.position.sub(keyDownMoveVector);
+    else if ( key === 's' ) {
+        moveBackward();
     }
 }
 function keyJustPressed(key) {
@@ -417,6 +441,27 @@ function keyJustPressed(key) {
 function keyReleased(key) {
     console.log('key ' + key + ' released');
 }
+
+function moveForward() {
+    var v = moveForward.v;
+    v.copy( sphere.position );
+    v.sub( camera.position );
+    v.multiplyScalar( -1 );
+    v.normalize();
+    v.multiplyScalar( BASE_PLAYER_SPEED );
+    sphere.position.sub( v );
+}
+moveForward.v = new THREE.Vector3();
+
+function moveBackward() {
+    var v = moveBackward.v;
+    v.copy( sphere.position );
+    v.sub( camera.position );
+    v.normalize();
+    v.multiplyScalar( BASE_PLAYER_SPEED );
+    sphere.position.sub( v );
+}
+moveBackward.v = new THREE.Vector3();
 
 function cleanupMemory() {
     zorbioModel = null;
