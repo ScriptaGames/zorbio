@@ -1,6 +1,8 @@
 // Canvas
 var scene;
 var camera;
+var cubeCamera;
+var npc_cubeCamera;
 var sphere;
 var food = {};
 var canvas = document.getElementById('renderCanvas');
@@ -19,6 +21,7 @@ var BASE_PLAYER_SPEED        = 2;
 var FOOD_RESPAWN_FRAMES      = 10*60;
 var FOG_NEAR                 = 100;
 var FOG_FAR                  = 1000;
+var INITIAL_FOV              = 50;
 
 // Player
 var playerName;
@@ -120,7 +123,7 @@ function createScene() {
         // orbit camera
 
         camera = new THREE.PerspectiveCamera(
-            50,
+            INITIAL_FOV,
             window.innerWidth / window.innerHeight,
             1,
             FOG_FAR
@@ -139,6 +142,8 @@ function createScene() {
         // sphere
 
         sphere = drawPlayerSphere();
+
+        npc = drawNPCSphere();
 
         controls.target = sphere;
         // food
@@ -196,6 +201,10 @@ function createScene() {
 
     function render() {
 
+        cubeCamera.position.copy(sphere.position);
+        cubeCamera.updateCubeMap( renderer, scene );
+        npc_cubeCamera.updateCubeMap( renderer, scene );
+
         renderer.render( scene, camera );
 
     }
@@ -215,13 +224,46 @@ function drawActors() {
     });
 }
 
+function drawNPCSphere() {
+    var npc_sphere;
+    var npc_geometry = new THREE.SphereGeometry( 8*INITIAL_PLAYER_RADIUS, 32, 32 );
+
+    npc_cubeCamera = new THREE.CubeCamera( 8*INITIAL_PLAYER_RADIUS, 1000, 256 );
+    npc_cubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
+    scene.add( npc_cubeCamera );
+
+    var npc_material = new THREE.MeshBasicMaterial( {
+        color  : THREE.ColorKeywords.white,
+        envMap : npc_cubeCamera.renderTarget,
+    } );
+    npc_material.transparent = true;
+    npc_material.depthTest = true;
+    npc_material.opacity = 1.0;
+
+    npc_sphere = new THREE.Mesh( npc_geometry, npc_material );
+    // npc_sphere.renderOrder = -1;
+    scene.add( npc_sphere );
+
+    return npc_sphere;
+}
+
 function drawPlayerSphere() {
     var sphere;
     var geometry = new THREE.SphereGeometry( INITIAL_PLAYER_RADIUS, 32, 32 );
-    var material = new THREE.MeshBasicMaterial( {color: THREE.ColorKeywords.red } );
+
+    cubeCamera = new THREE.CubeCamera( 1, 1000, 256 );
+    cubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
+    scene.add( cubeCamera );
+
+    var material = new THREE.MeshBasicMaterial( {
+        color  : THREE.ColorKeywords.red,
+        envMap : cubeCamera.renderTarget,
+        blending: THREE.NormalBlending,
+    } );
     material.transparent = true;
     material.depthTest = true;
     material.opacity = 0.5;
+
     sphere = new THREE.Mesh( geometry, material );
     // sphere.renderOrder = -1;
     scene.add( sphere );
