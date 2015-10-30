@@ -13,7 +13,7 @@ var PLAYER_POSITION_INTERVAL = 50;   // 50 milliseconds or 20 times per second
 var HEARTBEAT_INTERVAL       = 3000; // How long to wait between sending heartbeat milliseconds
 var FOOD_VALUE               = 0.08; // amount to increase sphere by when food is consumed
 var INITIAL_CAMERA_DISTANCE  = 50;
-var INITIAL_PLAYER_RADIUS    = 5;
+var INITIAL_PLAYER_RADIUS    = 2;
 var MAX_PLAYER_RADIUS        = 150;
 var BASE_PLAYER_SPEED        = 2;
 var FOOD_RESPAWN_FRAMES      = 10*60;
@@ -26,6 +26,7 @@ var playerType;
 var playerNameInput = document.getElementById('playerNameInput');
 var player;
 var playerSpeed = BASE_PLAYER_SPEED;
+var playerVelocity = new THREE.Vector3();
 
 // Game state
 var gameStart = false;
@@ -446,6 +447,18 @@ function keyReleased(key) {
     console.log('key ' + key + ' released');
 }
 
+
+// function updateMovement() {
+//     var v = updateMovement.v;
+//     v.copy( sphere.position );
+//     v.sub( camera.position );
+//     v.multiplyScalar( -1 );
+//     v.normalize();
+//     v.multiplyScalar( BASE_PLAYER_SPEED );
+//     sphere.position.sub( v );
+// }
+// updateMovement.v = new THREE.Vector3();
+
 function moveForward() {
     var v = moveForward.v;
     v.copy( sphere.position );
@@ -454,8 +467,41 @@ function moveForward() {
     v.normalize();
     v.multiplyScalar( BASE_PLAYER_SPEED );
     sphere.position.sub( v );
+
+    checkWallCollision( sphere.position, v, zorbioModel.worldSize );
 }
 moveForward.v = new THREE.Vector3();
+
+function checkWallCollision( p, v, w ) {
+    var colx = p.x + v.x > w.x || p.x + v.x < -w.x;
+
+    // velocity vector shortened until sphere hits wall
+    var vs = checkWallCollision.vs;
+    vs.x = Math.abs( p.x - w.x );
+    vs.y = v.y * vs.x / v.x;
+    vs.z = v.z * vs.x / v.x;
+    // the shortened vector's components should maintain their relative ratios
+}
+checkWallCollision.vs = new THREE.Vector3();
+
+// TODO: make sure when a collision occurs with two or more walls at once
+// happens, it is handled correctly
+
+// functions to detect hitting the wall in the positive (p) and negative (n)
+// directions, on x, y, and z axes.
+function hitxp( p, v, w ) { return hitp( p, v, w, 'x' ); }
+function hitxn( p, v, w ) { return hitn( p, v, w, 'x' ); }
+function hityp( p, v, w ) { return hitp( p, v, w, 'y' ); }
+function hityn( p, v, w ) { return hitn( p, v, w, 'y' ); }
+function hitzp( p, v, w ) { return hitp( p, v, w, 'z' ); }
+function hitzn( p, v, w ) { return hitn( p, v, w, 'z' ); }
+
+function hitp( p, v, w, axis ) {
+    return p[axis] + sphereRadius + v[axis] > w[axis];
+}
+function hitn( p, v, w, axis ) {
+    return p[axis] - sphereRadius + v[axis] < -w[axis];
+}
 
 function moveBackward() {
     var v = moveBackward.v;
