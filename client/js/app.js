@@ -115,7 +115,7 @@ function createScene() {
         // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
         scene.fog = new THREE.Fog( THREE.ColorKeywords.white, FOG_NEAR, FOG_FAR );
 
-        renderer = new THREE.WebGLRenderer({ canvas: canvas });
+        renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
         // renderer.setClearColor( scene.fog.color );
         renderer.setClearColor( THREE.ColorKeywords.white );
         renderer.setPixelRatio( window.devicePixelRatio );
