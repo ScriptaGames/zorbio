@@ -4,6 +4,7 @@ var camera;
 var cubeCamera;
 var npc_cubeCamera;
 var sphere;
+var npc_sphere;
 var food = {};
 var canvas = document.getElementById('renderCanvas');
 var screenWidth = window.innerWidth;
@@ -17,7 +18,7 @@ var FOOD_VALUE               = 0.08; // amount to increase sphere by when food i
 var INITIAL_CAMERA_DISTANCE  = 50;
 var INITIAL_PLAYER_RADIUS    = 5;
 var MAX_PLAYER_RADIUS        = 150;
-var BASE_PLAYER_SPEED        = 2;
+var BASE_PLAYER_SPEED        = 1;
 var FOOD_RESPAWN_FRAMES      = 10*60;
 var FOG_NEAR                 = 100;
 var FOG_FAR                  = 1000;
@@ -201,8 +202,14 @@ function createScene() {
 
     function render() {
 
+        // var new_position_influence = 0.2;
+        // npc_sphere.position.multiplyScalar(1 - new_position_influence);
+        // npc_sphere.position.add( npc_sphere.target_position.clone().multiplyScalar(new_position_influence) );
+
         cubeCamera.position.copy(sphere.position);
         cubeCamera.updateCubeMap( renderer, scene );
+
+        npc_cubeCamera.position.copy(npc_sphere.position);
         npc_cubeCamera.updateCubeMap( renderer, scene );
 
         renderer.render( scene, camera );
@@ -225,10 +232,9 @@ function drawActors() {
 }
 
 function drawNPCSphere() {
-    var npc_sphere;
-    var npc_geometry = new THREE.SphereGeometry( 8*INITIAL_PLAYER_RADIUS, 32, 32 );
+    var npc_geometry = new THREE.SphereGeometry( INITIAL_PLAYER_RADIUS, 64, 64 );
 
-    npc_cubeCamera = new THREE.CubeCamera( 8*INITIAL_PLAYER_RADIUS, 1000, 256 );
+    npc_cubeCamera = new THREE.CubeCamera( INITIAL_PLAYER_RADIUS, 1000, 256 );
     npc_cubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
     scene.add( npc_cubeCamera );
 
@@ -243,6 +249,19 @@ function drawNPCSphere() {
     npc_sphere = new THREE.Mesh( npc_geometry, npc_material );
     // npc_sphere.renderOrder = -1;
     scene.add( npc_sphere );
+
+    // set up a target_position; the npc_sphere will constantly move towards it
+    npc_sphere.target_position = new THREE.Vector3();
+    // just for demo, randomly move the npc sphere around the middle of the world
+    setInterval(function () {
+        var xsize = zorbioModel.worldSize.x / 10;
+        var ysize = zorbioModel.worldSize.y / 10;
+        var zsize = zorbioModel.worldSize.z / 10;
+        var x = Math.random() * xsize - xsize / 2;
+        var y = Math.random() * ysize - ysize / 2;
+        var z = Math.random() * zsize - zsize / 2;
+        npc_sphere.position.copy( new THREE.Vector3( x, y, z ) );
+    }, 1000);
 
     return npc_sphere;
 }
