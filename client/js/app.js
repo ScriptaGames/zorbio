@@ -202,9 +202,9 @@ function createScene() {
 
     function render() {
 
-        // var new_position_influence = 0.2;
-        // npc_sphere.position.multiplyScalar(1 - new_position_influence);
-        // npc_sphere.position.add( npc_sphere.target_position.clone().multiplyScalar(new_position_influence) );
+        var new_position_influence = 0.2;
+        npc_sphere.position.multiplyScalar(1 - new_position_influence);
+        npc_sphere.position.add( npc_sphere.target_position.clone().multiplyScalar(new_position_influence) );
 
         cubeCamera.position.copy(sphere.position);
         cubeCamera.updateCubeMap( renderer, scene );
@@ -260,7 +260,7 @@ function drawNPCSphere() {
         var x = Math.random() * xsize - xsize / 2;
         var y = Math.random() * ysize - ysize / 2;
         var z = Math.random() * zsize - zsize / 2;
-        npc_sphere.position.copy( new THREE.Vector3( x, y, z ) );
+        npc_sphere.target_position.copy( new THREE.Vector3( x, y, z ) );
     }, 1000);
 
     return npc_sphere;
