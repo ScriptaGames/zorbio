@@ -22,6 +22,7 @@ var FOOD_RESPAWN_FRAMES      = 10*60;
 var FOG_NEAR                 = 100;
 var FOG_FAR                  = 1000;
 var INITIAL_FOV              = 50;
+var SPHERE_GLOW_SCALE        = 1.3;  // multiplier to determine how big sphere glow should be relative to sphere
 
 // Player
 var playerName;
@@ -112,11 +113,11 @@ function createScene() {
 
         scene = new THREE.Scene();
         // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
-        scene.fog = new THREE.Fog( THREE.ColorKeywords.black, FOG_NEAR, FOG_FAR );
+        scene.fog = new THREE.Fog( THREE.ColorKeywords.white, FOG_NEAR, FOG_FAR );
 
         renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
         // renderer.setClearColor( scene.fog.color );
-        renderer.setClearColor( THREE.ColorKeywords.black );
+        renderer.setClearColor( THREE.ColorKeywords.white );
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize( window.innerWidth, window.innerHeight );
 
@@ -151,7 +152,7 @@ function createScene() {
         // skybox
         var materialArray = [];
         for (i = 0; i < 6; i++) {
-            materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/skybox_grid_black.jpg' ) }));
+            materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/skybox_grid.jpg' ) }));
             materialArray[i].side = THREE.BackSide;
         }
         var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
@@ -225,7 +226,7 @@ function drawPlayerSphere() {
     // main sphere
 
     var sphere;
-    var playerColor = THREE.ColorKeywords.red;
+    var playerColor = THREE.ColorKeywords.black;
     var geometry = new THREE.SphereGeometry( INITIAL_PLAYER_RADIUS, 32, 32 );
 
     cubeCamera = new THREE.CubeCamera( 1, 1000, 256 );
@@ -247,26 +248,26 @@ function drawPlayerSphere() {
 
     // sphere glow
 
-    // create custom material from the shader code above
-    //   that is within specially labeled script tags
-    var glowMaterial = new THREE.ShaderMaterial( 
-    {
-        uniforms: 
-        { 
-            "c":   { type: "f", value: 0.2 },
-            "p":   { type: "f", value: 2.9 },
+    var glowMaterial = new THREE.ShaderMaterial({
+        uniforms:
+            {
+            "c":   { type: "f", value: 0.05 },
+            "p":   { type: "f", value: 5.0 },
             glowColor: { type: "c", value: new THREE.Color(playerColor) },
             viewVector: { type: "v3", value: camera.position }
         },
         vertexShader:   document.getElementById( 'glowVertexShader'   ).textContent,
         fragmentShader: document.getElementById( 'glowFragmentShader' ).textContent,
         side: THREE.FrontSide,
-        blending: THREE.AdditiveBlending,
-        transparent: true
-    }   );
+        blending: THREE.CustomBlending,
+        blendSrc: THREE.SrcAlphaFactor,
+        blendDst: THREE.OneMinusSrcAlphaFactor,
+        blendEquation: THREE.AddEquation,
+        transparent: true,
+    });
     sphereGlow = new THREE.Mesh( sphere.geometry.clone(), glowMaterial.clone() );
     sphereGlow.position.copy(sphere.position);
-    sphereGlow.scale.multiplyScalar(1.2);
+    sphereGlow.scale.multiplyScalar(SPHERE_GLOW_SCALE);
     scene.add( sphereGlow );
 
     return sphere;
@@ -338,7 +339,7 @@ function captureFood(fi) {
         sphere.scale.addScalar( captureFood.p );
         sphere.scale.clampScalar( 1, MAX_PLAYER_RADIUS );
         sphereGlow.scale.copy(sphere.scale);
-        sphereGlow.scale.multiplyScalar(1.2);
+        sphereGlow.scale.multiplyScalar(SPHERE_GLOW_SCALE);
 
         // push camera back a bit
 
