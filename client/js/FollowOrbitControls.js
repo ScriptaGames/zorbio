@@ -143,13 +143,14 @@
             var position = scope.object.position;
             var offset = position.clone().sub( scope.target.position );
             var targetDistance = offset.length();
+            var dir = scope.upside_down ? 1 : -1;
 
             // half of the fov is center to top of screen
             targetDistance *= Math.tan( ( scope.object.fov / 2 ) * Math.PI / 180.0 );
 
             // we actually don't use screenWidth, since perspective camera is fixed to screen height
-            scope.panLeft( 2 * deltaX * targetDistance / screenHeight );
-            scope.panUp( 2 * deltaY * targetDistance / screenHeight );
+            scope.panLeft( 2 * dir * deltaX * targetDistance / screenHeight );
+            scope.panUp( 2 * dir * deltaY * targetDistance / screenHeight );
         };
 
         this.dollyIn = function ( dollyScale ) {
@@ -171,7 +172,7 @@
             var lastPosition = new THREE.Vector3();
             var lastQuaternion = new THREE.Quaternion();
 
-            var upside_down = false;
+            scope.upside_down = false;
 
             return function () {
 
@@ -190,11 +191,11 @@
 
                 phi = Math.atan2( Math.sqrt( Math.pow(offset.x, 2) + Math.pow(offset.z, 2) ), offset.y );
 
-                if (upside_down) {
+                if (scope.upside_down) {
                     if (phi - phiDelta > Math.PI || phi - phiDelta < 0) {
                         theta += Math.PI;
                         phi %= Math.PI;
-                        upside_down = false;
+                        scope.upside_down = false;
                         this.object.setRoll(0);
                     }
                 }
@@ -203,12 +204,12 @@
                         console.log('FLIP!');
                         theta += Math.PI;
                         phi %= Math.PI;
-                        upside_down = true;
+                        scope.upside_down = true;
                         this.object.setRoll(Math.PI);
                     }
                 }
 
-                if (upside_down) {
+                if (scope.upside_down) {
                     theta -= thetaDelta;
                     phi -= phiDelta;
                 }
@@ -337,7 +338,7 @@
 
         // Set to false to disable rotating
         this.enableRotate = true;
-        this.rotateSpeed = 1.0;
+        this.rotateSpeed = 0.5;
 
         // Set to false to disable panning
         this.enablePan = true;
