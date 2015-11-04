@@ -258,7 +258,7 @@ function drawPlayerSphere() {
         },
         vertexShader:   document.getElementById( 'glowVertexShader'   ).textContent,
         fragmentShader: document.getElementById( 'glowFragmentShader' ).textContent,
-        side: THREE.FrontSide,
+        side: THREE.DoubleSide,
         blending: THREE.CustomBlending,
         blendSrc: THREE.SrcAlphaFactor,
         blendDst: THREE.OneMinusSrcAlphaFactor,
