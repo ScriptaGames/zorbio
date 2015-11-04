@@ -21,6 +21,7 @@ var BASE_PLAYER_SPEED        = 2;
 var FOOD_RESPAWN_FRAMES      = 10*60;
 var FOG_NEAR                 = 100;
 var FOG_FAR                  = 1000;
+var FOG_COLOR                = THREE.ColorKeywords.white;
 var INITIAL_FOV              = 50;
 var SPHERE_GLOW_SCALE        = 1.3;  // multiplier to determine how big sphere glow should be relative to sphere
 
@@ -113,11 +114,10 @@ function createScene() {
 
         scene = new THREE.Scene();
         // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
-        scene.fog = new THREE.Fog( THREE.ColorKeywords.white, FOG_NEAR, FOG_FAR );
+        scene.fog = new THREE.Fog( FOG_COLOR, FOG_NEAR, FOG_FAR );
 
         renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
-        // renderer.setClearColor( scene.fog.color );
-        renderer.setClearColor( THREE.ColorKeywords.white );
+        renderer.setClearColor( FOG_COLOR );
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize( window.innerWidth, window.innerHeight );
 
@@ -226,7 +226,7 @@ function drawPlayerSphere() {
     // main sphere
 
     var sphere;
-    var playerColor = THREE.ColorKeywords.black;
+    var playerColor = THREE.ColorKeywords.red;
     var geometry = new THREE.SphereGeometry( INITIAL_PLAYER_RADIUS, 32, 32 );
 
     cubeCamera = new THREE.CubeCamera( 1, 1000, 256 );
