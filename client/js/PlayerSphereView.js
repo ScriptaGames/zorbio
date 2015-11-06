@@ -4,8 +4,6 @@
  * @param actor
  * @constructor
  */
-var SPHERE_GLOW_SCALE = 1.3;  // multiplier to determine how big sphere glow should be relative to sphere
-var MAX_PLAYER_RADIUS = 150;
 
 var PlayerSphereView = function ZORPlayerSphereView(actor, scene, radius) {
     this.playerColor = PlayerSphereView.COLORS[actor.color];
@@ -16,9 +14,9 @@ var PlayerSphereView = function ZORPlayerSphereView(actor, scene, radius) {
     scene.add( this.cubeCamera );
 
     var material = new THREE.MeshBasicMaterial( {
-        color  : THREE.ColorKeywords.white,
-        envMap : this.cubeCamera.renderTarget,
-        blending: THREE.NormalBlending
+        color    : THREE.ColorKeywords.white,
+        envMap   : this.cubeCamera.renderTarget,
+        blending : THREE.NormalBlending
     } );
     material.transparent = true;
     material.depthTest = true;
@@ -34,30 +32,26 @@ var PlayerSphereView = function ZORPlayerSphereView(actor, scene, radius) {
         uniforms:
         {
             "c":   { type: "f", value: 0.05 },
-            "p":   { type: "f", value: 5.0 },
+            "p":   { type: "f", value: 6.0 },
             glowColor: { type: "c", value: new THREE.Color(this.playerColor) },
             viewVector: { type: "v3", value: camera.position }
         },
         vertexShader:   document.getElementById( 'glowVertexShader'   ).textContent,
         fragmentShader: document.getElementById( 'glowFragmentShader' ).textContent,
         side: THREE.DoubleSide,
-        blending: THREE.CustomBlending,
-        blendSrc: THREE.SrcAlphaFactor,
-        blendDst: THREE.OneMinusSrcAlphaFactor,
-        blendEquation: THREE.AddEquation,
         transparent: true
     });
     this.sphereGlow = new THREE.Mesh( this.mainSphere.geometry.clone(), glowMaterial.clone() );
-    this.sphereGlow.position.copy(this.mainSphere.position);
-    this.sphereGlow.scale.multiplyScalar(SPHERE_GLOW_SCALE);
+    this.sphereGlow.position.copy( this.mainSphere.position );
+    this.sphereGlow.scale.multiplyScalar( config.SPHERE_GLOW_SCALE );
     scene.add( this.sphereGlow );
 };
 
 PlayerSphereView.prototype.grow = function ZORPlayerSphereViewGrow(ammount) {
     this.mainSphere.scale.addScalar( ammount );
-    this.mainSphere.scale.clampScalar( 1, MAX_PLAYER_RADIUS );
-    this.sphereGlow.scale.copy(this.mainSphere.scale);
-    this.sphereGlow.scale.multiplyScalar(SPHERE_GLOW_SCALE);
+    this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
+    this.sphereGlow.scale.copy( this.mainSphere.scale );
+    this.sphereGlow.scale.multiplyScalar( config.SPHERE_GLOW_SCALE );
 };
 
 PlayerSphereView.prototype.update = function ZORPlayerSphereUpdate(scene, camera, renderer) {

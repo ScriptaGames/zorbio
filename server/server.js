@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var config = require('./config.json');
+var config = require('../common/config.js');
 
 // Load ThreeJS, so we have access to the same vector and matrix functions the
 // client uses
@@ -19,7 +19,7 @@ var UTIL = require('../common/util.js');
 // max players per game instance
 //var MAX_PLAYERS = 32;
 
-var model = new Zorbio.Model(config.world_size, config.food_density);
+var model = new Zorbio.Model(config.WORLD_SIZE, config.FOOD_DENSITY);
 
 // Define sockets as a hash so we can use string indexes
 var sockets = {};
@@ -110,8 +110,8 @@ function checkHeartbeats() {
     Object.getOwnPropertyNames(model.players).forEach(function (id) {
         var player = model.players[id];
         if (player && player.lastHeartbeat) {
-            if ((time - player.lastHeartbeat) > config.heartBeatTimeout) {
-                var msg = "You were kicked because last heartbeat was over " + (config.heartBeatTimeout / 1000) + " seconds ago.";
+            if ((time - player.lastHeartbeat) > config.HEARTBEAT_TIMEOUT) {
+                var msg = "You were kicked because last heartbeat was over " + (config.HEARTBEAT_TIMEOUT / 1000) + " seconds ago.";
                 console.log('kicking player', id, msg);
                 kickPlayer(id, msg);
             }
@@ -139,10 +139,10 @@ function kickPlayer(playerId, reason) {
     delete sockets[playerId];
 }
 
-setInterval(sendUpdates, config.networkUpdateInterval);
-setInterval(checkHeartbeats, config.checkHeartbeats);
+setInterval(sendUpdates, config.NETWORK_UPDATE_INTERVAL);
+setInterval(checkHeartbeats, config.HEARTBEAT_CHECK_INTERVAL);
 
-var serverPort = process.env.PORT || config.port;
+var serverPort = process.env.PORT || config.PORT;
 http.listen(serverPort, function () {
     console.log("Server is listening on port " + serverPort);
 });
