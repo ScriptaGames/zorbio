@@ -1,7 +1,9 @@
 // Canvas
 var scene;
 var camera;
+var cubeCamera;
 var sphere;
+var sphereGlow;
 var food = {};
 var canvas = document.getElementById('renderCanvas');
 var screenWidth = window.innerWidth;
@@ -11,7 +13,7 @@ var screenHeight = window.innerHeight;
 var MOVE_SPEED_SCALE         = 0.5;
 var PLAYER_POSITION_INTERVAL = 50;   // 50 milliseconds or 20 times per second
 var HEARTBEAT_INTERVAL       = 3000; // How long to wait between sending heartbeat milliseconds
-var FOOD_VALUE               = 0.08; // amount to increase sphere by when food is consumed
+var FOOD_VALUE               = 0.16; // amount to increase sphere by when food is consumed
 var INITIAL_CAMERA_DISTANCE  = 50;
 var INITIAL_PLAYER_RADIUS    = 2;
 var MAX_PLAYER_RADIUS        = 150;
@@ -19,6 +21,9 @@ var BASE_PLAYER_SPEED        = 2;
 var FOOD_RESPAWN_FRAMES      = 10*60;
 var FOG_NEAR                 = 100;
 var FOG_FAR                  = 1000;
+var FOG_COLOR                = THREE.ColorKeywords.white;
+var INITIAL_FOV              = 50;
+var SPHERE_GLOW_SCALE        = 1.3;  // multiplier to determine how big sphere glow should be relative to sphere
 
 // Player
 var playerName;
@@ -110,18 +115,17 @@ function createScene() {
 
         scene = new THREE.Scene();
         // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
-        scene.fog = new THREE.Fog( THREE.ColorKeywords.white, FOG_NEAR, FOG_FAR );
+        scene.fog = new THREE.Fog( FOG_COLOR, FOG_NEAR, FOG_FAR );
 
-        renderer = new THREE.WebGLRenderer({ canvas: canvas });
-        // renderer.setClearColor( scene.fog.color );
-        renderer.setClearColor( THREE.ColorKeywords.white );
+        renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
+        renderer.setClearColor( FOG_COLOR );
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize( window.innerWidth, window.innerHeight );
 
         // orbit camera
 
         camera = new THREE.PerspectiveCamera(
-            50,
+            INITIAL_FOV,
             window.innerWidth / window.innerHeight,
             1,
             FOG_FAR
@@ -191,6 +195,8 @@ function createScene() {
 
         checkFoodCaptures();
 
+        updatePlayerSphere();
+
         render();
 
     }
@@ -217,17 +223,68 @@ function drawActors() {
 }
 
 function drawPlayerSphere() {
+
+    // main sphere
+
     var sphere;
+    var playerColor = THREE.ColorKeywords.red;
     var geometry = new THREE.SphereGeometry( INITIAL_PLAYER_RADIUS, 32, 32 );
-    var material = new THREE.MeshBasicMaterial( {color: THREE.ColorKeywords.red } );
+
+    cubeCamera = new THREE.CubeCamera( 1, 1000, 256 );
+    cubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
+    scene.add( cubeCamera );
+
+    var material = new THREE.MeshBasicMaterial( {
+        color  : THREE.ColorKeywords.white,
+        envMap : cubeCamera.renderTarget,
+        blending: THREE.NormalBlending,
+    } );
     material.transparent = true;
     material.depthTest = true;
-    material.opacity = 0.5;
+    material.opacity = 0.3;
+
     sphere = new THREE.Mesh( geometry, material );
     // sphere.renderOrder = -1;
     scene.add( sphere );
 
+    // sphere glow
+
+    var glowMaterial = new THREE.ShaderMaterial({
+        uniforms:
+            {
+            "c":   { type: "f", value: 0.05 },
+            "p":   { type: "f", value: 5.0 },
+            glowColor: { type: "c", value: new THREE.Color(playerColor) },
+            viewVector: { type: "v3", value: camera.position }
+        },
+        vertexShader:   document.getElementById( 'glowVertexShader'   ).textContent,
+        fragmentShader: document.getElementById( 'glowFragmentShader' ).textContent,
+        side: THREE.DoubleSide,
+        blending: THREE.CustomBlending,
+        blendSrc: THREE.SrcAlphaFactor,
+        blendDst: THREE.OneMinusSrcAlphaFactor,
+        blendEquation: THREE.AddEquation,
+        transparent: true,
+    });
+    sphereGlow = new THREE.Mesh( sphere.geometry.clone(), glowMaterial.clone() );
+    sphereGlow.position.copy(sphere.position);
+    sphereGlow.scale.multiplyScalar(SPHERE_GLOW_SCALE);
+    scene.add( sphereGlow );
+
     return sphere;
+}
+
+function updatePlayerSphere() {
+
+    // update glow
+
+    sphereGlow.position.copy(sphere.position);
+    sphereGlow.material.uniforms.viewVector.value = new THREE.Vector3().subVectors( camera.position, sphereGlow.position );
+
+    // update reflections
+
+    cubeCamera.position.copy(sphere.position);
+    cubeCamera.updateCubeMap( renderer, scene );
 }
 
 function checkFoodCaptures() {
@@ -282,6 +339,8 @@ function captureFood(fi) {
 
         sphere.scale.addScalar( captureFood.p );
         sphere.scale.clampScalar( 1, MAX_PLAYER_RADIUS );
+        sphereGlow.scale.copy(sphere.scale);
+        sphereGlow.scale.multiplyScalar(SPHERE_GLOW_SCALE);
 
         // push camera back a bit
 
