@@ -22,7 +22,7 @@ var FOOD_RESPAWN_FRAMES      = 10*60;
 var FOOD_CAPTURE_ASSIST      = 2; // this number is added to player's radius for food capturing
 var FOG_NEAR                 = 100;
 var FOG_FAR                  = 1000;
-var FOG_COLOR                = THREE.ColorKeywords.white;
+var FOG_COLOR                = THREE.ColorKeywords.black;
 var INITIAL_FOV              = 50;
 var SPHERE_GLOW_SCALE        = 1.3;  // multiplier to determine how big sphere glow should be relative to sphere
 
@@ -153,7 +153,7 @@ function createScene() {
         // skybox
         var materialArray = [];
         for (i = 0; i < 6; i++) {
-            materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/skybox_grid.jpg' ) }));
+            materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/skybox_grid_black.jpg' ) }));
             materialArray[i].side = THREE.BackSide;
         }
         var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
