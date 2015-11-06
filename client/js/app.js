@@ -328,7 +328,7 @@ function updateActors() {
 }
 
 function radius(sphere) {
-    return INITIAL_PLAYER_RADIUS * sphere.scale.x;
+    return sphere.geometry.boundingSphere.radius;
 }
 
 function captureFood(fi) {
@@ -343,6 +343,7 @@ function captureFood(fi) {
 
         sphere.scale.addScalar( captureFood.p );
         sphere.scale.clampScalar( 1, MAX_PLAYER_RADIUS );
+        sphere.geometry.computeBoundingSphere();
         sphereGlow.scale.copy(sphere.scale);
         sphereGlow.scale.multiplyScalar(SPHERE_GLOW_SCALE);
 
@@ -535,43 +536,17 @@ function moveForward() {
 moveForward.v = new THREE.Vector3();
 
 function checkWallCollision( p, v, w ) {
-    // var colx = p.x + v.x > w.x || p.x + v.x < -w.x;
 
     var vs = v.clone();
-    var vscale = 1;
 
-    if ( hitxp( p, v, w ) ) {
-        console.log('hit +x');
-        vscale = Math.min( 1 / v.x, vscale );
+    if ( hitxp( p, v, w ) || hitxn( p, v, w ) )
         vs.x = 0;
-    }
-    if ( hitxn( p, v, w ) ) {
-        console.log('hit -x');
-        vscale = Math.min( 1 / v.x, vscale );
-        vs.x = 0;
-    }
-    if ( hityp( p, v, w ) ) {
-        console.log('hit +y');
-        vscale = Math.min( 1 / v.y, vscale );
-        vs.y = 0;
-    }
-    if ( hityn( p, v, w ) ) {
-        console.log('hit -y');
-        vscale = Math.min( 1 / v.y, vscale );
-        vs.y = 0;
-    }
-    if ( hitzp( p, v, w ) ) {
-        console.log('hit +z');
-        vscale = Math.min( 1 / v.z, vscale );
-        vs.z = 0;
-    }
-    if ( hitzn( p, v, w ) ) {
-        console.log('hit -z');
-        vscale = Math.min( 1 / v.z, vscale );
-        vs.z = 0;
-    }
 
-    vs.multiplyScalar( vscale );
+    if ( hityp( p, v, w ) || hityn( p, v, w ) )
+        vs.y = 0;
+
+    if ( hitzp( p, v, w ) || hitzn( p, v, w ) )
+        vs.z = 0;
 
     return vs;
 
@@ -590,10 +565,10 @@ function hitzp( p, v, w ) { return hitp( p, v, w, 'z' ); }
 function hitzn( p, v, w ) { return hitn( p, v, w, 'z' ); }
 
 function hitp( p, v, w, axis ) {
-    return p[axis] + radius(sphere) + v[axis] > w[axis]/2;
+    return p[axis] + radius(sphere) - v[axis] > w[axis]/2;
 }
 function hitn( p, v, w, axis ) {
-    return p[axis] - radius(sphere) + v[axis] < -w[axis]/2;
+    return p[axis] - radius(sphere) - v[axis] < -w[axis]/2;
 }
 
 function moveBackward() {
