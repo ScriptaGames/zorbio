@@ -1,9 +1,8 @@
 // Canvas
 var scene;
 var camera;
-var cubeCamera;
-var sphere;
-var sphereGlow;
+//TODO: rename controls to cameraControls
+var controls;
 var food = {};
 var canvas = document.getElementById('renderCanvas');
 var screenWidth = window.innerWidth;
@@ -16,14 +15,13 @@ var HEARTBEAT_INTERVAL       = 3000; // How long to wait between sending heartbe
 var FOOD_VALUE               = 0.16; // amount to increase sphere by when food is consumed
 var INITIAL_CAMERA_DISTANCE  = 50;
 var INITIAL_PLAYER_RADIUS    = 5;
-var MAX_PLAYER_RADIUS        = 150;
 var BASE_PLAYER_SPEED        = 2;
 var FOOD_RESPAWN_FRAMES      = 10*60;
 var FOG_NEAR                 = 100;
 var FOG_FAR                  = 1000;
 var FOG_COLOR                = THREE.ColorKeywords.white;
 var INITIAL_FOV              = 50;
-var SPHERE_GLOW_SCALE        = 1.3;  // multiplier to determine how big sphere glow should be relative to sphere
+
 
 // Player
 var playerName;
@@ -40,20 +38,8 @@ var disconnected = false;
 
 var renderer;
 
-
 // Model that represents all of the visual elements of the game
 var zorbioModel;
-
-//TODO: add more colors, only select ones not used.
-var COLORS = [
-    // THREE.ColorKeywords.red,
-    // THREE.ColorKeywords.blue,
-    // THREE.ColorKeywords.yellow,
-    // THREE.ColorKeywords.green,
-    // THREE.ColorKeywords.purple,
-    // THREE.ColorKeywords.magenta,
-    THREE.ColorKeywords.aliceblue,
-];
 
 function startGame(type) {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
@@ -62,7 +48,7 @@ function startGame(type) {
     showGame(true);
 
     // Connect to the server
-    var colorCode = UTIL.getRandomIntInclusive(0, COLORS.length - 1);
+    var colorCode = UTIL.getRandomIntInclusive(0, PlayerSphereView.COLORS.length - 1);
     connectToServer(playerType, playerName, colorCode);
 }
 
@@ -104,7 +90,6 @@ window.onload = function () {
     });
 };
 
-var camera, controls, scene, renderer;
 function createScene() {
 
     init();
@@ -141,12 +126,13 @@ function createScene() {
         // controls.maxPolarAngle = -Infinity; // radians
 
         // sphere
+        // register sphere with player object who owns it
+        player.sphere.view = new PlayerSphereView(player.sphere, scene, INITIAL_PLAYER_RADIUS);
 
-        sphere = drawPlayerSphere();
+        // camera
+        controls.target = player.sphere.view.mainSphere;
 
-        controls.target = sphere;
         // food
-
         drawFood();
 
         // skybox
@@ -159,10 +145,6 @@ function createScene() {
         var skyboxGeom = new THREE.BoxGeometry( zorbioModel.worldSize.x, zorbioModel.worldSize.y, zorbioModel.worldSize.z, 1, 1, 1 );
         var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
         scene.add( skybox );
-
-        // register sphere with player object who owns it
-
-        player.sphere.geo = sphere;
 
         // lights
 
@@ -194,7 +176,7 @@ function createScene() {
 
         checkFoodCaptures();
 
-        updatePlayerSphere();
+        player.sphere.view.update(scene, camera, renderer);
 
         render();
 
@@ -221,77 +203,13 @@ function drawActors() {
     });
 }
 
-function drawPlayerSphere() {
-
-    // main sphere
-
-    var sphere;
-    var playerColor = THREE.ColorKeywords.red;
-    var geometry = new THREE.SphereGeometry( INITIAL_PLAYER_RADIUS, 32, 32 );
-
-    cubeCamera = new THREE.CubeCamera( 1, 1000, 256 );
-    cubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
-    scene.add( cubeCamera );
-
-    var material = new THREE.MeshBasicMaterial( {
-        color  : THREE.ColorKeywords.white,
-        envMap : cubeCamera.renderTarget,
-        blending: THREE.NormalBlending,
-    } );
-    material.transparent = true;
-    material.depthTest = true;
-    material.opacity = 0.3;
-
-    sphere = new THREE.Mesh( geometry, material );
-    // sphere.renderOrder = -1;
-    scene.add( sphere );
-
-    // sphere glow
-
-    var glowMaterial = new THREE.ShaderMaterial({
-        uniforms:
-            {
-            "c":   { type: "f", value: 0.05 },
-            "p":   { type: "f", value: 5.0 },
-            glowColor: { type: "c", value: new THREE.Color(playerColor) },
-            viewVector: { type: "v3", value: camera.position }
-        },
-        vertexShader:   document.getElementById( 'glowVertexShader'   ).textContent,
-        fragmentShader: document.getElementById( 'glowFragmentShader' ).textContent,
-        side: THREE.DoubleSide,
-        blending: THREE.CustomBlending,
-        blendSrc: THREE.SrcAlphaFactor,
-        blendDst: THREE.OneMinusSrcAlphaFactor,
-        blendEquation: THREE.AddEquation,
-        transparent: true,
-    });
-    sphereGlow = new THREE.Mesh( sphere.geometry.clone(), glowMaterial.clone() );
-    sphereGlow.position.copy(sphere.position);
-    sphereGlow.scale.multiplyScalar(SPHERE_GLOW_SCALE);
-    scene.add( sphereGlow );
-
-    return sphere;
-}
-
-function updatePlayerSphere() {
-
-    // update glow
-
-    sphereGlow.position.copy(sphere.position);
-    sphereGlow.material.uniforms.viewVector.value = new THREE.Vector3().subVectors( camera.position, sphereGlow.position );
-
-    // update reflections
-
-    cubeCamera.position.copy(sphere.position);
-    cubeCamera.updateCubeMap( renderer, scene );
-}
-
 function checkFoodCaptures() {
 
     var x, y, z, i, l;
     var vdist = checkFoodCaptures.vdist;
     var dist = 0;
-    var sphere_radius = INITIAL_PLAYER_RADIUS * sphere.scale.x; // x, y, and z scale should all be the same, always
+    var mainSphere = player.sphere.view.mainSphere;
+    var sphere_radius = INITIAL_PLAYER_RADIUS * mainSphere.scale.x; // x, y, and z scale should all be the same, always
 
     for ( i = 0, l = food.positions.length; i < l; i += 3 ) {
         if (aliveFood( i / 3 )) {
@@ -299,7 +217,7 @@ function checkFoodCaptures() {
             y = food.positions[ i + 1 ];
             z = food.positions[ i + 2 ];
             vdist.set(x, y, z);
-            dist = vdist.distanceTo(sphere.position);
+            dist = vdist.distanceTo(mainSphere.position);
             if (dist <= sphere_radius) {
                 captureFood( i / 3 );
             }
@@ -328,22 +246,19 @@ function updateActors() {
 
 function captureFood(fi) {
     if (aliveFood(fi)) {
+        var mainSphere = player.sphere.view.mainSphere;
 
-        captureFood.p = FOOD_VALUE / sphere.scale.x;
+        captureFood.p = FOOD_VALUE / mainSphere.scale.x;
 
         hideFood( fi );
 
         // grow sphere, with diminishing returns on food as you get bigger.
         // prevents runaway growth.
-
-        sphere.scale.addScalar( captureFood.p );
-        sphere.scale.clampScalar( 1, MAX_PLAYER_RADIUS );
-        sphereGlow.scale.copy(sphere.scale);
-        sphereGlow.scale.multiplyScalar(SPHERE_GLOW_SCALE);
+        player.sphere.view.grow( captureFood.p );
 
         // push camera back a bit
 
-        controls.minDistance += 16*captureFood.p;
+        controls.minDistance += 16 * captureFood.p;
         controls.maxDistance = controls.minDistance;
     }
 }
@@ -507,22 +422,24 @@ function keyReleased(key) {
 
 function moveForward() {
     var v = moveForward.v;
-    v.copy( sphere.position );
+    var mainSphere = player.sphere.view.mainSphere;
+    v.copy( mainSphere.position );
     v.sub( camera.position );
     v.multiplyScalar( -1 );
     v.normalize();
     v.multiplyScalar( BASE_PLAYER_SPEED );
-    sphere.position.sub( v );
+    mainSphere.position.sub( v );
 }
 moveForward.v = new THREE.Vector3();
 
 function moveBackward() {
     var v = moveBackward.v;
-    v.copy( sphere.position );
+    var mainSphere = player.sphere.view.mainSphere;
+    v.copy( mainSphere.position );
     v.sub( camera.position );
     v.normalize();
     v.multiplyScalar( BASE_PLAYER_SPEED );
-    sphere.position.sub( v );
+    mainSphere.position.sub( v );
 }
 moveBackward.v = new THREE.Vector3();
 
