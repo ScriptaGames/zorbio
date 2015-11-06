@@ -292,7 +292,7 @@ function checkFoodCaptures() {
     var x, y, z, i, l;
     var vdist = checkFoodCaptures.vdist;
     var dist = 0;
-    var sphere_radius = INITIAL_PLAYER_RADIUS * sphere.scale.x; // x, y, and z scale should all be the same, always
+    var sphere_radius = radius(sphere); // x, y, and z scale should all be the same, always
 
     for ( i = 0, l = food.positions.length; i < l; i += 3 ) {
         if (aliveFood( i / 3 )) {
@@ -325,6 +325,10 @@ function updateActors() {
             }
         }
     });
+}
+
+function radius(sphere) {
+    return INITIAL_PLAYER_RADIUS * sphere.scale.x;
 }
 
 function captureFood(fi) {
@@ -525,23 +529,53 @@ function moveForward() {
     v.multiplyScalar( -1 );
     v.normalize();
     v.multiplyScalar( BASE_PLAYER_SPEED );
+    v = checkWallCollision( sphere.position, v, zorbioModel.worldSize );
     sphere.position.sub( v );
-
-    checkWallCollision( sphere.position, v, zorbioModel.worldSize );
 }
 moveForward.v = new THREE.Vector3();
 
 function checkWallCollision( p, v, w ) {
-    var colx = p.x + v.x > w.x || p.x + v.x < -w.x;
+    // var colx = p.x + v.x > w.x || p.x + v.x < -w.x;
 
-    // velocity vector shortened until sphere hits wall
-    var vs = checkWallCollision.vs;
-    vs.x = Math.abs( p.x - w.x );
-    vs.y = v.y * vs.x / v.x;
-    vs.z = v.z * vs.x / v.x;
-    // the shortened vector's components should maintain their relative ratios
+    var vs = v.clone();
+    var vscale = 1;
+
+    if ( hitxp( p, v, w ) ) {
+        console.log('hit +x');
+        vscale = Math.min( 1 / v.x, vscale );
+        vs.x = 0;
+    }
+    if ( hitxn( p, v, w ) ) {
+        console.log('hit -x');
+        vscale = Math.min( 1 / v.x, vscale );
+        vs.x = 0;
+    }
+    if ( hityp( p, v, w ) ) {
+        console.log('hit +y');
+        vscale = Math.min( 1 / v.y, vscale );
+        vs.y = 0;
+    }
+    if ( hityn( p, v, w ) ) {
+        console.log('hit -y');
+        vscale = Math.min( 1 / v.y, vscale );
+        vs.y = 0;
+    }
+    if ( hitzp( p, v, w ) ) {
+        console.log('hit +z');
+        vscale = Math.min( 1 / v.z, vscale );
+        vs.z = 0;
+    }
+    if ( hitzn( p, v, w ) ) {
+        console.log('hit -z');
+        vscale = Math.min( 1 / v.z, vscale );
+        vs.z = 0;
+    }
+
+    vs.multiplyScalar( vscale );
+
+    return vs;
+
 }
-checkWallCollision.vs = new THREE.Vector3();
 
 // TODO: make sure when a collision occurs with two or more walls at once
 // happens, it is handled correctly
@@ -556,10 +590,10 @@ function hitzp( p, v, w ) { return hitp( p, v, w, 'z' ); }
 function hitzn( p, v, w ) { return hitn( p, v, w, 'z' ); }
 
 function hitp( p, v, w, axis ) {
-    return p[axis] + sphereRadius + v[axis] > w[axis];
+    return p[axis] + radius(sphere) + v[axis] > w[axis]/2;
 }
 function hitn( p, v, w, axis ) {
-    return p[axis] - sphereRadius + v[axis] < -w[axis];
+    return p[axis] - radius(sphere) + v[axis] < -w[axis]/2;
 }
 
 function moveBackward() {
