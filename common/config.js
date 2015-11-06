@@ -7,8 +7,8 @@ var config = {};
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE   = 800;
-config.FOOD_DENSITY = 20;
+config.WORLD_SIZE   = 80;
+config.FOOD_DENSITY = 2;
 
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //

@@ -54,10 +54,13 @@
 
             uniform vec3 color;
             uniform sampler2D texture;
+            uniform bool vFogEnabled;
 
             varying vec3 vColor;
             varying float vRespawning;
             varying float vDist;
+
+            vec3 fog;
 
             void main() {
 
@@ -66,9 +69,13 @@
                 if ( vRespawning > 0.0 ) discard;
 
 
-                float fogp = vDist / 1000.0;
-
-                vec3 fog = vec3( fogp, fogp, fogp );
+                if ( vFogEnabled ) {
+                    float fogp = vDist / 1000.0;
+                    fog = vec3( fogp, fogp, fogp );
+                }
+                else {
+                    fog = vec3( 0.0, 0.0, 0.0 );
+                }
 
                 vec4 color = vec4( vColor - fog, 0.5 ); // * texture2D( texture, gl_PointCoord );
 

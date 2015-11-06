@@ -50,6 +50,7 @@ var PlayerSphereView = function ZORPlayerSphereView(actor, scene, radius) {
 PlayerSphereView.prototype.grow = function ZORPlayerSphereViewGrow(ammount) {
     this.mainSphere.scale.addScalar( ammount );
     this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
+    this.mainSphere.geometry.computeBoundingSphere(); // compute the new bounding sphere after resizing
     this.sphereGlow.scale.copy( this.mainSphere.scale );
     this.sphereGlow.scale.multiplyScalar( config.SPHERE_GLOW_SCALE );
 };

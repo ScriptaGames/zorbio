@@ -13,7 +13,8 @@ var MOVE_SPEED_SCALE         = 0.5;
 var PLAYER_POSITION_INTERVAL = 50;   // 50 milliseconds or 20 times per second
 var HEARTBEAT_INTERVAL       = 3000; // How long to wait between sending heartbeat milliseconds
 var INITIAL_CAMERA_DISTANCE  = 50;
-var INITIAL_PLAYER_RADIUS    = 5;
+var INITIAL_PLAYER_RADIUS    = 2;
+var MAX_PLAYER_RADIUS        = 150;
 var BASE_PLAYER_SPEED        = 2;
 var FOOD_VALUE               = 0.16; // amount to increase sphere by when food is consumed
 var FOOD_RESPAWN_FRAMES      = 10*60;
@@ -30,6 +31,7 @@ var playerType;
 var playerNameInput = document.getElementById('playerNameInput');
 var player;
 var playerSpeed = BASE_PLAYER_SPEED;
+var playerVelocity = new THREE.Vector3();
 
 // Game state
 var gameStart = false;
@@ -204,13 +206,17 @@ function drawActors() {
     });
 }
 
+function radius(sphere) {
+    return sphere.geometry.boundingSphere.radius;
+}
+
 function checkFoodCaptures() {
 
     var x, y, z, i, l;
     var vdist = checkFoodCaptures.vdist;
     var dist = 0;
     var mainSphere = player.sphere.view.mainSphere;
-    var sphere_radius = INITIAL_PLAYER_RADIUS * mainSphere.scale.x; // x, y, and z scale should all be the same, always
+    var sphere_radius = radius(mainSphere); // x, y, and z scale should all be the same, always
 
     for ( i = 0, l = food.positions.length; i < l; i += 3 ) {
         if (aliveFood( i / 3 )) {
@@ -422,6 +428,18 @@ function keyReleased(key) {
     console.log('key ' + key + ' released');
 }
 
+
+// function updateMovement() {
+//     var v = updateMovement.v;
+//     v.copy( sphere.position );
+//     v.sub( camera.position );
+//     v.multiplyScalar( -1 );
+//     v.normalize();
+//     v.multiplyScalar( BASE_PLAYER_SPEED );
+//     sphere.position.sub( v );
+// }
+// updateMovement.v = new THREE.Vector3();
+
 function moveForward() {
     var v = moveForward.v;
     var mainSphere = player.sphere.view.mainSphere;
@@ -430,9 +448,47 @@ function moveForward() {
     v.multiplyScalar( -1 );
     v.normalize();
     v.multiplyScalar( BASE_PLAYER_SPEED );
+    v = checkWallCollision( mainSphere.position, v, zorbioModel.worldSize );
     mainSphere.position.sub( v );
 }
 moveForward.v = new THREE.Vector3();
+
+function checkWallCollision( p, v, w ) {
+
+    var vs = v.clone();
+    var r = radius( player.sphere.view.mainSphere );
+
+    if ( hitxp( p, r, v, w ) || hitxn( p, r, v, w ) )
+        vs.x = 0;
+
+    if ( hityp( p, r, v, w ) || hityn( p, r, v, w ) )
+        vs.y = 0;
+
+    if ( hitzp( p, r, v, w ) || hitzn( p, r, v, w ) )
+        vs.z = 0;
+
+    return vs;
+
+}
+
+// TODO: make sure when a collision occurs with two or more walls at once
+// happens, it is handled correctly
+
+// functions to detect hitting the wall in the positive (p) and negative (n)
+// directions, on x, y, and z axes.
+function hitxp( p, r, v, w ) { return hitp( p, r, v, w, 'x' ); }
+function hitxn( p, r, v, w ) { return hitn( p, r, v, w, 'x' ); }
+function hityp( p, r, v, w ) { return hitp( p, r, v, w, 'y' ); }
+function hityn( p, r, v, w ) { return hitn( p, r, v, w, 'y' ); }
+function hitzp( p, r, v, w ) { return hitp( p, r, v, w, 'z' ); }
+function hitzn( p, r, v, w ) { return hitn( p, r, v, w, 'z' ); }
+
+function hitp( p, r, v, w, axis ) {
+    return p[axis] + r - v[axis] > w[axis]/2;
+}
+function hitn( p, r, v, w, axis ) {
+    return p[axis] - r - v[axis] < -w[axis]/2;
+}
 
 function moveBackward() {
     var v = moveBackward.v;
