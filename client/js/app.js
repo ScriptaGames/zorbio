@@ -13,12 +13,13 @@ var screenHeight = window.innerHeight;
 var MOVE_SPEED_SCALE         = 0.5;
 var PLAYER_POSITION_INTERVAL = 50;   // 50 milliseconds or 20 times per second
 var HEARTBEAT_INTERVAL       = 3000; // How long to wait between sending heartbeat milliseconds
-var FOOD_VALUE               = 0.16; // amount to increase sphere by when food is consumed
 var INITIAL_CAMERA_DISTANCE  = 50;
 var INITIAL_PLAYER_RADIUS    = 5;
 var MAX_PLAYER_RADIUS        = 150;
 var BASE_PLAYER_SPEED        = 2;
+var FOOD_VALUE               = 0.16; // amount to increase sphere by when food is consumed
 var FOOD_RESPAWN_FRAMES      = 10*60;
+var FOOD_CAPTURE_ASSIST      = 2; // this number is added to player's radius for food capturing
 var FOG_NEAR                 = 100;
 var FOG_FAR                  = 1000;
 var FOG_COLOR                = THREE.ColorKeywords.white;
@@ -300,7 +301,7 @@ function checkFoodCaptures() {
             z = food.positions[ i + 2 ];
             vdist.set(x, y, z);
             dist = vdist.distanceTo(sphere.position);
-            if (dist <= sphere_radius) {
+            if (dist <= sphere_radius + FOOD_CAPTURE_ASSIST) {
                 captureFood( i / 3 );
             }
         }
