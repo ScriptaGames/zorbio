@@ -1,0 +1,27 @@
+// Configuration values.  Values defined here are available to both the client and
+// the server.
+
+var config = {};
+
+////////////////////////////////////////////////////////////////////////
+//                           WORLD SETTINGS                           //
+////////////////////////////////////////////////////////////////////////
+
+config.WORLD_SIZE   = 800;
+config.FOOD_DENSITY = 20;
+
+////////////////////////////////////////////////////////////////////////
+//                          NETWORK SETTINGS                          //
+////////////////////////////////////////////////////////////////////////
+
+config.PORT                     = 3000;
+config.NETWORK_UPDATE_INTERVAL  = 50;
+config.HEARTBEAT_TIMEOUT        = 30000;
+config.HEARTBEAT_CHECK_INTERVAL = 1000;
+
+////////////////////////////////////////////////////////////////////////
+//                          NODEJS EXPORTER                           //
+////////////////////////////////////////////////////////////////////////
+
+var NODEJS = typeof module !== 'undefined' && module.exports;
+if (NODEJS) module.exports = config;

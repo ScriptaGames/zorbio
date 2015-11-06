@@ -253,7 +253,7 @@ function drawPlayerSphere() {
         uniforms:
             {
             "c":   { type: "f", value: 0.05 },
-            "p":   { type: "f", value: 5.0 },
+            "p":   { type: "f", value: 6.0 },
             glowColor: { type: "c", value: new THREE.Color(playerColor) },
             viewVector: { type: "v3", value: camera.position }
         },
