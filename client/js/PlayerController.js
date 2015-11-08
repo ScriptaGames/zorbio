@@ -2,13 +2,18 @@
  * This is the Player Controller that is the C in MVC, it has model that syncs state to the server, and a view
  * for rendering.
  * @param model
+ * @param scene
  * @constructor
+ *
  */
-
-var PlayerController = function ZORPlayerController(model) {
+var PlayerController = function ZORPlayerController(model, scene) {
     var position = model.sphere.position;
     this.model = model;
     this.model.sphere.position = new THREE.Vector3(position.x, position.y, position.z);
+
+    if (scene) {
+        this.initView(scene);
+    }
 };
 
 PlayerController.prototype.getPlayerId = function ZORPlayerControllerGetPlayerId() {
@@ -34,4 +39,9 @@ PlayerController.prototype.refreshSphereModel = function ZORPlayerControllerRefr
 
     // sync radius
     this.model.sphere.radius = radius(this.view.mainSphere);
+};
+
+PlayerController.prototype.updatePosition = function ZORPlayerControllerUpdatePosition(position, scene, camera, renderer) {
+    this.model.sphere.position.copy(position);
+    this.view.updatePosition(position, scene, camera, renderer);
 };

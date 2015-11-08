@@ -70,10 +70,9 @@ window.onload = function () {
         nickErrorText = document.querySelector('#startMenu .input-error');
 
     btn.onclick = function () {
-
         // check if the nick is valid
         if (validNick()) {
-            startGame('player');
+            startGame(ZOR.PlayerTypes.PLAYER);
         } else {
             nickErrorText.style.display = 'inline';
         }
@@ -139,6 +138,9 @@ function createScene() {
         // food
         drawFood();
 
+        // Draw other players
+        drawPlayers();
+
         // skybox
         var materialArray = [];
         for (i = 0; i < 6; i++) {
@@ -182,6 +184,8 @@ function createScene() {
 
         player.view.update(scene, camera, renderer);
 
+        updateActors();
+
         render();
     }
 
@@ -200,7 +204,7 @@ function drawPlayers() {
         if (playerModel.type === ZOR.PlayerTypes.PLAYER) {
             // Only draw other players
             if (id !== player.getPlayerId()) {
-                players[id] = new PlayerController(playerModel);
+                players[id] = new PlayerController(playerModel, scene);
             }
         }
     });
@@ -235,22 +239,23 @@ function checkFoodCaptures() {
 checkFoodCaptures.vdist = new THREE.Vector3();
 
 
-//function updateActors() {
-//    var actors = zorbioModel.actors;
-//
-//    // Iterate over actor properties in the actors object
-//    Object.getOwnPropertyNames(actors).forEach(function (id) {
-//        var actor = actors[id];
-//        if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
-//            if (id !== player.sphere.id) {
-//                if (actors[id].geo) {
-//                    // update players sphere geo position
-//                    actors[id].geo.position = actors[id].position;
-//                }
-//            }
-//        }
-//    });
-//}
+function updateActors() {
+    var actors = zorbioModel.actors;
+
+    // Iterate over actor properties in the actors object
+    Object.getOwnPropertyNames(actors).forEach(function (id) {
+        var actor = actors[id];
+        if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
+            if (id !== player.getSphereId()) {
+                var otherPlayer = players[actor.playerId];
+                if (otherPlayer.view) {
+                    // update players sphere position
+                    otherPlayer.updatePosition(actor.position, scene, camera, renderer);
+                }
+            }
+        }
+    });
+}
 
 function captureFood(fi) {
     if (aliveFood(fi)) {

@@ -49,6 +49,13 @@ function setupSocket(socket) {
 
         zorbioModel = model;
 
+        // iterate over actors and create THREE objects that don't serialize over websockets
+        Object.getOwnPropertyNames(zorbioModel.actors).forEach(function (id) {
+            var actor = zorbioModel.actors[id];
+            var position = actor.position;
+            actor.position = new THREE.Vector3(position.x, position.y, position.z);
+        });
+
         socket.emit('gotit', player.model);
         gameStart = true;
         console.log('Game is started: ' + gameStart);
@@ -75,11 +82,13 @@ function setupSocket(socket) {
     socket.on('playerJoin', function (newPlayer) {
         //Add new player if it's not the current player
         if (newPlayer.id !== player.getPlayerId()) {
-            players[newPlayer.id] = new PlayerController(newPlayer);
+            players[newPlayer.id] = new PlayerController(newPlayer, scene);
 
             //Keep model in sync with the server
             zorbioModel.players[newPlayer.id] = newPlayer;
             zorbioModel.actors[newPlayer.sphere.id] = newPlayer.sphere;
+            var position = newPlayer.sphere.position;
+            zorbioModel.actors[newPlayer.sphere.id].position = new THREE.Vector3(position.x, position.y, position.z);
         }
 
         console.log('Player ' + newPlayer.name + ' joined!');
@@ -97,7 +106,8 @@ function setupSocket(socket) {
         // sync the actors positions from the server model to the client model
         Object.getOwnPropertyNames(actors).forEach(function (id) {
             if (zorbioModel.actors[id]) {
-                zorbioModel.actors[id].position = actors[id].position;
+                var newPosition = actors[id].position;
+                zorbioModel.actors[id].position.copy(newPosition);
             }
         });
     });

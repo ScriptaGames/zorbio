@@ -57,14 +57,17 @@ PlayerView.prototype.grow = function ZORPlayerViewGrow(ammount) {
 
 PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera, renderer) {
     // update glow
-
     this.sphereGlow.position.copy(this.mainSphere.position);
     this.sphereGlow.material.uniforms.viewVector.value = new THREE.Vector3().subVectors( camera.position, this.sphereGlow.position );
 
     // update reflections
-
     this.cubeCamera.position.copy(this.mainSphere.position);
     this.cubeCamera.updateCubeMap( renderer, scene );
+};
+
+PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position, scene, camera, renderer) {
+    this.mainSphere.position.copy(position);
+    this.update(scene, camera, renderer);
 };
 
 //TODO: add more colors, only select ones not used.
