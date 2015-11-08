@@ -519,17 +519,21 @@ function cleanupMemory() {
 }
 
 function removePlayerFromGame(playerId) {
-    var kickedPlayer = zorbioModel.players[playerId];
+    var kickedPlayer = players[playerId];
 
-    if (kickedPlayer && kickedPlayer.sphere) {
-        var geo = zorbioModel.actors[kickedPlayer.sphere.id].geo;
-
+    if (kickedPlayer && kickedPlayer.view) {
         // remove player from model
-        zorbioModel.actors[kickedPlayer.sphere.id] = null;
-        delete zorbioModel.actors[kickedPlayer.sphere.id];
+        var sphereId = kickedPlayer.getSphereId();
+        zorbioModel.actors[sphereId] = null;
+        delete zorbioModel.actors[sphereId];
         zorbioModel.players[playerId] = null;
         delete zorbioModel.players[playerId];
 
-        console.log('removed player from game', kickedPlayer.sphere.id);
+        // Remove player from the scene
+        kickedPlayer.removeView(scene);
+        players[playerId] = null;
+        delete players[playerId];
+
+        console.log('Removed player from game', playerId);
     }
 }

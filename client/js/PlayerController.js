@@ -28,6 +28,11 @@ PlayerController.prototype.initView = function ZORPlayerControllerInitView(scene
     this.view = new PlayerView(this.model, scene);
 };
 
+PlayerController.prototype.removeView = function ZORPlayerControllerRemoveView(scene) {
+    this.view.remove(scene);
+    this.view = null;
+};
+
 PlayerController.prototype.grow = function ZORPlayerControllerGrow(ammount) {
     this.view.grow(ammount);
     this.model.sphere.radius = radius(this.view.mainSphere);

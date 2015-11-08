@@ -70,6 +70,12 @@ PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(posit
     this.update(scene, camera, renderer);
 };
 
+PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
+    scene.remove(this.mainSphere);
+    scene.remove(this.sphereGlow);
+    scene.remove(this.cubeCamera);
+};
+
 //TODO: add more colors, only select ones not used.
 PlayerView.COLORS = [
     THREE.ColorKeywords.red,
