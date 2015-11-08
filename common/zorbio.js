@@ -4,6 +4,7 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 // already there.
 if (NODEJS) var THREE = require('three.js');
 if (NODEJS) var UTIL = require('./util.js');
+if (NODEJS) var config = require('./config.js');
 
 var ZOR = {};
 
@@ -99,9 +100,8 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color) {
     // TODO: algorithm to place users initial position, This was copied from agar.io.clone
     //var position = config.newPlayerInitialPosition == 'farthest' ? util.uniformPosition(users, radius) : util.randomPosition(radius);
 
-    this.diameter = 1;
-    this.throttle = 100; // 100% throttle default
-    this.type     = ZOR.ActorTypes.PLAYER_SPHERE;
+    this.radius = config.INITIAL_PLAYER_RADIUS;
+    this.type   = ZOR.ActorTypes.PLAYER_SPHERE;
 
     //TODO: make color customizable
     this.color    = color;

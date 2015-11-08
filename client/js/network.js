@@ -13,20 +13,26 @@ function connectToServer(playerType, playerName, color) {
 }
 
 function sendPlayerSpherePosition() {
+    // Make sure model is synced with view
+    player.refreshSphereModel();
+
+    var sphereModel = player.model.sphere;
+
     // cut down on the number of bytes sent across the wire
     var position = {
-        // x: player.sphere.geo.position.x.toFixed(4),
-        // y: player.sphere.geo.position.y.toFixed(4),
-        // z: player.sphere.geo.position.z.toFixed(4)
+         x: sphereModel.position.x.toFixed(4),
+         y: sphereModel.position.y.toFixed(4),
+         z: sphereModel.position.z.toFixed(4)
     };
-    var sphere = {"id": player.sphere.id, "p": position};
-    socket.emit('myPosition', sphere);
 
     //TODO: only send if the player is moving.  If their position hasn't changed, don't send.
+    var sphere = {"id": sphereModel.id, "p": position, "r": sphereModel.radius};
+    socket.emit('myPosition', sphere);
+
 }
 
 function sendHeartbeat() {
-    socket.emit('playerHeartbeat', player.id);
+    socket.emit('playerHeartbeat', player.getPlayerId());
 }
 
 function handleNetworkTermination() {
@@ -37,11 +43,13 @@ function handleNetworkTermination() {
 
 function setupSocket(socket) {
     // Handle connection
-    socket.on('welcome', function (playerSettings, model) {
-        player = playerSettings;
+    socket.on('welcome', function (playerModel, model) {
+        player = new PlayerController(playerModel);
+        players[player.getPlayerId()] = player;
+
         zorbioModel = model;
 
-        socket.emit('gotit', player);
+        socket.emit('gotit', player.model);
         gameStart = true;
         console.log('Game is started: ' + gameStart);
 
@@ -52,7 +60,7 @@ function setupSocket(socket) {
         window.setInterval(sendHeartbeat, HEARTBEAT_INTERVAL);
 
         // create the scene
-        var scene = createScene();
+        createScene();
 
         //TODO: add chat system
         //chat.addSystemLine('Connected to the game!');
@@ -65,17 +73,13 @@ function setupSocket(socket) {
     });
 
     socket.on('playerJoin', function (newPlayer) {
-        //TODO: implement chat system
-        //chat.addSystemLine('Player <b>' + data.name + '</b> joined!');
+        //Add new player if it's not the current player
+        if (newPlayer.id !== player.getPlayerId()) {
+            players[newPlayer.id] = new PlayerController(newPlayer);
 
-        //Keep model in sync with the server
-        zorbioModel.players[newPlayer.id] = newPlayer;
-        zorbioModel.actors[newPlayer.sphere.id] = newPlayer.sphere;
-
-        //Draw the new player if it's not the current player
-        if (newPlayer.id !== player.id) {
-            // save reference to the new players geometry
-            zorbioModel.actors[newPlayer.sphere.id].geo = drawPlayerSphere(newPlayer.sphere);
+            //Keep model in sync with the server
+            zorbioModel.players[newPlayer.id] = newPlayer;
+            zorbioModel.actors[newPlayer.sphere.id] = newPlayer.sphere;
         }
 
         console.log('Player ' + newPlayer.name + ' joined!');
@@ -98,13 +102,13 @@ function setupSocket(socket) {
         });
     });
 
-    // socket.on('kick', function (msg) {
-    //     socket.close();
-    //     handleNetworkTermination();
-    //     kicked = true;
-    //     displayModalMessage(msg);
-    //     console.log('you were kicked', msg);
-    // });
+     socket.on('kick', function (msg) {
+         socket.close();
+         handleNetworkTermination();
+         kicked = true;
+         displayModalMessage(msg);
+         console.log('you were kicked', msg);
+     });
 
     socket.on('playerKicked', function (playerId) {
         console.log('player kicked', playerId);

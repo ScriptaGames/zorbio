@@ -7,7 +7,7 @@ var config = {};
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE   = 80;
+config.WORLD_SIZE   = 100;
 config.FOOD_DENSITY = 2;
 
 ////////////////////////////////////////////////////////////////////////
@@ -24,8 +24,9 @@ config.HEARTBEAT_CHECK_INTERVAL = 1000;
 ////////////////////////////////////////////////////////////////////////
 
 
-config.SPHERE_GLOW_SCALE = 1.0; // multiplier to determine how big glow sphere should be relative to player sphere
-config.MAX_PLAYER_RADIUS = 150;
+config.SPHERE_GLOW_SCALE     = 1.0; // multiplier to determine how big glow sphere should be relative to player sphere
+config.MAX_PLAYER_RADIUS     = 150;
+config.INITIAL_PLAYER_RADIUS = 2;
 
 ////////////////////////////////////////////////////////////////////////
 //                          NODEJS EXPORTER                           //

@@ -3,7 +3,7 @@ var scene;
 var camera;
 //TODO: rename controls to cameraControls
 var controls;
-var food = {};
+
 var canvas = document.getElementById('renderCanvas');
 var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
@@ -13,7 +13,6 @@ var MOVE_SPEED_SCALE         = 0.5;
 var PLAYER_POSITION_INTERVAL = 50;   // 50 milliseconds or 20 times per second
 var HEARTBEAT_INTERVAL       = 3000; // How long to wait between sending heartbeat milliseconds
 var INITIAL_CAMERA_DISTANCE  = 50;
-var INITIAL_PLAYER_RADIUS    = 2;
 var MAX_PLAYER_RADIUS        = 150;
 var BASE_PLAYER_SPEED        = 2;
 var FOOD_VALUE               = 0.16; // amount to increase sphere by when food is consumed
@@ -34,6 +33,8 @@ var playerSpeed = BASE_PLAYER_SPEED;
 var playerVelocity = new THREE.Vector3();
 
 // Game state
+var players = {};
+var food = {};
 var gameStart = false;
 var kicked = false;
 var disconnected = false;
@@ -41,7 +42,7 @@ var disconnected = false;
 
 var renderer;
 
-// Model that represents all of the visual elements of the game
+// Model that represents the game state shared with server
 var zorbioModel;
 
 function startGame(type) {
@@ -51,7 +52,7 @@ function startGame(type) {
     showGame(true);
 
     // Connect to the server
-    var colorCode = UTIL.getRandomIntInclusive(0, PlayerSphereView.COLORS.length - 1);
+    var colorCode = UTIL.getRandomIntInclusive(0, PlayerView.COLORS.length - 1);
     connectToServer(playerType, playerName, colorCode);
 }
 
@@ -129,11 +130,11 @@ function createScene() {
         // controls.maxPolarAngle = -Infinity; // radians
 
         // sphere
-        // register sphere with player object who owns it
-        player.sphere.view = new PlayerSphereView(player.sphere, scene, INITIAL_PLAYER_RADIUS);
+        // Create the player view and adds the player sphere to the scene
+        player.initView(scene);
 
         // camera
-        controls.target = player.sphere.view.mainSphere;
+        controls.target = player.view.mainSphere;
 
         // food
         drawFood();
@@ -179,10 +180,9 @@ function createScene() {
 
         checkFoodCaptures();
 
-        player.sphere.view.update(scene, camera, renderer);
+        player.view.update(scene, camera, renderer);
 
         render();
-
     }
 
     function render() {
@@ -192,15 +192,15 @@ function createScene() {
     }
 }
 
-function drawActors() {
-    var actors = zorbioModel.actors;
-    // Iterate over actor properties in the actors object
-    Object.getOwnPropertyNames(actors).forEach(function (id) {
-        var actor = actors[id];
-        if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
+function drawPlayers() {
+    var playerModels = zorbioModel.players;
+    // Iterate over player
+    Object.getOwnPropertyNames(playerModels).forEach(function (id) {
+        var playerModel = playerModels[id];
+        if (playerModel.type === ZOR.PlayerTypes.PLAYER) {
             // Only draw other players
-            if (id !== player.sphere.id) {
-                actors[id].geo = drawPlayerSphere(actor);
+            if (id !== player.getPlayerId()) {
+                players[id] = new PlayerController(playerModel);
             }
         }
     });
@@ -215,7 +215,7 @@ function checkFoodCaptures() {
     var x, y, z, i, l;
     var vdist = checkFoodCaptures.vdist;
     var dist = 0;
-    var mainSphere = player.sphere.view.mainSphere;
+    var mainSphere = player.view.mainSphere;
     var sphere_radius = radius(mainSphere); // x, y, and z scale should all be the same, always
 
     for ( i = 0, l = food.positions.length; i < l; i += 3 ) {
@@ -235,26 +235,26 @@ function checkFoodCaptures() {
 checkFoodCaptures.vdist = new THREE.Vector3();
 
 
-function updateActors() {
-    var actors = zorbioModel.actors;
-
-    // Iterate over actor properties in the actors object
-    Object.getOwnPropertyNames(actors).forEach(function (id) {
-        var actor = actors[id];
-        if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
-            if (id !== player.sphere.id) {
-                if (actors[id].geo) {
-                    // update players sphere geo position
-                    actors[id].geo.position = actors[id].position;
-                }
-            }
-        }
-    });
-}
+//function updateActors() {
+//    var actors = zorbioModel.actors;
+//
+//    // Iterate over actor properties in the actors object
+//    Object.getOwnPropertyNames(actors).forEach(function (id) {
+//        var actor = actors[id];
+//        if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
+//            if (id !== player.sphere.id) {
+//                if (actors[id].geo) {
+//                    // update players sphere geo position
+//                    actors[id].geo.position = actors[id].position;
+//                }
+//            }
+//        }
+//    });
+//}
 
 function captureFood(fi) {
     if (aliveFood(fi)) {
-        var mainSphere = player.sphere.view.mainSphere;
+        var mainSphere = player.view.mainSphere;
 
         captureFood.p = FOOD_VALUE / mainSphere.scale.x;
 
@@ -262,7 +262,7 @@ function captureFood(fi) {
 
         // grow sphere, with diminishing returns on food as you get bigger.
         // prevents runaway growth.
-        player.sphere.view.grow( captureFood.p );
+        player.grow( captureFood.p );
 
         // push camera back a bit
 
@@ -376,9 +376,11 @@ var KeyCodes = {
     65 : 'a',
     68 : 'd',
     32 : 'space',
-    16 : 'shift',
+    16 : 'shift'
 };
+
 var ListenForKeys = Object.keys(KeyCodes);
+
 function handleKeydown(evt) {
     var we_care_about_this_key;
     var already_pressed;
@@ -395,6 +397,7 @@ function handleKeydown(evt) {
         KeysDown[KeyCodes[evt.keyCode]] = true;
     }
 }
+
 function handleKeyup(evt) {
     if (!gameStart) return;
 
@@ -405,6 +408,7 @@ function handleKeyup(evt) {
         KeysDown[KeyCodes[evt.keyCode]] = false;
     }
 }
+
 function handleKeysDown() {
     for( var key in KeysDown ) {
         if (KeysDown[key]) {
@@ -412,7 +416,7 @@ function handleKeysDown() {
         }
     }
 }
-var keyDownMoveVector;
+
 function keyDown( key ) {
     if ( key === 'w' ) {
         moveForward();
@@ -421,9 +425,11 @@ function keyDown( key ) {
         moveBackward();
     }
 }
+
 function keyJustPressed(key) {
     console.log('key ' + key + ' just pressed');
 }
+
 function keyReleased(key) {
     console.log('key ' + key + ' released');
 }
@@ -442,7 +448,7 @@ function keyReleased(key) {
 
 function moveForward() {
     var v = moveForward.v;
-    var mainSphere = player.sphere.view.mainSphere;
+    var mainSphere = player.view.mainSphere;
     v.copy( mainSphere.position );
     v.sub( camera.position );
     v.multiplyScalar( -1 );
@@ -456,7 +462,7 @@ moveForward.v = new THREE.Vector3();
 function checkWallCollision( p, v, w ) {
 
     var vs = v.clone();
-    var r = radius( player.sphere.view.mainSphere );
+    var r = radius( player.view.mainSphere );
 
     if ( hitxp( p, r, v, w ) || hitxn( p, r, v, w ) )
         vs.x = 0;
@@ -492,7 +498,7 @@ function hitn( p, r, v, w, axis ) {
 
 function moveBackward() {
     var v = moveBackward.v;
-    var mainSphere = player.sphere.view.mainSphere;
+    var mainSphere = player.view.mainSphere;
     v.copy( mainSphere.position );
     v.sub( camera.position );
     v.normalize();
@@ -502,8 +508,9 @@ function moveBackward() {
 moveBackward.v = new THREE.Vector3();
 
 function cleanupMemory() {
+    players = {};
+    food = {};
     zorbioModel = null;
-    scene = null;
 }
 
 function removePlayerFromGame(playerId) {

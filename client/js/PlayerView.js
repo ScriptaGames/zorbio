@@ -5,9 +5,9 @@
  * @constructor
  */
 
-var PlayerSphereView = function ZORPlayerSphereView(actor, scene, radius) {
-    this.playerColor = PlayerSphereView.COLORS[actor.color];
-    var geometry = new THREE.SphereGeometry( radius, 32, 32 );
+var PlayerView = function ZORPlayerView(actor, scene) {
+    this.playerColor = PlayerView.COLORS[actor.color];
+    var geometry = new THREE.SphereGeometry( config.INITIAL_PLAYER_RADIUS, 32, 32 );
 
     this.cubeCamera = new THREE.CubeCamera( 1, 1000, 256 );
     this.cubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
@@ -47,7 +47,7 @@ var PlayerSphereView = function ZORPlayerSphereView(actor, scene, radius) {
     scene.add( this.sphereGlow );
 };
 
-PlayerSphereView.prototype.grow = function ZORPlayerSphereViewGrow(ammount) {
+PlayerView.prototype.grow = function ZORPlayerViewGrow(ammount) {
     this.mainSphere.scale.addScalar( ammount );
     this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
     this.mainSphere.geometry.computeBoundingSphere(); // compute the new bounding sphere after resizing
@@ -55,7 +55,7 @@ PlayerSphereView.prototype.grow = function ZORPlayerSphereViewGrow(ammount) {
     this.sphereGlow.scale.multiplyScalar( config.SPHERE_GLOW_SCALE );
 };
 
-PlayerSphereView.prototype.update = function ZORPlayerSphereUpdate(scene, camera, renderer) {
+PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera, renderer) {
     // update glow
 
     this.sphereGlow.position.copy(this.mainSphere.position);
@@ -68,7 +68,7 @@ PlayerSphereView.prototype.update = function ZORPlayerSphereUpdate(scene, camera
 };
 
 //TODO: add more colors, only select ones not used.
-PlayerSphereView.COLORS = [
+PlayerView.COLORS = [
     THREE.ColorKeywords.red,
     THREE.ColorKeywords.blue,
     THREE.ColorKeywords.yellow,
