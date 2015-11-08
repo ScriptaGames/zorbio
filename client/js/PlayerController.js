@@ -35,7 +35,7 @@ PlayerController.prototype.removeView = function ZORPlayerControllerRemoveView(s
 
 PlayerController.prototype.grow = function ZORPlayerControllerGrow(ammount) {
     this.view.grow(ammount);
-    this.model.sphere.radius = radius(this.view.mainSphere);
+    this.model.sphere.radius = this.radius();
 };
 
 PlayerController.prototype.refreshSphereModel = function ZORPlayerControllerRefreshSphereModel() {
@@ -43,10 +43,21 @@ PlayerController.prototype.refreshSphereModel = function ZORPlayerControllerRefr
     this.model.sphere.position.copy(this.view.mainSphere.position);
 
     // sync radius
-    this.model.sphere.radius = radius(this.view.mainSphere);
+    this.model.sphere.radius = this.radius();
 };
 
 PlayerController.prototype.updatePosition = function ZORPlayerControllerUpdatePosition(position, scene, camera, renderer) {
     this.model.sphere.position.copy(position);
     this.view.updatePosition(position, scene, camera, renderer);
+};
+
+/**
+ * Returns the radius of the player sphere in terms of the view main sphere scale
+ * @returns {number}
+ */
+PlayerController.prototype.radius = function ZORPlayerControllerRadius() {
+    if (this.view) {
+        // x, y, and z scale should all be the same, always
+        return config.INITIAL_PLAYER_RADIUS * this.view.mainSphere.scale.x;
+    }
 };

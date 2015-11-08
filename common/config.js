@@ -7,8 +7,8 @@ var config = {};
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE   = 100;
-config.FOOD_DENSITY = 2;
+config.WORLD_SIZE   = 1000;
+config.FOOD_DENSITY = 20;
 
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //
@@ -16,6 +16,7 @@ config.FOOD_DENSITY = 2;
 
 config.PORT                     = 3000;
 config.NETWORK_UPDATE_INTERVAL  = 50;
+config.HEARTBEAT_ENABLE         = false;
 config.HEARTBEAT_TIMEOUT        = 30000;
 config.HEARTBEAT_CHECK_INTERVAL = 1000;
 

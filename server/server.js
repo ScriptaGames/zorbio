@@ -140,7 +140,10 @@ function kickPlayer(playerId, reason) {
 }
 
 setInterval(sendUpdates, config.NETWORK_UPDATE_INTERVAL);
-setInterval(checkHeartbeats, config.HEARTBEAT_CHECK_INTERVAL);
+
+if (config.HEARTBEAT_ENABLE) {
+    setInterval(checkHeartbeats, config.HEARTBEAT_CHECK_INTERVAL);
+}
 
 var serverPort = process.env.PORT || config.PORT;
 http.listen(serverPort, function () {

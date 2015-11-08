@@ -13,7 +13,6 @@ var MOVE_SPEED_SCALE         = 0.5;
 var PLAYER_POSITION_INTERVAL = 50;   // 50 milliseconds or 20 times per second
 var HEARTBEAT_INTERVAL       = 3000; // How long to wait between sending heartbeat milliseconds
 var INITIAL_CAMERA_DISTANCE  = 50;
-var MAX_PLAYER_RADIUS        = 150;
 var BASE_PLAYER_SPEED        = 2;
 var FOOD_VALUE               = 0.16; // amount to increase sphere by when food is consumed
 var FOOD_RESPAWN_FRAMES      = 10*60;
@@ -210,17 +209,13 @@ function drawPlayers() {
     });
 }
 
-function radius(sphere) {
-    return sphere.geometry.boundingSphere.radius;
-}
-
 function checkFoodCaptures() {
 
     var x, y, z, i, l;
     var vdist = checkFoodCaptures.vdist;
     var dist = 0;
     var mainSphere = player.view.mainSphere;
-    var sphere_radius = radius(mainSphere); // x, y, and z scale should all be the same, always
+    var sphere_radius = player.radius();
 
     for ( i = 0, l = food.positions.length; i < l; i += 3 ) {
         if (aliveFood( i / 3 )) {
@@ -230,14 +225,14 @@ function checkFoodCaptures() {
             vdist.set(x, y, z);
 
             dist = vdist.distanceTo(mainSphere.position);
-            if (dist <= sphere_radius + FOOD_CAPTURE_ASSIST) {
-                captureFood( i / 3 );
+            if (dist <= (sphere_radius + FOOD_CAPTURE_ASSIST)) {
+                var fi = i / 3;
+                captureFood( fi );
             }
         }
     }
 }
 checkFoodCaptures.vdist = new THREE.Vector3();
-
 
 function updateActors() {
     var actors = zorbioModel.actors;
@@ -467,7 +462,7 @@ moveForward.v = new THREE.Vector3();
 function checkWallCollision( p, v, w ) {
 
     var vs = v.clone();
-    var r = radius( player.view.mainSphere );
+    var r = player.radius();
 
     if ( hitxp( p, r, v, w ) || hitxn( p, r, v, w ) )
         vs.x = 0;
