@@ -399,8 +399,8 @@ function handleKeyup(evt) {
 }
 
 function handleKeysDown() {
-    for( var key in KeysDown ) {
-        if (KeysDown[key]) {
+    for (var key in KeysDown) {
+        if (KeysDown.hasOwnProperty(key)) {
             keyDown(key);
         }
     }
