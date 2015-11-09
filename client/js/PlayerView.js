@@ -83,6 +83,7 @@ PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
     this.mainSphere.scale.set(scale, scale, scale);
     this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
     this.sphereGlow.scale.copy( this.mainSphere.scale );
+    this.sphereGlow.scale.multiplyScalar( config.SPHERE_GLOW_SCALE );
 };
 
 //TODO: add more colors, only select ones not used.
