@@ -136,22 +136,14 @@ ZOR.PlayerSphere.prototype.radius = function ZORPlayerSphereRadius() {
  * @param [x]
  * @param [y]
  * @param [z]
- * @param [shape]
  * @param [color]
- * @param [rotate_x]
- * @param [rotate_y]
- * @param [rotate_z]
  * @constructor
  */
-ZOR.Food = function ZORFood(x, y, z, shape, color, rotate_x, rotate_y, rotate_z) {
+ZOR.Food = function ZORFood(x, y, z, color) {
     x = x || 0;
     y = y || 0;
     z = z || 0;
-    shape = shape || 'sphere';
     color = color || new THREE.Color(THREE.ColorKeywords.red);
-    rotate_x = rotate_x || 0;
-    rotate_y = rotate_y || 0;
-    rotate_z = rotate_z || 0;
 
     // call super class constructor
     ZOR.Actor.call(this);
@@ -165,11 +157,7 @@ ZOR.Food = function ZORFood(x, y, z, shape, color, rotate_x, rotate_y, rotate_z)
     this.position.y = y;
     this.position.z = z;
 
-    this.rotation = new THREE.Vector3(rotate_x, rotate_y, rotate_z);
-
     this.color = color;
-    this.shape = shape;
-
 };
 ZOR.Food.prototype = Object.create(ZOR.Actor.prototype);
 ZOR.Food.constructor = ZOR.Food;

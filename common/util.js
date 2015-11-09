@@ -13,6 +13,11 @@ UTIL.getRandomArbitrary = function UTILGetRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 };
 
+/**
+ * Checks for a valid nick
+ * @param nickname
+ * @returns {boolean}
+ */
 UTIL.validNick = function UTILValidNick (nickname) {
     var regex = /^\w*$/;
     return regex.exec(nickname) !== null;

@@ -69,13 +69,6 @@ function setupSocket(socket) {
         // create the scene
         createScene();
 
-        //TODO: add chat system
-        //chat.addSystemLine('Connected to the game!');
-        //chat.addSystemLine('Type <b>-help</b> for a list of commands');
-        if (isMobile.any) {
-            //TODO: handle mobile UI stuff
-            //document.getElementById('gameAreaWrapper').removeChild(document.getElementById('chatbox'));
-        }
         document.getElementById('renderCanvas').focus();
     });
 

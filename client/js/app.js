@@ -1,15 +1,12 @@
-// Canvas
+// Scene and canvas
 var scene;
-var camera;
-//TODO: rename controls to cameraControls
-var controls;
-
 var canvas = document.getElementById('renderCanvas');
-var screenWidth = window.innerWidth;
-var screenHeight = window.innerHeight;
+
+// Camera
+var camera;
+var camera_controls;
 
 // constants
-var MOVE_SPEED_SCALE         = 0.5;
 var PLAYER_POSITION_INTERVAL = 50;   // 50 milliseconds or 20 times per second
 var HEARTBEAT_INTERVAL       = 3000; // How long to wait between sending heartbeat milliseconds
 var INITIAL_CAMERA_DISTANCE  = 50;
@@ -22,14 +19,11 @@ var FOG_FAR                  = 1000;
 var FOG_COLOR                = THREE.ColorKeywords.black;
 var INITIAL_FOV              = 50;
 
-
 // Player
 var playerName;
 var playerType;
 var playerNameInput = document.getElementById('playerNameInput');
 var player;
-var playerSpeed = BASE_PLAYER_SPEED;
-var playerVelocity = new THREE.Vector3();
 
 // Game state
 var players = {};
@@ -118,12 +112,12 @@ function createScene() {
         );
         camera.position.z = 200;
 
-        controls = new THREE.FollowOrbitControls( camera, renderer.domElement );
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.25;
-        controls.enableZoom = false;
-        controls.minDistance = INITIAL_CAMERA_DISTANCE;
-        controls.maxDistance = INITIAL_CAMERA_DISTANCE;
+        camera_controls = new THREE.FollowOrbitControls( camera, renderer.domElement );
+        camera_controls.enableDamping = true;
+        camera_controls.dampingFactor = 0.25;
+        camera_controls.enableZoom = false;
+        camera_controls.minDistance = INITIAL_CAMERA_DISTANCE;
+        camera_controls.maxDistance = INITIAL_CAMERA_DISTANCE;
         // controls.minPolarAngle = Infinity; // radians
         // controls.maxPolarAngle = -Infinity; // radians
 
@@ -132,7 +126,7 @@ function createScene() {
         player.initView(scene);
 
         // camera
-        controls.target = player.view.mainSphere;
+        camera_controls.target = player.view.mainSphere;
 
         // food
         drawFood();
@@ -142,7 +136,7 @@ function createScene() {
 
         // skybox
         var materialArray = [];
-        for (i = 0; i < 6; i++) {
+        for (var i = 0; i < 6; i++) {
             materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/skybox_grid_black.jpg' ) }));
             materialArray[i].side = THREE.BackSide;
         }
@@ -153,7 +147,7 @@ function createScene() {
 
         // lights
 
-        light = new THREE.AmbientLight( 0x222222 );
+        var light = new THREE.AmbientLight( 0x222222 );
         scene.add( light );
 
         window.addEventListener( 'resize', onWindowResize, false );
@@ -175,7 +169,7 @@ function createScene() {
 
         handleKeysDown();
 
-        controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
+        camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
 
         updateFoodRespawns();
 
@@ -267,8 +261,8 @@ function captureFood(fi) {
 
         // push camera back a bit
 
-        controls.minDistance += 16 * captureFood.p;
-        controls.maxDistance = controls.minDistance;
+        camera_controls.minDistance += 16 * captureFood.p;
+        camera_controls.maxDistance = camera_controls.minDistance;
     }
 }
 captureFood.p = 0;
@@ -279,11 +273,6 @@ function aliveFood(fi) {
 
 function hideFood(fi) {
     food.respawning[fi] = FOOD_RESPAWN_FRAMES;
-    food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
-}
-
-function showFood(fi) {
-    food.respawning[fi] = 0;
     food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
 }
 
@@ -310,7 +299,7 @@ function drawFood() {
     var X, Y, Z, R, G, B;
     var particle_index = 0;
     var food_index = 0;
-    var i = 0;
+    var i;
     for (i = 0; i < zorbioModel.foodCount; i++) {
 
         X = zorbioModel.food[ food_index     ];
@@ -356,7 +345,7 @@ function drawFood() {
         vertexShader:   document.getElementById( 'vertexshader' ).textContent,
         fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
         transparent:    false,
-        depthTest:      true,
+        depthTest:      true
 
     });
 
@@ -364,7 +353,6 @@ function drawFood() {
 
     food.particleSystem = new THREE.Points( geometry, material );
     scene.add( food.particleSystem );
-
 }
 
 window.addEventListener("keydown", handleKeydown);
