@@ -3,6 +3,7 @@
  * visually, and how to move it's different 3D pieces around.
  * @param actor
  * @constructor
+ * @param scene
  */
 
 var PlayerView = function ZORPlayerView(actor, scene) {
@@ -23,11 +24,12 @@ var PlayerView = function ZORPlayerView(actor, scene) {
     material.opacity = 0.3;
 
     this.mainSphere = new THREE.Mesh( geometry, material );
+    this.mainSphere.position.copy(actor.position);
+    this.mainSphere.scale.set(actor.scale, actor.scale, actor.scale);
 
     scene.add( this.mainSphere );
 
     // sphere glow
-
     var glowMaterial = new THREE.ShaderMaterial({
         uniforms:
         {
@@ -43,6 +45,7 @@ var PlayerView = function ZORPlayerView(actor, scene) {
     });
     this.sphereGlow = new THREE.Mesh( this.mainSphere.geometry.clone(), glowMaterial.clone() );
     this.sphereGlow.position.copy( this.mainSphere.position );
+    this.sphereGlow.scale.copy( this.mainSphere.scale );
     this.sphereGlow.scale.multiplyScalar( config.SPHERE_GLOW_SCALE );
     scene.add( this.sphereGlow );
 };
@@ -74,6 +77,12 @@ PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
     scene.remove(this.mainSphere);
     scene.remove(this.sphereGlow);
     scene.remove(this.cubeCamera);
+};
+
+PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
+    this.mainSphere.scale.set(scale, scale, scale);
+    this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
+    this.sphereGlow.scale.copy( this.mainSphere.scale );
 };
 
 //TODO: add more colors, only select ones not used.

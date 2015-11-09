@@ -85,7 +85,6 @@ ZOR.ActorTypes = Object.freeze({
 ZOR.Actor = function ZORActor() {
     this.position = new THREE.Vector3(0,0,0);
     this.velocity = new THREE.Vector3(0,0,0);
-    this.geo = null;
     this.scale = 1;
     this.type = ZOR.ActorTypes.UNDEFINED;
 };
@@ -93,26 +92,44 @@ ZOR.Actor = function ZORActor() {
 /**
  * ZOR.PlayerSphere is a constructor for creating a player's sphere.
  */
-ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color) {
+ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, velocity) {
     // call super class constructor
     ZOR.Actor.call(this);
 
     // TODO: algorithm to place users initial position, This was copied from agar.io.clone
     //var position = config.newPlayerInitialPosition == 'farthest' ? util.uniformPosition(users, radius) : util.randomPosition(radius);
 
-    this.radius = config.INITIAL_PLAYER_RADIUS;
     this.type   = ZOR.ActorTypes.PLAYER_SPHERE;
 
+    if (position) {
+        this.position = new THREE.Vector3(position.x, position.y, position.z);
+    }
+    if (scale) {
+        this.scale = scale;
+    }
+    if (velocity) {
+        this.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
+    }
+
     //TODO: make color customizable
-    this.color    = color;
+    this.color = color;
 
     // maintain a reference to the player who owns this sphere
-    this.playerId   = playerId;
+    this.playerId = playerId;
 
     this.id = this.type + '-' + this.playerId;
 };
 ZOR.PlayerSphere.prototype = Object.create(ZOR.Actor.prototype);
 ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
+
+/**
+ * Returns the radius of the player sphere in terms of the sphere scale
+ * @returns {number}
+ */
+ZOR.PlayerSphere.prototype.radius = function ZORPlayerSphereRadius() {
+    // x, y, and z scale should all be the same for spheres
+    return config.INITIAL_PLAYER_RADIUS * this.scale;
+};
 
 /**
  * ZOR.Food is a constructor for creating a Food object.
@@ -167,14 +184,22 @@ ZOR.PlayerTypes = Object.freeze({
 });
 
 /**
- * ZOR.Player is a constructor for creating a new player object.
+ * Zor Player model
+ * @param id
+ * @param name
+ * @param color
+ * @param type
+ * @param position
+ * @param scale
+ * @param velocity
+ * @constructor
  */
-ZOR.Player = function ZORPlayer(id, name, color, type) {
+ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity) {
     this.id = id;
     this.name = name;
     this.type = type;
     this.lastHeartbeat = new Date().getTime();
-    this.sphere = new ZOR.PlayerSphere(this.id, color);
+    this.sphere = new ZOR.PlayerSphere(this.id, color, position, scale, velocity);
 };
 
 // if we're in nodejs, export the root ZOR object

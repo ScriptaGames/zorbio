@@ -79,6 +79,7 @@ io.on('connection', function (socket) {
         if (model.actors[sphere.id]) {
             // update the players position in the model
             model.actors[sphere.id].position = sphere.p;
+            model.actors[sphere.id].scale = sphere.s;
         }
     });
 

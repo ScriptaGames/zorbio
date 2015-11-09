@@ -14,7 +14,7 @@ var PLAYER_POSITION_INTERVAL = 50;   // 50 milliseconds or 20 times per second
 var HEARTBEAT_INTERVAL       = 3000; // How long to wait between sending heartbeat milliseconds
 var INITIAL_CAMERA_DISTANCE  = 50;
 var BASE_PLAYER_SPEED        = 2;
-var FOOD_VALUE               = 0.16; // amount to increase sphere by when food is consumed
+var FOOD_VALUE               = 2; // amount to increase sphere by when food is consumed
 var FOOD_RESPAWN_FRAMES      = 10*60;
 var FOOD_CAPTURE_ASSIST      = 2; // this number is added to player's radius for food capturing
 var FOG_NEAR                 = 100;
@@ -246,6 +246,7 @@ function updateActors() {
                 if (otherPlayer.view) {
                     // update players sphere position
                     otherPlayer.updatePosition(actor.position, scene, camera, renderer);
+                    otherPlayer.setScale(actor.scale);
                 }
             }
         }

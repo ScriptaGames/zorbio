@@ -26,7 +26,7 @@ function sendPlayerSpherePosition() {
     };
 
     //TODO: only send if the player is moving.  If their position hasn't changed, don't send.
-    var sphere = {"id": sphereModel.id, "p": position, "r": sphereModel.radius};
+    var sphere = {"id": sphereModel.id, "p": position, "s": sphereModel.scale};
     socket.emit('myPosition', sphere);
 
 }
@@ -106,8 +106,9 @@ function setupSocket(socket) {
         // sync the actors positions from the server model to the client model
         Object.getOwnPropertyNames(actors).forEach(function (id) {
             if (zorbioModel.actors[id]) {
-                var newPosition = actors[id].position;
-                zorbioModel.actors[id].position.copy(newPosition);
+                var actor = actors[id];
+                zorbioModel.actors[id].position.copy(actor.position);
+                zorbioModel.actors[id].scale = actor.scale;
             }
         });
     });
