@@ -7,9 +7,8 @@
  *
  */
 var PlayerController = function ZORPlayerController(model, scene) {
-    var position = model.sphere.position;
-    this.model = new ZOR.Player(model.id, model.name, model.color, model.type, model.position, model.scale, model.velocity);
-    this.model.sphere.position = new THREE.Vector3(position.x, position.y, position.z);
+    this.model = new ZOR.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
+        model.sphere.scale, model.sphere.velocity);
 
     if (scene) {
         this.initView(scene);
