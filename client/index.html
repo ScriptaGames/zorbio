@@ -36,7 +36,7 @@
             void main() {
 
                 vRespawning = respawning;
-                vColor = ca;
+                vColor      = ca;
 
                 vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
 
@@ -54,7 +54,8 @@
 
             uniform vec3 color;
             uniform sampler2D texture;
-            uniform bool vFogEnabled;
+            uniform float FOG_ENABLED;
+            uniform float FOG_FAR;
 
             varying vec3 vColor;
             varying float vRespawning;
@@ -69,12 +70,12 @@
                 if ( vRespawning > 0.0 ) discard;
 
 
-                if ( vFogEnabled ) {
-                    float fogp = vDist / 1000.0;
+                if ( FOG_ENABLED > 0.0 ) {
+                    float fogp = vDist / FOG_FAR;
                     fog = vec3( fogp, fogp, fogp );
                 }
                 else {
-                    fog = vec3( 0.0, 0.0, 0.0 );
+                    fog = vec3( 1.0, 0.0, 0.0 );
                 }
 
                 vec4 color = vec4( vColor - fog, 0.5 ); // * texture2D( texture, gl_PointCoord );

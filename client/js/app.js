@@ -14,6 +14,7 @@ var BASE_PLAYER_SPEED        = 2;
 var FOOD_VALUE               = 2; // amount to increase sphere by when food is consumed
 var FOOD_RESPAWN_FRAMES      = 10*60;
 var FOOD_CAPTURE_ASSIST      = 2; // this number is added to player's radius for food capturing
+var FOG_ENABLED              = true;
 var FOG_NEAR                 = 100;
 var FOG_FAR                  = 1000;
 var FOG_COLOR                = THREE.ColorKeywords.black;
@@ -337,10 +338,12 @@ function drawFood() {
     var material = new THREE.ShaderMaterial( {
 
         uniforms: {
-            amplitude: { type: "f", value: 1.0 },
-            color:     { type: "c", value: new THREE.Color( 0xff0000 ) },
-            texture:   { type: "t", value: texture },
-            size:      { type: "f", value: 3000 }
+            amplitude   : { type: "f", value: 1.0 },
+            color       : { type: "c", value: new THREE.Color( 0xffffff ) },
+            texture     : { type: "t", value: texture },
+            size        : { type: "f", value: 3000 },
+            FOG_FAR     : { type: "f", value: FOG_FAR },
+            FOG_ENABLED : { type: "f", value: ~~FOG_ENABLED },
         },
         vertexShader:   document.getElementById( 'vertexshader' ).textContent,
         fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
