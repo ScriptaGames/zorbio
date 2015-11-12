@@ -10,7 +10,6 @@ var camera_controls;
 var PLAYER_POSITION_INTERVAL = 50;   // 50 milliseconds or 20 times per second
 var HEARTBEAT_INTERVAL       = 3000; // How long to wait between sending heartbeat milliseconds
 var INITIAL_CAMERA_DISTANCE  = 50;
-var BASE_PLAYER_SPEED        = 2;
 var FOOD_VALUE               = 2; // amount to increase sphere by when food is consumed
 var FOOD_RESPAWN_FRAMES      = 10*60;
 var FOOD_CAPTURE_ASSIST      = 2; // this number is added to player's radius for food capturing
@@ -252,21 +251,29 @@ function captureFood(fi) {
     if (aliveFood(fi)) {
         var mainSphere = player.view.mainSphere;
 
-        captureFood.p = FOOD_VALUE / mainSphere.scale.x;
+        // give food value diminishing returns to prevent runaway growth
+        var value = FOOD_VALUE / mainSphere.scale.x;
+
+        var new_radius = ( mainSphere.scale.x + value ) * config.INITIAL_PLAYER_RADIUS;
+
+        var safe_to_grow = !checkWallCollision( mainSphere.position, new_radius, new THREE.Vector3(), zorbioModel.worldSize );
 
         hideFood( fi );
 
-        // grow sphere, with diminishing returns on food as you get bigger.
-        // prevents runaway growth.
-        player.grow( captureFood.p );
+        if (safe_to_grow) {
+            player.grow( value );
 
-        // push camera back a bit
+            // push camera back a bit
 
-        camera_controls.minDistance += 16 * captureFood.p;
-        camera_controls.maxDistance = camera_controls.minDistance;
+            camera_controls.minDistance += 16 * value;
+            camera_controls.maxDistance = camera_controls.minDistance;
+        }
+        else {
+            console.log("NOT SAFE TO GROW!");
+        }
+
     }
 }
-captureFood.p = 0;
 
 function aliveFood(fi) {
     return food.respawning[fi] === 0;
@@ -433,7 +440,7 @@ function keyReleased(key) {
 //     v.sub( camera.position );
 //     v.multiplyScalar( -1 );
 //     v.normalize();
-//     v.multiplyScalar( BASE_PLAYER_SPEED );
+//     v.multiplyScalar( config.BASE_PLAYER_SPEED );
 //     sphere.position.sub( v );
 // }
 // updateMovement.v = new THREE.Vector3();
@@ -445,17 +452,15 @@ function moveForward() {
     v.sub( camera.position );
     v.multiplyScalar( -1 );
     v.normalize();
-    v.multiplyScalar( BASE_PLAYER_SPEED );
-    v = checkWallCollision( mainSphere.position, v, zorbioModel.worldSize );
+    v.multiplyScalar( config.BASE_PLAYER_SPEED );
+    v = adjustVelocityWallHit( mainSphere.position, player.radius(), v, zorbioModel.worldSize );
     mainSphere.position.sub( v );
 }
 moveForward.v = new THREE.Vector3();
 
-function checkWallCollision( p, v, w ) {
+function adjustVelocityWallHit( p, r, v, w ) {
 
     var vs = v.clone();
-    var r = player.radius();
-
     if ( hitxp( p, r, v, w ) || hitxn( p, r, v, w ) )
         vs.x = 0;
 
@@ -466,6 +471,17 @@ function checkWallCollision( p, v, w ) {
         vs.z = 0;
 
     return vs;
+
+}
+
+function checkWallCollision( p, r, v, w ) {
+
+    return hitxp( p, r, v, w ) ||
+           hitxn( p, r, v, w ) ||
+           hityp( p, r, v, w ) ||
+           hityn( p, r, v, w ) ||
+           hitzp( p, r, v, w ) ||
+           hitzn( p, r, v, w );
 
 }
 
@@ -494,7 +510,7 @@ function moveBackward() {
     v.copy( mainSphere.position );
     v.sub( camera.position );
     v.normalize();
-    v.multiplyScalar( BASE_PLAYER_SPEED );
+    v.multiplyScalar( config.BASE_PLAYER_SPEED );
     mainSphere.position.sub( v );
 }
 moveBackward.v = new THREE.Vector3();
