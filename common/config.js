@@ -31,7 +31,7 @@ config.BASE_PLAYER_SPEED = 5;
 ////////////////////////////////////////////////////////////////////////
 
 
-config.SPHERE_GLOW_SCALE     = 1.0; // multiplier to determine how big glow sphere should be relative to player sphere
+config.SPHERE_GLOW_SCALE     = 1.001; // multiplier to determine how big glow sphere should be relative to player sphere
 config.MAX_PLAYER_RADIUS     = 150;
 config.INITIAL_PLAYER_RADIUS = 2;
 
