@@ -25,6 +25,9 @@ var playerType;
 var playerNameInput = document.getElementById('playerNameInput');
 var player;
 
+// player velocity
+var velocity = new THREE.Vector3();
+
 // Game state
 var players = {};
 var food = {};
@@ -167,11 +170,15 @@ function createScene() {
 
         requestAnimationFrame( animate );
 
+        resetVelocity();
+
         handleKeysDown();
 
         camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
 
         updateFoodRespawns();
+
+        applyVelocity();
 
         checkFoodCaptures();
 
@@ -433,17 +440,16 @@ function keyReleased(key) {
     console.log('key ' + key + ' released');
 }
 
+function resetVelocity() {
+    velocity.set( 0, 0, 0 );
+}
 
-// function updateMovement() {
-//     var v = updateMovement.v;
-//     v.copy( sphere.position );
-//     v.sub( camera.position );
-//     v.multiplyScalar( -1 );
-//     v.normalize();
-//     v.multiplyScalar( config.BASE_PLAYER_SPEED );
-//     sphere.position.sub( v );
-// }
-// updateMovement.v = new THREE.Vector3();
+function applyVelocity() {
+    velocity.add( camera_controls.velocityRequest );
+    velocity.normalize();
+    velocity.multiplyScalar( config.BASE_PLAYER_SPEED );
+    player.view.mainSphere.position.sub( velocity );
+}
 
 function moveForward() {
     var v = moveForward.v;
@@ -454,9 +460,20 @@ function moveForward() {
     v.normalize();
     v.multiplyScalar( config.BASE_PLAYER_SPEED );
     v = adjustVelocityWallHit( mainSphere.position, player.radius(), v, zorbioModel.worldSize );
-    mainSphere.position.sub( v );
+    velocity.add( v );
 }
 moveForward.v = new THREE.Vector3();
+
+function moveBackward() {
+    var v = moveBackward.v;
+    var mainSphere = player.view.mainSphere;
+    v.copy( mainSphere.position );
+    v.sub( camera.position );
+    v.normalize();
+    v.multiplyScalar( config.BASE_PLAYER_SPEED );
+    velocity.add( v );
+}
+moveBackward.v = new THREE.Vector3();
 
 function adjustVelocityWallHit( p, r, v, w ) {
 
@@ -503,17 +520,6 @@ function hitp( p, r, v, w, axis ) {
 function hitn( p, r, v, w, axis ) {
     return p[axis] - r - v[axis] < -w[axis]/2;
 }
-
-function moveBackward() {
-    var v = moveBackward.v;
-    var mainSphere = player.view.mainSphere;
-    v.copy( mainSphere.position );
-    v.sub( camera.position );
-    v.normalize();
-    v.multiplyScalar( config.BASE_PLAYER_SPEED );
-    mainSphere.position.sub( v );
-}
-moveBackward.v = new THREE.Vector3();
 
 function cleanupMemory() {
     players = {};

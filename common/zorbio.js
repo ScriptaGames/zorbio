@@ -108,7 +108,7 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
         this.scale = scale;
     }
     if (velocity) {
-        this.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
+        this.velocity = velocity;
     }
 
     //TODO: make color customizable

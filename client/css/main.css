@@ -110,3 +110,17 @@ html, body {
     display: none;
     font-size: 12px;
 }
+
+.debug {
+    display: block;
+    position: absolute;
+    z-index: 1000000;
+    bottom: 10px;
+    left: 50%;
+    right: 10px;
+    background: rgba(0,0,0,0.8);
+    color: green;
+    height: 200px;
+    outline: 1px solid green;
+    padding: 5px;
+}

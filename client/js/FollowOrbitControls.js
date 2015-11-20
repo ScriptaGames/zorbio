@@ -54,6 +54,13 @@
         this.enableDamping = false;
         this.dampingFactor = 0.25;
 
+        // Instead of moving our target inside this controller, set up a
+        // velocity vector, which essentially means "please apply this velocity
+        // to my target"
+
+        this.velocityRequest = new THREE.Vector3();
+        this.foobar = 0;
+
         ////////////
         // internals
 
@@ -69,7 +76,6 @@
         var phiDelta = 0;
         var thetaDelta = 0;
         var scale = 1;
-        var panOffset = new THREE.Vector3();
         var zoomChanged = false;
 
         // API
@@ -111,7 +117,7 @@
                 v.set( te[ 0 ], te[ 1 ], te[ 2 ] );
                 v.multiplyScalar( - distance );
 
-                panOffset.add( v );
+                scope.velocityRequest.add( v );
 
             };
 
@@ -130,7 +136,7 @@
                 v.set( te[ 4 ], te[ 5 ], te[ 6 ] );
                 v.multiplyScalar( distance );
 
-                panOffset.add( v );
+                scope.velocityRequest.add( v );
 
             };
 
@@ -139,6 +145,7 @@
         // pass in x,y of change desired in pixel space,
         // right and down are positive
         this.pan = function ( deltaX, deltaY, screenWidth, screenHeight ) {
+            scop:.velocityRequest.set( 0, 0, 0 );
             // perspective
             var position = scope.object.position;
             var offset = position.clone().sub( scope.target.position );
@@ -233,7 +240,6 @@
                 radius = Math.max( this.minDistance, Math.min( this.maxDistance, radius ) );
 
                 // move target to panned location
-                this.target.position.add( panOffset );
 
                 offset.x = radius * Math.sin( phi ) * Math.sin( theta );
                 offset.y = radius * Math.cos( phi );
@@ -259,7 +265,6 @@
                 }
 
                 scale = 1;
-                panOffset.set( 0, 0, 0 );
 
                 // update condition is:
                 // min(camera displacement, camera rotation in radians)^2 > EPS
@@ -283,7 +288,7 @@
 
         }();
 
-    };
+    }
 
 
     // This set of controls performs orbiting, dollying (zooming), and panning. It maintains
@@ -810,6 +815,16 @@
             get: function () {
 
                 return this.constraint.object;
+
+            }
+
+        },
+
+        velocityRequest: {
+
+            get: function () {
+
+                return this.constraint.velocityRequest;
 
             }
 
