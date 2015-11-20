@@ -21,11 +21,17 @@ config.HEARTBEAT_TIMEOUT        = 30000;
 config.HEARTBEAT_CHECK_INTERVAL = 1000;
 
 ////////////////////////////////////////////////////////////////////////
+//                          PLAYER SETTINGS                           //
+////////////////////////////////////////////////////////////////////////
+
+config.BASE_PLAYER_SPEED = 5;
+
+////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
 
-config.SPHERE_GLOW_SCALE     = 1.1; // multiplier to determine how big glow sphere should be relative to player sphere
+config.SPHERE_GLOW_SCALE     = 1.0; // multiplier to determine how big glow sphere should be relative to player sphere
 config.MAX_PLAYER_RADIUS     = 150;
 config.INITIAL_PLAYER_RADIUS = 2;
 
