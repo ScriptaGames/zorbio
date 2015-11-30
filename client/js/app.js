@@ -174,17 +174,17 @@ function createScene() {
 
         handleKeysDown();
 
-        camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
+        applyVelocity();
 
         updateFoodRespawns();
 
-        applyVelocity();
-
         checkFoodCaptures();
+
+        updateActors();
 
         player.view.update(scene, camera, renderer);
 
-        updateActors();
+        camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
 
         render();
     }
@@ -445,10 +445,22 @@ function resetVelocity() {
 }
 
 function applyVelocity() {
-    velocity.add( camera_controls.velocityRequest );
+    velocity.sub( camera_controls.velocityRequest );
     velocity.normalize();
     velocity.multiplyScalar( config.BASE_PLAYER_SPEED );
-    player.view.mainSphere.position.sub( velocity );
+
+    player.view.mainSphere.position.sub(
+        adjustVelocityWallHit(
+            player.view.mainSphere.position,
+            player.radius(),
+            velocity,
+            zorbioModel.worldSize
+        )
+    );
+
+    // reset the velocity requested by camera controls.  this should be done
+    // inside the camera controls but I couldn't find a good place to do it.
+    camera_controls.velocityRequest.set( 0, 0, 0 );
 }
 
 function moveForward() {
@@ -459,7 +471,6 @@ function moveForward() {
     v.multiplyScalar( -1 );
     v.normalize();
     v.multiplyScalar( config.BASE_PLAYER_SPEED );
-    v = adjustVelocityWallHit( mainSphere.position, player.radius(), v, zorbioModel.worldSize );
     velocity.add( v );
 }
 moveForward.v = new THREE.Vector3();

@@ -4,6 +4,7 @@
  * @author alteredq / http://alteredqualia.com/
  * @author WestLangley / http://github.com/WestLangley
  * @author erich666 / http://erichaines.com
+ * @author mwcz / http://palebluepixel.org
  */
 /*global THREE, console */
 
@@ -145,7 +146,6 @@
         // pass in x,y of change desired in pixel space,
         // right and down are positive
         this.pan = function ( deltaX, deltaY, screenWidth, screenHeight ) {
-            scop:.velocityRequest.set( 0, 0, 0 );
             // perspective
             var position = scope.object.position;
             var offset = position.clone().sub( scope.target.position );
@@ -786,7 +786,7 @@
 
             window.removeEventListener( 'keydown', onKeyDown, false );
 
-        }
+        };
 
         this.domElement.addEventListener( 'contextmenu', contextmenu, false );
 
@@ -1120,68 +1120,3 @@
     } );
 
 }() );
-
-
-THREE.OrbitControls = function ( object ) {
-
-    var scope = this;
-
-    var phi = Math.PI / 2, theta = 0;
-    var EPS = 0.000001;
-    var mouse = new THREE.Vector2();
-
-    this.phiMin = -Infinity; //0;
-    this.phiMax = Infinity; //Math.PI;
-
-    this.thetaMin = - Infinity;
-    this.thetaMax = Infinity;
-
-    this.scaleX = 1;
-    this.scaleY = 1;
-    this.scaleZ = 1;
-
-    this.speed = 1;
-
-    this.radius = 200;
-    this.center = new THREE.Vector3();
-
-    this.update = function () {
-
-        var flip = false;
-
-        phi += mouse.y * Math.PI / 180;
-        theta += mouse.x  * Math.PI / 180;
-
-        if (phi > Math.PI || phi < 0) {
-            flip = true;
-        }
-
-        // phi %= Math.PI;
-
-        if (flip) {
-            phi *= -1;
-            theta *= -1;
-        }
-
-        // phi = Math.max( scope.phiMin + EPS, Math.min( scope.phiMax - EPS, phi ) );
-        theta = Math.max( scope.thetaMin, Math.min( scope.thetaMax, theta ) );
-
-        object.position.x = scope.radius * Math.sin( phi ) * Math.sin( theta ) * scope.scaleX;
-        object.position.y = scope.radius * Math.cos( phi ) * scope.scaleY;
-        object.position.z = scope.radius * Math.sin( phi ) * Math.cos( theta ) * scope.scaleZ;
-
-        object.lookAt( scope.center );
-
-    };
-
-    var onDocumentMouseMove = function ( event ) {
-
-        mouse.x = ( ( event.clientX / window.innerWidth ) - 0.5 ) * scope.speed;
-        mouse.y = ( ( event.clientY / window.innerHeight ) - 0.5 ) * scope.speed;
-
-    };
-
-    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-    document.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
-
-};
