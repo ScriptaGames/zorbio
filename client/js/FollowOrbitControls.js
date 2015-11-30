@@ -4,6 +4,7 @@
  * @author alteredq / http://alteredqualia.com/
  * @author WestLangley / http://github.com/WestLangley
  * @author erich666 / http://erichaines.com
+ * @author mwcz / http://palebluepixel.org
  */
 /*global THREE, console */
 
@@ -54,6 +55,13 @@
         this.enableDamping = false;
         this.dampingFactor = 0.25;
 
+        // Instead of moving our target inside this controller, set up a
+        // velocity vector, which essentially means "please apply this velocity
+        // to my target"
+
+        this.velocityRequest = new THREE.Vector3();
+        this.foobar = 0;
+
         ////////////
         // internals
 
@@ -69,7 +77,6 @@
         var phiDelta = 0;
         var thetaDelta = 0;
         var scale = 1;
-        var panOffset = new THREE.Vector3();
         var zoomChanged = false;
 
         // API
@@ -111,7 +118,7 @@
                 v.set( te[ 0 ], te[ 1 ], te[ 2 ] );
                 v.multiplyScalar( - distance );
 
-                panOffset.add( v );
+                scope.velocityRequest.add( v );
 
             };
 
@@ -130,7 +137,7 @@
                 v.set( te[ 4 ], te[ 5 ], te[ 6 ] );
                 v.multiplyScalar( distance );
 
-                panOffset.add( v );
+                scope.velocityRequest.add( v );
 
             };
 
@@ -233,7 +240,6 @@
                 radius = Math.max( this.minDistance, Math.min( this.maxDistance, radius ) );
 
                 // move target to panned location
-                this.target.position.add( panOffset );
 
                 offset.x = radius * Math.sin( phi ) * Math.sin( theta );
                 offset.y = radius * Math.cos( phi );
@@ -259,7 +265,6 @@
                 }
 
                 scale = 1;
-                panOffset.set( 0, 0, 0 );
 
                 // update condition is:
                 // min(camera displacement, camera rotation in radians)^2 > EPS
@@ -283,7 +288,7 @@
 
         }();
 
-    };
+    }
 
 
     // This set of controls performs orbiting, dollying (zooming), and panning. It maintains
@@ -781,7 +786,7 @@
 
             window.removeEventListener( 'keydown', onKeyDown, false );
 
-        }
+        };
 
         this.domElement.addEventListener( 'contextmenu', contextmenu, false );
 
@@ -810,6 +815,16 @@
             get: function () {
 
                 return this.constraint.object;
+
+            }
+
+        },
+
+        velocityRequest: {
+
+            get: function () {
+
+                return this.constraint.velocityRequest;
 
             }
 
@@ -1105,68 +1120,3 @@
     } );
 
 }() );
-
-
-THREE.OrbitControls = function ( object ) {
-
-    var scope = this;
-
-    var phi = Math.PI / 2, theta = 0;
-    var EPS = 0.000001;
-    var mouse = new THREE.Vector2();
-
-    this.phiMin = -Infinity; //0;
-    this.phiMax = Infinity; //Math.PI;
-
-    this.thetaMin = - Infinity;
-    this.thetaMax = Infinity;
-
-    this.scaleX = 1;
-    this.scaleY = 1;
-    this.scaleZ = 1;
-
-    this.speed = 1;
-
-    this.radius = 200;
-    this.center = new THREE.Vector3();
-
-    this.update = function () {
-
-        var flip = false;
-
-        phi += mouse.y * Math.PI / 180;
-        theta += mouse.x  * Math.PI / 180;
-
-        if (phi > Math.PI || phi < 0) {
-            flip = true;
-        }
-
-        // phi %= Math.PI;
-
-        if (flip) {
-            phi *= -1;
-            theta *= -1;
-        }
-
-        // phi = Math.max( scope.phiMin + EPS, Math.min( scope.phiMax - EPS, phi ) );
-        theta = Math.max( scope.thetaMin, Math.min( scope.thetaMax, theta ) );
-
-        object.position.x = scope.radius * Math.sin( phi ) * Math.sin( theta ) * scope.scaleX;
-        object.position.y = scope.radius * Math.cos( phi ) * scope.scaleY;
-        object.position.z = scope.radius * Math.sin( phi ) * Math.cos( theta ) * scope.scaleZ;
-
-        object.lookAt( scope.center );
-
-    };
-
-    var onDocumentMouseMove = function ( event ) {
-
-        mouse.x = ( ( event.clientX / window.innerWidth ) - 0.5 ) * scope.speed;
-        mouse.y = ( ( event.clientY / window.innerHeight ) - 0.5 ) * scope.speed;
-
-    };
-
-    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-    document.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
-
-};
