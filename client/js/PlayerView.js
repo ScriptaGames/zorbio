@@ -10,13 +10,8 @@ var PlayerView = function ZORPlayerView(actor, scene) {
     this.playerColor = PlayerView.COLORS[actor.color];
     var geometry = new THREE.SphereGeometry( config.INITIAL_PLAYER_RADIUS, 32, 32 );
 
-    this.cubeCamera = new THREE.CubeCamera( 1, 1000, 256 );
-    this.cubeCamera.renderTarget.minFilter = THREE.LinearMipMapLinearFilter;
-    scene.add( this.cubeCamera );
-
     var material = new THREE.MeshBasicMaterial( {
         color    : THREE.ColorKeywords.white,
-        envMap   : this.cubeCamera.renderTarget,
         blending : THREE.NormalBlending
     } );
     material.transparent = true;
@@ -63,9 +58,6 @@ PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera, render
     this.sphereGlow.position.copy(this.mainSphere.position);
     this.sphereGlow.material.uniforms.viewVector.value = new THREE.Vector3().subVectors( camera.position, this.sphereGlow.position );
 
-    // update reflections
-    this.cubeCamera.position.copy(this.mainSphere.position);
-    this.cubeCamera.updateCubeMap( renderer, scene );
 };
 
 PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position, scene, camera, renderer) {
@@ -76,7 +68,6 @@ PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(posit
 PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
     scene.remove(this.mainSphere);
     scene.remove(this.sphereGlow);
-    scene.remove(this.cubeCamera);
 };
 
 PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
