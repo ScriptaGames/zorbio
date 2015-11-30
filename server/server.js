@@ -148,5 +148,5 @@ if (config.HEARTBEAT_ENABLE) {
 
 var serverPort = process.env.PORT || config.PORT;
 http.listen(serverPort, function () {
-    console.log("Server is listening on port " + serverPort);
+    console.log("Server is listening on http://localhost:" + serverPort);
 });
