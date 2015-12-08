@@ -273,7 +273,7 @@ function captureFood(fi) {
  * Given a sphere radius, adjust the camera so the whole sphere is within view.
  */
 function adjustCamera( radius ) {
-    camera_controls.minDistance = 4 * radius;
+    camera_controls.minDistance = radius / Math.tan( Math.PI * camera.fov / 360 ) + 100;
     camera_controls.maxDistance = camera_controls.minDistance;
 }
 
