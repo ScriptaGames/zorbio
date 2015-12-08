@@ -7,17 +7,6 @@ var camera;
 var camera_controls;
 
 // constants
-var PLAYER_POSITION_INTERVAL = 50;   // 50 milliseconds or 20 times per second
-var HEARTBEAT_INTERVAL       = 3000; // How long to wait between sending heartbeat milliseconds
-var INITIAL_CAMERA_DISTANCE  = 50;
-var FOOD_VALUE               = 2; // amount to increase sphere by when food is consumed
-var FOOD_RESPAWN_FRAMES      = 10*60;
-var FOOD_CAPTURE_ASSIST      = 2; // this number is added to player's radius for food capturing
-var FOG_ENABLED              = true;
-var FOG_NEAR                 = 100;
-var FOG_FAR                  = 1000;
-var FOG_COLOR                = THREE.ColorKeywords.black;
-var INITIAL_FOV              = 50;
 
 // Player
 var playerName;
@@ -98,20 +87,20 @@ function createScene() {
 
         scene = new THREE.Scene();
         // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
-        scene.fog = new THREE.Fog( FOG_COLOR, FOG_NEAR, FOG_FAR );
+        scene.fog = new THREE.Fog( config.FOG_COLOR, config.FOG_NEAR, config.FOG_FAR );
 
         renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
-        renderer.setClearColor( FOG_COLOR );
+        renderer.setClearColor( config.FOG_COLOR );
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize( window.innerWidth, window.innerHeight );
 
         // orbit camera
 
         camera = new THREE.PerspectiveCamera(
-            INITIAL_FOV,
+            config.INITIAL_FOV,
             window.innerWidth / window.innerHeight,
             1,
-            FOG_FAR
+            config.FOG_FAR
         );
         camera.position.z = 200;
 
@@ -119,8 +108,8 @@ function createScene() {
         camera_controls.enableDamping = true;
         camera_controls.dampingFactor = 0.25;
         camera_controls.enableZoom = false;
-        camera_controls.minDistance = INITIAL_CAMERA_DISTANCE;
-        camera_controls.maxDistance = INITIAL_CAMERA_DISTANCE;
+        camera_controls.minDistance = config.INITIAL_CAMERA_DISTANCE;
+        camera_controls.maxDistance = config.INITIAL_CAMERA_DISTANCE;
         // controls.minPolarAngle = Infinity; // radians
         // controls.maxPolarAngle = -Infinity; // radians
 
@@ -226,7 +215,7 @@ function checkFoodCaptures() {
             vdist.set(x, y, z);
 
             dist = vdist.distanceTo(mainSphere.position);
-            if (dist <= (sphere_radius + FOOD_CAPTURE_ASSIST)) {
+            if (dist <= (sphere_radius + config.FOOD_CAPTURE_ASSIST)) {
                 var fi = i / 3;
                 captureFood( fi );
             }
@@ -259,7 +248,7 @@ function captureFood(fi) {
         var mainSphere = player.view.mainSphere;
 
         // give food value diminishing returns to prevent runaway growth
-        var value = FOOD_VALUE / mainSphere.scale.x;
+        var value = config.FOOD_VALUE / mainSphere.scale.x;
 
         var new_radius = ( mainSphere.scale.x + value ) * config.INITIAL_PLAYER_RADIUS;
 
@@ -287,7 +276,7 @@ function aliveFood(fi) {
 }
 
 function hideFood(fi) {
-    food.respawning[fi] = FOOD_RESPAWN_FRAMES;
+    food.respawning[fi] = config.FOOD_RESPAWN_FRAMES;
     food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
 }
 
@@ -356,8 +345,8 @@ function drawFood() {
             color       : { type: "c", value: new THREE.Color( 0xffffff ) },
             texture     : { type: "t", value: texture },
             size        : { type: "f", value: 3000 },
-            FOG_FAR     : { type: "f", value: FOG_FAR },
-            FOG_ENABLED : { type: "f", value: ~~FOG_ENABLED },
+            FOG_FAR     : { type: "f", value: config.FOG_FAR },
+            FOG_ENABLED : { type: "f", value: ~~config.FOG_ENABLED },
         },
         vertexShader:   document.getElementById( 'vertexshader' ).textContent,
         fragmentShader: document.getElementById( 'fragmentshader' ).textContent,

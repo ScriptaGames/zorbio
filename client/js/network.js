@@ -61,10 +61,10 @@ function setupSocket(socket) {
         console.log('Game is started: ' + gameStart);
 
         // start sending the players position
-        window.setInterval(sendPlayerSpherePosition, PLAYER_POSITION_INTERVAL);
+        window.setInterval(sendPlayerSpherePosition, config.PLAYER_POSITION_INTERVAL);
 
         // start sending heartbeat
-        window.setInterval(sendHeartbeat, HEARTBEAT_INTERVAL);
+        window.setInterval(sendHeartbeat, config.HEARTBEAT_PULSE_INTERVAL);
 
         // create the scene
         createScene();

@@ -69,7 +69,6 @@
                 // down to respawn
                 if ( vRespawning > 0.0 ) discard;
 
-
                 if ( FOG_ENABLED > 0.0 ) {
                     float fogp = vDist / FOG_FAR;
                     fog = vec3( fogp, fogp, fogp );
@@ -91,11 +90,16 @@
             uniform float c;
             uniform float p;
             varying float intensity;
-            void main() 
-            {
+            varying float vDist;
+
+            void main() {
                 vec3 vNormal = normalize( normalMatrix * normal );
                 vec3 vNormel = normalize( normalMatrix * viewVector );
                 intensity = pow( c - dot(vNormal, vNormel), p );
+
+                vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+                vDist = length( mvPosition.xyz );
 
                 gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
             }
@@ -104,19 +108,28 @@
         <script type="x-shader/x-fragment" id="glowFragmentShader">
             uniform vec3 glowColor;
             varying float intensity;
-            void main() 
-            {
-                gl_FragColor = vec4( glowColor, intensity );
+            varying float vDist;
+            vec3 fog;
+
+            void main() {
+
+                float fogp = vDist / 200.0;
+                fog = vec3( fogp, fogp, fogp );
+
+                gl_FragColor = vec4( glowColor - fog, intensity );
             }
         </script>
 
-        <script src="./js/config.js"></script>
+        <!-- third party -->
         <script src="./bower_components/three.js/build/three.js"></script>
         <script src="./bower_components/three.js/examples/js/renderers/Projector.js"></script>
         <script src="./bower_components/three.js/examples/js/renderers/CanvasRenderer.js"></script>
-        <script src="./js/FollowOrbitControls.js"></script>
         <script src="./bower_components/isMobile/isMobile.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
+
+        <!-- first party -->
+        <script src="./js/config.js"></script>
+        <script src="./js/FollowOrbitControls.js"></script>
         <script src="./lib/util.js"></script>
         <script src="./lib/zorbio.js"></script>
         <script src="./js/ui.js"></script>
