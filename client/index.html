@@ -69,12 +69,12 @@
                 // down to respawn
                 if ( vRespawning > 0.0 ) discard;
 
-                if ( FOG_ENABLED > 0.0 ) {
+                if ( FOG_ENABLED != 0.0 ) {
                     float fogp = vDist / FOG_FAR;
                     fog = vec3( fogp, fogp, fogp );
                 }
                 else {
-                    fog = vec3( 1.0, 0.0, 0.0 );
+                    fog = vec3( 0.0, 0.0, 0.0 );
                 }
 
                 vec4 color = vec4( vColor - fog, 0.5 ); // * texture2D( texture, gl_PointCoord );
@@ -89,6 +89,9 @@
             uniform vec3 viewVector;
             uniform float c;
             uniform float p;
+
+            uniform float FOG_ENABLED;
+
             varying float intensity;
             varying float vDist;
 
@@ -107,14 +110,20 @@
 
         <script type="x-shader/x-fragment" id="glowFragmentShader">
             uniform vec3 glowColor;
+            uniform float FOG_ENABLED;
+            uniform float FOG_FAR;
+
             varying float intensity;
             varying float vDist;
-            vec3 fog;
+
+            vec3 fog = vec3( 0.0, 0.0, 0.0 );
 
             void main() {
 
-                float fogp = vDist / 200.0;
-                fog = vec3( fogp, fogp, fogp );
+                if (FOG_ENABLED != 0.0) {
+                    float fogp = vDist / FOG_FAR;
+                    fog = vec3( fogp, fogp, fogp );
+                }
 
                 gl_FragColor = vec4( glowColor - fog, intensity );
             }

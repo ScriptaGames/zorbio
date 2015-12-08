@@ -87,7 +87,9 @@ function createScene() {
 
         scene = new THREE.Scene();
         // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
-        scene.fog = new THREE.Fog( config.FOG_COLOR, config.FOG_NEAR, config.FOG_FAR );
+        if (config.FOG_ENABLED) {
+            scene.fog = new THREE.Fog( config.FOG_COLOR, config.FOG_NEAR, config.FOG_FAR );
+        }
 
         renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
         renderer.setClearColor( config.FOG_COLOR );
@@ -100,7 +102,7 @@ function createScene() {
             config.INITIAL_FOV,
             window.innerWidth / window.innerHeight,
             1,
-            config.FOG_FAR
+            config.WORLD_HYPOTENUSE + 100 // world hypot plus a little extra for camera distance
         );
         camera.position.z = 200;
 
@@ -258,17 +260,21 @@ function captureFood(fi) {
 
         if (safe_to_grow) {
             player.grow( value );
-
-            // push camera back a bit
-
-            camera_controls.minDistance += 16 * value;
-            camera_controls.maxDistance = camera_controls.minDistance;
+            adjustCamera(new_radius);
         }
         else {
             console.log("NOT SAFE TO GROW!");
         }
 
     }
+}
+
+/**
+ * Given a sphere radius, adjust the camera so the whole sphere is within view.
+ */
+function adjustCamera( radius ) {
+    camera_controls.minDistance = 4 * radius;
+    camera_controls.maxDistance = camera_controls.minDistance;
 }
 
 function aliveFood(fi) {

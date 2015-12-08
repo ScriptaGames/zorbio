@@ -14,8 +14,9 @@ var config = {};
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE   = 1000;
-config.FOOD_DENSITY = 20;
+config.WORLD_SIZE       = 1000;
+config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
+config.FOOD_DENSITY     = 20;
 
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //
