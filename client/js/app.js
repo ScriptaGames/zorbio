@@ -122,6 +122,8 @@ function createScene() {
         // camera
         camera_controls.target = player.view.mainSphere;
 
+        adjustCamera( config.INITIAL_PLAYER_RADIUS );
+
         // food
         drawFood();
 
