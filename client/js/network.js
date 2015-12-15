@@ -28,7 +28,10 @@ function sendPlayerSpherePosition() {
     //TODO: only send if the player is moving.  If their position hasn't changed, don't send.
     var sphere = {"id": sphereModel.id, "p": position, "s": sphereModel.scale};
     socket.emit('myPosition', sphere);
+}
 
+function sendFoodCapture(fi) {
+    socket.emit('foodCapture', fi);
 }
 
 function sendHeartbeat() {
@@ -61,7 +64,7 @@ function setupSocket(socket) {
         console.log('Game is started: ' + gameStart);
 
         // start sending the players position
-        window.setInterval(sendPlayerSpherePosition, config.PLAYER_POSITION_INTERVAL);
+        window.setInterval(sendPlayerSpherePosition, config.ACTOR_UPDATE_INTERVAL);
 
         // start sending heartbeat
         window.setInterval(sendHeartbeat, config.HEARTBEAT_PULSE_INTERVAL);
@@ -106,6 +109,10 @@ function setupSocket(socket) {
         });
     });
 
+    socket.on('foodCaptureComplete', function (fi) {
+        hideFood( fi );
+    });
+
      socket.on('kick', function (msg) {
          socket.close();
          handleNetworkTermination();
@@ -137,6 +144,11 @@ function setupSocket(socket) {
         disconnected = true;
         console.log('WebSocket Connection failed');
     });
+
+    socket.on('serverTick', function (serverTickData) {
+        handleServerTick(serverTickData);
+    });
+
 
     /*
      // Handle ping

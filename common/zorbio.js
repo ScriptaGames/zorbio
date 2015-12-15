@@ -37,6 +37,19 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
     this.foodCount = Math.pow(this.foodDensity - 1, 3);
     this.food = [];
 
+    /**
+     * Tracks which food particles are currently respawning, on the server only!
+     * @type {Int32Array}
+     */
+    this.food_respawning = new Int32Array( this.foodCount );
+    this.food_respawning_indexes = [];
+
+    /**
+     * Queue of food indexes that are ready to respawn, to be sent to the client
+     * @type {Array}
+     */
+    this.food_respawn_ready_queue = [];
+
     for (var i = 1; i < this.foodDensity; i++) {
         for (var j = 1; j < this.foodDensity; j++) {
             for (var k = 1; k < this.foodDensity; k++) {
@@ -130,38 +143,6 @@ ZOR.PlayerSphere.prototype.radius = function ZORPlayerSphereRadius() {
     // x, y, and z scale should all be the same for spheres
     return config.INITIAL_PLAYER_RADIUS * this.scale;
 };
-
-/**
- * ZOR.Food is a constructor for creating a Food object.
- * @param [x]
- * @param [y]
- * @param [z]
- * @param [color]
- * @constructor
- */
-ZOR.Food = function ZORFood(x, y, z, color) {
-    x = x || 0;
-    y = y || 0;
-    z = z || 0;
-    color = color || new THREE.Color(THREE.ColorKeywords.red);
-
-    // call super class constructor
-    ZOR.Actor.call(this);
-
-    this.type = ZOR.ActorTypes.FOOD;
-
-    this.id = this.type + '-' + x + ',' + y + ',' + z;
-
-    // Set the position
-    this.position.x = x;
-    this.position.y = y;
-    this.position.z = z;
-
-    this.color = color;
-};
-ZOR.Food.prototype = Object.create(ZOR.Actor.prototype);
-ZOR.Food.constructor = ZOR.Food;
-
 
 /**
  * ZOR.PlayerTypes Types of players

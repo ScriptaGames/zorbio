@@ -10,6 +10,7 @@ global.self = {}; // threejs expects there to be a global named 'self'... for so
 var THREE = require('three.js');
 
 var Zorbio = require('../common/zorbio.js');
+var Validators = require('./Validators.js');
 var UTIL = require('../common/util.js');
 
 // this array holds multiple game instances.  when one fills up, a new one is
@@ -83,6 +84,15 @@ io.on('connection', function (socket) {
         }
     });
 
+    socket.on('foodCapture', function (fi) {
+        if (Validators.foodCapture(fi)) {
+            model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
+        }
+
+        // notify clients of food capture so they can update their food view
+        io.emit('foodCaptureComplete', fi);
+    });
+
     socket.on('playerHeartbeat', function (id) {
         if (model.players[id]) {
             model.players[id].lastHeartbeat = new Date().getTime();
@@ -100,7 +110,7 @@ io.on('connection', function (socket) {
     });
 });
 
-function sendUpdates() {
+function sendActorUpdates() {
     // Send actors to the client for updates
     io.emit('actorPositions', model.actors);
 }
@@ -140,7 +150,44 @@ function kickPlayer(playerId, reason) {
     delete sockets[playerId];
 }
 
-setInterval(sendUpdates, config.NETWORK_UPDATE_INTERVAL);
+function updateFoodRespawns() {
+    // keep a current reference of which food indexes are respawning
+    model.food_respawning_indexes = [];
+
+    for (var i = 0, l = model.food_respawning.length; i < l; ++i) {
+        if (model.food_respawning[i] > 0) {
+            model.food_respawning[i] = Math.max(  model.food_respawning[i] - config.SERVER_TICK_INTERVAL, 0 );
+
+            if (model.food_respawning[i] === 0) {
+                // queue up food respawn to send to clients
+                model.food_respawn_ready_queue.push(i);
+            } else {
+                model.food_respawning_indexes.push(i);
+            }
+        }
+    }
+}
+
+/**
+ * Send any updates to client per server tick
+ */
+function sendServerTickData() {
+    var serverTickData = {"fr": model.food_respawn_ready_queue};
+    io.emit('serverTick', serverTickData);
+    model.food_respawn_ready_queue = [];
+    serverTickData = null;
+}
+
+/**
+ * Main server loop for general updates to the client that don't have to be real-time, e.g. food respawns
+ */
+function serverTick() {
+    updateFoodRespawns();
+    sendServerTickData();
+}
+
+setInterval(sendActorUpdates, config.ACTOR_UPDATE_INTERVAL);
+setInterval(serverTick, config.SERVER_TICK_INTERVAL);
 
 if (config.HEARTBEAT_ENABLE) {
     setInterval(checkHeartbeats, config.HEARTBEAT_CHECK_INTERVAL);

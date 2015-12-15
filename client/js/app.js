@@ -127,6 +127,9 @@ function createScene() {
         // food
         drawFood();
 
+        // Hide currently respawning food
+        hideRespawningFood();
+
         // Draw other players
         drawPlayers();
 
@@ -147,7 +150,6 @@ function createScene() {
         scene.add( light );
 
         window.addEventListener( 'resize', onWindowResize, false );
-
     }
 
     function onWindowResize() {
@@ -168,8 +170,6 @@ function createScene() {
         handleKeysDown();
 
         applyVelocity();
-
-        updateFoodRespawns();
 
         checkFoodCaptures();
 
@@ -258,11 +258,12 @@ function captureFood(fi) {
 
         var safe_to_grow = !checkWallCollision( mainSphere.position, new_radius, new THREE.Vector3(), zorbioModel.worldSize );
 
-        hideFood( fi );
+        hideFood(fi);
 
         if (safe_to_grow) {
             player.grow( value );
             adjustCamera(new_radius);
+            sendFoodCapture(fi);  // send the food capture to the server
         }
         else {
             console.log("NOT SAFE TO GROW!");
@@ -284,15 +285,13 @@ function aliveFood(fi) {
 }
 
 function hideFood(fi) {
-    food.respawning[fi] = config.FOOD_RESPAWN_FRAMES;
+    food.respawning[fi] = 1; // hide food
     food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
 }
 
-function updateFoodRespawns() {
-    for (var i = 0, l = food.respawning.length; i < l; ++i) {
-        food.respawning[i] = Math.max( food.respawning[i] - 1, 0 );
-        food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
-    }
+function showFood(fi) {
+    food.respawning[fi] = 0;
+    food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
 }
 
 function drawFood() {
@@ -311,8 +310,7 @@ function drawFood() {
     var X, Y, Z, R, G, B;
     var particle_index = 0;
     var food_index = 0;
-    var i;
-    for (i = 0; i < zorbioModel.foodCount; i++) {
+    for (var i = 0, l = zorbioModel.foodCount; i < l; i++) {
 
         X = zorbioModel.food[ food_index     ];
         Y = zorbioModel.food[ food_index + 1 ];
@@ -363,10 +361,16 @@ function drawFood() {
 
     });
 
-    //
-
     food.particleSystem = new THREE.Points( geometry, material );
     scene.add( food.particleSystem );
+}
+
+function hideRespawningFood() {
+    // hide any food that was respawning when the player connected
+    for (var i = 0, l = zorbioModel.food_respawning_indexes.length; i < l; i++) {
+        food.respawning[zorbioModel.food_respawning_indexes[i]] = 1; // hide food
+    }
+    food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
 }
 
 window.addEventListener("keydown", handleKeydown);
@@ -552,5 +556,12 @@ function removePlayerFromGame(playerId) {
         delete players[playerId];
 
         console.log('Removed player from game', playerId);
+    }
+}
+
+function handleServerTick(serverTickData) {
+    // handle food respawns
+    for(var i = 0, l = serverTickData.fr.length; i < l; ++i) {
+        showFood(serverTickData.fr[i]);  // Show the food index
     }
 }

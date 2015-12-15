@@ -16,19 +16,18 @@ var config = {};
 
 config.WORLD_SIZE       = 1000;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
-config.FOOD_DENSITY     = 20;
 
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //
 ////////////////////////////////////////////////////////////////////////
 
 config.PORT                     = 3000;
-config.NETWORK_UPDATE_INTERVAL  = 50;
 config.HEARTBEAT_ENABLE         = false;
 config.HEARTBEAT_TIMEOUT        = 30000;
 config.HEARTBEAT_CHECK_INTERVAL = 1000; // server heartbeat test interval
 config.HEARTBEAT_PULSE_INTERVAL = 3000; // client heartbeat beacon
-config.PLAYER_POSITION_INTERVAL = 50;
+config.SERVER_TICK_INTERVAL     = 250;  // Every quarter second
+config.ACTOR_UPDATE_INTERVAL    = 50;
 
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
@@ -40,9 +39,11 @@ config.BASE_PLAYER_SPEED = 5;
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_VALUE               = 2; // amount to increase sphere by when food is consumed
-config.FOOD_RESPAWN_FRAMES      = 10*60;
-config.FOOD_CAPTURE_ASSIST      = 2; // this number is added to player's radius for food capturing
+config.FOOD_DENSITY          = 10;
+config.FOOD_RESPAWN_TIME     = 30000;
+config.FOOD_VALUE            = 2; // amount to increase sphere by when food is consumed
+config.FOOD_RESPAWN_FRAMES   = 10 * 60;
+config.FOOD_CAPTURE_ASSIST   = 2; // this number is added to player's radius for food capturing
 
 ////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //
