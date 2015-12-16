@@ -22,12 +22,12 @@ config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD
 ////////////////////////////////////////////////////////////////////////
 
 config.PORT                     = 3000;
-config.HEARTBEAT_ENABLE         = false;
-config.HEARTBEAT_TIMEOUT        = 30000;
-config.HEARTBEAT_CHECK_INTERVAL = 1000; // server heartbeat test interval
-config.HEARTBEAT_PULSE_INTERVAL = 3000; // client heartbeat beacon
-config.SERVER_TICK_INTERVAL     = 250;  // Every quarter second
-config.ACTOR_UPDATE_INTERVAL    = 50;
+config.HEARTBEAT_ENABLE         = true;
+config.HEARTBEAT_TIMEOUT        = 30000; // how long before a client is considered disconnected
+config.HEARTBEAT_CHECK_INTERVAL = 1000;  // server heartbeat test interval
+config.HEARTBEAT_PULSE_INTERVAL = 3000;  // client heartbeat pulse
+config.SERVER_TICK_INTERVAL     = 250;   // General server updates in milliseconds
+config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their position in milliseconds
 
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
@@ -39,11 +39,10 @@ config.BASE_PLAYER_SPEED = 5;
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY          = 10;
-config.FOOD_RESPAWN_TIME     = 30000;
-config.FOOD_VALUE            = 2; // amount to increase sphere by when food is consumed
-config.FOOD_RESPAWN_FRAMES   = 10 * 60;
-config.FOOD_CAPTURE_ASSIST   = 2; // this number is added to player's radius for food capturing
+config.FOOD_DENSITY          = 10;    // How much food there is, total food = this number cubed
+config.FOOD_RESPAWN_TIME     = 30000; // Respawn time for food in milliseconds
+config.FOOD_VALUE            = 2;     // amount to increase sphere by when food is consumed
+config.FOOD_CAPTURE_ASSIST   = 2;     // this number is added to player's radius for food capturing
 
 ////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //
