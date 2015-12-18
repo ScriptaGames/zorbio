@@ -192,7 +192,9 @@ function createScene() {
 function drawPlayers() {
     var playerModels = zorbioModel.players;
     // Iterate over player
-    Object.getOwnPropertyNames(playerModels).forEach(function (id) {
+    var playerIds = Object.getOwnPropertyNames(playerModels);
+    for (var i = 0, l = playerIds.length; i < l; i++) {
+        var id = playerIds[i];
         var playerModel = playerModels[id];
         if (playerModel.type === ZOR.PlayerTypes.PLAYER) {
             // Only draw other players
@@ -200,7 +202,7 @@ function drawPlayers() {
                 players[id] = new PlayerController(playerModel, scene);
             }
         }
-    });
+    }
 }
 
 function checkFoodCaptures() {
@@ -232,7 +234,9 @@ function updateActors() {
     var actors = zorbioModel.actors;
 
     // Iterate over actor properties in the actors object
-    Object.getOwnPropertyNames(actors).forEach(function (id) {
+    var actorIds = Object.getOwnPropertyNames(actors);
+    for (var i = 0, l = actorIds.length; i < l; i++) {
+        var id = actorIds[i];
         var actor = actors[id];
         if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
             if (id !== player.getSphereId()) {
@@ -244,7 +248,7 @@ function updateActors() {
                 }
             }
         }
-    });
+    }
 }
 
 function captureFood(fi) {

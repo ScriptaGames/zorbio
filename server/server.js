@@ -118,7 +118,9 @@ function sendActorUpdates() {
 function checkHeartbeats() {
     var time = new Date().getTime();
 
-    Object.getOwnPropertyNames(model.players).forEach(function (id) {
+    var playerIds = Object.getOwnPropertyNames(model.players);
+    for (var i = 0, l = playerIds.length; i < l; i++) {
+        var id = playerIds[i];
         var player = model.players[id];
         if (player && player.lastHeartbeat) {
             if ((time - player.lastHeartbeat) > config.HEARTBEAT_TIMEOUT) {
@@ -127,7 +129,7 @@ function checkHeartbeats() {
                 kickPlayer(id, msg);
             }
         }
-    });
+    }
 }
 
 function kickPlayer(playerId, reason) {

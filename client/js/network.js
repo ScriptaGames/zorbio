@@ -53,11 +53,12 @@ function setupSocket(socket) {
         zorbioModel = model;
 
         // iterate over actors and create THREE objects that don't serialize over websockets
-        Object.getOwnPropertyNames(zorbioModel.actors).forEach(function (id) {
-            var actor = zorbioModel.actors[id];
+        var actorIds = Object.getOwnPropertyNames(zorbioModel.actors);
+        for (var i = 0, l = actorIds.length; i < l; i++) {
+            var actor = zorbioModel.actors[actorIds[i]];
             var position = actor.position;
             actor.position = new THREE.Vector3(position.x, position.y, position.z);
-        });
+        }
 
         socket.emit('gotit', player.model);
         gameStart = true;
@@ -100,13 +101,15 @@ function setupSocket(socket) {
         }
 
         // sync the actors positions from the server model to the client model
-        Object.getOwnPropertyNames(actors).forEach(function (id) {
+        var actorIds = Object.getOwnPropertyNames(actors);
+        for (var i = 0, l = actorIds.length; i < l; i++) {
+            var id = actorIds[i];
             if (zorbioModel.actors[id]) {
                 var actor = actors[id];
                 zorbioModel.actors[id].position.copy(actor.position);
                 zorbioModel.actors[id].scale = actor.scale;
             }
-        });
+        }
     });
 
     socket.on('foodCaptureComplete', function (fi) {
