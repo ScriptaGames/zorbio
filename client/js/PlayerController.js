@@ -23,6 +23,10 @@ PlayerController.prototype.getSphereId = function ZORPlayerControllerGetSphereId
     return this.model.sphere.id;
 };
 
+PlayerController.prototype.getPosition = function ZORPlayerControllerGetPosition() {
+    return this.view.mainSphere.position;
+};
+
 PlayerController.prototype.initView = function ZORPlayerControllerInitView(scene) {
     this.view = new PlayerView(this.model.sphere, scene);
 };

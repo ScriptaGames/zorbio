@@ -175,6 +175,8 @@ function createScene() {
 
         updateActors();
 
+        checkPlayerCaptures();
+
         player.view.update(scene, camera, renderer);
 
         camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
@@ -200,6 +202,22 @@ function drawPlayers() {
             // Only draw other players
             if (id !== player.getPlayerId()) {
                 players[id] = new PlayerController(playerModel, scene);
+            }
+        }
+    }
+}
+
+function checkPlayerCaptures() {
+    // Iterate over players
+    var playerIds = Object.getOwnPropertyNames(players);
+    for (var i = 0, l = playerIds.length; i < l; i++) {
+        var otherPlayer = players[playerIds[i]];
+
+        if ((otherPlayer.getPlayerId() !== player.getPlayerId()) && (otherPlayer.radius() < player.radius())) {
+            var otherPlayerPosition = otherPlayer.getPosition();
+            var dist = otherPlayerPosition.distanceTo(player.getPosition());
+            if (dist < player.radius()) {
+                console.log("PLAYER CAPTURED!");
             }
         }
     }
