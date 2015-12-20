@@ -3,6 +3,7 @@
  */
 
 var socket;
+var pendingPlayerCaptures = {};
 
 function connectToServer(playerType, playerName, color) {
     if (!socket) {
@@ -32,6 +33,13 @@ function sendPlayerSpherePosition() {
 
 function sendFoodCapture(fi) {
     socket.emit('foodCapture', fi);
+}
+
+function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
+    if (!pendingPlayerCaptures[targetPlayerId]) {
+        socket.emit('playerCapture', attackingPlayerId, targetPlayerId);
+        pendingPlayerCaptures[targetPlayerId] = players[targetPlayerId];  // don't keep resending
+    }
 }
 
 function sendHeartbeat() {
@@ -152,6 +160,17 @@ function setupSocket(socket) {
         handleServerTick(serverTickData);
     });
 
+    socket.on('successfulCapture', function (targetPlayerId) {
+        console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
+    });
+
+    socket.on('youDied', function () {
+        console.log("YOU DIED! ");
+    });
+
+    socket.on('playerDied', function (targetPlayerId) {
+        console.log("Player died:  ", targetPlayerId);
+    });
 
     /*
      // Handle ping

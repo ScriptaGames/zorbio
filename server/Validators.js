@@ -10,4 +10,9 @@ Validators.foodCapture = function (model) {
     return true; // figure out if food capture is valid.
 };
 
+Validators.playerCapture = function (model) {
+    // TODO: implmenet player capture validation
+    return true; // figure out if player capture is valid.
+};
+
 module.exports = Validators;

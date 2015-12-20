@@ -208,16 +208,30 @@ function drawPlayers() {
 }
 
 function checkPlayerCaptures() {
+    var attackingPlayer = null;
+    var targetPlayer = null;
+
     // Iterate over players
     var playerIds = Object.getOwnPropertyNames(players);
     for (var i = 0, l = playerIds.length; i < l; i++) {
         var otherPlayer = players[playerIds[i]];
 
-        if ((otherPlayer.getPlayerId() !== player.getPlayerId()) && (otherPlayer.radius() < player.radius())) {
-            var otherPlayerPosition = otherPlayer.getPosition();
-            var dist = otherPlayerPosition.distanceTo(player.getPosition());
-            if (dist < player.radius()) {
-                console.log("PLAYER CAPTURED!");
+        if ((otherPlayer.getPlayerId() !== player.getPlayerId()) && (otherPlayer.radius() !== player.radius())) {
+
+            if (otherPlayer.radius() < player.radius()) {
+                targetPlayer = otherPlayer;
+                attackingPlayer = player;
+            }
+            else {
+                targetPlayer = player;
+                attackingPlayer = otherPlayer;
+            }
+
+            var targetPlayerPosition = targetPlayer.getPosition();
+            var dist = targetPlayerPosition.distanceTo( attackingPlayer.getPosition() );
+
+            if (dist < attackingPlayer.radius()) {
+                sendPlayerCapture( attackingPlayer.getPlayerId(), targetPlayer.getPlayerId() );
             }
         }
     }
@@ -456,11 +470,11 @@ function keyDown( key ) {
 }
 
 function keyJustPressed(key) {
-    console.log('key ' + key + ' just pressed');
+    //console.log('key ' + key + ' just pressed');
 }
 
 function keyReleased(key) {
-    console.log('key ' + key + ' released');
+    //console.log('key ' + key + ' released');
 }
 
 function resetVelocity() {

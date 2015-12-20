@@ -87,10 +87,16 @@ io.on('connection', function (socket) {
     socket.on('foodCapture', function (fi) {
         if (Validators.foodCapture(fi)) {
             model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
+            // notify clients of food capture so they can update their food view
+            io.emit('foodCaptureComplete', fi);
         }
+    });
 
-        // notify clients of food capture so they can update their food view
-        io.emit('foodCaptureComplete', fi);
+    socket.on('playerCapture', function (attackingPlayerId, targetPlayerId) {
+        if (Validators.playerCapture(attackingPlayerId, targetPlayerId)) {
+            console.log("Valid Player capture: ", attackingPlayerId, targetPlayerId);
+            capturePlayer(attackingPlayerId, targetPlayerId);
+        }
     });
 
     socket.on('playerHeartbeat', function (id) {
@@ -132,6 +138,26 @@ function checkHeartbeats() {
     }
 }
 
+function capturePlayer(attackingPlayerId, targetPlayerId) {
+    // Inform the attacking player that capture was successful
+    sockets[attackingPlayerId].emit('successfulCapture', targetPlayerId);
+
+    // Inform the target player that they died
+    sockets[targetPlayerId].emit('youDied');
+
+    // Inform other clients that target player died
+    io.emit("playerDied", targetPlayerId);
+}
+
+function removePlayerFromModel(playerId) {
+    // remove player from model
+    var actorId = model.players[playerId].sphere.id;
+    model.players[playerId] = null;
+    delete model.players[playerId];
+    model.actors[actorId] = null;
+    delete model.actors[actorId];
+}
+
 function kickPlayer(playerId, reason) {
     // notify player
     sockets[playerId].emit('kick', reason);
@@ -139,12 +165,7 @@ function kickPlayer(playerId, reason) {
     // notify other clients
     io.emit('playerKicked', playerId);
 
-    // remove player from model
-    var actorId = model.players[playerId].sphere.id;
-    model.players[playerId] = null;
-    delete model.players[playerId];
-    model.actors[actorId] = null;
-    delete model.actors[actorId];
+    removePlayerFromModel(playerId);
 
     // clean up socket
     sockets[playerId].disconnect();
