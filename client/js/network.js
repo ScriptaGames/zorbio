@@ -38,7 +38,6 @@ function sendFoodCapture(fi) {
 function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
     if (!pendingPlayerCaptures[targetPlayerId]) {
         socket.emit('playerCapture', attackingPlayerId, targetPlayerId);
-        pendingPlayerCaptures[targetPlayerId] = players[targetPlayerId];  // don't keep resending
     }
 }
 
@@ -124,13 +123,13 @@ function setupSocket(socket) {
         hideFood( fi );
     });
 
-     socket.on('kick', function (msg) {
-         socket.close();
-         handleNetworkTermination();
-         kicked = true;
-         displayModalMessage(msg);
-         console.log('you were kicked', msg);
-     });
+    socket.on('kick', function (msg) {
+        socket.close();
+        handleNetworkTermination();
+        kicked = true;
+        displayModalMessage(msg);
+        console.log('you were kicked', msg);
+    });
 
     socket.on('playerKicked', function (playerId) {
         console.log('player kicked', playerId);
@@ -160,16 +159,35 @@ function setupSocket(socket) {
         handleServerTick(serverTickData);
     });
 
+    socket.on('processingPlayerCapture', function (targetPlayerId) {
+        pendingPlayerCaptures[targetPlayerId] = players[targetPlayerId];  // save player getting captured
+        socket.emit('continuePlayerCapture', player.getPlayerId(), targetPlayerId);
+    });
+
     socket.on('successfulCapture', function (targetPlayerId) {
         console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
+        var targetPlayer = pendingPlayerCaptures[targetPlayerId];
+        handleSuccessfulPlayerCapture(targetPlayer);
+        removePlayerFromGame(targetPlayerId);
+        if (pendingPlayerCaptures[targetPlayerId]) {
+            pendingPlayerCaptures[targetPlayerId] = null;
+            delete pendingPlayerCaptures[targetPlayerId];
+        }
     });
 
-    socket.on('youDied', function () {
-        console.log("YOU DIED! ");
+    socket.on('youDied', function (attackingPlayerId) {
+        console.log("YOU DIED! Killed by: ", attackingPlayerId);
+        socket.close();
+        handleNetworkTermination();
+        died = true;
     });
 
-    socket.on('playerDied', function (targetPlayerId) {
-        console.log("Player died:  ", targetPlayerId);
+    socket.on('playerDied', function (attackingPlayerId, targetPlayerId) {
+        if (attackingPlayerId !== player.getPlayerId()) {
+            // someone else killed another player, lets remove it
+            console.log("Player died:  ", targetPlayerId);
+            removePlayerFromGame(targetPlayerId);
+        }
     });
 
     /*

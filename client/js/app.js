@@ -23,7 +23,7 @@ var food = {};
 var gameStart = false;
 var kicked = false;
 var disconnected = false;
-//var died = false;
+var died = false;
 
 var renderer;
 
@@ -163,7 +163,9 @@ function createScene() {
 
     function animate() {
 
-        requestAnimationFrame( animate );
+        if (gameStart) {
+            requestAnimationFrame(animate);
+        }
 
         resetVelocity();
 
@@ -177,7 +179,7 @@ function createScene() {
 
         checkPlayerCaptures();
 
-        player.view.update(scene, camera, renderer);
+        player.update(scene, camera);
 
         camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
 
@@ -576,18 +578,18 @@ function cleanupMemory() {
 }
 
 function removePlayerFromGame(playerId) {
-    var kickedPlayer = players[playerId];
+    var thePlayer = players[playerId];
 
-    if (kickedPlayer && kickedPlayer.view) {
+    if (thePlayer && thePlayer.view) {
         // remove player from model
-        var sphereId = kickedPlayer.getSphereId();
+        var sphereId = thePlayer.getSphereId();
         zorbioModel.actors[sphereId] = null;
         delete zorbioModel.actors[sphereId];
         zorbioModel.players[playerId] = null;
         delete zorbioModel.players[playerId];
 
         // Remove player from the scene
-        kickedPlayer.removeView(scene);
+        thePlayer.removeView(scene);
         players[playerId] = null;
         delete players[playerId];
 
@@ -600,4 +602,8 @@ function handleServerTick(serverTickData) {
     for(var i = 0, l = serverTickData.fr.length; i < l; ++i) {
         showFood(serverTickData.fr[i]);  // Show the food index
     }
+}
+
+function handleSuccessfulPlayerCapture(targetPlayer) {
+    player.animatedGrow(targetPlayer.radius() * 1.2, 40);
 }

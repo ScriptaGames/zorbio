@@ -47,15 +47,15 @@ var PlayerView = function ZORPlayerView(actor, scene) {
     scene.add( this.sphereGlow );
 };
 
-PlayerView.prototype.grow = function ZORPlayerViewGrow(ammount) {
-    this.mainSphere.scale.addScalar( ammount );
+PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
+    this.mainSphere.scale.addScalar( amount );
     this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
     this.mainSphere.geometry.computeBoundingSphere(); // compute the new bounding sphere after resizing
     this.sphereGlow.scale.copy( this.mainSphere.scale );
     this.sphereGlow.scale.multiplyScalar( config.SPHERE_GLOW_SCALE );
 };
 
-PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera, renderer) {
+PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera) {
     // update glow
     this.sphereGlow.position.copy(this.mainSphere.position);
     this.sphereGlow.material.uniforms.viewVector.value = new THREE.Vector3().subVectors( camera.position, this.sphereGlow.position );

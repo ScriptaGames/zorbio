@@ -93,6 +93,10 @@ io.on('connection', function (socket) {
     });
 
     socket.on('playerCapture', function (attackingPlayerId, targetPlayerId) {
+        sockets[attackingPlayerId].emit('processingPlayerCapture', targetPlayerId);
+    });
+
+    socket.on('continuePlayerCapture', function (attackingPlayerId, targetPlayerId) {
         if (Validators.playerCapture(attackingPlayerId, targetPlayerId)) {
             console.log("Valid Player capture: ", attackingPlayerId, targetPlayerId);
             capturePlayer(attackingPlayerId, targetPlayerId);
@@ -143,10 +147,13 @@ function capturePlayer(attackingPlayerId, targetPlayerId) {
     sockets[attackingPlayerId].emit('successfulCapture', targetPlayerId);
 
     // Inform the target player that they died
-    sockets[targetPlayerId].emit('youDied');
+    sockets[targetPlayerId].emit('youDied', attackingPlayerId);
 
     // Inform other clients that target player died
-    io.emit("playerDied", targetPlayerId);
+    io.emit("playerDied", attackingPlayerId, targetPlayerId);
+
+    removePlayerFromModel(targetPlayerId);
+    removePlayerSocket(targetPlayerId);
 }
 
 function removePlayerFromModel(playerId) {
@@ -158,6 +165,12 @@ function removePlayerFromModel(playerId) {
     delete model.actors[actorId];
 }
 
+function removePlayerSocket(playerId) {
+    sockets[playerId].disconnect();
+    sockets[playerId] = null;
+    delete sockets[playerId];
+}
+
 function kickPlayer(playerId, reason) {
     // notify player
     sockets[playerId].emit('kick', reason);
@@ -166,11 +179,7 @@ function kickPlayer(playerId, reason) {
     io.emit('playerKicked', playerId);
 
     removePlayerFromModel(playerId);
-
-    // clean up socket
-    sockets[playerId].disconnect();
-    sockets[playerId] = null;
-    delete sockets[playerId];
+    removePlayerSocket(playerId);
 }
 
 function updateFoodRespawns() {

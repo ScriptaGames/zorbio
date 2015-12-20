@@ -36,9 +36,19 @@ PlayerController.prototype.removeView = function ZORPlayerControllerRemoveView(s
     this.view = null;
 };
 
-PlayerController.prototype.grow = function ZORPlayerControllerGrow(ammount) {
-    this.view.grow(ammount);
+PlayerController.prototype.grow = function ZORPlayerControllerGrow(amount) {
+    this.view.grow(amount);
     this.refreshSphereModel();
+};
+
+/**
+ * Grow the player in an animation
+ * @param amount Amount to grow
+ * @param num_frames Number of frames to animate growth
+ */
+PlayerController.prototype.animatedGrow = function ZORPlayerControllerAnimatedGrow(amount, num_frames) {
+    this._animated_grow_frames = num_frames;
+    this._animated_grow_amount = amount / num_frames;
 };
 
 PlayerController.prototype.refreshSphereModel = function ZORPlayerControllerRefreshSphereModel() {
@@ -70,3 +80,15 @@ PlayerController.prototype.radius = function ZORPlayerControllerRadius() {
 PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(scale) {
     this.view.setScale(scale);
 };
+
+PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera) {
+    this.view.update(scene, camera);
+
+    // check if we need to animate anything
+    if (this._animated_grow_frames > 0) {
+        this.view.grow(this._animated_grow_amount);
+        this._animated_grow_frames--;
+        this.refreshSphereModel();
+    }
+};
+
