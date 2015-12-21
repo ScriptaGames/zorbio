@@ -503,7 +503,7 @@ function resetVelocity() {
 function applyVelocity() {
     velocity.sub( camera_controls.velocityRequest );
     velocity.normalize();
-    velocity.multiplyScalar( config.BASE_PLAYER_SPEED );
+    velocity.multiplyScalar( player.getVelocity() );
 
     player.view.mainSphere.position.sub(
         adjustVelocityWallHit(
@@ -526,7 +526,7 @@ function moveForward() {
     v.sub( camera.position );
     v.multiplyScalar( -1 );
     v.normalize();
-    v.multiplyScalar( config.BASE_PLAYER_SPEED );
+    v.multiplyScalar( player.getVelocity() );
     velocity.add( v );
 }
 moveForward.v = new THREE.Vector3();
@@ -537,7 +537,7 @@ function moveBackward() {
     v.copy( mainSphere.position );
     v.sub( camera.position );
     v.normalize();
-    v.multiplyScalar( config.BASE_PLAYER_SPEED );
+    v.multiplyScalar( player.getVelocity() );
     velocity.add( v );
 }
 moveBackward.v = new THREE.Vector3();

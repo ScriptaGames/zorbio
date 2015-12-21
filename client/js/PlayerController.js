@@ -27,6 +27,13 @@ PlayerController.prototype.getPosition = function ZORPlayerControllerGetPosition
     return this.view.mainSphere.position;
 };
 
+/**
+ * Get the current value of the player's velocity.
+ */
+PlayerController.prototype.getVelocity = function ZORPlayerControllerGetVelocity() {
+    return config.BASE_PLAYER_SPEED / ( Math.log(Math.log(this.radius())) );
+};
+
 PlayerController.prototype.initView = function ZORPlayerControllerInitView(scene) {
     this.view = new PlayerView(this.model.sphere, scene);
 };
