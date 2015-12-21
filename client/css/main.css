@@ -110,3 +110,31 @@ html, body {
     display: none;
     font-size: 12px;
 }
+
+#death_screen {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    margin: auto;
+    z-index: 9999;
+    display: none;
+}
+
+#respawn {
+    border: 3px solid #FFF;
+    border-radius: 5px;
+    color: #FFF;
+    font-family: arial,serif;
+    background: #A33 none repeat scroll 0% 0%;
+    font-size: 20pt;
+    font-weight: bold;
+    padding: 5px;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}

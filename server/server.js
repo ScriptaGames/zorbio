@@ -39,7 +39,7 @@ io.on('connection', function (socket) {
     // Create the Player
     var currentPlayer = null;
 
-    socket.on('respawn', function () {
+    socket.on('respawn', function (isFirstSpawn) {
         currentPlayer = new Zorbio.Player(socket.id, name, color, type);
 
         if (model.players[currentPlayer.id]) {
@@ -50,8 +50,8 @@ io.on('connection', function (socket) {
 
         model.addActor(currentPlayer.sphere);
 
-        socket.emit('welcome', currentPlayer, model);
-        console.log('User ' + currentPlayer.id + ' respawned');
+        socket.emit('welcome', currentPlayer, model, isFirstSpawn);
+        console.log('User ' + currentPlayer.id + ' started game');
     });
 
     socket.on('gotit', function (player) {

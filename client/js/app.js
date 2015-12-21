@@ -6,8 +6,6 @@ var canvas = document.getElementById('renderCanvas');
 var camera;
 var camera_controls;
 
-// constants
-
 // Player
 var playerName;
 var playerType;
@@ -51,16 +49,21 @@ function validNick() {
 window.onload = function () {
     'use strict';
 
-    var btn = document.getElementById('startButton'),
-        nickErrorText = document.querySelector('#startMenu .input-error');
+    var startButton = document.getElementById('startButton');
+    var nickErrorText = document.querySelector('#startMenu .input-error');
+    var respawnButton = document.getElementById('respawnButton');
 
-    btn.onclick = function () {
+    startButton.onclick = function () {
         // check if the nick is valid
         if (validNick()) {
             startGame(ZOR.PlayerTypes.PLAYER);
         } else {
             nickErrorText.style.display = 'inline';
         }
+    };
+
+    respawnButton.onclick = function () {
+        respawnPlayer();
     };
 
     playerNameInput.addEventListener('keypress', function (e) {
@@ -77,6 +80,12 @@ window.onload = function () {
         }
     });
 };
+
+function respawnPlayer() {
+    console.log("Respawning player: ", player.getPlayerId());
+    showDeathScreen(false);
+    sendRespawn(false);
+}
 
 function createScene() {
 
@@ -96,37 +105,7 @@ function createScene() {
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize( window.innerWidth, window.innerHeight );
 
-        // orbit camera
-
-        camera = new THREE.PerspectiveCamera(
-            config.INITIAL_FOV,
-            window.innerWidth / window.innerHeight,
-            1,
-            config.WORLD_HYPOTENUSE + 100 // world hypot plus a little extra for camera distance
-        );
-        camera.position.z = 200;
-
-        camera_controls = new THREE.FollowOrbitControls( camera, renderer.domElement );
-        camera_controls.enableDamping = true;
-        camera_controls.dampingFactor = 0.25;
-        camera_controls.enableZoom = false;
-        camera_controls.minDistance = config.INITIAL_CAMERA_DISTANCE;
-        camera_controls.maxDistance = config.INITIAL_CAMERA_DISTANCE;
-        // controls.minPolarAngle = Infinity; // radians
-        // controls.maxPolarAngle = -Infinity; // radians
-
-        // sphere
-        // Create the player view and adds the player sphere to the scene
-        player.initView(scene);
-
-        //TODO: move moveForward moveBackward and velocity to PlayerController
-        moveForward.v = new THREE.Vector3();
-        moveBackward.v = new THREE.Vector3();
-
-        // camera
-        camera_controls.target = player.view.mainSphere;
-
-        adjustCamera( config.INITIAL_PLAYER_RADIUS );
+        initCameraAndPlayer();
 
         // food
         drawFood();
@@ -157,12 +136,10 @@ function createScene() {
     }
 
     function onWindowResize() {
-
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
 
         renderer.setSize( window.innerWidth, window.innerHeight );
-
     }
 
     function animate() {
@@ -172,7 +149,7 @@ function createScene() {
 
         updateActors();
 
-        if (gameStart) {
+        if (gameStart && !player.isDead) {
             handleKeysDown();
 
             applyVelocity();
@@ -194,6 +171,39 @@ function createScene() {
         renderer.render( scene, camera );
 
     }
+}
+
+function initCameraAndPlayer() {
+    // orbit camera
+    camera = new THREE.PerspectiveCamera(
+        config.INITIAL_FOV,
+        window.innerWidth / window.innerHeight,
+        1,
+        config.WORLD_HYPOTENUSE + 100 // world hypot plus a little extra for camera distance
+    );
+    camera.position.z = 200;
+
+    camera_controls = new THREE.FollowOrbitControls( camera, renderer.domElement );
+    camera_controls.enableDamping = true;
+    camera_controls.dampingFactor = 0.25;
+    camera_controls.enableZoom = false;
+    camera_controls.minDistance = config.INITIAL_CAMERA_DISTANCE;
+    camera_controls.maxDistance = config.INITIAL_CAMERA_DISTANCE;
+    // controls.minPolarAngle = Infinity; // radians
+    // controls.maxPolarAngle = -Infinity; // radians
+
+    // sphere
+    // Create the player view and adds the player sphere to the scene
+    player.initView(scene);
+
+    //TODO: move moveForward moveBackward and velocity to PlayerController
+    moveForward.v = new THREE.Vector3();
+    moveBackward.v = new THREE.Vector3();
+
+    // camera
+    camera_controls.target = player.view.mainSphere;
+
+    adjustCamera( config.INITIAL_PLAYER_RADIUS );
 }
 
 function drawPlayers() {
@@ -437,7 +447,7 @@ function handleKeydown(evt) {
     var we_care_about_this_key;
     var already_pressed;
 
-    if (!gameStart) return;
+    if (!gameStart || player.isDead) return;
 
     // if key exists in keycodes, set its 'down' state to true
     we_care_about_this_key = ListenForKeys.indexOf(evt.keyCode+'') !== -1;
@@ -451,7 +461,7 @@ function handleKeydown(evt) {
 }
 
 function handleKeyup(evt) {
-    if (!gameStart) return;
+    if (!gameStart || player.isDead) return;
 
     // if key exists in keycodes, set its 'down' state to false
     var we_care_about_this_key = ListenForKeys.indexOf(evt.keyCode+'') !== -1;

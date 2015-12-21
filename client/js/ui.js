@@ -16,3 +16,11 @@ function showGame(show) {
         document.getElementById('startMenuWrapper').style.display = 'block';
     }
 }
+
+function showDeathScreen(show) {
+    if (show) {
+        document.getElementById('death_screen').style.display = 'block';
+    } else {
+        document.getElementById('death_screen').style.display = 'none';
+    }
+}

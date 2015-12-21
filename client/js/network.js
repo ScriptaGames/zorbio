@@ -14,7 +14,11 @@ function connectToServer(playerType, playerName, color) {
         socket = io({query: "type=" + playerType + "&name=" + playerName + "&color=" + color});
         setupSocket(socket);
     }
-    socket.emit('respawn');
+    sendRespawn(true);
+}
+
+function sendRespawn(isFirstSpawn) {
+    socket.emit('respawn', isFirstSpawn);
 }
 
 function sendPlayerSpherePosition() {
@@ -68,6 +72,14 @@ function handleNetworkTermination() {
     clearIntervalMethods();
 }
 
+function setIntervalMethods() {
+    // start sending the players position
+    interval_id_player_position = window.setInterval(sendPlayerSpherePosition, config.ACTOR_UPDATE_INTERVAL);
+
+    // start sending heartbeat
+    interval_id_heartbeat = window.setInterval(sendHeartbeat, config.HEARTBEAT_PULSE_INTERVAL);
+}
+
 function clearIntervalMethods() {
     window.clearInterval(interval_id_player_position);
     window.clearInterval(interval_id_heartbeat);
@@ -75,7 +87,7 @@ function clearIntervalMethods() {
 
 function setupSocket(socket) {
     // Handle connection
-    socket.on('welcome', function (playerModel, model) {
+    socket.on('welcome', function (playerModel, model, isFirstSpawn) {
         player = new PlayerController(playerModel);
         players[player.getPlayerId()] = player;
 
@@ -93,14 +105,15 @@ function setupSocket(socket) {
         gameStart = true;
         console.log('Game is started: ' + gameStart);
 
-        // start sending the players position
-        interval_id_player_position = window.setInterval(sendPlayerSpherePosition, config.ACTOR_UPDATE_INTERVAL);
+        setIntervalMethods();
 
-        // start sending heartbeat
-        interval_id_heartbeat = window.setInterval(sendHeartbeat, config.HEARTBEAT_PULSE_INTERVAL);
-
-        // create the scene
-        createScene();
+        if (isFirstSpawn) {
+            // create the scene
+            createScene();
+        } else {
+            // re-add player to scene and reset camera
+            initCameraAndPlayer();
+        }
 
         document.getElementById('renderCanvas').focus();
     });
@@ -198,12 +211,10 @@ function setupSocket(socket) {
     socket.on('youDied', function (attackingPlayerId) {
         console.log("YOU DIED! Killed by: ", attackingPlayerId);
         player.beingCaptured = false;
-        gameStart = false;
-        showGame(false);
+        player.isDead = true;
         clearIntervalMethods();
-        resetVelocity();
         KeysDown = {};
-        died = true;
+        showDeathScreen(true);
     });
 
     socket.on('playerDied', function (attackingPlayerId, targetPlayerId) {
