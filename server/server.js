@@ -21,6 +21,7 @@ var UTIL = require('../common/util.js');
 //var MAX_PLAYERS = 32;
 
 var model = new Zorbio.Model(config.WORLD_SIZE, config.FOOD_DENSITY);
+var processingPlayerCapture = {};
 
 // Define sockets as a hash so we can use string indexes
 var sockets = {};
@@ -36,15 +37,18 @@ io.on('connection', function (socket) {
     var color = socket.handshake.query.color;
 
     // Create the Player
-    var currentPlayer = new Zorbio.Player(socket.id, name, color, type);
-    model.addActor(currentPlayer.sphere);
+    var currentPlayer = null;
 
     socket.on('respawn', function () {
+        currentPlayer = new Zorbio.Player(socket.id, name, color, type);
+
         if (model.players[currentPlayer.id]) {
             // if current player is already in the players remove them
             model.players[currentPlayer.id] = null;
             delete model.players[currentPlayer.id];
         }
+
+        model.addActor(currentPlayer.sphere);
 
         socket.emit('welcome', currentPlayer, model);
         console.log('User ' + currentPlayer.id + ' respawned');
@@ -93,13 +97,25 @@ io.on('connection', function (socket) {
     });
 
     socket.on('playerCapture', function (attackingPlayerId, targetPlayerId) {
-        sockets[attackingPlayerId].emit('processingPlayerCapture', targetPlayerId);
+        console.log("on.playerCapture: ", attackingPlayerId, targetPlayerId);
+
+        if (!processingPlayerCapture[targetPlayerId]) {
+            sockets[attackingPlayerId].emit('processingPlayerCapture', targetPlayerId);
+            processingPlayerCapture[targetPlayerId] = model.players[attackingPlayerId];
+        }
     });
 
     socket.on('continuePlayerCapture', function (attackingPlayerId, targetPlayerId) {
+        console.log("on.continuePlayerCapture: ", attackingPlayerId, targetPlayerId);
+
         if (Validators.playerCapture(attackingPlayerId, targetPlayerId)) {
             console.log("Valid Player capture: ", attackingPlayerId, targetPlayerId);
             capturePlayer(attackingPlayerId, targetPlayerId);
+        } else {
+            //TODO: unwind any state started during player capture and mark as infraction against attacker
+            //TODO: send message to targetPlayer to set player.beingCaptured = false
+            processingPlayerCapture[targetPlayerId] = null;
+            delete processingPlayerCapture[targetPlayerId];
         }
     });
 
@@ -143,6 +159,8 @@ function checkHeartbeats() {
 }
 
 function capturePlayer(attackingPlayerId, targetPlayerId) {
+    console.log("capturePlayer: ", attackingPlayerId, targetPlayerId);
+
     // Inform the attacking player that capture was successful
     sockets[attackingPlayerId].emit('successfulCapture', targetPlayerId);
 
@@ -152,8 +170,11 @@ function capturePlayer(attackingPlayerId, targetPlayerId) {
     // Inform other clients that target player died
     io.emit("playerDied", attackingPlayerId, targetPlayerId);
 
+    // processing is done so clear processing state for target player
+    processingPlayerCapture[targetPlayerId] = null;
+    delete processingPlayerCapture[targetPlayerId];
+
     removePlayerFromModel(targetPlayerId);
-    removePlayerSocket(targetPlayerId);
 }
 
 function removePlayerFromModel(playerId) {

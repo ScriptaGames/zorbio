@@ -5,6 +5,10 @@
 var socket;
 var pendingPlayerCaptures = {};
 
+// handles to setInterval methods so we can clear them later
+var interval_id_player_position;
+var interval_id_heartbeat;
+
 function connectToServer(playerType, playerName, color) {
     if (!socket) {
         socket = io({query: "type=" + playerType + "&name=" + playerName + "&color=" + color});
@@ -36,7 +40,17 @@ function sendFoodCapture(fi) {
 }
 
 function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
+    console.log("sendPlayerCapture: ", attackingPlayerId, targetPlayerId);
+
     if (!pendingPlayerCaptures[targetPlayerId]) {
+
+        if (targetPlayerId === player.getPlayerId()) {
+            player.beingCaptured = true;
+        } else {
+            pendingPlayerCaptures[targetPlayerId] = players[targetPlayerId];
+        }
+
+        console.log("socket.emit playerCapture: ", attackingPlayerId, targetPlayerId);
         socket.emit('playerCapture', attackingPlayerId, targetPlayerId);
     }
 }
@@ -47,8 +61,16 @@ function sendHeartbeat() {
 
 function handleNetworkTermination() {
     gameStart = false;
+    socket.close();
+    socket = null;
     cleanupMemory();
     showGame(false);
+    clearIntervalMethods();
+}
+
+function clearIntervalMethods() {
+    window.clearInterval(interval_id_player_position);
+    window.clearInterval(interval_id_heartbeat);
 }
 
 function setupSocket(socket) {
@@ -72,10 +94,10 @@ function setupSocket(socket) {
         console.log('Game is started: ' + gameStart);
 
         // start sending the players position
-        window.setInterval(sendPlayerSpherePosition, config.ACTOR_UPDATE_INTERVAL);
+        interval_id_player_position = window.setInterval(sendPlayerSpherePosition, config.ACTOR_UPDATE_INTERVAL);
 
         // start sending heartbeat
-        window.setInterval(sendHeartbeat, config.HEARTBEAT_PULSE_INTERVAL);
+        interval_id_heartbeat = window.setInterval(sendHeartbeat, config.HEARTBEAT_PULSE_INTERVAL);
 
         // create the scene
         createScene();
@@ -124,7 +146,6 @@ function setupSocket(socket) {
     });
 
     socket.on('kick', function (msg) {
-        socket.close();
         handleNetworkTermination();
         kicked = true;
         displayModalMessage(msg);
@@ -141,7 +162,6 @@ function setupSocket(socket) {
     });
 
     socket.on('disconnect', function () {
-        socket.close();
         handleNetworkTermination();
         disconnected = true;
         console.log('You were disconnected');
@@ -149,7 +169,6 @@ function setupSocket(socket) {
 
     // Handle error
     socket.on('connect_failed', function () {
-        socket.close();
         handleNetworkTermination();
         disconnected = true;
         console.log('WebSocket Connection failed');
@@ -160,6 +179,7 @@ function setupSocket(socket) {
     });
 
     socket.on('processingPlayerCapture', function (targetPlayerId) {
+        console.log("processingPlayerCapture: ", targetPlayerId);
         pendingPlayerCaptures[targetPlayerId] = players[targetPlayerId];  // save player getting captured
         socket.emit('continuePlayerCapture', player.getPlayerId(), targetPlayerId);
     });
@@ -177,8 +197,12 @@ function setupSocket(socket) {
 
     socket.on('youDied', function (attackingPlayerId) {
         console.log("YOU DIED! Killed by: ", attackingPlayerId);
-        socket.close();
-        handleNetworkTermination();
+        player.beingCaptured = false;
+        gameStart = false;
+        showGame(false);
+        clearIntervalMethods();
+        resetVelocity();
+        KeysDown = {};
         died = true;
     });
 

@@ -119,6 +119,10 @@ function createScene() {
         // Create the player view and adds the player sphere to the scene
         player.initView(scene);
 
+        //TODO: move moveForward moveBackward and velocity to PlayerController
+        moveForward.v = new THREE.Vector3();
+        moveBackward.v = new THREE.Vector3();
+
         // camera
         camera_controls.target = player.view.mainSphere;
 
@@ -162,26 +166,25 @@ function createScene() {
     }
 
     function animate() {
-
-        if (gameStart) {
-            requestAnimationFrame(animate);
-        }
+        requestAnimationFrame(animate);
 
         resetVelocity();
 
-        handleKeysDown();
-
-        applyVelocity();
-
-        checkFoodCaptures();
-
         updateActors();
 
-        checkPlayerCaptures();
+        if (gameStart) {
+            handleKeysDown();
 
-        player.update(scene, camera);
+            applyVelocity();
 
-        camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
+            checkFoodCaptures();
+
+            checkPlayerCaptures();
+
+            player.update(scene, camera);
+
+            camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
+        }
 
         render();
     }
@@ -210,6 +213,10 @@ function drawPlayers() {
 }
 
 function checkPlayerCaptures() {
+    if (player.beingCaptured) {
+        return;
+    }
+
     var attackingPlayer = null;
     var targetPlayer = null;
 
