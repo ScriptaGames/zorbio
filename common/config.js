@@ -33,7 +33,7 @@ config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their positi
 //                          PLAYER SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.BASE_PLAYER_SPEED = 5;
+config.BASE_PLAYER_SPEED = 3;
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
