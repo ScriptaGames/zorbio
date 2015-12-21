@@ -51,7 +51,7 @@ io.on('connection', function (socket) {
         model.addActor(currentPlayer.sphere);
 
         socket.emit('welcome', currentPlayer, model, isFirstSpawn);
-        console.log('User ' + currentPlayer.id + ' started game');
+        console.log('User ' + currentPlayer.id + ' spawned into the game');
     });
 
     socket.on('gotit', function (player) {

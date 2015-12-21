@@ -9,6 +9,7 @@
 var PlayerController = function ZORPlayerController(model, scene) {
     this.model = new ZOR.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
         model.sphere.scale, model.sphere.velocity);
+    this.isDead = false;
 
     if (scene) {
         this.initView(scene);
