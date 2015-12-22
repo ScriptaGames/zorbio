@@ -197,6 +197,24 @@ function setupSocket(socket) {
         socket.emit('continuePlayerCapture', player.getPlayerId(), targetPlayerId);
     });
 
+    socket.on('invalidCaptureTargetNotInModel', function (attackingPlayerId, targetPlayerId) {
+        console.log("invalidCaptureTargetNotInModel: ", attackingPlayerId, targetPlayerId);
+
+        // clean up
+        var playerId = player.getPlayerId();
+        if (attackingPlayerId === playerId) {
+            if (pendingPlayerCaptures[targetPlayerId]) {
+                pendingPlayerCaptures[targetPlayerId] = null;
+                delete pendingPlayerCaptures[targetPlayerId];
+            }
+        } else if (targetPlayerId === playerId) {
+            player.beingCaptured = false;
+        }
+
+        // safe method to call if they are already removed just to make sure we stay in sync with server
+        removePlayerFromGame(targetPlayerId);
+    });
+
     socket.on('successfulCapture', function (targetPlayerId) {
         console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
         var targetPlayer = pendingPlayerCaptures[targetPlayerId];

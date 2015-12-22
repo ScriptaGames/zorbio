@@ -597,20 +597,26 @@ function cleanupMemory() {
 function removePlayerFromGame(playerId) {
     var thePlayer = players[playerId];
 
-    if (thePlayer && thePlayer.view) {
-        // remove player from model
-        var sphereId = thePlayer.getSphereId();
-        zorbioModel.actors[sphereId] = null;
-        delete zorbioModel.actors[sphereId];
-        zorbioModel.players[playerId] = null;
-        delete zorbioModel.players[playerId];
+    if (thePlayer || zorbioModel.players[playerId]) {
+        if (thePlayer && thePlayer.view) {
+            // remove player from model actors
+            var sphereId = thePlayer.getSphereId();
+            zorbioModel.actors[sphereId] = null;
+            delete zorbioModel.actors[sphereId];
 
-        // Remove player from the scene
-        thePlayer.removeView(scene);
-        players[playerId] = null;
-        delete players[playerId];
+            // Remove player from the scene
+            thePlayer.removeView(scene);
+            players[playerId] = null;
+            delete players[playerId];
+        }
 
-        console.log('Removed player from game', playerId);
+        if (zorbioModel.players[playerId]) {
+            // remove the player from the model
+            zorbioModel.players[playerId] = null;
+            delete zorbioModel.players[playerId];
+        }
+
+        console.log('Removed player from game: ', playerId);
     }
 }
 

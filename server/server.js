@@ -89,7 +89,8 @@ io.on('connection', function (socket) {
     });
 
     socket.on('foodCapture', function (fi) {
-        if (Validators.foodCapture(fi)) {
+        var err = Validators.foodCapture(fi);
+        if (err === 0) {
             model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
             // notify clients of food capture so they can update their food view
             io.emit('foodCaptureComplete', fi);
@@ -97,26 +98,32 @@ io.on('connection', function (socket) {
     });
 
     socket.on('playerCapture', function (attackingPlayerId, targetPlayerId) {
-        console.log("on.playerCapture: ", attackingPlayerId, targetPlayerId);
+        console.log("received playerCapture: ", attackingPlayerId, targetPlayerId);
 
-        if (!processingPlayerCapture[targetPlayerId]) {
-            sockets[attackingPlayerId].emit('processingPlayerCapture', targetPlayerId);
-            processingPlayerCapture[targetPlayerId] = model.players[attackingPlayerId];
+        var err = Validators.playerCapture(attackingPlayerId, targetPlayerId, model);
+        if (err === 0) {
+            if (!processingPlayerCapture[targetPlayerId]) {
+                console.log("Valid Player capture: ", attackingPlayerId, targetPlayerId);
+                sockets[attackingPlayerId].emit('processingPlayerCapture', targetPlayerId);
+                processingPlayerCapture[targetPlayerId] = model.players[attackingPlayerId];
+            }
+        } else {
+            switch (err) {
+                case Validators.ErrorCodes.CAPTURE_PLAYER_NOT_IN_MODEL:
+                    // let the attacking player know this capture was invalid
+                    sockets[attackingPlayerId].emit('invalidCaptureTargetNotInModel', attackingPlayerId, targetPlayerId);
+                    if (socket[targetPlayerId]) {
+                        // if the target is still connected, let them know they aren't being captured
+                        sockets[attackingPlayerId].emit('invalidCaptureTargetNotInModel', attackingPlayerId, targetPlayerId);
+                    }
+                    break;
+            }
         }
     });
 
     socket.on('continuePlayerCapture', function (attackingPlayerId, targetPlayerId) {
-        console.log("on.continuePlayerCapture: ", attackingPlayerId, targetPlayerId);
-
-        if (Validators.playerCapture(attackingPlayerId, targetPlayerId)) {
-            console.log("Valid Player capture: ", attackingPlayerId, targetPlayerId);
-            capturePlayer(attackingPlayerId, targetPlayerId);
-        } else {
-            //TODO: unwind any state started during player capture and mark as infraction against attacker
-            //TODO: send message to targetPlayer to set player.beingCaptured = false
-            processingPlayerCapture[targetPlayerId] = null;
-            delete processingPlayerCapture[targetPlayerId];
-        }
+        console.log("received continuePlayerCapture: ", attackingPlayerId, targetPlayerId);
+        capturePlayer(attackingPlayerId, targetPlayerId);
     });
 
     socket.on('playerHeartbeat', function (id) {
@@ -178,18 +185,25 @@ function capturePlayer(attackingPlayerId, targetPlayerId) {
 }
 
 function removePlayerFromModel(playerId) {
-    // remove player from model
-    var actorId = model.players[playerId].sphere.id;
-    model.players[playerId] = null;
-    delete model.players[playerId];
-    model.actors[actorId] = null;
-    delete model.actors[actorId];
+    var actorId = 0;
+    if (model.players[playerId]) {
+        // remove player from model
+        actorId = model.players[playerId].sphere.id;
+        model.players[playerId] = null;
+        delete model.players[playerId];
+    }
+    if (model.actors[actorId]) {
+        model.actors[actorId] = null;
+        delete model.actors[actorId];
+    }
 }
 
 function removePlayerSocket(playerId) {
-    sockets[playerId].disconnect();
-    sockets[playerId] = null;
-    delete sockets[playerId];
+    if (sockets[playerId]) {
+        sockets[playerId].disconnect();
+        sockets[playerId] = null;
+        delete sockets[playerId];
+    }
 }
 
 function kickPlayer(playerId, reason) {
