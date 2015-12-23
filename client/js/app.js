@@ -141,11 +141,12 @@ function createScene() {
     function animate() {
         requestAnimationFrame(animate);
 
-        player.resetVelocity();
-
         updateActors();
 
         if (gameStart && !player.isDead) {
+
+            player.resetVelocity();
+
             handleKeysDown();
 
             player.update(scene, camera, camera_controls);
