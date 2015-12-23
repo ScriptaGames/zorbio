@@ -515,10 +515,8 @@ function moveForward() {
     var mainSphere = player.view.mainSphere;
     v.copy( mainSphere.position );
     v.sub( camera.position );
-    v.multiplyScalar( -1 );
     v.normalize();
-    v.multiplyScalar( player.getVelocity() );
-    velocity.add( v );
+    velocity.sub( v );
 }
 moveForward.v = new THREE.Vector3();
 
@@ -527,9 +525,9 @@ function moveBackward() {
     var mainSphere = player.view.mainSphere;
     v.copy( mainSphere.position );
     v.sub( camera.position );
+    v.multiplyScalar( -1 );
     v.normalize();
-    v.multiplyScalar( player.getVelocity() );
-    velocity.add( v );
+    velocity.sub( v );
 }
 moveBackward.v = new THREE.Vector3();
 

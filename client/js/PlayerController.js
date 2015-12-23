@@ -42,7 +42,7 @@ PlayerController.prototype.getPosition = function ZORPlayerControllerGetPosition
  * @returns {number}
  */
 PlayerController.prototype.getSpeed = function ZORPlayerControllerGetSpeed() {
-    return config.BASE_PLAYER_SPEED / ( Math.log(Math.log(this.radius())) );
+    return this.radius() / (config.MAX_PLAYER_RADIUS/-2) + config.BASE_PLAYER_SPEED;
 };
 
 PlayerController.prototype.initView = function ZORPlayerControllerInitView(scene) {
