@@ -63,7 +63,7 @@ PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera) {
 };
 
 PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position, scene, camera, renderer) {
-    this.mainSphere.position.copy(position);
+    this.mainSphere.position.lerp(position, config.PLAYER_MOVE_LERP_WEIGHT);
     this.update(scene, camera, renderer);
 };
 
