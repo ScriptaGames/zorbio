@@ -79,13 +79,4 @@ PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
     this.sphereGlow.scale.multiplyScalar( config.SPHERE_GLOW_SCALE );
 };
 
-//TODO: add more colors, only select ones not used.
-PlayerView.COLORS = [
-    THREE.ColorKeywords.red,
-    THREE.ColorKeywords.blue,
-    THREE.ColorKeywords.yellow,
-    THREE.ColorKeywords.green,
-    THREE.ColorKeywords.purple,
-    THREE.ColorKeywords.magenta,
-    THREE.ColorKeywords.aliceblue
-];
+PlayerView.COLORS = Object.keys( THREE.ColorKeywords );
