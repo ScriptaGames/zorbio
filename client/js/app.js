@@ -21,7 +21,6 @@ var food = {};
 var gameStart = false;
 var kicked = false;
 var disconnected = false;
-var died = false;
 
 var renderer;
 
@@ -311,7 +310,7 @@ function captureFood(fi) {
 
         var new_radius = ( mainSphere.scale.x + value ) * config.INITIAL_PLAYER_RADIUS;
 
-        var safe_to_grow = !checkWallCollision( mainSphere.position, new_radius, new THREE.Vector3(), zorbioModel.worldSize );
+        var safe_to_grow = !UTIL.checkWallCollision( mainSphere.position, new_radius, new THREE.Vector3(), zorbioModel.worldSize );
 
         hideFood(fi);
 
@@ -545,47 +544,17 @@ moveBackward.v = new THREE.Vector3();
 function adjustVelocityWallHit( p, r, v, w ) {
 
     var vs = v.clone();
-    if ( hitxp( p, r, v, w ) || hitxn( p, r, v, w ) )
+    if ( UTIL.hitxp( p, r, v, w ) || UTIL.hitxn( p, r, v, w ) )
         vs.x = 0;
 
-    if ( hityp( p, r, v, w ) || hityn( p, r, v, w ) )
+    if ( UTIL.hityp( p, r, v, w ) || UTIL.hityn( p, r, v, w ) )
         vs.y = 0;
 
-    if ( hitzp( p, r, v, w ) || hitzn( p, r, v, w ) )
+    if ( UTIL.hitzp( p, r, v, w ) || UTIL.hitzn( p, r, v, w ) )
         vs.z = 0;
 
     return vs;
 
-}
-
-function checkWallCollision( p, r, v, w ) {
-
-    return hitxp( p, r, v, w ) ||
-           hitxn( p, r, v, w ) ||
-           hityp( p, r, v, w ) ||
-           hityn( p, r, v, w ) ||
-           hitzp( p, r, v, w ) ||
-           hitzn( p, r, v, w );
-
-}
-
-// TODO: make sure when a collision occurs with two or more walls at once
-// happens, it is handled correctly
-
-// functions to detect hitting the wall in the positive (p) and negative (n)
-// directions, on x, y, and z axes.
-function hitxp( p, r, v, w ) { return hitp( p, r, v, w, 'x' ); }
-function hitxn( p, r, v, w ) { return hitn( p, r, v, w, 'x' ); }
-function hityp( p, r, v, w ) { return hitp( p, r, v, w, 'y' ); }
-function hityn( p, r, v, w ) { return hitn( p, r, v, w, 'y' ); }
-function hitzp( p, r, v, w ) { return hitp( p, r, v, w, 'z' ); }
-function hitzn( p, r, v, w ) { return hitn( p, r, v, w, 'z' ); }
-
-function hitp( p, r, v, w, axis ) {
-    return p[axis] + r - v[axis] > w[axis]/2;
-}
-function hitn( p, r, v, w, axis ) {
-    return p[axis] - r - v[axis] < -w[axis]/2;
 }
 
 function cleanupMemory() {

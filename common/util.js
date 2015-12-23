@@ -23,5 +23,126 @@ UTIL.validNick = function UTILValidNick (nickname) {
     return regex.exec(nickname) !== null;
 };
 
+/**
+ * Detect hitting the wall in the positive direction
+ * @param p
+ * @param r
+ * @param v
+ * @param w
+ * @param axis
+ * @returns {boolean}
+ */
+UTIL.hitp = function UTILhitp( p, r, v, w, axis ) {
+    return p[axis] + r - v[axis] > w[axis]/2;
+};
+
+/**
+ * Detect hitting the wall in the negative direction
+ * @param p
+ * @param r
+ * @param v
+ * @param w
+ * @param axis
+ * @returns {boolean}
+ */
+UTIL.hitn = function UTILhitn( p, r, v, w, axis ) {
+    return p[axis] - r - v[axis] < -w[axis]/2;
+};
+
+/**
+ * Detect hit on the x axis in positive direction.
+ * @param p
+ * @param r
+ * @param v
+ * @param w
+ * @returns {boolean}
+ */
+UTIL.hitxp = function UTILhitxp( p, r, v, w ) {
+    return UTIL.hitp( p, r, v, w, 'x' );
+};
+
+
+/**
+ * Detect hit on the x axis in the negative direction.
+ * @param p
+ * @param r
+ * @param v
+ * @param w
+ * @returns {boolean}
+ */
+UTIL.hitxn = function UTILhitxn( p, r, v, w ) {
+    return UTIL.hitn( p, r, v, w, 'x' );
+};
+
+/**
+ * Detect hit on the y axis in the positive direction.
+ * @param p
+ * @param r
+ * @param v
+ * @param w
+ * @returns {boolean}
+ */
+UTIL.hityp = function UTILhityp( p, r, v, w ) {
+    return UTIL.hitp( p, r, v, w, 'y' );
+};
+
+/**
+ * Detect hit on the y axis in the negative direction.
+ * @param p
+ * @param r
+ * @param v
+ * @param w
+ * @returns {boolean}
+ */
+UTIL.hityn = function UTILhityn( p, r, v, w ) {
+    return UTIL.hitn( p, r, v, w, 'y' );
+};
+
+/**
+ * Detect hit on the z axis in the positive direction.
+ * @param p
+ * @param r
+ * @param v
+ * @param w
+ * @returns {boolean}
+ */
+UTIL.hitzp = function UTILhitzp( p, r, v, w ) {
+    return UTIL.hitp( p, r, v, w, 'z' );
+};
+
+/**
+ * Detect hit on the z axis in the netative direction.
+ * @param p
+ * @param r
+ * @param v
+ * @param w
+ * @returns {boolean}
+ */
+UTIL.hitzn = function UTILhitzn( p, r, v, w ) {
+    return UTIL.hitn( p, r, v, w, 'z' );
+};
+
+
+/**
+ * Returns true if a player is touching a wall
+ * @param p
+ * @param r
+ * @param v
+ * @param w
+ * @returns {boolean}
+ */
+UTIL.checkWallCollision = function UTILcheckWallCollision( p, r, v, w ) {
+
+    // TODO: make sure when a collision occurs with two or more walls at once happens, it is handled correctly
+
+    return UTIL.hitxp( p, r, v, w ) ||
+        UTIL.hitxn( p, r, v, w ) ||
+        UTIL.hityp( p, r, v, w ) ||
+        UTIL.hityn( p, r, v, w ) ||
+        UTIL.hitzp( p, r, v, w ) ||
+        UTIL.hitzn( p, r, v, w );
+
+};
+
 // if we're in nodejs, export the root UTIL object
 if (NODEJS) module.exports = UTIL;
