@@ -144,5 +144,27 @@ UTIL.checkWallCollision = function UTILcheckWallCollision( p, r, v, w ) {
 
 };
 
+/**
+ * Adjust velocity on an object that has hit a wall based on axis
+ * @param p
+ * @param r
+ * @param v
+ * @param w
+ * @returns {*}
+ */
+UTIL.adjustVelocityWallHit = function UTILadjustVelocityWallHit( p, r, v, w ) {
+    var vs = v.clone();
+    if ( UTIL.hitxp( p, r, v, w ) || UTIL.hitxn( p, r, v, w ) )
+        vs.x = 0;
+
+    if ( UTIL.hityp( p, r, v, w ) || UTIL.hityn( p, r, v, w ) )
+        vs.y = 0;
+
+    if ( UTIL.hitzp( p, r, v, w ) || UTIL.hitzn( p, r, v, w ) )
+        vs.z = 0;
+
+    return vs;
+};
+
 // if we're in nodejs, export the root UTIL object
 if (NODEJS) module.exports = UTIL;

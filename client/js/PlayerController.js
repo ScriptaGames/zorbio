@@ -11,6 +11,15 @@ var PlayerController = function ZORPlayerController(model, scene) {
         model.sphere.scale, model.sphere.velocity);
     this.isDead = false;
 
+    /**
+     * Player velocity
+     * @type {THREE.Vector3}
+     */
+    this.velocity = new THREE.Vector3();
+
+    this.move_forward_v = new THREE.Vector3();
+    this.move_backward_v = new THREE.Vector3();
+
     if (scene) {
         this.initView(scene);
     }
@@ -29,9 +38,10 @@ PlayerController.prototype.getPosition = function ZORPlayerControllerGetPosition
 };
 
 /**
- * Get the current value of the player's velocity.
+ * Get the current value of the player's speed.
+ * @returns {number}
  */
-PlayerController.prototype.getVelocity = function ZORPlayerControllerGetVelocity() {
+PlayerController.prototype.getSpeed = function ZORPlayerControllerGetSpeed() {
     return config.BASE_PLAYER_SPEED / ( Math.log(Math.log(this.radius())) );
 };
 
@@ -89,14 +99,58 @@ PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(scale
     this.view.setScale(scale);
 };
 
-PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera) {
-    this.view.update(scene, camera);
+PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls) {
+    this.applyVelocity(camera_controls);
+    this.view.update(scene, camera, camera_controls);
 
     // check if we need to animate anything
     if (this._animated_grow_frames > 0) {
         this.view.grow(this._animated_grow_amount);
         this._animated_grow_frames--;
-        this.refreshSphereModel();
     }
+};
+
+PlayerController.prototype.applyVelocity = function ZORPlayerControllerApplyVelocity(camera_controls) {
+    this.velocity.sub( camera_controls.velocityRequest );
+    this.velocity.normalize();
+    this.velocity.multiplyScalar( player.getSpeed() );
+
+    this.view.mainSphere.position.sub(
+        UTIL.adjustVelocityWallHit(
+            this.view.mainSphere.position,
+            this.radius(),
+            this.velocity,
+            zorbioModel.worldSize
+        )
+    );
+
+    // reset the velocity requested by camera controls.  this should be done
+    // inside the camera controls but I couldn't find a good place to do it.
+    camera_controls.velocityRequest.set( 0, 0, 0 );
+};
+
+PlayerController.prototype.resetVelocity = function ZORPlayerControllerResetVelocity() {
+    this.velocity.set( 0, 0, 0 );
+};
+
+PlayerController.prototype.moveForward = function ZORPlayerControllerMoveForward(camera) {
+    var v = this.move_forward_v;
+    var mainSphere = this.view.mainSphere;
+    v.copy( mainSphere.position );
+    v.sub( camera.position );
+    v.multiplyScalar( -1 );
+    v.normalize();
+    v.multiplyScalar( this.getSpeed() );
+    this.velocity.add( v );
+};
+
+PlayerController.prototype.moveBackward = function ZORPlayerControllerMoveBackward(camera) {
+    var v = this.move_backward_v;
+    var mainSphere = this.view.mainSphere;
+    v.copy( mainSphere.position );
+    v.sub( camera.position );
+    v.normalize();
+    v.multiplyScalar( this.getSpeed() );
+    this.velocity.add( v );
 };
 

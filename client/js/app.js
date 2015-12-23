@@ -12,9 +12,6 @@ var playerType;
 var playerNameInput = document.getElementById('playerNameInput');
 var player;
 
-// player velocity
-var velocity = new THREE.Vector3();
-
 // Game state
 var players = {};
 var food = {};
@@ -144,20 +141,18 @@ function createScene() {
     function animate() {
         requestAnimationFrame(animate);
 
-        resetVelocity();
+        player.resetVelocity();
 
         updateActors();
 
         if (gameStart && !player.isDead) {
             handleKeysDown();
 
-            applyVelocity();
+            player.update(scene, camera, camera_controls);
 
             checkFoodCaptures();
 
             checkPlayerCaptures();
-
-            player.update(scene, camera);
 
             camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
         }
@@ -194,10 +189,6 @@ function initCameraAndPlayer() {
     // sphere
     // Create the player view and adds the player sphere to the scene
     player.initView(scene);
-
-    //TODO: move moveForward moveBackward and velocity to PlayerController
-    moveForward.v = new THREE.Vector3();
-    moveBackward.v = new THREE.Vector3();
 
     // camera
     camera_controls.target = player.view.mainSphere;
@@ -480,10 +471,10 @@ function handleKeysDown() {
 
 function keyDown( key ) {
     if ( key === 'w' ) {
-        moveForward();
+        player.moveForward(camera);
     }
     else if ( key === 's' ) {
-        moveBackward();
+        player.moveBackward(camera);
     }
 }
 
