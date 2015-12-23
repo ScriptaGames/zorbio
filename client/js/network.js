@@ -29,9 +29,9 @@ function sendPlayerSpherePosition() {
 
     // cut down on the number of bytes sent across the wire
     var position = {
-         x: sphereModel.position.x.toFixed(4),
-         y: sphereModel.position.y.toFixed(4),
-         z: sphereModel.position.z.toFixed(4)
+         x: +sphereModel.position.x.toFixed(4),
+         y: +sphereModel.position.y.toFixed(4),
+         z: +sphereModel.position.z.toFixed(4)
     };
 
     //TODO: only send if the player is moving.  If their position hasn't changed, don't send.
