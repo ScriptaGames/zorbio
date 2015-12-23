@@ -34,6 +34,7 @@ config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their positi
 ////////////////////////////////////////////////////////////////////////
 
 config.BASE_PLAYER_SPEED = 3;
+config.PLAYER_CAPTURE_VALUE = function PlayerCaptureValue( r ) { return r / 2; };
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
