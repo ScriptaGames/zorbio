@@ -9,7 +9,6 @@
   },
   "author": "Scripta Games, Inc.",
   "dependencies": {
-    "babylonjs": "^2.2.0",
     "express": "^4.13.3",
     "socket.io": "^1.3.7",
     "three.js": "^0.73.0"
