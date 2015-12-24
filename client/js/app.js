@@ -241,6 +241,9 @@ function checkPlayerCaptures() {
             var dist = targetPlayerPosition.distanceTo( attackingPlayer.getPosition() );
 
             if (dist < attackingPlayer.radius()) {
+                console.log('player capture detected!');
+                console.log('player.radius(): ', player.radius());
+                console.log('otherPlayer.radius(): ', otherPlayer.radius());
                 sendPlayerCapture( attackingPlayer.getPlayerId(), targetPlayer.getPlayerId() );
             }
         }

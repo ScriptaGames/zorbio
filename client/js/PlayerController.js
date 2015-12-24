@@ -96,11 +96,13 @@ PlayerController.prototype.radius = function ZORPlayerControllerRadius() {
 };
 
 PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(scale) {
+    // set the scale on both the model and the view
+    this.model.sphere.scale = scale;
     this.view.setScale(scale);
 };
 
 PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls) {
-    this.moveForward(camera); // always move forward
+    //this.moveForward(camera); // always move forward
     this.applyVelocity(camera_controls);
     this.view.update(scene, camera, camera_controls);
 
