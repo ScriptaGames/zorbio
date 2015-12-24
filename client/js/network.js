@@ -4,6 +4,7 @@
 
 var socket;
 var pendingPlayerCaptures = {};
+var startPingTime;
 
 // handles to setInterval methods so we can clear them later
 var interval_id_player_position;
@@ -57,6 +58,12 @@ function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
         console.log("socket.emit playerCapture: ", attackingPlayerId, targetPlayerId);
         socket.emit('playerCapture', attackingPlayerId, targetPlayerId);
     }
+}
+
+function sendPing() {
+    console.log('Pinging server...');
+    startPingTime = performance.now();
+    socket.emit('ping');
 }
 
 function sendHeartbeat() {
@@ -114,6 +121,9 @@ function setupSocket(socket) {
             // re-add player to scene and reset camera
             initCameraAndPlayer();
         }
+
+        // check latency
+        sendPing();
 
         document.getElementById('renderCanvas').focus();
     });
@@ -243,17 +253,12 @@ function setupSocket(socket) {
         }
     });
 
-    /*
-     // Handle ping
-     socket.on('pong', function () {
-     var latency = Date.now() - startPingTime;
-     debug('Latency: ' + latency + 'ms');
-     chat.addSystemLine('Ping: ' + latency + 'ms');
-     });
+    socket.on('pong', function () {
+        var latency = performance.now() - startPingTime;
+        console.log('Pong, latency: ' + latency + 'ms');
+    });
 
-     socket.on('playerDied', function (data) {
-     chat.addSystemLine('Player <b>' + data.name + '</b> died!');
-     });
+    /*
 
      socket.on('leaderboard', function (data) {
      leaderboard = data.leaderboard;
@@ -274,30 +279,6 @@ function setupSocket(socket) {
      }
      //status += '<br />Players: ' + data.players;
      document.getElementById('status').innerHTML = status;
-     });
-
-     socket.on('serverMSG', function (data) {
-     chat.addSystemLine(data);
-     });
-
-     // Chat
-     socket.on('serverSendPlayerChat', function (data) {
-     chat.addChatLine(data.sender, data.message, false);
-     });
-
-     // Die
-     socket.on('RIP', function () {
-     gameStart = false;
-     died = true;
-     window.setTimeout(function() {
-     document.getElementById('gameAreaWrapper').style.opacity = 0;
-     document.getElementById('startMenuWrapper').style.maxHeight = '1000px';
-     died = false;
-     if (animLoopHandle) {
-     window.cancelAnimationFrame(animLoopHandle);
-     animLoopHandle = undefined;
-     }
-     }, 2500);
      });
 
      */

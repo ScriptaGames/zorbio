@@ -141,6 +141,10 @@ io.on('connection', function (socket) {
         // don't remove player on disconnect, let heartbeat clean them up, this should prevent logout griefing
         console.log('User ' + currentPlayer.id + ' disconnected');
     });
+
+    socket.on('ping', function () {
+        socket.emit('pong');
+    });
 });
 
 function sendActorUpdates() {
