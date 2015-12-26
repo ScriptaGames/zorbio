@@ -36,6 +36,8 @@ UTIL.validNick = function UTILValidNick (nickname) {
 
 /**
  * Detect hitting the wall in the positive direction
+ *
+ * @private
  * @param {Vector3} p the position of the sphere being tested
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
@@ -43,12 +45,14 @@ UTIL.validNick = function UTILValidNick (nickname) {
  * @param {'x'|'y'|'z'} axis the axis on which to test for collision
  * @returns {boolean}
  */
-UTIL.hitp = function UTILhitp( p, r, v, w, axis ) {
+function hitp( p, r, v, w, axis ) {
     return p[axis] + r - v[axis] > w[axis]/2;
-};
+}
 
 /**
  * Detect hitting the wall in the negative direction
+ *
+ * @private
  * @param {Vector3} p the position of the sphere being tested
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
@@ -56,86 +60,99 @@ UTIL.hitp = function UTILhitp( p, r, v, w, axis ) {
  * @param {'x'|'y'|'z'} axis the axis on which to test for collision
  * @returns {boolean}
  */
-UTIL.hitn = function UTILhitn( p, r, v, w, axis ) {
+function hitn( p, r, v, w, axis ) {
     return p[axis] - r - v[axis] < -w[axis]/2;
-};
+}
 
 /**
  * Detect hit on the x axis in positive direction.
+ *
+ * @private
  * @param {Vector3} p the position of the sphere being tested
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
  * @returns {boolean}
  */
-UTIL.hitxp = function UTILhitxp( p, r, v, w ) {
-    return UTIL.hitp( p, r, v, w, 'x' );
-};
+function hitxp( p, r, v, w ) {
+    return hitp( p, r, v, w, 'x' );
+}
 
 
 /**
  * Detect hit on the x axis in the negative direction.
+ *
+ * @private
  * @param {Vector3} p the position of the sphere being tested
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
  * @returns {boolean}
  */
-UTIL.hitxn = function UTILhitxn( p, r, v, w ) {
-    return UTIL.hitn( p, r, v, w, 'x' );
-};
+function hitxn( p, r, v, w ) {
+    return hitn( p, r, v, w, 'x' );
+}
 
 /**
  * Detect hit on the y axis in the positive direction.
+ *
+ * @private
  * @param {Vector3} p the position of the sphere being tested
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
  * @returns {boolean}
  */
-UTIL.hityp = function UTILhityp( p, r, v, w ) {
-    return UTIL.hitp( p, r, v, w, 'y' );
-};
+function hityp( p, r, v, w ) {
+    return hitp( p, r, v, w, 'y' );
+}
 
 /**
  * Detect hit on the y axis in the negative direction.
+ *
+ * @private
  * @param {Vector3} p the position of the sphere being tested
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
  * @returns {boolean}
  */
-UTIL.hityn = function UTILhityn( p, r, v, w ) {
-    return UTIL.hitn( p, r, v, w, 'y' );
-};
+function hityn( p, r, v, w ) {
+    return hitn( p, r, v, w, 'y' );
+}
 
 /**
  * Detect hit on the z axis in the positive direction.
+ *
+ * @private
  * @param {Vector3} p the position of the sphere being tested
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
  * @returns {boolean}
  */
-UTIL.hitzp = function UTILhitzp( p, r, v, w ) {
-    return UTIL.hitp( p, r, v, w, 'z' );
-};
+function hitzp( p, r, v, w ) {
+    return hitp( p, r, v, w, 'z' );
+}
 
 /**
  * Detect hit on the z axis in the netative direction.
+ *
+ * @private
  * @param {Vector3} p the position of the sphere being tested
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
  * @returns {boolean}
  */
-UTIL.hitzn = function UTILhitzn( p, r, v, w ) {
-    return UTIL.hitn( p, r, v, w, 'z' );
-};
+function hitzn( p, r, v, w ) {
+    return hitn( p, r, v, w, 'z' );
+}
 
 
 /**
  * Returns true if a sphere would intersect a wall after applying velocity (v).
+ *
  * @param {Vector3} p the position of the sphere being tested
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
@@ -144,12 +161,12 @@ UTIL.hitzn = function UTILhitzn( p, r, v, w ) {
  */
 UTIL.checkWallCollision = function UTILcheckWallCollision( p, r, v, w ) {
 
-    return UTIL.hitxp( p, r, v, w ) ||
-        UTIL.hitxn( p, r, v, w ) ||
-        UTIL.hityp( p, r, v, w ) ||
-        UTIL.hityn( p, r, v, w ) ||
-        UTIL.hitzp( p, r, v, w ) ||
-        UTIL.hitzn( p, r, v, w );
+    return hitxp( p, r, v, w ) ||
+        hitxn( p, r, v, w ) ||
+        hityp( p, r, v, w ) ||
+        hityn( p, r, v, w ) ||
+        hitzp( p, r, v, w ) ||
+        hitzn( p, r, v, w );
 
 };
 
@@ -168,13 +185,13 @@ UTIL.adjustVelocityWallHit = function UTILadjustVelocityWallHit( p, r, v, w ) {
     // avoid collision.  reducing to 0 causes small, fast spheres to sometimes
     // "hit" the wall before they are visibly touching it.
 
-    if ( UTIL.hitxp( p, r, v, w ) || UTIL.hitxn( p, r, v, w ) )
+    if ( hitxp( p, r, v, w ) || hitxn( p, r, v, w ) )
         vs.x = 0;
 
-    if ( UTIL.hityp( p, r, v, w ) || UTIL.hityn( p, r, v, w ) )
+    if ( hityp( p, r, v, w ) || hityn( p, r, v, w ) )
         vs.y = 0;
 
-    if ( UTIL.hitzp( p, r, v, w ) || UTIL.hitzn( p, r, v, w ) )
+    if ( hitzp( p, r, v, w ) || hitzn( p, r, v, w ) )
         vs.z = 0;
 
     return vs;
