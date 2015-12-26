@@ -15,7 +15,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'client/bower_components/babylonjs/dist/babylon.2.2.js',
+      'client/bower_components/three.js/build/three.js',
       'common/**/*.js',
       'tests/**/*Spec.js'
     ],

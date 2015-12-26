@@ -21,7 +21,9 @@ ZOR.Model = function ZORModel(worldSize, foodDensity) {
     this.foodDensity = foodDensity;
 
     // Generate initial food positions and colors based on world size
-    this.initFood();
+    if (foodDensity > 0) {
+        this.initFood();
+    }
 };
 
 /**
