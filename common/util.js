@@ -1,10 +1,13 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
+if (NODEJS) var config = require('./config.js');
+
 var UTIL = {};
 
 /**
  * Returns a random integer between min (included) and max (included) Using
  * Math.round() will give you a non-uniform distribution!
+ *
  * @param {Number} min the minimum bound (inclusive)
  * @param {Number} max the maximum bound (inclusive)
  * @returns {Number} a random integer between min (included) and max (included)
@@ -16,6 +19,7 @@ UTIL.getRandomIntInclusive = function UTILGetRandomIntInclusive(min, max) {
 
 /**
  * Returns a random number between min (inclusive) and max (exclusive)
+ *
  * @param {Number} min the minimum bound (inclusive)
  * @param {Number} max the maximum bound (exclusive)
  * @returns {Number} a random integer between min (included) and max (included)
@@ -26,6 +30,7 @@ UTIL.getRandomArbitrary = function UTILGetRandomArbitrary(min, max) {
 
 /**
  * Checks for a valid nick
+ *
  * @param {String} nickname
  * @returns {boolean}
  */
@@ -171,7 +176,9 @@ UTIL.checkWallCollision = function UTILcheckWallCollision( p, r, v, w ) {
 };
 
 /**
- * Adjust a sphere's velocity to prevent it from hitting a wall.  If no wall would be hit, velocity is not changed.
+ * Adjust a sphere's velocity to prevent it from hitting a wall.  If no wall
+ * would be hit, velocity is not changed.
+ *
  * @param {Vector3} p the position of the sphere being tested
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
@@ -196,6 +203,35 @@ UTIL.adjustVelocityWallHit = function UTILadjustVelocityWallHit( p, r, v, w ) {
 
     return vs;
 };
+
+/**
+ * Get a random world coordinate which a sphere could be placed in.  Because
+ * the world is a cube, the coordinate can be used on any axis.
+ *
+ * @returns {Number}
+ */
+UTIL.safeRandomCoordinate = function UTILsafeRandomCoordinate() {
+    // allow the value to be either random (0..1) for actual usage, or allow it
+    // to be passed in for testing the equation.
+    var v = arguments[0] || Math.random();
+    var safe_size = config.WORLD_SIZE - 2 * config.INITIAL_PLAYER_RADIUS;
+    return v * safe_size - safe_size / 2;
+}
+
+/**
+ * Returns a good spawning point for a player.  The point is likely to be far
+ * from other players.
+ *
+ * @param {Array} others an array of positions of all living players
+ * @returns {Vector3} the position recommended for a player
+ */
+UTIL.safePlayerPosition = function UTILsafePlayerPosition( others ) {
+    var x = UTIL.safeRandomCoordinate();
+    var y = UTIL.safeRandomCoordinate();
+    var z = UTIL.safeRandomCoordinate();
+    return new THREE.Vector3( x, y, z );
+};
+
 
 // if we're in nodejs, export the root UTIL object
 if (NODEJS) module.exports = UTIL;
