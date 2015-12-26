@@ -176,7 +176,6 @@ function initCameraAndPlayer() {
         1,
         config.WORLD_HYPOTENUSE + 100 // world hypot plus a little extra for camera distance
     );
-    camera.position.z = 200;
 
     camera_controls = new THREE.FollowOrbitControls( camera, renderer.domElement );
     camera_controls.enableDamping = true;
@@ -193,6 +192,10 @@ function initCameraAndPlayer() {
 
     // camera
     camera_controls.target = player.view.mainSphere;
+
+    // move camera so that the player is facing towards the origin each time
+    // they spawn
+    camera.position.copy( player.model.sphere.position.clone().multiplyScalar(1.2) );
 
     adjustCamera( config.INITIAL_PLAYER_RADIUS );
 }

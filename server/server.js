@@ -40,7 +40,8 @@ io.on('connection', function (socket) {
     var currentPlayer = null;
 
     socket.on('respawn', function (isFirstSpawn) {
-        currentPlayer = new Zorbio.Player(socket.id, name, color, type);
+        var position = UTIL.safePlayerPosition();
+        currentPlayer = new Zorbio.Player(socket.id, name, color, type, position);
 
         if (model.players[currentPlayer.id]) {
             // if current player is already in the players remove them
