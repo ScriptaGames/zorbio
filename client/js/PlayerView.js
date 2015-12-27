@@ -6,7 +6,7 @@
  * @param scene
  */
 
-var PlayerView = function ZORPlayerView(actor, scene) {
+var PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
     this.playerColor = PlayerView.COLORS[actor.color];
     var geometry = new THREE.SphereGeometry(
         config.INITIAL_PLAYER_RADIUS,
@@ -14,9 +14,20 @@ var PlayerView = function ZORPlayerView(actor, scene) {
         config.PLAYER_SPHERE_POLYCOUNT
     );
 
-    var material = new THREE.MeshBasicMaterial( {
-        color    : THREE.ColorKeywords.white,
-        blending : THREE.NormalBlending
+    var material = new THREE.ShaderMaterial( {
+        uniforms:
+        {
+            color         : { type : "c",  value : new THREE.Color(THREE.ColorKeywords.white) },
+            viewVector    : { type : "v3", value : camera.position },
+            spherePos     : { type : "v3", value : actor.position },
+            mainSpherePos : { type : "v3", value : main_sphere.position },
+            FOG_FAR       : { type : "f",  value : config.FOG_FAR },
+            FOG_ENABLED   : { type : "f",  value : ~~config.FOG_ENABLED },
+        },
+        vertexShader:   document.getElementById( 'sphereVertexShader'   ).textContent,
+        fragmentShader: document.getElementById( 'sphereFragmentShader' ).textContent,
+        // side: THREE.DoubleSide,
+        transparent: true
     } );
     material.transparent = true;
     material.depthTest = true;
@@ -32,16 +43,18 @@ var PlayerView = function ZORPlayerView(actor, scene) {
     var glowMaterial = new THREE.ShaderMaterial({
         uniforms:
         {
-            "c"         : { type : "f", value  : 1.0 },
-            "p"         : { type : "f", value  : 0.6 },
-            glowColor   : { type : "c", value  : new THREE.Color(this.playerColor) },
-            viewVector  : { type : "v3", value : camera.position },
-            FOG_FAR     : { type : "f", value  : config.FOG_FAR },
-            FOG_ENABLED : { type : "f", value  : ~~config.FOG_ENABLED },
+            "c"           : { type : "f",  value : 1.0 },
+            "p"           : { type : "f",  value : 0.6 },
+            glowColor     : { type : "c",  value : new THREE.Color(this.playerColor) },
+            viewVector    : { type : "v3", value : camera.position },
+            spherePos     : { type : "v3", value : actor.position },
+            mainSpherePos : { type : "v3", value : main_sphere.position },
+            FOG_FAR       : { type : "f",  value : config.FOG_FAR },
+            FOG_ENABLED   : { type : "f",  value : ~~config.FOG_ENABLED },
         },
         vertexShader:   document.getElementById( 'glowVertexShader'   ).textContent,
         fragmentShader: document.getElementById( 'glowFragmentShader' ).textContent,
-        side: THREE.DoubleSide,
+        // side: THREE.FrontSide,
         transparent: true
     });
     this.sphereGlow = new THREE.Mesh( this.mainSphere.geometry.clone(), glowMaterial.clone() );

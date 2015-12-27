@@ -188,7 +188,7 @@ function initCameraAndPlayer() {
 
     // sphere
     // Create the player view and adds the player sphere to the scene
-    player.initView(scene);
+    player.initView(player.model.sphere, scene);
 
     // camera
     camera_controls.target = player.view.mainSphere;
@@ -210,7 +210,7 @@ function drawPlayers() {
         if (playerModel.type === ZOR.PlayerTypes.PLAYER) {
             // Only draw other players
             if (id !== player.getPlayerId()) {
-                players[id] = new PlayerController(playerModel, scene);
+                players[id] = new PlayerController(playerModel, player.model.sphere, scene);
             }
         }
     }
@@ -399,12 +399,13 @@ function drawFood() {
     var material = new THREE.ShaderMaterial( {
 
         uniforms: {
-            amplitude   : { type: "f", value: 1.0 },
-            color       : { type: "c", value: new THREE.Color( 0xffffff ) },
-            texture     : { type: "t", value: texture },
-            size        : { type: "f", value: 3000 },
-            FOG_FAR     : { type: "f", value: config.FOG_FAR },
-            FOG_ENABLED : { type: "f", value: ~~config.FOG_ENABLED },
+            amplitude   : { type:  "f", value: 1.0 },
+            color       : { type:  "c", value: new THREE.Color( 0xffffff ) },
+            texture     : { type:  "t", value: texture },
+            size        : { type:  "f", value: 3000 },
+            spherePos   : { type: "v3", value: player.view.mainSphere.position },
+            FOG_FAR     : { type:  "f", value: config.FOG_FAR },
+            FOG_ENABLED : { type:  "f", value: ~~config.FOG_ENABLED },
         },
         vertexShader:   document.getElementById( 'vertexshader' ).textContent,
         fragmentShader: document.getElementById( 'fragmentshader' ).textContent,

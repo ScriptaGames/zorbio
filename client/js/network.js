@@ -95,7 +95,7 @@ function clearIntervalMethods() {
 function setupSocket(socket) {
     // Handle connection
     socket.on('welcome', function (playerModel, model, isFirstSpawn) {
-        player = new PlayerController(playerModel);
+        player = new PlayerController(playerModel, playerModel.sphere);
         players[player.getPlayerId()] = player;
 
         zorbioModel = model;
@@ -131,7 +131,7 @@ function setupSocket(socket) {
     socket.on('playerJoin', function (newPlayer) {
         //Add new player if it's not the current player
         if (newPlayer.id !== player.getPlayerId()) {
-            players[newPlayer.id] = new PlayerController(newPlayer, scene);
+            players[newPlayer.id] = new PlayerController(newPlayer, player.model.sphere.position, scene);
 
             //Keep model in sync with the server
             zorbioModel.players[newPlayer.id] = newPlayer;

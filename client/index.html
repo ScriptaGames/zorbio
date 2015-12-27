@@ -32,11 +32,14 @@
         <script type="x-shader/x-vertex" id="vertexshader">
 
             uniform float size;
+            uniform vec3 spherePos;
+
             attribute vec3 ca;
             attribute float respawning;
 
             varying vec3 vColor;
             varying float vRespawning;
+            varying float sDist;
             varying float vDist;
 
             void main() {
@@ -46,8 +49,11 @@
 
                 vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
 
-                vDist = length( mvPosition.xyz );
+                vDist = length( mvPosition.xyz ); // distance from camera
 
+                sDist = length( position - spherePos ); // distance from sphere to particle
+
+                // point size is relative to distance from camera
                 gl_PointSize = size / vDist;
 
                 gl_Position = projectionMatrix * mvPosition;
@@ -65,27 +71,23 @@
 
             varying vec3 vColor;
             varying float vRespawning;
-            varying float vDist;
-
-            vec3 fog;
+            varying float sDist;
 
             void main() {
+
+                float fogp = 1.0;
 
                 // when food's respawning value is > 0.0, it's still counting
                 // down to respawn
                 if ( vRespawning > 0.0 ) discard;
 
                 if ( FOG_ENABLED != 0.0 ) {
-                    float fogp = vDist / FOG_FAR;
-                    fog = vec3( fogp, fogp, fogp );
-                }
-                else {
-                    fog = vec3( 0.0, 0.0, 0.0 );
+                    fogp = 1.0 - sDist / FOG_FAR;
                 }
 
-                vec4 color = vec4( vColor - fog, 0.5 ); // * texture2D( texture, gl_PointCoord );
+                gl_FragColor = vec4( fogp * vColor, 1.0 );
 
-                gl_FragColor = color;
+                // texture2D( texture, gl_PointCoord );
 
             }
 
@@ -93,12 +95,15 @@
 
         <script type="x-shader/x-vertex" id="glowVertexShader">
             uniform vec3 viewVector;
+            uniform vec3 spherePos;
+            uniform vec3 mainSpherePos;
             uniform float c;
             uniform float p;
 
             uniform float FOG_ENABLED;
 
             varying float intensity;
+            varying float sDist;
             varying float vDist;
 
             void main() {
@@ -106,9 +111,14 @@
                 vec3 vNormel = normalize( normalMatrix * viewVector );
                 intensity = pow( c - dot(vNormal, vNormel), p );
 
-                vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+                vec4 mvPosition = modelViewMatrix * vec4( spherePos, 1.0 );
 
                 vDist = length( mvPosition.xyz );
+
+                vec4 mMainSpherePos = modelViewMatrix * vec4( mainSpherePos, 1.0 );
+                vec4 mSpherePos = modelViewMatrix * vec4( spherePos, 1.0 );
+
+                sDist = length( mMainSpherePos - mSpherePos ); // distance from main sphere to this sphere
 
                 gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
             }
@@ -120,18 +130,72 @@
             uniform float FOG_FAR;
 
             varying float intensity;
+            varying float sDist;
             varying float vDist;
-
-            vec3 fog = vec3( 0.0, 0.0, 0.0 );
 
             void main() {
 
-                if (FOG_ENABLED != 0.0) {
-                    float fogp = vDist / FOG_FAR;
-                    fog = vec3( fogp, fogp, fogp );
+                float fogp = 1.0;
+
+                if ( FOG_ENABLED != 0.0 ) {
+                    fogp = 1.0 - sDist / FOG_FAR;
                 }
 
-                gl_FragColor = vec4( glowColor - fog, intensity );
+                float strength = min( fogp, intensity );
+
+                gl_FragColor = vec4( strength * glowColor, strength );
+            }
+        </script>
+
+        <script type="x-shader/x-vertex" id="sphereVertexShader">
+            uniform vec3 color;
+            uniform vec3 viewVector;
+            uniform vec3 mainSpherePos;
+            uniform vec3 spherePos;
+
+            uniform float FOG_ENABLED;
+            uniform float FOG_FAR;
+
+            varying float sDist;
+
+            // void main() {
+            //     // Transform vertex to view-space
+            //     vec4 vViewPos = matView * rm_Vertex;
+
+            //     // Compute the distance to character
+            //     v_characterDist = length(vViewPos - u_characterPos);
+
+            //     gl_Position = matViewProjection * rm_Vertex;
+            // }
+            void main() {
+
+                vec4 mMainSpherePos = modelViewMatrix * vec4( mainSpherePos, 1.0 );
+                vec4 mSpherePos = modelViewMatrix * vec4( spherePos, 1.0 );
+
+                sDist = length( mainSpherePos - spherePos ); // distance from main sphere to this sphere
+
+                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+            }
+        </script>
+
+        <script type="x-shader/x-fragment" id="sphereFragmentShader">
+            uniform vec3 color;
+            uniform float FOG_ENABLED;
+            uniform float FOG_FAR;
+
+            varying float sDist;
+
+            void main() {
+
+                float fogp = 1.0;
+
+                if ( FOG_ENABLED != 0.0 ) {
+                    fogp = 1.0 - sDist / FOG_FAR;
+                }
+
+                float strength = min( fogp, 0.5 );
+
+                gl_FragColor = vec4( strength * color, strength );
             }
         </script>
 

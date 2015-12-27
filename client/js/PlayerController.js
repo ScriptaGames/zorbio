@@ -6,7 +6,7 @@
  * @constructor
  *
  */
-var PlayerController = function ZORPlayerController(model, scene) {
+var PlayerController = function ZORPlayerController(model, main_sphere, scene) {
     this.model = new ZOR.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
         model.sphere.scale, model.sphere.velocity);
     this.isDead = false;
@@ -21,7 +21,7 @@ var PlayerController = function ZORPlayerController(model, scene) {
     this.move_backward_v = new THREE.Vector3();
 
     if (scene) {
-        this.initView(scene);
+        this.initView(main_sphere, scene);
     }
 };
 
@@ -45,8 +45,8 @@ PlayerController.prototype.getSpeed = function ZORPlayerControllerGetSpeed() {
     return this.radius() / (config.MAX_PLAYER_RADIUS/-2) + config.BASE_PLAYER_SPEED;
 };
 
-PlayerController.prototype.initView = function ZORPlayerControllerInitView(scene) {
-    this.view = new PlayerView(this.model.sphere, scene);
+PlayerController.prototype.initView = function ZORPlayerControllerInitView(main_sphere, scene) {
+    this.view = new PlayerView(this.model.sphere, main_sphere, scene);
 };
 
 PlayerController.prototype.removeView = function ZORPlayerControllerRemoveView(scene) {
