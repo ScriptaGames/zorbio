@@ -61,7 +61,6 @@ function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
 }
 
 function sendPing() {
-    console.log('Pinging server...');
     startPingTime = performance.now();
     socket.emit('ping');
 }
@@ -255,7 +254,7 @@ function setupSocket(socket) {
 
     socket.on('pong', function () {
         var latency = performance.now() - startPingTime;
-        console.log('Pong, latency: ' + latency + 'ms');
+        console.log('Ping: ' + latency.toFixed(2) + 'ms');
     });
 
     /*
