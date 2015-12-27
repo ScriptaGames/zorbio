@@ -59,6 +59,7 @@ config.SPHERE_GLOW_SCALE       = 1.001; // multiplier to determine how big glow 
 config.MAX_PLAYER_RADIUS       = 150;
 config.INITIAL_PLAYER_RADIUS   = 2;
 config.PLAYER_MOVE_LERP_WEIGHT = 0.4;
+config.PLAYER_SPHERE_POLYCOUNT = 64; // height and width segments of the spheres
 
 ////////////////////////////////////////////////////////////////////////
 //                          NODEJS EXPORTER                           //

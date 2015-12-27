@@ -8,7 +8,11 @@
 
 var PlayerView = function ZORPlayerView(actor, scene) {
     this.playerColor = PlayerView.COLORS[actor.color];
-    var geometry = new THREE.SphereGeometry( config.INITIAL_PLAYER_RADIUS, 32, 32 );
+    var geometry = new THREE.SphereGeometry(
+        config.INITIAL_PLAYER_RADIUS,
+        config.PLAYER_SPHERE_POLYCOUNT,
+        config.PLAYER_SPHERE_POLYCOUNT
+    );
 
     var material = new THREE.MeshBasicMaterial( {
         color    : THREE.ColorKeywords.white,
