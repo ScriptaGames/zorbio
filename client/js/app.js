@@ -377,9 +377,9 @@ function drawFood() {
         positions[ particle_index + 1 ] = Y;
         positions[ particle_index + 2 ] = Z;
 
-        colors[ particle_index     ] = R / 255;
-        colors[ particle_index + 1 ] = G / 255;
-        colors[ particle_index + 2 ] = B / 255;
+        colors[ particle_index     ] = R;
+        colors[ particle_index + 1 ] = G;
+        colors[ particle_index + 2 ] = B;
 
         particle_index += 3;
         food_index += 6;
