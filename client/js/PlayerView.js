@@ -33,7 +33,7 @@ var PlayerView = function ZORPlayerView(actor, scene) {
         uniforms:
         {
             "c"         : { type : "f", value  : 1.0 },
-            "p"         : { type : "f", value  : 0.5 },
+            "p"         : { type : "f", value  : 0.6 },
             glowColor   : { type : "c", value  : new THREE.Color(this.playerColor) },
             viewVector  : { type : "v3", value : camera.position },
             FOG_FAR     : { type : "f", value  : config.FOG_FAR },
