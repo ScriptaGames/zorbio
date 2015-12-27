@@ -115,7 +115,7 @@ function createScene() {
         // skybox
         var materialArray = [];
         for (var i = 0; i < 6; i++) {
-            materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/skybox_grid_black.jpg' ) }));
+            materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'textures/skybox_grid_black.png' ) }));
             materialArray[i].side = THREE.BackSide;
         }
         var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
