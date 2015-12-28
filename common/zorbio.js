@@ -30,10 +30,13 @@ ZOR.Model = function ZORModel(worldSize, foodDensity) {
  *  Initializes food for a new ZOR.Model
  */
 ZOR.Model.prototype.initFood = function ZORInitFood() {
+    var color;
     var halfSize = this.worldSize.y / 2;
     var blockSize = this.worldSize.y / this.foodDensity;
 
-    var size = 6; // 6 for XYZRGB
+    var foodCrayon = UTIL.getFoodCrayon( config.FOOD_COLORING_TYPE );
+
+    var ints = 6; // 6 for XYZRGB
     var offset = 0;
 
     this.foodCount = Math.pow(this.foodDensity - 1, 3);
@@ -52,20 +55,24 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
      */
     this.food_respawn_ready_queue = [];
 
-    for (var i = 1; i < this.foodDensity; i++) {
-        for (var j = 1; j < this.foodDensity; j++) {
-            for (var k = 1; k < this.foodDensity; k++) {
+    for (var i = 1; i < this.foodDensity; ++i) {
+        for (var j = 1; j < this.foodDensity; ++j) {
+            for (var k = 1; k < this.foodDensity; ++k) {
                 // set food position
-                this.food[ offset ]     = halfSize - ( i * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
-                this.food[ offset + 1 ] = halfSize - ( j * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
-                this.food[ offset + 2 ] = halfSize - ( k * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
+                var x = halfSize - ( i * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
+                var y = halfSize - ( j * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
+                var z = halfSize - ( k * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
+                this.food[ offset ]     = x;
+                this.food[ offset + 1 ] = y;
+                this.food[ offset + 2 ] = z;
 
                 // set food color
-                this.food[ offset + 3 ] = 0.5 + this.food[ offset ]     / config.WORLD_SIZE;
-                this.food[ offset + 4 ] = 0.5 + this.food[ offset + 1 ] / config.WORLD_SIZE;
-                this.food[ offset + 5 ] = 0.5 + this.food[ offset + 2 ] / config.WORLD_SIZE;
+                color = foodCrayon( x, y, z );
+                this.food[ offset + 3 ] = color.r;
+                this.food[ offset + 4 ] = color.g;
+                this.food[ offset + 5 ] = color.b;
 
-                offset += size;
+                offset += ints;
             }
         }
     }

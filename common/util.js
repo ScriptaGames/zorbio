@@ -232,6 +232,37 @@ UTIL.safePlayerPosition = function UTILsafePlayerPosition( others ) {
     return new THREE.Vector3( x, y, z );
 };
 
+/**
+ * Given a food coloring name, returns a function for generating that food
+ * coloring style.
+ *
+ * @param {String} name the 
+ * @example UTIL.foodColoring('random');
+ * @example UTIL.foodColoring('rgbcube');
+ */
+UTIL.getFoodCrayon = function UTILfoodColoring( type ) {
+    return coloringMethods[type];
+};
+
+var coloringMethods = {
+
+    random: function foodColoringRandom() {
+        return {
+            r: UTIL.getRandomIntInclusive(0, 255) / 255,
+            g: UTIL.getRandomIntInclusive(0, 255) / 255,
+            b: UTIL.getRandomIntInclusive(0, 255) / 255,
+        };
+    },
+
+    rgbcube: function foodColoringRgbCube( x, y, z ) {
+        return {
+            r: 0.5 + x / config.WORLD_SIZE,
+            g: 0.5 + y / config.WORLD_SIZE,
+            b: 0.5 + z / config.WORLD_SIZE,
+        };
+    },
+
+};
 
 // if we're in nodejs, export the root UTIL object
 if (NODEJS) module.exports = UTIL;
