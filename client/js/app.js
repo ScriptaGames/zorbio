@@ -304,20 +304,24 @@ function captureFood(fi) {
         var mainSphere = player.view.mainSphere;
 
         // give food value diminishing returns to prevent runaway growth
-        var value = config.FOOD_VALUE / mainSphere.scale.x;
+        var value = config.FOOD_VALUE / player.radius();
 
-        var new_radius = ( mainSphere.scale.x + value ) * config.INITIAL_PLAYER_RADIUS;
+        // grow to new size!  yay!
+        player.grow(value);
+
+        var new_radius = player.radius();
 
         var safe_to_grow = !UTIL.checkWallCollision( mainSphere.position, new_radius, new THREE.Vector3(), zorbioModel.worldSize );
 
         hideFood(fi);
 
         if (safe_to_grow) {
-            player.grow( value );
-            adjustCamera(new_radius);
+            adjustCamera( player.radius() );
             sendFoodCapture(fi);  // send the food capture to the server
         }
         else {
+            // aw, wasn't save to grow, go back to original size
+            player.grow(-value);
             console.log("NOT SAFE TO GROW!");
         }
 
