@@ -56,7 +56,6 @@ config.FOG_NEAR                = 100;
 config.FOG_FAR                 = 1000;
 config.FOG_COLOR               = THREE.ColorKeywords.black;
 config.INITIAL_FOV             = 50;
-config.SPHERE_GLOW_SCALE       = 1.01; // multiplier to determine how big glow sphere should be relative to player sphere
 config.MAX_PLAYER_RADIUS       = 150;
 config.INITIAL_PLAYER_RADIUS   = 2;
 config.PLAYER_MOVE_LERP_WEIGHT = 0.4;
