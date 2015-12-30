@@ -130,7 +130,7 @@ function setupSocket(socket) {
     socket.on('playerJoin', function (newPlayer) {
         //Add new player if it's not the current player
         if (newPlayer.id !== player.getPlayerId()) {
-            players[newPlayer.id] = new PlayerController(newPlayer, player.model.sphere.position, scene);
+            players[newPlayer.id] = new PlayerController(newPlayer, player.model.sphere, scene);
 
             //Keep model in sync with the server
             zorbioModel.players[newPlayer.id] = newPlayer;
