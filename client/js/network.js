@@ -94,7 +94,7 @@ function clearIntervalMethods() {
 
 function setupSocket(socket) {
     // Handle connection
-    socket.on('welcome', function (playerModel, model, isFirstSpawn) {
+    socket.on('welcome', function welcome(playerModel, model, isFirstSpawn) {
         player = new PlayerController(playerModel, playerModel.sphere);
         players[player.getPlayerId()] = player;
 
@@ -128,7 +128,7 @@ function setupSocket(socket) {
         document.getElementById('render-canvas').focus();
     });
 
-    socket.on('playerJoin', function (newPlayer) {
+    socket.on('playerJoin', function playerJoin(newPlayer) {
         //Add new player if it's not the current player
         if (newPlayer.id !== player.getPlayerId()) {
             players[newPlayer.id] = new PlayerController(newPlayer, player.model.sphere, scene);
@@ -143,11 +143,11 @@ function setupSocket(socket) {
         console.log('Player ' + newPlayer.name + ' joined!');
     });
 
-    socket.on('gameSetup', function () {
+    socket.on('gameSetup', function gameSetup() {
         console.log('Games finished setting up');
     });
 
-    socket.on('actorPositions', function (actors) {
+    socket.on('actorPositions', function actorPositions(actors) {
         if (!gameStart) {
             return; // don't start updating player positions in the client until their game has started
         }
@@ -164,50 +164,50 @@ function setupSocket(socket) {
         }
     });
 
-    socket.on('foodCaptureComplete', function (fi) {
+    socket.on('foodCaptureComplete', function foodCaptureComplete(fi) {
         hideFood( fi );
     });
 
-    socket.on('kick', function (msg) {
+    socket.on('kick', function kick(msg) {
         handleNetworkTermination();
         kicked = true;
         displayModalMessage(msg);
         console.log('you were kicked', msg);
     });
 
-    socket.on('playerKicked', function (playerId) {
+    socket.on('playerKicked', function playerKicked(playerId) {
         console.log('player kicked', playerId);
         removePlayerFromGame(playerId);
     });
 
-    socket.on('connect', function () {
+    socket.on('connect', function connect() {
         console.log("Successfully connected to WebSocket");
     });
 
-    socket.on('disconnect', function () {
+    socket.on('disconnect', function disconnect() {
         handleNetworkTermination();
         disconnected = true;
         console.log('You were disconnected');
     });
 
     // Handle error
-    socket.on('connect_failed', function () {
+    socket.on('connect_failed', function connect_failed() {
         handleNetworkTermination();
         disconnected = true;
         console.log('WebSocket Connection failed');
     });
 
-    socket.on('serverTick', function (serverTickData) {
+    socket.on('serverTick', function serverTick(serverTickData) {
         handleServerTick(serverTickData);
     });
 
-    socket.on('processingPlayerCapture', function (targetPlayerId) {
+    socket.on('processingPlayerCapture', function processingPlayerCapture(targetPlayerId) {
         console.log("processingPlayerCapture: ", targetPlayerId);
         pendingPlayerCaptures[targetPlayerId] = players[targetPlayerId];  // save player getting captured
         socket.emit('continuePlayerCapture', player.getPlayerId(), targetPlayerId);
     });
 
-    socket.on('invalidCaptureTargetNotInModel', function (attackingPlayerId, targetPlayerId) {
+    socket.on('invalidCaptureTargetNotInModel', function invalidCaptureTargetNotInModel(attackingPlayerId, targetPlayerId) {
         console.log("invalidCaptureTargetNotInModel: ", attackingPlayerId, targetPlayerId);
 
         // clean up
@@ -225,7 +225,7 @@ function setupSocket(socket) {
         removePlayerFromGame(targetPlayerId);
     });
 
-    socket.on('successfulCapture', function (targetPlayerId) {
+    socket.on('successfulCapture', function successfulCapture(targetPlayerId) {
         console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
         var targetPlayer = pendingPlayerCaptures[targetPlayerId];
         handleSuccessfulPlayerCapture(targetPlayer);
@@ -236,7 +236,7 @@ function setupSocket(socket) {
         }
     });
 
-    socket.on('youDied', function (attackingPlayerId) {
+    socket.on('youDied', function youDied(attackingPlayerId) {
         console.log("YOU DIED! Killed by: ", attackingPlayerId);
         player.beingCaptured = false;
         player.isDead = true;
@@ -245,7 +245,7 @@ function setupSocket(socket) {
         showDeathScreen(true);
     });
 
-    socket.on('playerDied', function (attackingPlayerId, targetPlayerId) {
+    socket.on('playerDied', function playerDied(attackingPlayerId, targetPlayerId) {
         if (attackingPlayerId !== player.getPlayerId()) {
             // someone else killed another player, lets remove it
             console.log("Player died:  ", targetPlayerId);
@@ -253,14 +253,14 @@ function setupSocket(socket) {
         }
     });
 
-    socket.on('pong', function () {
+    socket.on('pong', function pong() {
         var latency = performance.now() - startPingTime;
         console.log('Ping: ' + latency.toFixed(2) + 'ms');
     });
 
     /*
 
-     socket.on('leaderboard', function (data) {
+     socket.on('leaderboard', function leaderboard(data) {
      leaderboard = data.leaderboard;
      var status = '<span class="title">Leaderboard</span>';
      for (var i = 0; i < leaderboard.length; i++) {
