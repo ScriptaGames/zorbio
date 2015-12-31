@@ -1,6 +1,6 @@
 // fonts
 
-@primary-font: 'Orbitron' monospace;
+@primary-font: Orbitron, monospace;
 @font-size-base: 30px;
 
 // colors
@@ -99,10 +99,19 @@ html, body {
         color          : @primary-color;
         background     : fade(@modal-background, 50%) none repeat scroll 0% 0%;
         padding        : @default-padding;
+        margin         : @default-padding;
+
+        & > * {
+            margin-bottom : @default-padding;
+        }
 
         & > *:first-child {
             margin-top: 0;
             padding-top: 0;
+        }
+
+        & > *:last-child {
+            margin-bottom: 0;
         }
 
         p {

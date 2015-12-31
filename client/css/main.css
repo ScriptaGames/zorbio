@@ -1,5 +1,5 @@
 * {
-  font-family: 'Orbitron' monospace;
+  font-family: Orbitron, monospace;
   font-size: 30px;
 }
 canvas {
@@ -68,10 +68,17 @@ body {
   color: #f7f7f7;
   background: rgba(0, 0, 0, 0.5) none repeat scroll 0% 0%;
   padding: 20px;
+  margin: 20px;
+}
+#ui-overlay > * > * {
+  margin-bottom: 20px;
 }
 #ui-overlay > * > *:first-child {
   margin-top: 0;
   padding-top: 0;
+}
+#ui-overlay > * > *:last-child {
+  margin-bottom: 0;
 }
 #ui-overlay > * p {
   text-align: center;
