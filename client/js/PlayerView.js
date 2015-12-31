@@ -48,8 +48,7 @@ PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 };
 
 PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera) {
-    // removed sphere glow, so no updates are needed anymore, but this update
-    // function might still come in very handy in the future
+    this.material.uniforms.cameraPos.value = camera.position;
 };
 
 PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position, scene, camera, renderer) {
