@@ -75,6 +75,7 @@ function handleNetworkTermination() {
     socket = null;
     cleanupMemory();
     showGame(false);
+    showDeathScreen(false);
     clearIntervalMethods();
 }
 
@@ -124,7 +125,7 @@ function setupSocket(socket) {
         // check latency
         sendPing();
 
-        document.getElementById('renderCanvas').focus();
+        document.getElementById('render-canvas').focus();
     });
 
     socket.on('playerJoin', function (newPlayer) {

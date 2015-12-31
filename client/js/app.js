@@ -1,6 +1,6 @@
 // Scene and canvas
 var scene;
-var canvas = document.getElementById('renderCanvas');
+var canvas = document.getElementById('render-canvas');
 
 // Camera
 var camera;
@@ -9,7 +9,7 @@ var camera_controls;
 // Player
 var playerName;
 var playerType;
-var playerNameInput = document.getElementById('playerNameInput');
+var playerNameInput = document.getElementById('player-name-input');
 var player;
 
 // Game state
@@ -45,9 +45,9 @@ function validNick() {
 window.onload = function () {
     'use strict';
 
-    var startButton = document.getElementById('startButton');
-    var nickErrorText = document.querySelector('#startMenu .input-error');
-    var respawnButton = document.getElementById('respawnButton');
+    var startButton = document.getElementById('start-button');
+    var nickErrorText = document.querySelector('#start-menu .input-error');
+    var respawnButton = document.getElementById('respawn-button');
 
     startButton.onclick = function () {
         // check if the nick is valid
@@ -411,8 +411,8 @@ function drawFood() {
             FOG_FAR       : { type : "f", value  : config.FOG_FAR },
             FOG_ENABLED   : { type : "f", value  : ~~config.FOG_ENABLED },
         },
-        vertexShader:   document.getElementById( 'foodVertexShader' ).textContent,
-        fragmentShader: document.getElementById( 'foodFragmentShader' ).textContent,
+        vertexShader:   document.getElementById( 'food-vertex-shader' ).textContent,
+        fragmentShader: document.getElementById( 'food-fragment-shader' ).textContent,
         transparent:    false,
         depthTest:      true
 

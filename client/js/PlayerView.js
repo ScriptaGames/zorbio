@@ -27,8 +27,8 @@ var PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
             FOG_FAR       : { type : "f",  value : config.FOG_FAR },
             FOG_ENABLED   : { type : "f",  value : ~~config.FOG_ENABLED },
         },
-        vertexShader:   document.getElementById( 'sphereVertexShader'   ).textContent,
-        fragmentShader: document.getElementById( 'sphereFragmentShader' ).textContent,
+        vertexShader:   document.getElementById( 'sphere-vertex-shader'   ).textContent,
+        fragmentShader: document.getElementById( 'sphere-fragment-shader' ).textContent,
         transparent: true
     } );
     this.material.transparent = true;

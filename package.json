@@ -5,7 +5,8 @@
   "main": "server/server.js",
   "scripts": {
     "test": "karma start",
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "css": "lessc client/css/main.less client/css/main.css"
   },
   "author": "Scripta Games, Inc.",
   "dependencies": {

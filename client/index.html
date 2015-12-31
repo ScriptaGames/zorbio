@@ -4,32 +4,31 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title>Zor.bio threejs draft</title>
+        <link href='https://fonts.googleapis.com/css?family=Orbitron:400,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="./css/main.css"/>
-
     </head>
 
     <body>
 
-        <div id="gameAreaWrapper" style="display:none;">
-            <canvas id="renderCanvas"></canvas>
+        <div id="game-area-wrapper" style="display:none;">
+            <canvas id="render-canvas"></canvas>
         </div>
-        <div id="startMenuWrapper">
-            <div id="startMenu">
+
+        <div id="ui-overlay">
+            <div id="start-menu">
                 <p>Zor.bio</p>
-                <input type="text" tabindex="0" autofocus placeholder="Enter your name here" id="playerNameInput"/>
+                <input type="text" tabindex="0" autofocus placeholder="Enter your name here" id="player-name-input"/>
                 <b class="input-error">Nick name must be alphanumeric characters only!</b>
                 <br/>
-                <button id="startButton">Play</button>
+                <button id="start-button"><span>Play</span></button>
             </div>
-        </div>
-        <div id="death_screen">
-            <div id="respawn">
-                <p>YOU DIED!</p>
-                <button id="respawnButton">Respawn</button>
+            <div id="death-screen">
+                <p>YOU WERE EATEN!</p>
+                <button id="respawn-button"><span>Respawn</span></button>
             </div>
         </div>
 
-        <script type="x-shader/x-vertex" id="foodVertexShader">
+        <script type="x-shader/x-vertex" id="food-vertex-shader">
 
             uniform float size;
             uniform vec3 mainSpherePos;
@@ -62,7 +61,7 @@
 
         </script>
 
-        <script type="x-shader/x-fragment" id="foodFragmentShader">
+        <script type="x-shader/x-fragment" id="food-fragment-shader">
 
             uniform vec3 color;
             uniform sampler2D texture;
@@ -93,7 +92,7 @@
 
         </script>
 
-        <script type="x-shader/x-vertex" id="sphereVertexShader">
+        <script type="x-shader/x-vertex" id="sphere-vertex-shader">
             uniform vec3 color;
             uniform vec3 cameraPos;
             uniform vec3 mainSpherePos;
@@ -123,7 +122,7 @@
             }
         </script>
 
-        <script type="x-shader/x-fragment" id="sphereFragmentShader">
+        <script type="x-shader/x-fragment" id="sphere-fragment-shader">
             uniform vec3 color;
             uniform float FOG_ENABLED;
             uniform float FOG_FAR;
