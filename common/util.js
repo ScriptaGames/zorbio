@@ -262,6 +262,22 @@ var coloringMethods = {
         };
     },
 
+    'rgbcube-randomized': function foodColoringRgbCube( x, y, z ) {
+        return {
+            r: 0.5 + x / config.WORLD_SIZE + UTIL.getRandomIntInclusive(-128, 128) / 512,
+            g: 0.5 + y / config.WORLD_SIZE + UTIL.getRandomIntInclusive(-128, 128) / 512,
+            b: 0.5 + z / config.WORLD_SIZE + UTIL.getRandomIntInclusive(-128, 128) / 512,
+        };
+    },
+
+    'sine-cycle': function foodColoringRgbCube( x, y, z ) {
+        return {
+            r: Math.sin( x / config.WORLD_SIZE / config.FOOD_COLORING_SINE_SEGMENTS ) / 2 + 1/2,
+            g: Math.sin( y / config.WORLD_SIZE / config.FOOD_COLORING_SINE_SEGMENTS ) / 2 + 1/2,
+            b: Math.sin( z / config.WORLD_SIZE / config.FOOD_COLORING_SINE_SEGMENTS ) / 2 + 1/2,
+        };
+    },
+
 };
 
 // if we're in nodejs, export the root UTIL object
