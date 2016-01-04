@@ -43,25 +43,14 @@ io.on('connection', function (socket) {
         var position = UTIL.safePlayerPosition();
         currentPlayer = new Zorbio.Player(socket.id, name, color, type, position);
 
-        if (model.players[currentPlayer.id]) {
-            // if current player is already in the players remove them
-            model.players[currentPlayer.id] = null;
-            delete model.players[currentPlayer.id];
-        }
-
-        model.addActor(currentPlayer.sphere);
-
-        socket.emit('welcome', currentPlayer, model, isFirstSpawn);
-        console.log('User ' + currentPlayer.id + ' spawned into the game');
+        socket.emit('welcome', currentPlayer, isFirstSpawn);
+        console.log('User ' + currentPlayer.id + ' spawning into the game');
     });
 
-    socket.on('gotit', function (player) {
+    socket.on('gotit', function (player, isFirstSpawn) {
         console.log('Player ' + player.id + ' connecting');
 
-        if (model.players[player.id]) {
-            console.log('That playerID is already connected, kicking');
-            socket.disconnect();
-        } else if (!UTIL.validNick(player.name)) {
+        if (!UTIL.validNick(player.name)) {
             socket.emit('kick', 'Invalid username');
             socket.disconnect();
         } else {
@@ -69,13 +58,21 @@ io.on('connection', function (socket) {
             sockets[player.id] = socket;
             currentPlayer.lastHeartbeat = new Date().getTime();
 
+            if (model.players[player.id]) {
+                // if current player is already in the players remove them
+                model.players[player.id] = null;
+                delete model.players[player.id];
+            }
+
             // Add the player to the players object
             model.players[player.id] = currentPlayer;
+
+            model.addActor(currentPlayer.sphere);
 
             io.emit('playerJoin', currentPlayer);
 
             // Pass any data to the for final setup
-            socket.emit('gameSetup');
+            socket.emit('gameSetup', model, isFirstSpawn);
 
             console.log('Total players: ' + Object.getOwnPropertyNames(model.players).length);
         }

@@ -94,8 +94,13 @@ function clearIntervalMethods() {
 
 function setupSocket(socket) {
     // Handle connection
-    socket.on('welcome', function welcome(playerModel, model, isFirstSpawn) {
+    socket.on('welcome', function welcome(playerModel, isFirstSpawn) {
         player = new PlayerController(playerModel, playerModel.sphere);
+
+        socket.emit('gotit', player.model, isFirstSpawn);
+    });
+
+    socket.on('gameSetup', function gameSetup(model, isFirstSpawn) {
         players[player.getPlayerId()] = player;
 
         zorbioModel = model;
@@ -108,7 +113,6 @@ function setupSocket(socket) {
             actor.position = new THREE.Vector3(position.x, position.y, position.z);
         }
 
-        socket.emit('gotit', player.model);
         gameStart = true;
         console.log('Game is started: ' + gameStart);
 
@@ -122,10 +126,9 @@ function setupSocket(socket) {
             initCameraAndPlayer();
         }
 
-        // check latency
-        sendPing();
-
         document.getElementById('render-canvas').focus();
+
+        console.log('Game finished setting up');
     });
 
     socket.on('playerJoin', function playerJoin(newPlayer) {
@@ -141,10 +144,6 @@ function setupSocket(socket) {
         }
 
         console.log('Player ' + newPlayer.name + ' joined!');
-    });
-
-    socket.on('gameSetup', function gameSetup() {
-        console.log('Games finished setting up');
     });
 
     socket.on('actorPositions', function actorPositions(actors) {
