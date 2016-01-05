@@ -14,7 +14,7 @@ var config = {};
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE       = 1000;
+config.WORLD_SIZE       = 1600;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
 
 ////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ config.PLAYER_CAPTURE_VALUE = function PlayerCaptureValue( r ) { return r / 2; }
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 10;    // How much food there is, total food = this number cubed
+config.FOOD_DENSITY                = 20;    // How much food there is, total food = this number cubed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_VALUE                  = 0.4;     // amount to increase sphere by when food is consumed
 config.FOOD_CAPTURE_ASSIST         = 2;     // this number is added to player's radius for food capturing
