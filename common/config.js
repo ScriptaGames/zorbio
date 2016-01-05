@@ -28,6 +28,7 @@ config.HEARTBEAT_CHECK_INTERVAL = 1000;  // server heartbeat test interval
 config.HEARTBEAT_PULSE_INTERVAL = 3000;  // client heartbeat pulse
 config.SERVER_TICK_INTERVAL     = 250;   // General server updates in milliseconds
 config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their position in milliseconds
+config.AUTO_RUN_ENABLED         = true;
 
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
