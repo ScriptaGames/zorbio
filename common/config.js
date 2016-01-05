@@ -57,6 +57,7 @@ config.FOG_ENABLED             = true;
 config.FOG_NEAR                = 100;
 config.FOG_FAR                 = 1000;
 config.FOG_COLOR               = THREE.ColorKeywords.black;
+config.WALL_GRID_SEGMENTS      = 20;
 config.INITIAL_FOV             = 50;
 config.MAX_PLAYER_RADIUS       = 150;
 config.INITIAL_PLAYER_RADIUS   = 2;
