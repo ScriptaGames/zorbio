@@ -272,9 +272,9 @@ var coloringMethods = {
 
     'sine-cycle': function foodColoringRgbCube( x, y, z ) {
         return {
-            r: Math.sin( x / config.WORLD_SIZE / config.FOOD_COLORING_SINE_SEGMENTS ) / 2 + 1/2,
-            g: Math.sin( y / config.WORLD_SIZE / config.FOOD_COLORING_SINE_SEGMENTS ) / 2 + 1/2,
-            b: Math.sin( z / config.WORLD_SIZE / config.FOOD_COLORING_SINE_SEGMENTS ) / 2 + 1/2,
+            r: Math.sin( x / ( config.WORLD_SIZE / config.FOOD_COLORING_SINE_SEGMENTS ) ) / 2 + 1/2,
+            g: Math.sin( y / ( config.WORLD_SIZE / config.FOOD_COLORING_SINE_SEGMENTS ) ) / 2 + 1/2,
+            b: Math.sin( z / ( config.WORLD_SIZE / config.FOOD_COLORING_SINE_SEGMENTS ) ) / 2 + 1/2,
         };
     },
 
