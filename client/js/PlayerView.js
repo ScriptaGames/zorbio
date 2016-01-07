@@ -15,6 +15,8 @@ var PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
         config.PLAYER_SPHERE_POLYCOUNT
     );
 
+
+    //TODO: ask Michael what ~~ means in javascript
     this.material = new THREE.ShaderMaterial( {
         uniforms:
         {
@@ -25,7 +27,7 @@ var PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
             spherePos     : { type : "v3", value : actor.position },
             mainSpherePos : { type : "v3", value : main_sphere.position },
             FOG_FAR       : { type : "f",  value : config.FOG_FAR },
-            FOG_ENABLED   : { type : "f",  value : ~~config.FOG_ENABLED },
+            FOG_ENABLED   : { type : "f",  value : ~~config.FOG_ENABLED }
         },
         vertexShader:   document.getElementById( 'sphere-vertex-shader'   ).textContent,
         fragmentShader: document.getElementById( 'sphere-fragment-shader' ).textContent,
