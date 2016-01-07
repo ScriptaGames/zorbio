@@ -113,11 +113,6 @@ function setupSocket(socket) {
             actor.position = new THREE.Vector3(position.x, position.y, position.z);
         }
 
-        gameStart = true;
-        console.log('Game is started: ' + gameStart);
-
-        setIntervalMethods();
-
         if (isFirstSpawn) {
             // create the scene
             createScene();
@@ -125,6 +120,11 @@ function setupSocket(socket) {
             // re-add player to scene and reset camera
             initCameraAndPlayer();
         }
+
+        gameStart = true;
+        console.log('Game is started: ' + gameStart);
+
+        setIntervalMethods();
 
         document.getElementById('render-canvas').focus();
 
