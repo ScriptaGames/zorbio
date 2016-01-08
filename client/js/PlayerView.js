@@ -17,6 +17,7 @@ var PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
 
 
     //TODO: ask Michael what ~~ means in javascript
+    playerFogCenter.copy(main_sphere.position);
     this.material = new THREE.ShaderMaterial( {
         uniforms:
         {
@@ -25,7 +26,7 @@ var PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
             color         : { type : "c",  value : new THREE.Color(this.playerColor) },
             cameraPos     : { type : "v3", value : camera.position },
             spherePos     : { type : "v3", value : actor.position },
-            mainSpherePos : { type : "v3", value : main_sphere.position },
+            mainSpherePos : { type : "v3", value : playerFogCenter },
             FOG_FAR       : { type : "f",  value : config.FOG_FAR },
             FOG_ENABLED   : { type : "f",  value : ~~config.FOG_ENABLED }
         },
