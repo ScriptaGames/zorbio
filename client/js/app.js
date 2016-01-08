@@ -37,6 +37,7 @@ function startGame(type) {
 
     // Connect to the server
     var colorCode = UTIL.getRandomIntInclusive(0, PlayerView.COLORS.length - 1);
+    console.log('Player color', PlayerView.COLORS[colorCode]);
     connectToServer(playerType, playerName, colorCode);
 }
 

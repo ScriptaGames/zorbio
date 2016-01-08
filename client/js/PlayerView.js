@@ -80,10 +80,11 @@ PlayerView.COLORS = [
     '#4b0082', // indigo
     '#ff00ff', // magenta
     '#ff6347', // tomato
+    '#ff0000', // red
     '#a52a2a', // brown
     '#800000', // maroon
     '#ff4500', // orangered
     '#ff8c00', // darkorange
     '#ffd700', // gold
-    '#ffff00', // yellow
+    '#ffff00' // yellow
 ];
