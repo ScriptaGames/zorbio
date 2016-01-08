@@ -68,4 +68,22 @@ PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
     this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
 };
 
-PlayerView.COLORS = Object.keys( THREE.ColorKeywords );
+PlayerView.COLORS = [
+    '#00bfff', // deepskyblue
+    '#0000cd', // mediumblue
+    '#000080', // navy
+    '#00ff7f', // springgreen
+    '#00ff00', // lime
+    '#228b22', // forestgreen
+    '#4169e1', // royalblue
+    '#9932cc', // darkorchid
+    '#4b0082', // indigo
+    '#ff00ff', // magenta
+    '#ff6347', // tomato
+    '#a52a2a', // brown
+    '#800000', // maroon
+    '#ff4500', // orangered
+    '#ff8c00', // darkorange
+    '#ffd700', // gold
+    '#ffff00', // yellow
+];
