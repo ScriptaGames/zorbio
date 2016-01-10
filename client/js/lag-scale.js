@@ -27,6 +27,7 @@ ZOR.LagScale = function ZORLagScale() {
     }
 
     function get_fps() {
+        return fps;
     }
 
     return {
