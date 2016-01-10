@@ -12,6 +12,11 @@ var playerType;
 var playerNameInput = document.getElementById('player-name-input');
 var player;
 
+//TODO: get rid of these globals, refactor into MVC Player and Food controllers
+//Copy of positions for fog shaders to handle respawns
+var playerFogCenter = new THREE.Vector3();
+var foodPlayerFogCenter = new THREE.Vector3();
+
 // Game state
 var players = {};
 var food = {};
@@ -32,6 +37,7 @@ function startGame(type) {
 
     // Connect to the server
     var colorCode = UTIL.getRandomIntInclusive(0, PlayerView.COLORS.length - 1);
+    console.log('Player color', PlayerView.COLORS[colorCode]);
     connectToServer(playerType, playerName, colorCode);
 }
 
@@ -103,6 +109,10 @@ function createScene() {
 
         initCameraAndPlayer();
 
+        //TODO: refactor this into MVC to get rid of globals
+        foodPlayerFogCenter.copy(player.view.mainSphere.position);
+        playerFogCenter.copy(player.view.mainSphere.position);
+
         // food
         drawFood();
 
@@ -154,6 +164,9 @@ function createScene() {
             handleKeysDown();
 
             player.update(scene, camera, camera_controls);
+
+            foodPlayerFogCenter.copy(player.view.mainSphere.position);
+            playerFogCenter.copy(player.view.mainSphere.position);
 
             checkFoodCaptures();
 
@@ -411,7 +424,7 @@ function drawFood() {
             color         : { type : "c", value  : new THREE.Color( 0xffffff ) },
             texture       : { type : "t", value  : texture },
             size          : { type : "f", value  : 3000 },
-            mainSpherePos : { type : "v3", value : player.view.mainSphere.position },
+            mainSpherePos : { type : "v3", value : foodPlayerFogCenter },
             FOG_FAR       : { type : "f", value  : config.FOG_FAR },
             FOG_ENABLED   : { type : "f", value  : ~~config.FOG_ENABLED },
         },
