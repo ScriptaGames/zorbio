@@ -358,13 +358,17 @@ function aliveFood(fi) {
 }
 
 function hideFood(fi) {
-    food.respawning[fi] = 1; // hide food
-    food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
+    if (typeof food.respawning[fi] !== 'undefined') {
+        food.respawning[fi] = 1; // hide food
+        food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
+    }
 }
 
 function showFood(fi) {
-    food.respawning[fi] = 0;
-    food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
+    if (typeof food.respawning[fi] !== 'undefined') {
+        food.respawning[fi] = 0;
+        food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
+    }
 }
 
 function drawFood() {
