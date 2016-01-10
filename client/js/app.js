@@ -163,7 +163,9 @@ function createScene() {
 
             handleKeysDown();
 
-            player.update(scene, camera, camera_controls);
+            ZOR.LagScale.update();
+
+            player.update(scene, camera, camera_controls, ZOR.LagScale.get());
 
             foodPlayerFogCenter.copy(player.view.mainSphere.position);
             playerFogCenter.copy(player.view.mainSphere.position);

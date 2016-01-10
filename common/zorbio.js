@@ -6,7 +6,7 @@ if (NODEJS) var THREE = require('three.js');
 if (NODEJS) var UTIL = require('./util.js');
 if (NODEJS) var config = require('./config.js');
 
-var ZOR = {};
+var ZOR = ZOR || {};
 
 /**
  * ZOR.Model is a constructor that creates a new game model.  The model is

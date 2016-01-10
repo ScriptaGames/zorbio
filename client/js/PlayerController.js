@@ -101,11 +101,11 @@ PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(scale
     this.view.setScale(scale);
 };
 
-PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls) {
+PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls, lag_scale) {
     if (config.AUTO_RUN_ENABLED) {
         this.moveForward(camera); // always move forward
     }
-    this.applyVelocity(camera_controls);
+    this.applyVelocity(lag_scale, camera_controls);
     this.view.update(scene, camera, camera_controls);
 
     // check if we need to animate anything
@@ -115,10 +115,10 @@ PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, ca
     }
 };
 
-PlayerController.prototype.applyVelocity = function ZORPlayerControllerApplyVelocity(camera_controls) {
+PlayerController.prototype.applyVelocity = function ZORPlayerControllerApplyVelocity(lag_scale, camera_controls) {
     this.velocity.sub( camera_controls.velocityRequest );
     this.velocity.normalize();
-    this.velocity.multiplyScalar( player.getSpeed() );
+    this.velocity.multiplyScalar( player.getSpeed() * lag_scale );
 
     this.view.mainSphere.position.sub(
         UTIL.adjustVelocityWallHit(
