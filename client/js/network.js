@@ -132,6 +132,8 @@ function setupSocket(socket) {
     });
 
     socket.on('playerJoin', function playerJoin(newPlayer) {
+        if (!gameStart) return;
+
         //Add new player if it's not the current player
         if (newPlayer.id !== player.getPlayerId()) {
             players[newPlayer.id] = new PlayerController(newPlayer, player.model.sphere, scene);
@@ -164,6 +166,8 @@ function setupSocket(socket) {
     });
 
     socket.on('foodCaptureComplete', function foodCaptureComplete(fi) {
+        if (!gameStart) return;
+
         hideFood( fi );
     });
 
@@ -175,6 +179,8 @@ function setupSocket(socket) {
     });
 
     socket.on('playerKicked', function playerKicked(playerId) {
+        if (!gameStart) return;
+
         console.log('player kicked', playerId);
         removePlayerFromGame(playerId);
     });
@@ -197,16 +203,22 @@ function setupSocket(socket) {
     });
 
     socket.on('serverTick', function serverTick(serverTickData) {
+        if (!gameStart) return;
+
         handleServerTick(serverTickData);
     });
 
     socket.on('processingPlayerCapture', function processingPlayerCapture(targetPlayerId) {
+        if (!gameStart) return;
+
         console.log("processingPlayerCapture: ", targetPlayerId);
         pendingPlayerCaptures[targetPlayerId] = players[targetPlayerId];  // save player getting captured
         socket.emit('continuePlayerCapture', player.getPlayerId(), targetPlayerId);
     });
 
     socket.on('invalidCaptureTargetNotInModel', function invalidCaptureTargetNotInModel(attackingPlayerId, targetPlayerId) {
+        if (!gameStart) return;
+
         console.log("invalidCaptureTargetNotInModel: ", attackingPlayerId, targetPlayerId);
 
         // clean up
@@ -225,6 +237,8 @@ function setupSocket(socket) {
     });
 
     socket.on('successfulCapture', function successfulCapture(targetPlayerId) {
+        if (!gameStart) return;
+
         console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
         var targetPlayer = pendingPlayerCaptures[targetPlayerId];
         handleSuccessfulPlayerCapture(targetPlayer);
@@ -236,6 +250,8 @@ function setupSocket(socket) {
     });
 
     socket.on('youDied', function youDied(attackingPlayerId) {
+        if (!gameStart) return;
+
         console.log("YOU DIED! Killed by: ", attackingPlayerId);
         player.beingCaptured = false;
         player.isDead = true;
@@ -245,6 +261,8 @@ function setupSocket(socket) {
     });
 
     socket.on('playerDied', function playerDied(attackingPlayerId, targetPlayerId) {
+        if (!gameStart) return;
+
         if (attackingPlayerId !== player.getPlayerId()) {
             // someone else killed another player, lets remove it
             console.log("Player died:  ", targetPlayerId);
