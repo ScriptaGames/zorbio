@@ -65,7 +65,7 @@ config.MAX_PLAYER_RADIUS       = 150;
 config.INITIAL_PLAYER_RADIUS   = 2;
 config.PLAYER_MOVE_LERP_WEIGHT = 0.4;
 config.PLAYER_SPHERE_POLYCOUNT = 64; // height and width segments of the spheres
-config.LAG_SCALE_ENABLE        = false; // disable lag scale adjustment until proven
+config.LAG_SCALE_ENABLE        = true; // disable lag scale adjustment until proven
 
 ////////////////////////////////////////////////////////////////////////
 //                          NODEJS EXPORTER                           //
