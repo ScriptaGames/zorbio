@@ -30,13 +30,10 @@ ZOR.Model = function ZORModel(worldSize, foodDensity) {
  *  Initializes food for a new ZOR.Model
  */
 ZOR.Model.prototype.initFood = function ZORInitFood() {
-    var color;
     var halfSize = this.worldSize.y / 2;
     var blockSize = this.worldSize.y / this.foodDensity;
 
-    var foodCrayon = UTIL.getFoodCrayon( config.FOOD_COLORING_TYPE );
-
-    var ints = 6; // 6 for XYZRGB
+    var ints = 3; // 6 for XYZ
     var offset = 0;
 
     this.foodCount = Math.pow(this.foodDensity - 1, 3);
@@ -65,12 +62,6 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
                 this.food[ offset ]     = x;
                 this.food[ offset + 1 ] = y;
                 this.food[ offset + 2 ] = z;
-
-                // set food color
-                color = foodCrayon( x, y, z );
-                this.food[ offset + 3 ] = color.r;
-                this.food[ offset + 4 ] = color.g;
-                this.food[ offset + 5 ] = color.b;
 
                 offset += ints;
             }
@@ -178,6 +169,7 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.type = type;
     this.lastHeartbeat = new Date().getTime();
     this.sphere = new ZOR.PlayerSphere(this.id, color, position, scale, velocity);
+    this.infractions = 0;
 };
 
 // if we're in nodejs, export the root ZOR object

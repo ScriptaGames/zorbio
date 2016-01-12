@@ -86,12 +86,21 @@ io.on('connection', function (socket) {
         }
     });
 
-    socket.on('foodCapture', function (fi) {
-        var err = Validators.foodCapture(fi);
+    socket.on('foodCapture', function (fi, sphere_id, food_value) {
+        var err = Validators.foodCapture(model, fi, sphere_id);
         if (err === 0) {
             model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
             // notify clients of food capture so they can update their food view
             io.emit('foodCaptureComplete', fi);
+        } else {
+            switch (err) {
+                case Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR:
+                    //TODO: TEST
+                    // inform client of invalid capture, and make them shrink, mark infraction
+                    sockets.emit('invalidFoodCapture', fi, food_value);
+                    model.players[currentPlayer.id].infractions++;
+                    break;
+            }
         }
     });
 
@@ -247,12 +256,28 @@ function sendServerTickData() {
     serverTickData = null;
 }
 
+
+//TODO: test
+function kickCheatingPlayers() {
+    var playerIds = Object.getOwnPropertyNames(model.players);
+    for (var i = 0, l = playerIds.length; i < l; i++) {
+        var id = playerIds[i];
+        var player = model.players[id];
+        if (player.infractions > config.PLAYER_INFRACTION_TOLORANCE) {
+            var msg = "You were kicked because you had to many infractions";
+            console.log('kicking player for cheating', id, msg, player.infractions);
+            kickPlayer(id, msg);
+        }
+    }
+}
+
 /**
  * Main server loop for general updates to the client that don't have to be real-time, e.g. food respawns
  */
 function serverTick() {
     updateFoodRespawns();
     sendServerTickData();
+    kickCheatingPlayers();
 }
 
 setInterval(sendActorUpdates, config.ACTOR_UPDATE_INTERVAL);

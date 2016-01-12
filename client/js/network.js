@@ -40,8 +40,8 @@ function sendPlayerSpherePosition() {
     socket.emit('myPosition', sphere);
 }
 
-function sendFoodCapture(fi) {
-    socket.emit('foodCapture', fi);
+function sendFoodCapture(fi, sphere_id, food_value) {
+    socket.emit('foodCapture', fi, sphere_id, food_value);
 }
 
 function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
@@ -234,6 +234,18 @@ function setupSocket(socket) {
 
         // safe method to call if they are already removed just to make sure we stay in sync with server
         removePlayerFromGame(targetPlayerId);
+    });
+
+    socket.on('invalidFoodCapture', function invalidFoodCapture(fi, food_value) {
+        if (!gameStart) return;
+
+        console.log("invalidFoodCapture: ", fi, food_value, player.getPlayerId());
+
+        // shrink player
+        player.grow(-food_value);
+
+        // mark infraction
+        player.infractions++;
     });
 
     socket.on('successfulCapture', function successfulCapture(targetPlayerId) {

@@ -9,6 +9,8 @@ var FoodView = function ZORFoodView() {
         this.colors = new Float32Array( foodCount * 3 );
         this.respawning = new Float32Array( foodCount );
 
+        var foodCrayon = UTIL.getFoodCrayon( config.FOOD_COLORING_TYPE );
+
         var positions = this.positions;
         var colors = this.colors;
         var respawning = this.respawning;
@@ -17,29 +19,29 @@ var FoodView = function ZORFoodView() {
         // into the typed arrays for the particle system
 
         var X, Y, Z, R, G, B;
-        var particle_index = 0;
-        var food_index = 0;
+        var offset = 0;
         for (var i = 0; i < foodCount; i++) {
 
-            X = food[ food_index     ];
-            Y = food[ food_index + 1 ];
-            Z = food[ food_index + 2 ];
-            R = food[ food_index + 3 ];
-            G = food[ food_index + 4 ];
-            B = food[ food_index + 5 ];
+            X = food[ offset     ];
+            Y = food[ offset + 1 ];
+            Z = food[ offset + 2 ];
+
+            var color = foodCrayon( X, Y, Z );
+            R = color.r;
+            G = color.g;
+            B = color.b;
 
             respawning[ i ] = 0;
 
-            positions[ particle_index     ] = X;
-            positions[ particle_index + 1 ] = Y;
-            positions[ particle_index + 2 ] = Z;
+            positions[ offset     ] = X;
+            positions[ offset + 1 ] = Y;
+            positions[ offset + 2 ] = Z;
 
-            colors[ particle_index     ] = R;
-            colors[ particle_index + 1 ] = G;
-            colors[ particle_index + 2 ] = B;
+            colors[ offset     ] = R;
+            colors[ offset + 1 ] = G;
+            colors[ offset + 2 ] = B;
 
-            particle_index += 3;
-            food_index += 6;
+            offset += 3;
         }
 
         this.geometry = new THREE.BufferGeometry();

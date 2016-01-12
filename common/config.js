@@ -36,17 +36,19 @@ config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their positi
 config.BASE_PLAYER_SPEED    = 3;
 config.PLAYER_CAPTURE_VALUE = function PlayerCaptureValue( r ) { return r / 2; };
 config.AUTO_RUN_ENABLED     = true;
+config.PLAYER_INFRACTION_TOLORANCE = 1;
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 10;    // How much food there is, total food = this number cubed
-config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
-config.FOOD_VALUE                  = 0.4;     // amount to increase sphere by when food is consumed
-config.FOOD_CAPTURE_ASSIST         = 2;     // this number is added to player's radius for food capturing
-config.FOOD_COLORING_TYPE          = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][3];
-config.FOOD_COLORING_SINE_SEGMENTS = 8;  // with sine-cycle coloring, how many color cycles along each axis
+config.FOOD_DENSITY                 = 10;    // How much food there is, total food = this number cubed
+config.FOOD_RESPAWN_TIME            = 30000; // Respawn time for food in milliseconds
+config.FOOD_VALUE                   = 0.4;     // amount to increase sphere by when food is consumed
+config.FOOD_CAPTURE_ASSIST          = 2;     // this number is added to player's radius for food capturing
+config.FOOD_COLORING_TYPE           = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][3];
+config.FOOD_COLORING_SINE_SEGMENTS  = 8;  // with sine-cycle coloring, how many color cycles along each axis
+config.FOOD_CAPTURE_EXTRA_TOLORANCE = 15; // extra distance that we'll tolerate for valid food capture
 
 ////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //
