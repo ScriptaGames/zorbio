@@ -168,7 +168,7 @@ function setupSocket(socket) {
     socket.on('foodCaptureComplete', function foodCaptureComplete(fi) {
         if (!gameStart) return;
 
-        hideFood( fi );
+        foodController.hideFood( fi );
     });
 
     socket.on('kick', function kick(msg) {

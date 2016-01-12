@@ -1,6 +1,10 @@
+/**
+ * Thew View part of Food MVC
+ * @constructor
+ */
 var FoodView = function ZORFoodView() {
 
-    this.drawFood = function ZORFoodViewDrawFood(scene, food, foodCount) {
+    this.drawFood = function ZORFoodViewDrawFood(scene, food, foodCount, fogCenterPosition) {
         this.positions = new Float32Array( foodCount * 3 );
         this.colors = new Float32Array( foodCount * 3 );
         this.respawning = new Float32Array( foodCount );
@@ -54,7 +58,7 @@ var FoodView = function ZORFoodView() {
                 color         : { type : "c", value  : new THREE.Color( 0xffffff ) },
                 texture       : { type : "t", value  : this.texture },
                 size          : { type : "f", value  : 3000 },
-                mainSpherePos : { type : "v3", value : player.view.mainSphere.position },
+                mainSpherePos : { type : "v3", value : fogCenterPosition },
                 FOG_FAR       : { type : "f", value  : config.FOG_FAR },
                 FOG_ENABLED   : { type : "f", value  : ~~config.FOG_ENABLED }
             },
@@ -67,5 +71,48 @@ var FoodView = function ZORFoodView() {
 
         this.particleSystem = new THREE.Points( this.geometry, this.material );
         scene.add( this.particleSystem );
+    };
+
+    /**
+     * Checks if a food index is alive and can be eaten
+     * @param fi
+     * @returns {boolean}
+     */
+    this.aliveFood = function ZORFoodViewAliveFood(fi) {
+        return this.respawning[fi] === 0;
+    };
+
+    /**
+     * Hide the food at the index.
+     * @param fi
+     */
+    this.hideFood = function ZORFoodViewHideFood(fi) {
+        if (typeof this.respawning[fi] !== 'undefined') {
+            this.respawning[fi] = 1; // hide food
+            this.particleSystem.geometry.attributes.respawning.needsUpdate = true;
+        }
+    };
+
+
+    /**
+     * Show the food at the index
+     * @param fi
+     */
+    this.showFood = function ZORFoodViewShowFood(fi) {
+        if (typeof this.respawning[fi] !== 'undefined') {
+            this.respawning[fi] = 0;
+            this.particleSystem.geometry.attributes.respawning.needsUpdate = true;
+        }
+    };
+
+    /**
+     * Hide multiple foods
+     */
+    this.hideFoodMultiple = function ZORFoodViewHideFoodMultiple(foodToHide) {
+        // hide all food in the array
+        for (var i = 0, l = foodToHide.length; i < l; i++) {
+            this.respawning[foodToHide[i]] = 1; // hide food
+        }
+        this.particleSystem.geometry.attributes.respawning.needsUpdate = true;
     };
 };

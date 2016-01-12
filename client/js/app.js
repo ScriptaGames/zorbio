@@ -15,14 +15,13 @@ var player;
 //TODO: get rid of these globals, refactor into MVC Player and Food controllers
 //Copy of positions for fog shaders to handle respawns
 var playerFogCenter = new THREE.Vector3();
-var foodPlayerFogCenter = new THREE.Vector3();
 
 // Game state
 var players = {};
-var food = {};
 var gameStart = false;
 var kicked = false;
 var disconnected = false;
+var foodController = null;
 
 var renderer;
 
@@ -110,14 +109,15 @@ function createScene() {
         initCameraAndPlayer();
 
         //TODO: refactor this into MVC to get rid of globals
-        foodPlayerFogCenter.copy(player.view.mainSphere.position);
         playerFogCenter.copy(player.view.mainSphere.position);
 
         // food
-        drawFood();
+        foodController = new FoodController(zorbioModel, player.view.mainSphere.position);
+        foodController.drawFood(scene);
+
 
         // Hide currently respawning food
-        hideRespawningFood();
+        foodController.hideFoodMultiple(zorbioModel.food_respawning_indexes);
 
         // Draw other players
         drawPlayers();
@@ -167,10 +167,11 @@ function createScene() {
 
             player.update(scene, camera, camera_controls, ZOR.LagScale.get());
 
-            foodPlayerFogCenter.copy(player.view.mainSphere.position);
+            foodController.update(player.view.mainSphere.position);
+
             playerFogCenter.copy(player.view.mainSphere.position);
 
-            checkFoodCaptures();
+            foodController.checkFoodCaptures(player, captureFood);
 
             checkPlayerCaptures();
 
@@ -272,30 +273,7 @@ function checkPlayerCaptures() {
     }
 }
 
-function checkFoodCaptures() {
 
-    var x, y, z, i, l;
-    var vdist = checkFoodCaptures.vdist;
-    var dist = 0;
-    var mainSphere = player.view.mainSphere;
-    var sphere_radius = player.radius();
-
-    for ( i = 0, l = food.positions.length; i < l; i += 3 ) {
-        if (aliveFood( i / 3 )) {
-            x = food.positions[ i     ];
-            y = food.positions[ i + 1 ];
-            z = food.positions[ i + 2 ];
-            vdist.set(x, y, z);
-
-            dist = vdist.distanceTo(mainSphere.position);
-            if (dist <= (sphere_radius + config.FOOD_CAPTURE_ASSIST)) {
-                var fi = i / 3;
-                captureFood( fi );
-            }
-        }
-    }
-}
-checkFoodCaptures.vdist = new THREE.Vector3();
 
 function updateActors() {
     var actors = zorbioModel.actors;
@@ -319,7 +297,7 @@ function updateActors() {
 }
 
 function captureFood(fi) {
-    if (aliveFood(fi)) {
+    if (foodController.aliveFood(fi)) {
         var mainSphere = player.view.mainSphere;
 
         // give food value diminishing returns to prevent runaway growth
@@ -332,7 +310,7 @@ function captureFood(fi) {
 
         var safe_to_grow = !UTIL.checkWallCollision( mainSphere.position, new_radius, new THREE.Vector3(), zorbioModel.worldSize );
 
-        hideFood(fi);
+        foodController.hideFood(fi);
 
         if (safe_to_grow) {
             adjustCamera( player.radius() );
@@ -353,104 +331,6 @@ function captureFood(fi) {
 function adjustCamera( radius ) {
     camera_controls.minDistance = radius / Math.tan( Math.PI * camera.fov / 360 ) + 100;
     camera_controls.maxDistance = camera_controls.minDistance;
-}
-
-function aliveFood(fi) {
-    return food.respawning[fi] === 0;
-}
-
-function hideFood(fi) {
-    if (typeof food.respawning[fi] !== 'undefined') {
-        food.respawning[fi] = 1; // hide food
-        food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
-    }
-}
-
-function showFood(fi) {
-    if (typeof food.respawning[fi] !== 'undefined') {
-        food.respawning[fi] = 0;
-        food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
-    }
-}
-
-function drawFood() {
-
-    food.positions = new Float32Array( zorbioModel.foodCount * 3 );
-    food.colors = new Float32Array( zorbioModel.foodCount * 3 );
-    food.respawning = new Float32Array( zorbioModel.foodCount );
-
-    var positions = food.positions;
-    var colors = food.colors;
-    var respawning = food.respawning;
-
-    // copy food position and food color values from the zorbioModel.food array
-    // into the typed arrays for the particle system
-
-    var X, Y, Z, R, G, B;
-    var particle_index = 0;
-    var food_index = 0;
-    for (var i = 0, l = zorbioModel.foodCount; i < l; i++) {
-
-        X = zorbioModel.food[ food_index     ];
-        Y = zorbioModel.food[ food_index + 1 ];
-        Z = zorbioModel.food[ food_index + 2 ];
-        R = zorbioModel.food[ food_index + 3 ];
-        G = zorbioModel.food[ food_index + 4 ];
-        B = zorbioModel.food[ food_index + 5 ];
-
-        respawning[ i ] = 0;
-
-        positions[ particle_index     ] = X;
-        positions[ particle_index + 1 ] = Y;
-        positions[ particle_index + 2 ] = Z;
-
-        colors[ particle_index     ] = R;
-        colors[ particle_index + 1 ] = G;
-        colors[ particle_index + 2 ] = B;
-
-        particle_index += 3;
-        food_index += 6;
-    }
-
-    var geometry = new THREE.BufferGeometry();
-    geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-    geometry.addAttribute( 'respawning', new THREE.BufferAttribute( respawning, 1 ) );
-    geometry.addAttribute( 'ca', new THREE.BufferAttribute( colors, 3 ) );
-
-    //
-
-    var texture = THREE.ImageUtils.loadTexture( "textures/solid-particle.png" );
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-
-    var material = new THREE.ShaderMaterial( {
-
-        uniforms: {
-            amplitude     : { type : "f", value  : 1.0 },
-            color         : { type : "c", value  : new THREE.Color( 0xffffff ) },
-            texture       : { type : "t", value  : texture },
-            size          : { type : "f", value  : 3000 },
-            mainSpherePos : { type : "v3", value : foodPlayerFogCenter },
-            FOG_FAR       : { type : "f", value  : config.FOG_FAR },
-            FOG_ENABLED   : { type : "f", value  : ~~config.FOG_ENABLED },
-        },
-        vertexShader:   document.getElementById( 'food-vertex-shader' ).textContent,
-        fragmentShader: document.getElementById( 'food-fragment-shader' ).textContent,
-        transparent:    false,
-        depthTest:      true
-
-    });
-
-    food.particleSystem = new THREE.Points( geometry, material );
-    scene.add( food.particleSystem );
-}
-
-function hideRespawningFood() {
-    // hide any food that was respawning when the player connected
-    for (var i = 0, l = zorbioModel.food_respawning_indexes.length; i < l; i++) {
-        food.respawning[zorbioModel.food_respawning_indexes[i]] = 1; // hide food
-    }
-    food.particleSystem.geometry.attributes.respawning.needsUpdate = true;
 }
 
 window.addEventListener("keydown", handleKeydown);
@@ -583,7 +463,6 @@ function adjustVelocityWallHit( p, r, v, w ) {
 
 function cleanupMemory() {
     players = {};
-    food = {};
     zorbioModel = null;
 }
 
@@ -616,7 +495,7 @@ function removePlayerFromGame(playerId) {
 function handleServerTick(serverTickData) {
     // handle food respawns
     for(var i = 0, l = serverTickData.fr.length; i < l; ++i) {
-        showFood(serverTickData.fr[i]);  // Show the food index
+        foodController.showFood(serverTickData.fr[i]);  // Show the food index
     }
 }
 
