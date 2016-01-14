@@ -15,44 +15,43 @@
 @default-padding: 20px;
 
 * {
-    font-family: @primary-font;
-    font-size: @font-size-base;
-}
-
-canvas {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    touch-action: none;
+    font-family : @primary-font;
+    font-size   : @font-size-base;
+    font-weight : bold;
 }
 
 html, body {
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: @secondary-color;
+    overflow         : hidden;
+    width            : 100%;
+    height           : 100%;
+    margin           : 0;
+    padding          : 0;
+    background-color : @secondary-color;
 }
 
 #render-canvas {
-    width: 100%;
-    height: 100%;
-    touch-action: none;
+    width        : 100%;
+    height       : 100%;
+    position     : absolute;
+    top          : 0;
+    left         : 0;
+    margin       : 0;
+    padding      : 0;
+    touch-action : none;
+    z-index      : 10;
 }
 
 #start-menu {
-    background-color: @secondary-color;
+    background-color : @secondary-color;
 }
 
 
 #player-name-input {
-    padding: @default-padding;
-    background: darken(@primary-color, 10%);
-    color: @secondary-color;
-    border: none;
-    outline: none;
+    padding    : @default-padding;
+    background : darken(@primary-color, 10%);
+    color      : @secondary-color;
+    border     : none;
+    outline    : none;
 
     &:focus {
         background: lighten(@primary-color, 10%);
@@ -61,19 +60,19 @@ html, body {
 
 #start-menu {
     h3 {
-        padding-bottom: 0;
-        margin-bottom: 0;
+        padding-bottom : 0;
+        margin-bottom  : 0;
     }
 
     ul {
-        margin: 10px;
-        padding: 10px;
-        margin-top: 0;
+        margin     : 10px;
+        padding    : 10px;
+        margin-top : 0;
     }
 
     .input-error {
-        color: @accent-color;
-        display: none;
+        color   : @accent-color;
+        display : none;
     }
 }
 
@@ -83,7 +82,10 @@ html, body {
     justify-content : center;
     align-items     : center;
 
+    pointer-events  : none; // disable click/touch events for the overlay itself
+
     position        : absolute;
+    z-index         : 20;
     top             : 0;
     left            : 0;
     height          : 100%;
@@ -92,22 +94,23 @@ html, body {
     margin          : 0;
 
     & > * {
-        display        : flex;
-        flex-direction : column;
-        justify-content: space-between;
+        pointer-events  : auto; // enable click/touch events on UI elements
+        display         : flex;
+        flex-direction  : column;
+        justify-content : space-between;
 
-        color          : @primary-color;
-        background     : fade(@modal-background, 50%) none repeat scroll 0% 0%;
-        padding        : @default-padding;
-        margin         : @default-padding;
+        color           : @primary-color;
+        background      : fade(@modal-background, 50%) none repeat scroll 0% 0%;
+        padding         : @default-padding;
+        margin          : @default-padding;
 
         & > * {
             margin-bottom : @default-padding;
         }
 
         & > *:first-child {
-            margin-top: 0;
-            padding-top: 0;
+            margin-top  : 0;
+            padding-top : 0;
         }
 
         & > *:last-child {
@@ -125,44 +128,40 @@ button:focus {
     outline: none;
 }
 button {
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-backface-visibility: hidden;
-    background: @accent-color;
-    border: none;
-    color: @primary-color;
-    display: block;
-    overflow: hidden;
-    padding: @default-padding;
-    position: relative;
-    z-index: 1;
+    -moz-osx-font-smoothing     : grayscale;
+    -webkit-backface-visibility : hidden;
+    background                  : @accent-color;
+    border                      : none;
+    color                       : @primary-color;
+    display                     : block;
+    overflow                    : hidden;
+    padding                     : @default-padding;
+    position                    : relative;
+    z-index                     : 1;
 }
 button::before {
-    content: '';
-    z-index: -1;
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    margin: -15px 0 0 1px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: lighten(@accent-color, 10%);
-    -webkit-transform-origin: 150% 50%;
-    transform-origin: 150% 50%;
-    // -webkit-transform: scale3d(1, 2, 1);
-    // transform: scale3d(1, 2, 1);
-    -webkit-transition: -webkit-transform 0.4s, opacity 0.4s;
-    transition: transform 0.4s, opacity 0.4s;
+    content                  : '';
+    z-index                  : -1;
+    position                 : absolute;
+    top                      : 50%;
+    left                     : 100%;
+    margin                   : -15px 0 0 1px;
+    width                    : 30px;
+    height                   : 30px;
+    border-radius            : 50%;
+    background               : lighten(@accent-color, 10%);
+    -webkit-transform-origin : 150% 50%;
+    transform-origin         : 150% 50%;
+    // -webkit-transform     : scale3d(1, 2, 1);
+    // transform             : scale3d(1, 2, 1);
+    -webkit-transition       : -webkit-transform 0.4s, opacity 0.4s;
+    transition               : transform 0.4s, opacity 0.4s;
 }
 button > span {
-    vertical-align: middle;
-    padding-left: 0.75em;
+    vertical-align : middle;
+    padding-left   : 0.75em;
 }
 button:hover::before {
-    -webkit-transform: scale3d(9, 9, 1);
-    transform: scale3d(9, 9, 1);
-}
-
-#death-screen {
-    display: none; // hidden at first
+    -webkit-transform : scale3d(9, 9, 1);
+    transform         : scale3d(9, 9, 1);
 }

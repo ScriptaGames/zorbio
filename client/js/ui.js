@@ -2,38 +2,76 @@
  *  This file should contain user interface functions, like displaying messages, manipulating the dom,
  *  handling chat display etc.
  */
-function displayModalMessage(msg) {
-    // TODO: make a prettier modal message
-    alert(msg);
-}
 
-function showGame(show) {
-    if (show) {
-        document.getElementById('game-area-wrapper').style.display = 'block';
-        document.getElementById('start-menu').style.display = 'none';
-    }
-    else {
-        document.getElementById('game-area-wrapper').style.display = 'none';
-        document.getElementById('start-menu').style.display = 'block';
-    }
-    showOverlay(!show);
-}
+var ZOR = ZOR || {};
 
-function showDeathScreen(show) {
-    if (show) {
-        document.getElementById('death-screen').style.display = 'flex';
-    }
-    else {
-        document.getElementById('death-screen').style.display = 'none';
-    }
-    showOverlay(show);
-}
+ZOR.UI = function ZORUI() {
 
-function showOverlay(show) {
-    if (show) {
-        document.getElementById('ui-overlay').style.display = 'flex';
+    /**
+     * An "enum" storing unique values for UI states.
+     */
+
+    var STATES = {
+        INITIAL               : 'login-screen',
+        LOGIN_SCREEN          : 'login-screen',
+        LOGIN_SCREEN_ERROR    : 'login-screen-error',
+        PLAYING               : 'playing',
+        RESPAWN_SCREEN        : 'respawn-screen',
+    };
+
+    /**
+     * An "enum" storing unique values for UI state transitions.
+     */
+
+    var ACTIONS = {
+        PLAYER_LOGIN_KEYPRESS : 'player-login-keypress',
+        PLAYER_LOGIN          : 'player-login',
+        PLAYER_RESPAWN        : 'player-respawn',
+    };
+
+    var uidata = {
+        state   : STATES.INITIAL,
+        STATES  : STATES,
+        ACTIONS : ACTIONS,
+        eq      : _.eq,
+        neq     : _.negate(_.eq),
+    } ;
+
+    var engine = new Ractive({
+        // The `el` option can be a node, an ID, or a CSS selector.
+        el: '#ui-overlay',
+
+        // We could pass in a string, but for the sake of convenience
+        // we're passing the ID of the <script> tag above.
+        template: '#ui-template',
+
+        // Here, we're passing in some initial data
+        data: uidata,
+    });
+
+    function valid_state( newstate ) {
+        return _.contains( _.values( ZOR.UI.STATES ), newstate );
     }
-    else {
-        document.getElementById('ui-overlay').style.display = 'none';
+
+    function state( newstate ) {
+        if (typeof newstate !== 'undefined' && valid_state( newstate ) ) {
+            uidata.state = newstate;
+        }
+        return uidata.state;
     }
-}
+
+    function on( event, handler ) {
+        engine.on( event, handler );
+    }
+
+    return {
+        STATES  : STATES,
+        ACTIONS : ACTIONS,
+        data    : uidata,
+        engine  : engine,
+        state   : state,
+        on      : on,
+    };
+
+}();
+

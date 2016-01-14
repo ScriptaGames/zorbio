@@ -10,22 +10,31 @@
 
     <body>
 
-        <div id="game-area-wrapper" style="display:none;">
-            <canvas id="render-canvas"></canvas>
-        </div>
+        <div id="ui-overlay"></div>
 
-        <div id="ui-overlay">
+        <canvas id="render-canvas"></canvas>
+
+        <!-- UI TEMPLATES -->
+
+        <script id="ui-template" type="text/ractive">
+
+            {{ #if eq(state, STATES.LOGIN_SCREEN) }}
             <div id="start-menu">
                 <p>ZOR.BIO</p>
-                <input type="text" tabindex="0" autofocus placeholder="Enter your name here" id="player-name-input"/>
+                <input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" tabindex="0" autofocus placeholder="Enter your name here" id="player-name-input"/>
                 <b class="input-error">Nick name must be alphanumeric characters only!</b>
-                <button id="start-button"><span>Play</span></button>
+                <button on-click="{{ ACTIONS.PLAYER_LOGIN }}" id="start-button"><span>Play</span></button>
             </div>
+            {{ /if }}
+
+            {{ #if eq(state, STATES.RESPAWN_SCREEN) }}
             <div id="death-screen">
                 <p>YOU WERE EATEN!</p>
-                <button id="respawn-button"><span>Respawn</span></button>
+                <button on-click="{{ ACTIONS.PLAYER_RESPAWN }}" id="respawn-button"><span>Respawn</span></button>
             </div>
-        </div>
+            {{ /if }}
+
+        </script>
 
         <!-- FOOD SHADERS -->
 
@@ -148,6 +157,7 @@
         </script>
 
         <!-- third party -->
+        <script src="./bower_components/ractive/ractive.js"></script>
         <script src="./bower_components/three.js/build/three.js"></script>
         <script src="./bower_components/three.js/examples/js/renderers/Projector.js"></script>
         <script src="./bower_components/three.js/examples/js/renderers/CanvasRenderer.js"></script>

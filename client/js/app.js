@@ -28,11 +28,12 @@ var renderer;
 // Model that represents the game state shared with server
 var zorbioModel;
 
+
 function startGame(type) {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
     playerType = type;
 
-    showGame(true);
+    ZOR.UI.state( ZOR.UI.STATES.PLAYING );
 
     // Connect to the server
     var colorCode = UTIL.getRandomIntInclusive(0, PlayerView.COLORS.length - 1);
@@ -50,24 +51,18 @@ function validNick() {
 window.onload = function () {
     'use strict';
 
-    var startButton = document.getElementById('start-button');
-    var nickErrorText = document.querySelector('#start-menu .input-error');
-    var respawnButton = document.getElementById('respawn-button');
-
-    startButton.onclick = function () {
+    ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
         // check if the nick is valid
         if (validNick()) {
             startGame(ZOR.PlayerTypes.PLAYER);
         } else {
-            nickErrorText.style.display = 'inline';
+            ZOR.UI.state( ZOR.UI.STATES.LOGIN_SCREEN_ERROR );
         }
-    };
+    });
 
-    respawnButton.onclick = function () {
-        respawnPlayer();
-    };
+    ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_RESPAWN, respawnPlayer );
 
-    playerNameInput.addEventListener('keypress', function (e) {
+    ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_LOGIN_KEYPRESS, function ZORPlayerLoginKeypressHandler(e) {
         var key = e.which || e.keyCode;
         var KEY_ENTER = 13;
 
@@ -76,7 +71,7 @@ window.onload = function () {
                 //TODO: allow ZOR.PlayerTypes.SPECTATOR type
                 startGame(ZOR.PlayerTypes.PLAYER);
             } else {
-                nickErrorText.style.display = 'inline';
+                ZOR.UI.state( ZOR.UI.STATES.LOGIN_SCREEN_ERROR );
             }
         }
     });
@@ -84,7 +79,7 @@ window.onload = function () {
 
 function respawnPlayer() {
     console.log("Respawning player: ", player.getPlayerId());
-    showDeathScreen(false);
+    ZOR.UI.state( ZOR.UI.STATES.PLAYING );
     sendRespawn(false);
 }
 
@@ -177,6 +172,8 @@ function createScene() {
 
             camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
         }
+
+        ZOR.UI.engine.update();
 
         render();
     }

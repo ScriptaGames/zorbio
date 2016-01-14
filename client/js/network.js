@@ -70,13 +70,7 @@ function sendHeartbeat() {
 }
 
 function handleNetworkTermination() {
-    gameStart = false;
-    socket.close();
-    socket = null;
-    cleanupMemory();
-    showGame(false);
-    showDeathScreen(false);
-    clearIntervalMethods();
+    location.reload();
 }
 
 function setIntervalMethods() {
@@ -269,7 +263,8 @@ function setupSocket(socket) {
         player.isDead = true;
         clearIntervalMethods();
         KeysDown = {};
-        showDeathScreen(true);
+
+        ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
     });
 
     socket.on('playerDied', function playerDied(attackingPlayerId, targetPlayerId) {
