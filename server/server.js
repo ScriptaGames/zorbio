@@ -95,9 +95,8 @@ io.on('connection', function (socket) {
         } else {
             switch (err) {
                 case Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR:
-                    //TODO: TEST
                     // inform client of invalid capture, and make them shrink, mark infraction
-                    sockets.emit('invalidFoodCapture', fi, food_value);
+                    socket.emit('invalidFoodCapture', fi, food_value);
                     model.players[currentPlayer.id].infractions++;
                     break;
             }
@@ -256,8 +255,6 @@ function sendServerTickData() {
     serverTickData = null;
 }
 
-
-//TODO: test
 function kickCheatingPlayers() {
     var playerIds = Object.getOwnPropertyNames(model.players);
     for (var i = 0, l = playerIds.length; i < l; i++) {
