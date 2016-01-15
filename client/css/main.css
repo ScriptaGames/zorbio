@@ -47,7 +47,8 @@ body {
 }
 #start-menu .input-error {
   color: #0b7bf4;
-  display: none;
+  font-size: 21px;
+  text-align: center;
 }
 #ui-overlay {
   display: flex;
