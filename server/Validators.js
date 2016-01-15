@@ -4,7 +4,8 @@ var Validators = {};
 
 Validators.ErrorCodes = {
     CAPTURE_PLAYER_NOT_IN_MODEL: 1,
-    FOOD_CAPTURE_TO_FAR: 2
+    FOOD_CAPTURE_TO_FAR: 2,
+    PLAYER_CAPTURE_TO_FAR: 3
 };
 
 Validators.speedLimit = function (model, new_position) {
@@ -38,15 +39,46 @@ Validators.foodCapture = function (model, fi, sphere_id) {
 };
 
 Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model) {
+    // Make sure target is in model
     if (!model.players[targetPlayerId]) {
         // target player not in model
-        console.log("Validators.playerCapture: targetPlayerId not in model: ", targetPlayerId);
         return Validators.ErrorCodes.CAPTURE_PLAYER_NOT_IN_MODEL;
     }
 
-    // TODO: implement player capture cheat detection
+    // check that the attacking player was within range of the target player
+    var attackingPlayer = model.players[attackingPlayerId];
+    var attackingPlayerPositions = attackingPlayer.sphere.positionsWindow;
 
-    return 0; // figure out if player capture is valid.
+    var targetPlayer = model.players[targetPlayerId];
+    var targetPlayerPositions = targetPlayer.sphere.positionsWindow;
+
+    var positionsLength = Math.min(attackingPlayerPositions.length, targetPlayerPositions.length);
+    var captureDist = attackingPlayer.sphere.radius() + config.PLAYER_CAPTURE_EXTRA_TOLORANCE;
+    var aPosition = new THREE.Vector3();
+    var tPosition = new THREE.Vector3();
+    var vdist = null;
+    var validCapture = false;
+
+    // iterate from the most recent position to the oldest position
+    for (var i = positionsLength - 1; i >= 0; i--) {
+        aPosition.copy(attackingPlayerPositions[i]);
+        tPosition.copy(targetPlayerPositions[i]);
+
+        vdist = tPosition.distanceTo(aPosition);
+
+        console.log("Validating player capture distance", vdist, captureDist);
+
+        if (vdist < captureDist) {
+            validCapture = true;
+            break;
+        }
+    }
+
+    if (!validCapture) {
+        return Validators.ErrorCodes.PLAYER_CAPTURE_TO_FAR;
+    }
+
+    return 0;  // valid capture
 };
 
 module.exports = Validators;

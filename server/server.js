@@ -80,9 +80,16 @@ io.on('connection', function (socket) {
 
     socket.on('myPosition', function (sphere) {
         if (model.actors[sphere.id]) {
+            var actor = model.actors[sphere.id];
             // update the players position in the model
-            model.actors[sphere.id].position = sphere.p;
-            model.actors[sphere.id].scale = sphere.s;
+            actor.position = sphere.p;
+            actor.scale = sphere.s;
+
+            // store the position window for validation
+            actor.positionsWindow.push(sphere.p);
+            if (actor.positionsWindow.length > config.PLAYER_POSITIONS_WINDOW) {
+                actor.positionsWindow.shift();  // remove the oldest position
+            }
         }
     });
 
@@ -117,11 +124,18 @@ io.on('connection', function (socket) {
             switch (err) {
                 case Validators.ErrorCodes.CAPTURE_PLAYER_NOT_IN_MODEL:
                     // let the attacking player know this capture was invalid
+                    console.log("Validators.playerCapture: targetPlayerId not in model: ", targetPlayerId);
                     sockets[attackingPlayerId].emit('invalidCaptureTargetNotInModel', attackingPlayerId, targetPlayerId);
                     if (socket[targetPlayerId]) {
                         // if the target is still connected, let them know they aren't being captured
                         sockets[attackingPlayerId].emit('invalidCaptureTargetNotInModel', attackingPlayerId, targetPlayerId);
                     }
+                    break;
+                case Validators.ErrorCodes.PLAYER_CAPTURE_TO_FAR:
+                    // the player who is connected to this socket is probably cheating
+                    console.log("Invalid player capture distance to far", attackingPlayerId, targetPlayerId, currentPlayer.id);
+                    socket.emit("invalidCaptureTargetToFar", attackingPlayerId, targetPlayerId);
+                    model.players[currentPlayer.id].infractions++;
                     break;
             }
         }

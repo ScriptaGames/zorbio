@@ -27,7 +27,7 @@ config.HEARTBEAT_TIMEOUT        = 30000; // how long before a client is consider
 config.HEARTBEAT_CHECK_INTERVAL = 1000;  // server heartbeat test interval
 config.HEARTBEAT_PULSE_INTERVAL = 3000;  // client heartbeat pulse
 config.SERVER_TICK_INTERVAL     = 250;   // General server updates in milliseconds
-config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their position in milliseconds
+config.ACTOR_UPDATE_INTERVAL    = 40;    // How often actors update their position in milliseconds
 
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
@@ -36,19 +36,25 @@ config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their positi
 config.BASE_PLAYER_SPEED    = 3;
 config.PLAYER_CAPTURE_VALUE = function PlayerCaptureValue( r ) { return r / 2; };
 config.AUTO_RUN_ENABLED     = true;
-config.PLAYER_INFRACTION_TOLORANCE = 1;
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                 = 10;    // How much food there is, total food = this number cubed
-config.FOOD_RESPAWN_TIME            = 30000; // Respawn time for food in milliseconds
-config.FOOD_VALUE                   = 0.4;     // amount to increase sphere by when food is consumed
-config.FOOD_CAPTURE_ASSIST          = 2;     // this number is added to player's radius for food capturing
-config.FOOD_COLORING_TYPE           = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][3];
-config.FOOD_COLORING_SINE_SEGMENTS  = 8;  // with sine-cycle coloring, how many color cycles along each axis
-config.FOOD_CAPTURE_EXTRA_TOLORANCE = 15; // extra distance that we'll tolerate for valid food capture
+config.FOOD_DENSITY                = 10;    // How much food there is, total food = this number cubed
+config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
+config.FOOD_VALUE                  = 0.4;     // amount to increase sphere by when food is consumed
+config.FOOD_CAPTURE_ASSIST         = 2;     // this number is added to player's radius for food capturing
+config.FOOD_COLORING_TYPE          = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][3];
+config.FOOD_COLORING_SINE_SEGMENTS = 8;  // with sine-cycle coloring, how many color cycles along each axis
+
+////////////////////////////////////////////////////////////////////////
+//                         VALIDATION SETTINGS                        //
+////////////////////////////////////////////////////////////////////////
+config.FOOD_CAPTURE_EXTRA_TOLORANCE   = 15; // extra distance that we'll tolerate for valid food capture
+config.PLAYER_CAPTURE_EXTRA_TOLORANCE = 9; // extra distance that we'll tolerate for valid player capture
+config.PLAYER_POSITIONS_WINDOW        = 20; // number of recent positions to save for the player for validation rewind
+config.PLAYER_INFRACTION_TOLORANCE    = 1;  // how many infractions a player can have before they are kicked
 
 ////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //

@@ -230,6 +230,18 @@ function setupSocket(socket) {
         removePlayerFromGame(targetPlayerId);
     });
 
+    socket.on("invalidCaptureTargetToFar", function invalidCaptureTargetToFar(attackingPlayerId, targetPlayerId) {
+        console.log("invalidCaptureTargetToFar");
+
+        if (pendingPlayerCaptures[targetPlayerId]) {
+            pendingPlayerCaptures[targetPlayerId] = null;
+            delete pendingPlayerCaptures[targetPlayerId];
+        }
+
+        // mark infraction
+        player.infractions++;
+    });
+
     socket.on('invalidFoodCapture', function invalidFoodCapture(fi, food_value) {
         if (!gameStart) return;
 
