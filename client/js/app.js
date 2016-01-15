@@ -173,8 +173,6 @@ function createScene() {
             camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
         }
 
-        ZOR.UI.engine.update();
-
         render();
     }
 

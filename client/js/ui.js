@@ -55,7 +55,9 @@ ZOR.UI = function ZORUI() {
 
     function state( newstate ) {
         if (typeof newstate !== 'undefined' && valid_state( newstate ) ) {
+            console.log('entering state ' + newstate);
             uidata.state = newstate;
+            engine.update();
         }
         return uidata.state;
     }
