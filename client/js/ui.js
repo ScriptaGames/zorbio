@@ -29,13 +29,20 @@ ZOR.UI = function ZORUI() {
         PLAYER_RESPAWN        : 'player-respawn',
     };
 
+    /**
+     * The data to pass into templates.
+     */
+
     var uidata = {
         state   : STATES.INITIAL,
         STATES  : STATES,
         ACTIONS : ACTIONS,
-        eq      : _.eq,
-        neq     : _.negate(_.eq),
+        in_state : in_state,
     } ;
+
+    /**
+     * The Ractive template engine.  Data + Templates = HTML
+     */
 
     var engine = new Ractive({
         // The `el` option can be a node, an ID, or a CSS selector.
@@ -49,9 +56,38 @@ ZOR.UI = function ZORUI() {
         data: uidata,
     });
 
+    /**
+     * Given a state string, returns true if it's a real, defined state,
+     * otherwise false.
+     */
+
     function valid_state( newstate ) {
         return _.contains( _.values( ZOR.UI.STATES ), newstate );
     }
+
+    /**
+     * Given an array of state strings, or any number of state string
+     * arguments, returns true if any of them are the current state.
+     *
+     * @example
+     *     // returns true if we are in either the login screen or the respawn screen
+     *     in_state( ZOR.UI.STATES.LOGIN_SCREEN, ZOR.UI.STATES.RESPAWN_SCREEN );
+     */
+
+    function in_state() {
+        return _.chain( arguments )
+            .toArray()
+            .flatten()
+            .intersection( [uidata.state] )
+            .size()
+            .gt(0)
+            .value();
+    }
+
+    /**
+     * Given a valid state, change to that state.  With no arguments, returns
+     * current state.
+     */
 
     function state( newstate ) {
         if (typeof newstate !== 'undefined' && valid_state( newstate ) ) {
@@ -62,17 +98,24 @@ ZOR.UI = function ZORUI() {
         return uidata.state;
     }
 
+    /**
+     * Simple pass-through to Ractive's event handler.
+     */
+
     function on( event, handler ) {
         engine.on( event, handler );
     }
 
+    // public properties of ZOR.UI
+
     return {
-        STATES  : STATES,
-        ACTIONS : ACTIONS,
-        data    : uidata,
-        engine  : engine,
-        state   : state,
-        on      : on,
+        STATES   : STATES,
+        ACTIONS  : ACTIONS,
+        data     : uidata,
+        engine   : engine,
+        state    : state,
+        in_state : in_state,
+        on       : on,
     };
 
 }();
