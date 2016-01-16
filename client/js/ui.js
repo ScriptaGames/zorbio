@@ -37,7 +37,6 @@ ZOR.UI = function ZORUI() {
         state   : STATES.INITIAL,
         STATES  : STATES,
         ACTIONS : ACTIONS,
-        in_state : in_state,
     } ;
 
     /**
@@ -63,25 +62,6 @@ ZOR.UI = function ZORUI() {
 
     function valid_state( newstate ) {
         return _.contains( _.values( ZOR.UI.STATES ), newstate );
-    }
-
-    /**
-     * Given an array of state strings, or any number of state string
-     * arguments, returns true if any of them are the current state.
-     *
-     * @example
-     *     // returns true if we are in either the login screen or the respawn screen
-     *     in_state( ZOR.UI.STATES.LOGIN_SCREEN, ZOR.UI.STATES.RESPAWN_SCREEN );
-     */
-
-    function in_state() {
-        return _.chain( arguments )
-            .toArray()
-            .flatten()
-            .intersection( [uidata.state] )
-            .size()
-            .gt(0)
-            .value();
     }
 
     /**
@@ -114,7 +94,6 @@ ZOR.UI = function ZORUI() {
         data     : uidata,
         engine   : engine,
         state    : state,
-        in_state : in_state,
         on       : on,
     };
 
