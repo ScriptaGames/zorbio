@@ -28,15 +28,24 @@ function sendPlayerSpherePosition() {
 
     var sphereModel = player.model.sphere;
 
-    // cut down on the number of bytes sent across the wire
-    var position = {
-         x: +sphereModel.position.x.toFixed(4),
-         y: +sphereModel.position.y.toFixed(4),
-         z: +sphereModel.position.z.toFixed(4)
-    };
+    for (var i = 0, l = sphereModel.positionsWindow.length; i < l, i++) {
+        var position = sphereModel.positionsWindow[i];
+        position = {
+            x: +position.x.toFixed(4),
+            y: +position.y.toFixed(4),
+            z: +position.z.toFixed(4)
+        };
+    }
+
+    //// cut down on the number of bytes sent across the wire
+    //var position = {
+    //     x: +sphereModel.position.x.toFixed(4),
+    //     y: +sphereModel.position.y.toFixed(4),
+    //     z: +sphereModel.position.z.toFixed(4)
+    //};
 
     //TODO: only send if the player is moving.  If their position hasn't changed, don't send.
-    var sphere = {"id": sphereModel.id, "p": position, "s": sphereModel.scale};
+    var sphere = {"id": sphereModel.id, "positions": sphereModel.positionsWindow, "scale": sphereModel.scale};
     socket.emit('myPosition', sphere);
 }
 

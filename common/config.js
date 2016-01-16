@@ -14,7 +14,7 @@ var config = {};
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE       = 1000;
+config.WORLD_SIZE       = 5000;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
 
 ////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ config.HEARTBEAT_TIMEOUT        = 30000; // how long before a client is consider
 config.HEARTBEAT_CHECK_INTERVAL = 1000;  // server heartbeat test interval
 config.HEARTBEAT_PULSE_INTERVAL = 3000;  // client heartbeat pulse
 config.SERVER_TICK_INTERVAL     = 250;   // General server updates in milliseconds
-config.ACTOR_UPDATE_INTERVAL    = 40;    // How often actors update their position in milliseconds
+config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their position in milliseconds
 
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
@@ -41,11 +41,11 @@ config.AUTO_RUN_ENABLED     = true;
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 10;    // How much food there is, total food = this number cubed
+config.FOOD_DENSITY                = 4;    // How much food there is, total food = this number cubed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
-config.FOOD_VALUE                  = 0.4;     // amount to increase sphere by when food is consumed
+config.FOOD_VALUE                  = 1.5;     // amount to increase sphere by when food is consumed
 config.FOOD_CAPTURE_ASSIST         = 2;     // this number is added to player's radius for food capturing
-config.FOOD_COLORING_TYPE          = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][3];
+config.FOOD_COLORING_TYPE          = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][2];
 config.FOOD_COLORING_SINE_SEGMENTS = 8;  // with sine-cycle coloring, how many color cycles along each axis
 
 ////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ config.PLAYER_INFRACTION_TOLORANCE    = 1;  // how many infractions a player can
 ////////////////////////////////////////////////////////////////////////
 
 config.INITIAL_CAMERA_DISTANCE = 50;
-config.FOG_ENABLED             = true;
+config.FOG_ENABLED             = false;
 config.FOG_NEAR                = 100;
 config.FOG_FAR                 = 1000;
 config.FOG_COLOR               = THREE.ColorKeywords.black;

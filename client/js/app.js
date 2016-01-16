@@ -164,6 +164,7 @@ function createScene() {
 
             foodController.update(player.view.mainSphere.position);
 
+            //TODO: get rid of this global somehow
             playerFogCenter.copy(player.view.mainSphere.position);
 
             foodController.checkFoodCaptures(player, captureFood);

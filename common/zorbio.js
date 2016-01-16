@@ -101,6 +101,7 @@ ZOR.Actor = function ZORActor() {
     this.scale = 1;
     this.type = ZOR.ActorTypes.UNDEFINED;
     this.positionsWindow = [];
+    this.last_update = Date.now();
 };
 
 /**

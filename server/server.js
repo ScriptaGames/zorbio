@@ -78,17 +78,28 @@ io.on('connection', function (socket) {
         }
     });
 
+    /**
+     * This message is sent by all clients every 40ms so keep this function as fast and light as possible
+     */
     socket.on('myPosition', function (sphere) {
-        if (model.actors[sphere.id]) {
+        var err = Validators.movement(sphere, model);
+        if (err === 0) {
             var actor = model.actors[sphere.id];
+
             // update the players position in the model
             actor.position = sphere.p;
             actor.scale = sphere.s;
+            actor.last_update = Date.now();
 
             // store the position window for validation
             actor.positionsWindow.push(sphere.p);
             if (actor.positionsWindow.length > config.PLAYER_POSITIONS_WINDOW) {
                 actor.positionsWindow.shift();  // remove the oldest position
+            }
+        } else {
+            switch (err) {
+                //case Validators.ErrorCodes.:
+                //    break;
             }
         }
     });
@@ -122,7 +133,7 @@ io.on('connection', function (socket) {
             }
         } else {
             switch (err) {
-                case Validators.ErrorCodes.CAPTURE_PLAYER_NOT_IN_MODEL:
+                case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
                     // let the attacking player know this capture was invalid
                     console.log("Validators.playerCapture: targetPlayerId not in model: ", targetPlayerId);
                     sockets[attackingPlayerId].emit('invalidCaptureTargetNotInModel', attackingPlayerId, targetPlayerId);
