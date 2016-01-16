@@ -19,6 +19,7 @@ function connectToServer(playerType, playerName, color) {
 }
 
 function sendRespawn(isFirstSpawn) {
+    gameStart = false;
     socket.emit('respawn', isFirstSpawn);
 }
 
