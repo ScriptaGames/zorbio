@@ -13,7 +13,6 @@ var playerNameInput = document.getElementById('player-name-input');
 var player;
 
 //TODO: get rid of these globals, refactor into MVC Player and Food controllers
-//Copy of positions for fog shaders to handle respawns
 var playerFogCenter = new THREE.Vector3();
 
 // Game state
@@ -36,8 +35,8 @@ function startGame(type) {
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
 
     // Connect to the server
-    var colorCode = UTIL.getRandomIntInclusive(0, PlayerView.COLORS.length - 1);
-    console.log('Player color', PlayerView.COLORS[colorCode]);
+    var colorCode = UTIL.getRandomIntInclusive(0, ZOR.PlayerView.COLORS.length - 1);
+    console.log('Player color', ZOR.PlayerView.COLORS[colorCode]);
     connectToServer(playerType, playerName, colorCode);
 }
 
@@ -225,7 +224,7 @@ function drawPlayers() {
         if (playerModel.type === ZOR.PlayerTypes.PLAYER) {
             // Only draw other players
             if (id !== player.getPlayerId()) {
-                players[id] = new PlayerController(playerModel, player.model.sphere, scene);
+                players[id] = new ZOR.PlayerController(playerModel, player.model.sphere, scene);
             }
         }
     }

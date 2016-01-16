@@ -1,3 +1,5 @@
+var ZOR = ZOR || {};
+
 /**
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
  * visually, and how to move it's different 3D pieces around.
@@ -6,8 +8,8 @@
  * @param scene
  */
 
-var PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
-    this.playerColor = PlayerView.COLORS[actor.color];
+ZOR.PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
+    this.playerColor = ZOR.PlayerView.COLORS[actor.color];
 
     this.geometry = new THREE.SphereGeometry(
         config.INITIAL_PLAYER_RADIUS,
@@ -44,31 +46,31 @@ var PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
     scene.add( this.mainSphere );
 };
 
-PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
+ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
     this.mainSphere.scale.addScalar( amount );
     this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
     this.mainSphere.geometry.computeBoundingSphere(); // compute the new bounding sphere after resizing
 };
 
-PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera) {
+ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera) {
     this.material.uniforms.cameraPos.value = camera.position;
 };
 
-PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position, scene, camera, renderer) {
+ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position, scene, camera, renderer) {
     this.mainSphere.position.lerp(position, config.PLAYER_MOVE_LERP_WEIGHT);
     this.update(scene, camera, renderer);
 };
 
-PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
+ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
     scene.remove(this.mainSphere);
 };
 
-PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
+ZOR.PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
     this.mainSphere.scale.set(scale, scale, scale);
     this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
 };
 
-PlayerView.COLORS = [
+ZOR.PlayerView.COLORS = [
     '#00bfff', // deepskyblue
     '#0000cd', // mediumblue
     '#000080', // navy
