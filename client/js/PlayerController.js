@@ -54,7 +54,7 @@ ZOR.PlayerController.prototype.initView = function ZORPlayerControllerInitView(m
 
 ZOR.PlayerController.prototype.removeView = function ZORPlayerControllerRemoveView(scene) {
     this.view.remove(scene);
-    this.view = null;
+    this.view = undefined;
 };
 
 ZOR.PlayerController.prototype.grow = function ZORPlayerControllerGrow(amount) {
