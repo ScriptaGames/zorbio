@@ -28,25 +28,15 @@ function sendPlayerSpherePosition() {
     player.refreshSphereModel();
 
     var sphereModel = player.model.sphere;
+    var positions = [];
 
-    for (var i = 0, l = sphereModel.positionsWindow.length; i < l, i++) {
-        var position = sphereModel.positionsWindow[i];
-        position = {
-            x: +position.x.toFixed(4),
-            y: +position.y.toFixed(4),
-            z: +position.z.toFixed(4)
-        };
-    }
+    // for now we only need to send the oldest position and the most recent position
+    var oldestPosition = sphereModel.recentPositions[0];
+    var latestPosition = sphereModel.recentPositions[sphereModel.recentPositions.length - 1];
+    positions.push({position: UTIL.trimPosition(oldestPosition.position, 3), time: oldestPosition.time});
+    positions.push({position: UTIL.trimPosition(latestPosition.position, 3), time: latestPosition.time});
 
-    //// cut down on the number of bytes sent across the wire
-    //var position = {
-    //     x: +sphereModel.position.x.toFixed(4),
-    //     y: +sphereModel.position.y.toFixed(4),
-    //     z: +sphereModel.position.z.toFixed(4)
-    //};
-
-    //TODO: only send if the player is moving.  If their position hasn't changed, don't send.
-    var sphere = {"id": sphereModel.id, "positions": sphereModel.positionsWindow, "scale": sphereModel.scale};
+    var sphere = {"id": sphereModel.id, "positions": positions, "scale": sphereModel.scale};
     socket.emit('myPosition', sphere);
 }
 

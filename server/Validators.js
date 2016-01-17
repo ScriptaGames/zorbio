@@ -15,6 +15,7 @@ Validators.point_b = new THREE.Vector3();
 Validators.movement = function (sphere, model) {
     var err = 0;
     var actor = model.actors[sphere.id];
+    var lastPosition = sphere.positions[sphere.positions.length - 1];
 
     if (typeof actor === 'undefined') {
         // return error not in model
@@ -22,26 +23,26 @@ Validators.movement = function (sphere, model) {
     }
     else {
         // see if the player position or has changed
-        if (actor.position.x === sphere.p.x &&
-            actor.position.y === sphere.p.y &&
-            actor.position.z === sphere.p.z &&
-            actor.scale === sphere.s) {
+        if (actor.position.x === lastPosition.position.x &&
+            actor.position.y === lastPosition.position.y &&
+            actor.position.z === lastPosition.position.z &&
+            actor.scale === sphere.scale) {
             err = Validators.ErrorCodes.NO_CHANGE;
         }
-        else if (actor.positionsWindow.length === config.PLAYER_POSITIONS_WINDOW) {
-            var now = Date.now();
-            var time = now - actor.last_update;
+        else if (actor.recentPositions.length === config.PLAYER_POSITIONS_WINDOW) {
+            var firstPosition = sphere.positions[0];
+            var time = lastPosition.time - firstPosition.time;
 
-            // validate the speed limit
-            Validators.point_a.copy(actor.position);  // old position
-            Validators.point_b.copy(sphere.p);        // new position
+            Validators.point_a.copy(firstPosition.position);
+            Validators.point_b.copy(lastPosition.position);
 
             // get distance from point A to point B
             var vdist = Validators.point_a.distanceTo(Validators.point_b);
 
             var speed = vdist / time;
 
-            //console.log('movement speed, dist, time', speed, vdist, time);
+            // validate the speed limit
+            console.log('movement speed, dist, time, scale', speed, vdist, time, actor.scale);
         }
     }
 
@@ -49,8 +50,6 @@ Validators.movement = function (sphere, model) {
 };
 
 Validators.foodCapture = function (model, fi, sphere_id) {
-    return 0;
-
     // sphere info
     var sphere = model.actors[sphere_id];
     var sphere_radius = sphere.radius();
@@ -84,10 +83,10 @@ Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model) {
 
     // check that the attacking player was within range of the target player
     var attackingPlayer = model.players[attackingPlayerId];
-    var attackingPlayerPositions = attackingPlayer.sphere.positionsWindow;
+    var attackingPlayerPositions = attackingPlayer.sphere.recentPositions;
 
     var targetPlayer = model.players[targetPlayerId];
-    var targetPlayerPositions = targetPlayer.sphere.positionsWindow;
+    var targetPlayerPositions = targetPlayer.sphere.recentPositions;
 
     var positionsLength = Math.min(attackingPlayerPositions.length, targetPlayerPositions.length);
     var captureDist = attackingPlayer.sphere.radius() + config.PLAYER_CAPTURE_EXTRA_TOLORANCE;
@@ -96,6 +95,7 @@ Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model) {
     var vdist = null;
     var validCapture = false;
 
+    //TODO: refactor this to be the sample of recent positions from the client at time of capture
     // iterate from the most recent position to the oldest position
     for (var i = positionsLength - 1; i >= 0; i--) {
         aPosition.copy(attackingPlayerPositions[i]);

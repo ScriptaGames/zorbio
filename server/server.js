@@ -89,14 +89,13 @@ io.on('connection', function (socket) {
             var actor = model.actors[sphere.id];
 
             // update the players position in the model
-            actor.position = sphere.p;
-            actor.scale = sphere.s;
-            actor.last_update = Date.now();
+            actor.position = sphere.positions[sphere.positions.length - 1].position;
+            actor.scale = sphere.scale;
 
-            // store the position window for validation
-            actor.positionsWindow.push(sphere.p);
-            if (actor.positionsWindow.length > config.PLAYER_POSITIONS_WINDOW) {
-                actor.positionsWindow.shift();  // remove the oldest position
+            // Recent positions
+            actor.recentPositions.push(actor.position);
+            if (actor.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {
+                actor.recentPositions.shift();  // remove the oldest position
             }
         } else {
             switch (err) {

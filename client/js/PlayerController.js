@@ -135,8 +135,12 @@ ZOR.PlayerController.prototype.applyVelocity = function ZORPlayerControllerApply
     // sync position with model
     this.model.sphere.position.copy(this.view.mainSphere.position);
 
-    // Save positions since last update
-    this.model.sphere.positionsWindow.push(this.model.sphere.position);
+    // Save recent positions for validation on the server
+    var p = {x: this.view.mainSphere.position.x, y: this.view.mainSphere.position.y, z: this.view.mainSphere.position.z};
+    this.model.sphere.recentPositions.push({position: p, time: Date.now()});
+    if (this.model.sphere.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {
+        this.model.sphere.recentPositions.shift();  // remove the oldest position
+    }
 
     // reset the velocity requested by camera controls.  this should be done
     // inside the camera controls but I couldn't find a good place to do it.

@@ -236,12 +236,20 @@ UTIL.safePlayerPosition = function UTILsafePlayerPosition( others ) {
  * Given a food coloring name, returns a function for generating that food
  * coloring style.
  *
- * @param {String} name the 
+ * @param {String} name the
  * @example UTIL.foodColoring('random');
  * @example UTIL.foodColoring('rgbcube');
  */
 UTIL.getFoodCrayon = function UTILfoodColoring( type ) {
     return coloringMethods[type];
+};
+
+UTIL.trimPosition = function UTILTrimPosition(position, trim) {
+    return {
+        x: +position.x.toFixed(trim),
+        y: +position.y.toFixed(trim),
+        z: +position.z.toFixed(trim)
+    };
 };
 
 var coloringMethods = {

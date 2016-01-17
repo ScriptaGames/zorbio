@@ -100,8 +100,7 @@ ZOR.Actor = function ZORActor() {
     this.velocity = new THREE.Vector3(0,0,0);
     this.scale = 1;
     this.type = ZOR.ActorTypes.UNDEFINED;
-    this.positionsWindow = [];
-    this.last_update = Date.now();
+    this.recentPositions = [];
 };
 
 /**
