@@ -19,6 +19,7 @@ function connectToServer(playerType, playerName, color) {
 }
 
 function sendRespawn(isFirstSpawn) {
+    gameStart = false;
     socket.emit('respawn', isFirstSpawn);
 }
 
@@ -75,7 +76,7 @@ function sendPing() {
 }
 
 function sendHeartbeat() {
-    socket.emit('playerHeartbeat', player.getPlayerId());
+    socket.emit('playerHeartbeat');
 }
 
 function handleNetworkTermination() {
@@ -98,7 +99,7 @@ function clearIntervalMethods() {
 function setupSocket(socket) {
     // Handle connection
     socket.on('welcome', function welcome(playerModel, isFirstSpawn) {
-        player = new PlayerController(playerModel, playerModel.sphere);
+        player = new ZOR.PlayerController(playerModel, playerModel.sphere);
 
         socket.emit('gotit', player.model, isFirstSpawn);
     });
@@ -139,7 +140,7 @@ function setupSocket(socket) {
 
         //Add new player if it's not the current player
         if (newPlayer.id !== player.getPlayerId()) {
-            players[newPlayer.id] = new PlayerController(newPlayer, player.model.sphere, scene);
+            players[newPlayer.id] = new ZOR.PlayerController(newPlayer, player.model.sphere, scene);
 
             //Keep model in sync with the server
             zorbioModel.players[newPlayer.id] = newPlayer;

@@ -23,7 +23,7 @@ config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD
 
 config.PORT                     = 3000;
 config.HEARTBEAT_ENABLE         = true;
-config.HEARTBEAT_TIMEOUT        = 30000; // how long before a client is considered disconnected
+config.HEARTBEAT_TIMEOUT        = 10000; // how long before a client is considered disconnected
 config.HEARTBEAT_CHECK_INTERVAL = 1000;  // server heartbeat test interval
 config.HEARTBEAT_PULSE_INTERVAL = 3000;  // client heartbeat pulse
 config.SERVER_TICK_INTERVAL     = 250;   // General server updates in milliseconds

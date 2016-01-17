@@ -1,3 +1,5 @@
+var ZOR = ZOR || {};
+
 /**
  * This is the Player Controller that is the C in MVC, it has model that syncs state to the server, and a view
  * for rendering.
@@ -6,7 +8,7 @@
  * @constructor
  *
  */
-var PlayerController = function ZORPlayerController(model, main_sphere, scene) {
+ZOR.PlayerController = function ZORPlayerController(model, main_sphere, scene) {
     this.model = new ZOR.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
         model.sphere.scale, model.sphere.velocity);
     this.isDead = false;
@@ -26,15 +28,15 @@ var PlayerController = function ZORPlayerController(model, main_sphere, scene) {
     }
 };
 
-PlayerController.prototype.getPlayerId = function ZORPlayerControllerGetPlayerId() {
+ZOR.PlayerController.prototype.getPlayerId = function ZORPlayerControllerGetPlayerId() {
     return this.model.id;
 };
 
-PlayerController.prototype.getSphereId = function ZORPlayerControllerGetSphereId() {
+ZOR.PlayerController.prototype.getSphereId = function ZORPlayerControllerGetSphereId() {
     return this.model.sphere.id;
 };
 
-PlayerController.prototype.getPosition = function ZORPlayerControllerGetPosition() {
+ZOR.PlayerController.prototype.getPosition = function ZORPlayerControllerGetPosition() {
     return this.view.mainSphere.position;
 };
 
@@ -42,20 +44,20 @@ PlayerController.prototype.getPosition = function ZORPlayerControllerGetPosition
  * Get the current value of the player's speed.
  * @returns {number}
  */
-PlayerController.prototype.getSpeed = function ZORPlayerControllerGetSpeed() {
+ZOR.PlayerController.prototype.getSpeed = function ZORPlayerControllerGetSpeed() {
     return this.radius() / (config.MAX_PLAYER_RADIUS/-2) + config.BASE_PLAYER_SPEED;
 };
 
-PlayerController.prototype.initView = function ZORPlayerControllerInitView(main_sphere, scene) {
-    this.view = new PlayerView(this.model.sphere, main_sphere, scene);
+ZOR.PlayerController.prototype.initView = function ZORPlayerControllerInitView(main_sphere, scene) {
+    this.view = new ZOR.PlayerView(this.model.sphere, main_sphere, scene);
 };
 
-PlayerController.prototype.removeView = function ZORPlayerControllerRemoveView(scene) {
+ZOR.PlayerController.prototype.removeView = function ZORPlayerControllerRemoveView(scene) {
     this.view.remove(scene);
-    this.view = null;
+    this.view = undefined;
 };
 
-PlayerController.prototype.grow = function ZORPlayerControllerGrow(amount) {
+ZOR.PlayerController.prototype.grow = function ZORPlayerControllerGrow(amount) {
     this.view.grow(amount);
     this.refreshSphereModel();
 };
@@ -65,12 +67,12 @@ PlayerController.prototype.grow = function ZORPlayerControllerGrow(amount) {
  * @param amount Amount to grow
  * @param num_frames Number of frames to animate growth
  */
-PlayerController.prototype.animatedGrow = function ZORPlayerControllerAnimatedGrow(amount, num_frames) {
+ZOR.PlayerController.prototype.animatedGrow = function ZORPlayerControllerAnimatedGrow(amount, num_frames) {
     this._animated_grow_frames = num_frames;
     this._animated_grow_amount = amount / num_frames;
 };
 
-PlayerController.prototype.refreshSphereModel = function ZORPlayerControllerRefreshSphereModel() {
+ZOR.PlayerController.prototype.refreshSphereModel = function ZORPlayerControllerRefreshSphereModel() {
     if (!this.view) {
         return;
     }
@@ -82,7 +84,7 @@ PlayerController.prototype.refreshSphereModel = function ZORPlayerControllerRefr
     this.model.sphere.scale = this.view.mainSphere.scale.x;
 };
 
-PlayerController.prototype.updatePosition = function ZORPlayerControllerUpdatePosition(position, scene, camera, renderer) {
+ZOR.PlayerController.prototype.updatePosition = function ZORPlayerControllerUpdatePosition(position, scene, camera, renderer) {
     this.model.sphere.position.copy(position);
     this.view.updatePosition(position, scene, camera, renderer);
 };
@@ -91,18 +93,18 @@ PlayerController.prototype.updatePosition = function ZORPlayerControllerUpdatePo
  * Returns the radius of the player sphere in terms of the sphere scale
  * @returns {number}
  */
-PlayerController.prototype.radius = function ZORPlayerControllerRadius() {
+ZOR.PlayerController.prototype.radius = function ZORPlayerControllerRadius() {
     // calculate radius the same as the server
     return this.model.sphere.radius();
 };
 
-PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(scale) {
+ZOR.PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(scale) {
     // set the scale on both the model and the view
     this.model.sphere.scale = scale;
     this.view.setScale(scale);
 };
 
-PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls, lag_scale) {
+ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls, lag_scale) {
     if (config.AUTO_RUN_ENABLED) {
         this.moveForward(camera); // always move forward
     }
@@ -116,7 +118,7 @@ PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, ca
     }
 };
 
-PlayerController.prototype.applyVelocity = function ZORPlayerControllerApplyVelocity(lag_scale, camera_controls) {
+ZOR.PlayerController.prototype.applyVelocity = function ZORPlayerControllerApplyVelocity(lag_scale, camera_controls) {
     this.velocity.sub( camera_controls.velocityRequest );
     this.velocity.normalize();
     this.velocity.multiplyScalar( player.getSpeed() * lag_scale );
@@ -141,11 +143,11 @@ PlayerController.prototype.applyVelocity = function ZORPlayerControllerApplyVelo
     camera_controls.velocityRequest.set( 0, 0, 0 );
 };
 
-PlayerController.prototype.resetVelocity = function ZORPlayerControllerResetVelocity() {
+ZOR.PlayerController.prototype.resetVelocity = function ZORPlayerControllerResetVelocity() {
     this.velocity.set( 0, 0, 0 );
 };
 
-PlayerController.prototype.moveForward = function ZORPlayerControllerMoveForward(camera) {
+ZOR.PlayerController.prototype.moveForward = function ZORPlayerControllerMoveForward(camera) {
     var v = this.move_forward_v;
     var mainSphere = this.view.mainSphere;
     v.copy( mainSphere.position );
@@ -156,7 +158,7 @@ PlayerController.prototype.moveForward = function ZORPlayerControllerMoveForward
     this.velocity.add( v );
 };
 
-PlayerController.prototype.moveBackward = function ZORPlayerControllerMoveBackward(camera) {
+ZOR.PlayerController.prototype.moveBackward = function ZORPlayerControllerMoveBackward(camera) {
     var v = this.move_backward_v;
     var mainSphere = this.view.mainSphere;
     v.copy( mainSphere.position );
