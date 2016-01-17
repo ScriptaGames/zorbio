@@ -39,10 +39,21 @@ Validators.movement = function (sphere, model) {
             // get distance from point A to point B
             var vdist = Validators.point_a.distanceTo(Validators.point_b);
 
-            var speed = vdist / time;
+            //TODO: figure out how to calculate max speed based on initial player scale, and base speed
+            var max_speed = 0.17852;
+
+            // find out what current speed should be based on scale
+            var expectedSpeed = max_speed - ((0.0008 * config.INITIAL_PLAYER_RADIUS) * sphere.scale);
+
+            var actualSpeed = vdist / time;
 
             // validate the speed limit
-            console.log('movement speed, dist, time, scale', speed, vdist, time, actor.scale);
+            console.log('movement speed, dist, time, scale', actualSpeed, vdist, time, actor.scale);
+
+            if (actualSpeed > (expectedSpeed + config.SPEED_EXTRA_TOLERANCE)) {
+                // invalid speed
+                console.log("speed to fast");
+            }
         }
     }
 

@@ -33,9 +33,10 @@ config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their positi
 //                          PLAYER SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.BASE_PLAYER_SPEED    = 3;
-config.PLAYER_CAPTURE_VALUE = function PlayerCaptureValue( r ) { return r / 2; };
-config.AUTO_RUN_ENABLED     = true;
+config.BASE_PLAYER_SPEED     = 1;
+config.INITIAL_PLAYER_RADIUS = 4;
+config.PLAYER_CAPTURE_VALUE  = function PlayerCaptureValue( r ) { return r / 2; };
+config.AUTO_RUN_ENABLED      = true;
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
@@ -53,6 +54,7 @@ config.FOOD_COLORING_SINE_SEGMENTS = 8;  // with sine-cycle coloring, how many c
 ////////////////////////////////////////////////////////////////////////
 config.FOOD_CAPTURE_EXTRA_TOLORANCE   = 15; // extra distance that we'll tolerate for valid food capture
 config.PLAYER_CAPTURE_EXTRA_TOLORANCE = 9;  // extra distance that we'll tolerate for valid player capture
+config.SPEED_EXTRA_TOLERANCE          = 0.001;
 config.PLAYER_POSITIONS_WINDOW        = 30; // number of recent positions to save for the player for validation rewind
 config.PLAYER_INFRACTION_TOLORANCE    = 1;  // how many infractions a player can have before they are kicked
 
@@ -68,10 +70,9 @@ config.FOG_COLOR               = THREE.ColorKeywords.black;
 config.WALL_GRID_SEGMENTS      = 20;
 config.INITIAL_FOV             = 50;
 config.MAX_PLAYER_RADIUS       = 150;
-config.INITIAL_PLAYER_RADIUS   = 2;
 config.PLAYER_MOVE_LERP_WEIGHT = 0.4;
 config.PLAYER_SPHERE_POLYCOUNT = 64; // height and width segments of the spheres
-config.LAG_SCALE_ENABLE        = true; // disable lag scale adjustment until proven
+config.LAG_SCALE_ENABLE        = false; // disable lag scale adjustment until proven
 
 ////////////////////////////////////////////////////////////////////////
 //                          NODEJS EXPORTER                           //
