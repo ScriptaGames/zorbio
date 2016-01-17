@@ -67,7 +67,7 @@ function sendPing() {
 }
 
 function sendHeartbeat() {
-    socket.emit('playerHeartbeat', player.getPlayerId());
+    socket.emit('playerHeartbeat');
 }
 
 function handleNetworkTermination() {

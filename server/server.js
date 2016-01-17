@@ -56,7 +56,7 @@ io.on('connection', function (socket) {
         } else {
             console.log('Player ' + player.id + ' connected!');
             sockets[player.id] = socket;
-            currentPlayer.lastHeartbeat = new Date().getTime();
+            currentPlayer.lastHeartbeat = Date.now();
 
             if (model.players[player.id]) {
                 // if current player is already in the players remove them
@@ -79,6 +79,8 @@ io.on('connection', function (socket) {
     });
 
     socket.on('myPosition', function (sphere) {
+        currentPlayer.lastHeartbeat = Date.now();
+
         if (model.actors[sphere.id]) {
             var actor = model.actors[sphere.id];
             // update the players position in the model
@@ -94,6 +96,8 @@ io.on('connection', function (socket) {
     });
 
     socket.on('foodCapture', function (fi, sphere_id, food_value) {
+        currentPlayer.lastHeartbeat = Date.now();
+
         var err = Validators.foodCapture(model, fi, sphere_id);
         if (err === 0) {
             model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
@@ -111,6 +115,8 @@ io.on('connection', function (socket) {
     });
 
     socket.on('playerCapture', function (attackingPlayerId, targetPlayerId) {
+        currentPlayer.lastHeartbeat = Date.now();
+
         console.log("received playerCapture: ", attackingPlayerId, targetPlayerId);
 
         var err = Validators.playerCapture(attackingPlayerId, targetPlayerId, model);
@@ -142,14 +148,14 @@ io.on('connection', function (socket) {
     });
 
     socket.on('continuePlayerCapture', function (attackingPlayerId, targetPlayerId) {
+        currentPlayer.lastHeartbeat = Date.now();
+
         console.log("received continuePlayerCapture: ", attackingPlayerId, targetPlayerId);
         capturePlayer(attackingPlayerId, targetPlayerId);
     });
 
-    socket.on('playerHeartbeat', function (id) {
-        if (model.players[id]) {
-            model.players[id].lastHeartbeat = new Date().getTime();
-        }
+    socket.on('playerHeartbeat', function () {
+        currentPlayer.lastHeartbeat = Date.now();
     });
 
     socket.on('error', function (err) {
@@ -173,7 +179,7 @@ function sendActorUpdates() {
 }
 
 function checkHeartbeats() {
-    var time = new Date().getTime();
+    var time = Date.now();
 
     var playerIds = Object.getOwnPropertyNames(model.players);
     for (var i = 0, l = playerIds.length; i < l; i++) {
