@@ -32,15 +32,15 @@ config.ACTOR_UPDATE_INTERVAL    = 40;    // How often actors update their positi
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
-
-config.MAX_PLAYER_RADIUS    = 150;
+config.INITIAL_PLAYER_RADIUS = 1;
+config.MAX_PLAYER_RADIUS     = 150;
 
 // https://www.desmos.com/calculator/dphm84crab
-config.MAX_PLAYER_SPEED     = 3;
-config.STATIONARY_RADIUS    = config.MAX_PLAYER_RADIUS + 25; // the size at which speed = 0 (hint: make it bigger than max_size or you'll get stuck when huge!)
+config.MAX_PLAYER_SPEED      = 3;
+config.STATIONARY_RADIUS     = config.MAX_PLAYER_RADIUS + 25; // the size at which speed = 0 (hint: make it bigger than max_size or you'll get stuck when huge!)
 
-config.PLAYER_CAPTURE_VALUE = function PlayerCaptureValue( r ) { return r / 2; };
-config.AUTO_RUN_ENABLED     = true;
+config.PLAYER_CAPTURE_VALUE  = function PlayerCaptureValue( r ) { return r / 2; };
+config.AUTO_RUN_ENABLED      = true;
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
@@ -72,7 +72,6 @@ config.FOG_FAR                 = 1000;
 config.FOG_COLOR               = THREE.ColorKeywords.black;
 config.WALL_GRID_SEGMENTS      = 20;
 config.INITIAL_FOV             = 50;
-config.INITIAL_PLAYER_RADIUS   = 2;
 config.PLAYER_MOVE_LERP_WEIGHT = 0.4;
 config.PLAYER_SPHERE_POLYCOUNT = 64; // height and width segments of the spheres
 config.LAG_SCALE_ENABLE        = true; // disable lag scale adjustment until proven
