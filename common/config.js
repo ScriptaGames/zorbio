@@ -32,7 +32,7 @@ config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their positi
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
-config.INITIAL_PLAYER_RADIUS = 1;
+config.INITIAL_PLAYER_RADIUS = 2;
 config.MAX_PLAYER_RADIUS     = 150;
 
 // https://www.desmos.com/calculator/dphm84crab

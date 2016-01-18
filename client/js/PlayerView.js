@@ -12,7 +12,7 @@ ZOR.PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
     this.playerColor = ZOR.PlayerView.COLORS[actor.color];
 
     this.geometry = new THREE.SphereGeometry(
-        config.INITIAL_PLAYER_RADIUS,
+        1,
         config.PLAYER_SPHERE_POLYCOUNT,
         config.PLAYER_SPHERE_POLYCOUNT
     );
@@ -41,7 +41,8 @@ ZOR.PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
 
     this.mainSphere = new THREE.Mesh( this.geometry, this.material );
     this.mainSphere.position.copy(actor.position);
-    this.mainSphere.scale.set(actor.scale, actor.scale, actor.scale);
+
+    this.setScale(actor.scale);
 
     scene.add( this.mainSphere );
 };
@@ -68,6 +69,7 @@ ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
 ZOR.PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
     this.mainSphere.scale.set(scale, scale, scale);
     this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
+    this.mainSphere.geometry.computeBoundingSphere();
 };
 
 ZOR.PlayerView.COLORS = [

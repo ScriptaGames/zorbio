@@ -118,9 +118,13 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
     if (position) {
         this.position = new THREE.Vector3(position.x, position.y, position.z);
     }
+
     if (scale) {
         this.scale = scale;
+    } else {
+        this.scale = config.INITIAL_PLAYER_RADIUS;
     }
+
     if (velocity) {
         this.velocity = velocity;
     }
@@ -142,7 +146,7 @@ ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
  */
 ZOR.PlayerSphere.prototype.radius = function ZORPlayerSphereRadius() {
     // x, y, and z scale should all be the same for spheres
-    return config.INITIAL_PLAYER_RADIUS * this.scale;
+    return this.scale;
 };
 
 /**
