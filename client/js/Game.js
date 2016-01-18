@@ -497,4 +497,3 @@ function handleServerTick(serverTickData) {
 function handleSuccessfulPlayerCapture(targetPlayer) {
     player.animatedGrow( config.PLAYER_CAPTURE_VALUE( targetPlayer.radius() ), 40 );
 }
-

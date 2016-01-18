@@ -32,9 +32,13 @@ config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their positi
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
+config.INITIAL_PLAYER_RADIUS = 1;
+config.MAX_PLAYER_RADIUS     = 150;
 
-config.BASE_PLAYER_SPEED     = 1;
-config.INITIAL_PLAYER_RADIUS = 4;
+// https://www.desmos.com/calculator/dphm84crab
+config.MAX_PLAYER_SPEED      = 3;
+config.STATIONARY_RADIUS     = config.MAX_PLAYER_RADIUS + 25; // the size at which speed = 0 (hint: make it bigger than max_size or you'll get stuck when huge!)
+
 config.PLAYER_CAPTURE_VALUE  = function PlayerCaptureValue( r ) { return r / 2; };
 config.AUTO_RUN_ENABLED      = true;
 
@@ -55,7 +59,7 @@ config.FOOD_COLORING_SINE_SEGMENTS = 8;  // with sine-cycle coloring, how many c
 config.FOOD_CAPTURE_EXTRA_TOLORANCE   = 15;     // extra distance that we'll tolerate for valid food capture
 config.PLAYER_CAPTURE_EXTRA_TOLORANCE = 9;      // extra distance that we'll tolerate for valid player capture
 config.SPEED_SCALE_DECREMENT          = 0.0008;
-config.INITIAL_SPEED                  = ((0.05920 * config.BASE_PLAYER_SPEED) + ((config.BASE_PLAYER_SPEED - 1) / 1000)) - (config.SPEED_SCALE_DECREMENT * (config.INITIAL_PLAYER_RADIUS - 1));
+config.INITIAL_SPEED                  = ((0.05920 * config.MAX_PLAYER_SPEED) + ((config.MAX_PLAYER_SPEED - 1) / 1000)) - (config.SPEED_SCALE_DECREMENT * (config.INITIAL_PLAYER_RADIUS - 1));
 config.SPEED_EXTRA_TOLERANCE          = 0.001;  // extra speed tolerance for movement validation
 config.PLAYER_POSITIONS_WINDOW        = 30;     // number of recent positions to save for the player for validation rewind
 config.PLAYER_POSITIONS_FULL_SAMPLE   = false;  // Send full sample to server, could slow down performance if true
@@ -72,7 +76,6 @@ config.FOG_FAR                 = 1000;
 config.FOG_COLOR               = THREE.ColorKeywords.black;
 config.WALL_GRID_SEGMENTS      = 20;
 config.INITIAL_FOV             = 50;
-config.MAX_PLAYER_RADIUS       = 150;
 config.PLAYER_MOVE_LERP_WEIGHT = 0.4;
 config.PLAYER_SPHERE_POLYCOUNT = 64; // height and width segments of the spheres
 config.LAG_SCALE_ENABLE        = true; // disable lag scale adjustment until proven
