@@ -14,7 +14,7 @@ var config = {};
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE       = 5000;
+config.WORLD_SIZE       = 1000;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
 
 ////////////////////////////////////////////////////////////////////////
@@ -46,11 +46,11 @@ config.AUTO_RUN_ENABLED      = true;
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 4;    // How much food there is, total food = this number cubed
+config.FOOD_DENSITY                = 10;    // How much food there is, total food = this number cubed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
-config.FOOD_VALUE                  = 1;     // amount to increase sphere by when food is consumed
+config.FOOD_VALUE                  = 0.4;     // amount to increase sphere by when food is consumed
 config.FOOD_CAPTURE_ASSIST         = 2;     // this number is added to player's radius for food capturing
-config.FOOD_COLORING_TYPE          = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][2];
+config.FOOD_COLORING_TYPE          = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][3];
 config.FOOD_COLORING_SINE_SEGMENTS = 8;  // with sine-cycle coloring, how many color cycles along each axis
 
 ////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ config.PLAYER_INFRACTION_TOLORANCE    = 1;      // how many infractions a player
 ////////////////////////////////////////////////////////////////////////
 
 config.INITIAL_CAMERA_DISTANCE = 50;
-config.FOG_ENABLED             = false;
+config.FOG_ENABLED             = true;
 config.FOG_NEAR                = 100;
 config.FOG_FAR                 = 1000;
 config.FOG_COLOR               = THREE.ColorKeywords.black;
