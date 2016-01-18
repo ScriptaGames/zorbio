@@ -12,6 +12,15 @@ Validators.ErrorCodes = {
 Validators.point_a = new THREE.Vector3();
 Validators.point_b = new THREE.Vector3();
 
+//todo: remove this test code
+Validators.recentSpeeds = [];
+Validators.currentScale = 1;
+Validators.currentAvgSpeed = 0;
+Validators.oldAvgSpeed = 0;
+Validators.showAvgDiff = true;
+Validators.maxSpeed = 0;
+Validators.oldMaxSpeed = 0;
+
 Validators.movement = function (sphere, model) {
     var err = 0;
     var actor = model.actors[sphere.id];
@@ -47,13 +56,46 @@ Validators.movement = function (sphere, model) {
 
             var actualSpeed = vdist / time;
 
-            // validate the speed limit
-            console.log('movement speed, dist, time, scale', actualSpeed, vdist, time, actor.scale);
+            Validators.maxSpeed = Math.max(Validators.maxSpeed, actualSpeed);
 
-            if (actualSpeed > (expectedSpeed + config.SPEED_EXTRA_TOLERANCE)) {
-                // invalid speed
-                console.log("speed to fast");
+            //todo: remove this test code
+            if (Validators.currentScale !== sphere.scale) {
+                Validators.currentScale = sphere.scale;
+                Validators.oldAvgSpeed = Validators.currentAvgSpeed;
+                Validators.currentAvgSpeed = 0;
+                Validators.recentSpeeds = [];
+                Validators.showAvgDiff = true;
+
+                Validators.oldMaxSpeed = Validators.maxSpeed;
+                Validators.maxSpeed = 0;
             }
+
+            // Recent positions
+            Validators.recentSpeeds.push(actualSpeed);
+            if (Validators.recentSpeeds.length > 200) {
+                Validators.recentSpeeds.shift();  // remove the oldest position
+            }
+
+            if (Validators.recentSpeeds.length === 200 && Validators.showAvgDiff) {
+                var sum = 0;
+                for (var i = 0, l = Validators.recentSpeeds.length; i < l; i++) {
+                    sum += Validators.recentSpeeds[i];
+                }
+                Validators.currentAvgSpeed = sum / Validators.recentSpeeds.length;
+
+                var avgDiff = Validators.oldAvgSpeed - Validators.currentAvgSpeed;
+                var maxDiff = Validators.oldMaxSpeed - Validators.maxSpeed;
+                console.log("avgDiff", avgDiff);
+                console.log("maxDiff", maxDiff);
+                console.log('maxSpeed, avgSpeed, speed, INIT_SPEED, scale:', Validators.maxSpeed, Validators.currentAvgSpeed, actualSpeed, config.INITIAL_SPEED, sphere.scale);
+
+                Validators.showAvgDiff = false;
+            }
+
+            //if (actualSpeed > (expectedSpeed + config.SPEED_EXTRA_TOLERANCE)) {
+            //    // invalid speed
+            //    console.log("speed to fast");
+            //}
         }
     }
 
