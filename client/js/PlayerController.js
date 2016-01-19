@@ -145,7 +145,8 @@ ZOR.PlayerController.prototype.applyVelocity = function ZORPlayerControllerApply
 
 ZOR.PlayerController.prototype.addRecentPosition = function ZORPlayerControllerAddRecentPosition() {
     var p = {x: this.view.mainSphere.position.x, y: this.view.mainSphere.position.y, z: this.view.mainSphere.position.z};
-    this.model.sphere.recentPositions.push({position: p, time: Date.now()});
+    p = UTIL.trimPosition(p, 4);
+    this.model.sphere.recentPositions.push({position: p, radius: this.radius(), time: Date.now()});
     if (this.model.sphere.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {
         this.model.sphere.recentPositions.shift();  // remove the oldest position
     }

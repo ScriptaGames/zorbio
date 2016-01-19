@@ -40,8 +40,8 @@ function sendPlayerSpherePosition() {
         // for now we only need to send the oldest position and the most recent position
         var oldestPosition = sphereModel.recentPositions[0];
         var latestPosition = sphereModel.recentPositions[sphereModel.recentPositions.length - 1];
-        positions.push({position: UTIL.trimPosition(oldestPosition.position, 3), time: oldestPosition.time});
-        positions.push({position: UTIL.trimPosition(latestPosition.position, 3), time: latestPosition.time});
+        positions.push(oldestPosition);
+        positions.push(latestPosition);
     }
 
     var sphere = {"id": sphereModel.id, "positions": positions, "scale": sphereModel.scale};

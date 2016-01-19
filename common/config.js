@@ -65,11 +65,7 @@ config.FOOD_COLORING_SINE_SEGMENTS = 8;  // with sine-cycle coloring, how many c
 ////////////////////////////////////////////////////////////////////////
 config.FOOD_CAPTURE_EXTRA_TOLORANCE   = 15;     // extra distance that we'll tolerate for valid food capture
 config.PLAYER_CAPTURE_EXTRA_TOLORANCE = 9;      // extra distance that we'll tolerate for valid player capture
-config.SPEED_SCALE_MAGIC_NUMBER       = 0.00034; // how much the speed decrements when MAX_PLAYER_SPEED = 1
-config.SPEED_SCALE_DECREMENT          = config.SPEED_SCALE_MAGIC_NUMBER * config.MAX_PLAYER_SPEED; // When the player scale increases by 1 speed goes down by this amount
-config.BASE_INITIAL_SPEED             = 0.0597; // another magic number, this is the speed when MAX_PLAYER_SPEED = 1, INITIAL_PLAYER_RADIUS = 1
-config.INITIAL_SPEED_EXPECTED         = config.BASE_INITIAL_SPEED * config.MAX_PLAYER_SPEED; // - (config.SPEED_SCALE_DECREMENT * (config.INITIAL_PLAYER_RADIUS - 1));
-config.SPEED_EXTRA_TOLERANCE          = 0.01;   // extra speed tolerance for movement validation
+config.SPEED_EXTRA_TOLERANCE          = 0.02;   // extra speed tolerance for movement validation
 config.PLAYER_POSITIONS_WINDOW        = 30;     // number of recent positions to save for the player for validation rewind
 config.PLAYER_POSITIONS_FULL_SAMPLE   = false;  // Send full sample to server, could slow down performance if true
 config.PLAYER_INFRACTION_TOLORANCE    = 1;      // how many infractions a player can have before they are kicked

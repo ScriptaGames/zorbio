@@ -29,7 +29,7 @@ Validators.movement = function () {
     return function (sphere, model) {
         var err = 0;
         var actor = model.actors[sphere.id];
-        var lastPosition = sphere.positions[sphere.positions.length - 1];
+        var latestPosition = sphere.positions[sphere.positions.length - 1];
 
         if (typeof actor === 'undefined') {
             // return error not in model
@@ -37,18 +37,23 @@ Validators.movement = function () {
         }
         else {
             // see if the player position or has changed
-            if (actor.position.x === lastPosition.position.x &&
-                    actor.position.y === lastPosition.position.y &&
-                    actor.position.z === lastPosition.position.z &&
+            if (actor.position.x === latestPosition.position.x &&
+                    actor.position.y === latestPosition.position.y &&
+                    actor.position.z === latestPosition.position.z &&
                     actor.scale === sphere.scale) {
                 err = Validators.ErrorCodes.NO_CHANGE;
             }
             else if (actor.recentPositions.length === config.PLAYER_POSITIONS_WINDOW) {
-                var firstPosition = sphere.positions[0];
-                var time = lastPosition.time - firstPosition.time;
+                var oldestPosition = sphere.positions[0];
 
-                point_a.copy(firstPosition.position);
-                point_b.copy(lastPosition.position);
+                if (oldestPosition.radius !== latestPosition.radius) {
+                    return 0; // only can calculate when radius are the same
+                }
+
+                var time = latestPosition.time - oldestPosition.time;
+
+                point_a.copy(oldestPosition.position);
+                point_b.copy(latestPosition.position);
 
                 // get distance from point A to point B
                 var vdist = point_a.distanceTo(point_b);
