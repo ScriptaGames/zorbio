@@ -99,8 +99,10 @@ io.on('connection', function (socket) {
             }
         } else {
             switch (err) {
-                //case Validators.ErrorCodes.:
-                //    break;
+                case Validators.ErrorCodes.SPEED_TO_FAST:
+                    socket.emit('speedingWarning');
+                    model.players[currentPlayer.id].infractions++;
+                    break;
             }
         }
     });

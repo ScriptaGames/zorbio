@@ -258,6 +258,15 @@ function setupSocket(socket) {
         player.infractions++;
     });
 
+    socket.on('speedingWarning', function speedingWarning() {
+        if (!gameStart) return;
+
+        console.log("WARNING! You are speeding!");
+
+        // mark infraction
+        player.infractions++;
+    });
+
     socket.on('successfulCapture', function successfulCapture(targetPlayerId) {
         if (!gameStart) return;
 

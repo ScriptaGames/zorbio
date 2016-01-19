@@ -6,13 +6,14 @@ Validators.ErrorCodes = {
     PLAYER_NOT_IN_MODEL: 1,
     FOOD_CAPTURE_TO_FAR: 2,
     PLAYER_CAPTURE_TO_FAR: 3,
-    NO_CHANGE: 4
+    NO_CHANGE: 4,
+    SPEED_TO_FAST: 5
 };
 
 Validators.point_a = new THREE.Vector3();
 Validators.point_b = new THREE.Vector3();
 
-//todo: remove this test code
+//Used for debugging
 Validators.recentSpeeds = [];
 Validators.currentScale = 1;
 Validators.currentAvgSpeed = 0;
@@ -48,54 +49,55 @@ Validators.movement = function (sphere, model) {
             // get distance from point A to point B
             var vdist = Validators.point_a.distanceTo(Validators.point_b);
 
-            //TODO: figure out how to calculate max speed based on initial player scale, and base speed
-            var max_speed = 0.17852;
-
             // find out what current speed should be based on scale
-            var expectedSpeed = max_speed - ((0.0008 * config.INITIAL_PLAYER_RADIUS) * sphere.scale);
-
+            var expectedSpeed = config.INITIAL_SPEED_EXPECTED - (config.SPEED_SCALE_DECREMENT * (sphere.scale - 1));
+            var maxToleratedSpeed = expectedSpeed + config.SPEED_EXTRA_TOLERANCE;
             var actualSpeed = vdist / time;
 
-            Validators.maxSpeed = Math.max(Validators.maxSpeed, actualSpeed);
-
-            //todo: remove this test code
-            if (Validators.currentScale !== sphere.scale) {
-                Validators.currentScale = sphere.scale;
-                Validators.oldAvgSpeed = Validators.currentAvgSpeed;
-                Validators.currentAvgSpeed = 0;
-                Validators.recentSpeeds = [];
-                Validators.showAvgDiff = true;
-
-                Validators.oldMaxSpeed = Validators.maxSpeed;
-                Validators.maxSpeed = 0;
+            //TODO: FIGURE OUT HOW TO TOLERATE LARGE CHANGES TO PLAYER SCALE
+            if (actualSpeed > maxToleratedSpeed) {
+                // speeding
+                console.log("Player Speed to fast! expected, tolerated, actual:", expectedSpeed, maxToleratedSpeed, actualSpeed, sphere.id);
+                return Validators.ErrorCodes.SPEED_TO_FAST;
             }
 
-            // Recent positions
-            Validators.recentSpeeds.push(actualSpeed);
-            if (Validators.recentSpeeds.length > 200) {
-                Validators.recentSpeeds.shift();  // remove the oldest position
-            }
+            if (config.DEBUG) {
+                console.log("expected, tolerated, actual:", expectedSpeed, maxToleratedSpeed, actualSpeed);
 
-            if (Validators.recentSpeeds.length === 200 && Validators.showAvgDiff) {
-                var sum = 0;
-                for (var i = 0, l = Validators.recentSpeeds.length; i < l; i++) {
-                    sum += Validators.recentSpeeds[i];
+                Validators.maxSpeed = Math.max(Validators.maxSpeed, actualSpeed);
+
+                if (Validators.currentScale !== sphere.scale) {
+                    Validators.currentScale = sphere.scale;
+                    Validators.oldAvgSpeed = Validators.currentAvgSpeed;
+                    Validators.currentAvgSpeed = 0;
+                    Validators.recentSpeeds = [];
+                    Validators.showAvgDiff = true;
+                    Validators.oldMaxSpeed = Validators.maxSpeed;
+                    Validators.maxSpeed = 0;
                 }
-                Validators.currentAvgSpeed = sum / Validators.recentSpeeds.length;
 
-                var avgDiff = Validators.oldAvgSpeed - Validators.currentAvgSpeed;
-                var maxDiff = Validators.oldMaxSpeed - Validators.maxSpeed;
-                console.log("avgDiff", avgDiff);
-                console.log("maxDiff", maxDiff);
-                console.log('maxSpeed, avgSpeed, speed, INIT_SPEED, scale:', Validators.maxSpeed, Validators.currentAvgSpeed, actualSpeed, config.INITIAL_SPEED, sphere.scale);
+                // Recent positions
+                Validators.recentSpeeds.push(actualSpeed);
+                if (Validators.recentSpeeds.length > 200) {
+                    Validators.recentSpeeds.shift();  // remove the oldest position
+                }
 
-                Validators.showAvgDiff = false;
+                if (Validators.recentSpeeds.length === 200 && Validators.showAvgDiff) {
+                    var sum = 0;
+                    for (var i = 0, l = Validators.recentSpeeds.length; i < l; i++) {
+                        sum += Validators.recentSpeeds[i];
+                    }
+                    Validators.currentAvgSpeed = sum / Validators.recentSpeeds.length;
+
+                    var avgDiff = Validators.oldAvgSpeed - Validators.currentAvgSpeed;
+                    var maxDiff = Validators.oldMaxSpeed - Validators.maxSpeed;
+                    console.log("avgDiff", avgDiff);
+                    console.log("maxDiff", maxDiff);
+                    console.log('maxSpeed, avgSpeed, speed, INIT_SPEED, scale:', Validators.maxSpeed, Validators.currentAvgSpeed, actualSpeed, config.INITIAL_SPEED_EXPECTED, sphere.scale);
+
+                    Validators.showAvgDiff = false;
+                }
             }
-
-            //if (actualSpeed > (expectedSpeed + config.SPEED_EXTRA_TOLERANCE)) {
-            //    // invalid speed
-            //    console.log("speed to fast");
-            //}
         }
     }
 
