@@ -55,7 +55,7 @@ config.AUTO_RUN_ENABLED      = true;
 
 config.FOOD_DENSITY                = 10;    // How much food there is, total food = this number cubed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
-config.FOOD_VALUE                  = 0.4;     // amount to increase sphere by when food is consumed
+config.FOOD_VALUE                  = 0.8;     // amount to increase sphere by when food is consumed
 config.FOOD_CAPTURE_ASSIST         = 2;     // this number is added to player's radius for food capturing
 config.FOOD_COLORING_TYPE          = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][3];
 config.FOOD_COLORING_SINE_SEGMENTS = 8;  // with sine-cycle coloring, how many color cycles along each axis
