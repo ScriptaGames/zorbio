@@ -13,6 +13,8 @@ Validators.ErrorCodes = {
 
 Validators.movement = function () {
 
+    var msPerFrame = 1/60 * 1000;
+
     var recentSpeeds = [];
     var currentScale = 1;
     var currentAvgSpeed = 0;
@@ -52,9 +54,10 @@ Validators.movement = function () {
                 var vdist = point_a.distanceTo(point_b);
 
                 // find out what current speed should be based on scale
-                var expectedSpeed = config.INITIAL_SPEED_EXPECTED - (config.SPEED_SCALE_DECREMENT * (sphere.scale - 1));
+                var expectedSpeed = config.PLAYER_GET_SPEED(sphere.scale);
                 var maxToleratedSpeed = expectedSpeed + config.SPEED_EXTRA_TOLERANCE;
-                var actualSpeed = vdist / time;
+                var measuredSpeed = vdist / time;
+                var actualSpeed = msPerFrame * measuredSpeed;
 
                 //TODO: FIGURE OUT HOW TO TOLERATE LARGE CHANGES TO PLAYER SCALE
                 if (actualSpeed > maxToleratedSpeed) {

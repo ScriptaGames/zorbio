@@ -42,6 +42,11 @@ config.MAX_PLAYER_SPEED      = 3;
 config.STATIONARY_RADIUS     = config.MAX_PLAYER_RADIUS + 25; // the size at which speed = 0 (hint: make it bigger than max_size or you'll get stuck when huge!)
 
 config.PLAYER_CAPTURE_VALUE  = function PlayerCaptureValue( r ) { return r / 2; };
+config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
+    // https://www.desmos.com/calculator/dphm84crab
+    var s = config.MAX_PLAYER_SPEED;
+    return s - ((r * s) / config.STATIONARY_RADIUS);
+};
 config.AUTO_RUN_ENABLED      = true;
 
 ////////////////////////////////////////////////////////////////////////

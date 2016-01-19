@@ -45,9 +45,7 @@ ZOR.PlayerController.prototype.getPosition = function ZORPlayerControllerGetPosi
  * @returns {number}
  */
 ZOR.PlayerController.prototype.getSpeed = function ZORPlayerControllerGetSpeed() {
-    // https://www.desmos.com/calculator/dphm84crab
-    var s = config.MAX_PLAYER_SPEED;
-    return s - ((this.radius() * s) / config.STATIONARY_RADIUS);
+    return config.PLAYER_GET_SPEED( this.radius() );
 };
 
 ZOR.PlayerController.prototype.initView = function ZORPlayerControllerInitView(main_sphere, scene) {
