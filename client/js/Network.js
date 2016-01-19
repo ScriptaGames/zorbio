@@ -30,6 +30,10 @@ function sendPlayerSpherePosition() {
     var sphereModel = player.model.sphere;
     var positions = [];
 
+    if (sphereModel.recentPositions.length < 2) {
+        player.addRecentPosition();  // make sure we always have at least 2 recent positions
+    }
+
     if (config.PLAYER_POSITIONS_FULL_SAMPLE) {
         positions = sphereModel.recentPositions;
     } else {
