@@ -227,7 +227,6 @@ function setupSocket(socket) {
         var playerId = player.getPlayerId();
         if (attackingPlayerId === playerId) {
             if (pendingPlayerCaptures[targetPlayerId]) {
-                pendingPlayerCaptures[targetPlayerId] = null;
                 delete pendingPlayerCaptures[targetPlayerId];
             }
         } else if (targetPlayerId === playerId) {
@@ -242,7 +241,6 @@ function setupSocket(socket) {
         console.log("invalidCaptureTargetToFar");
 
         if (pendingPlayerCaptures[targetPlayerId]) {
-            pendingPlayerCaptures[targetPlayerId] = null;
             delete pendingPlayerCaptures[targetPlayerId];
         }
 
@@ -279,7 +277,6 @@ function setupSocket(socket) {
         handleSuccessfulPlayerCapture(targetPlayer);
         removePlayerFromGame(targetPlayerId);
         if (pendingPlayerCaptures[targetPlayerId]) {
-            pendingPlayerCaptures[targetPlayerId] = null;
             delete pendingPlayerCaptures[targetPlayerId];
         }
     });

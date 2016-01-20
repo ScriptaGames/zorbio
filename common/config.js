@@ -66,13 +66,13 @@ config.FOOD_GET_VALUE              = function FoodGetValue( r ) {
 ////////////////////////////////////////////////////////////////////////
 //                         VALIDATION SETTINGS                        //
 ////////////////////////////////////////////////////////////////////////
-config.FOOD_CAPTURE_EXTRA_TOLORANCE   = 20;     // extra distance that we'll tolerate for valid food capture
-config.PLAYER_CAPTURE_EXTRA_TOLORANCE = 9;      // extra distance that we'll tolerate for valid player capture
+config.FOOD_CAPTURE_EXTRA_TOLERANCE   = 20;     // extra distance that we'll tolerate for valid food capture
+config.PLAYER_CAPTURE_EXTRA_TOLERANCE = 9;      // extra distance that we'll tolerate for valid player capture
 config.SPEED_EXTRA_TOLERANCE          = 0.1;    // extra speed tolerance for movement validation
-config.PLAYER_SCALE_EXTRA_TOLERANCE   = 1;      // extra tolerance for player scale
+config.PLAYER_SCALE_EXTRA_TOLERANCE   = 0.1;      // extra tolerance for player scale
 config.PLAYER_POSITIONS_WINDOW        = 30;     // number of recent positions to save for the player for validation rewind
 config.PLAYER_POSITIONS_FULL_SAMPLE   = false;  // Send full sample to server, could slow down performance if true
-config.PLAYER_INFRACTION_TOLORANCE    = 1;      // how many infractions a player can have before they are kicked
+config.PLAYER_INFRACTION_TOLERANCE    = 1;      // how many infractions a player can have before they are kicked
 
 ////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //

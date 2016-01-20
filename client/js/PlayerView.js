@@ -17,8 +17,6 @@ ZOR.PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
         config.PLAYER_SPHERE_POLYCOUNT
     );
 
-
-    //TODO: ask Michael what ~~ means in javascript
     playerFogCenter.copy(main_sphere.position);
     this.material = new THREE.ShaderMaterial( {
         uniforms:

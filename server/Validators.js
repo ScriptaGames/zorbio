@@ -120,7 +120,7 @@ Validators.foodCapture = function (model, fi, sphere_id, radius) {
     // calculate dist and tolerance
     var foodPosition = new THREE.Vector3(food_x, food_y, food_z);
     var vdist = foodPosition.distanceTo(sphere.position);
-    var tolerance = radius + config.FOOD_CAPTURE_ASSIST + config.FOOD_CAPTURE_EXTRA_TOLORANCE;
+    var tolerance = radius + config.FOOD_CAPTURE_ASSIST + config.FOOD_CAPTURE_EXTRA_TOLERANCE;
 
     if (config.DEBUG) {
         console.log("food capture vdist, tolerance", vdist, tolerance);
@@ -151,10 +151,10 @@ Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, s
         otherSphere = attackingPlayerSphere;
     }
 
-    var captureDist = attackingPlayerSphere.radius() + config.PLAYER_CAPTURE_EXTRA_TOLORANCE;
+    var captureDist = attackingPlayerSphere.radius() + config.PLAYER_CAPTURE_EXTRA_TOLERANCE;
     var aPosition = new THREE.Vector3();
     var bPosition = new THREE.Vector3();
-    var vdist = null;
+    var vdist = undefined;
     var validCapture = false;
 
     // Check distances between sphere positions. iterate from the most recent position to the oldest position

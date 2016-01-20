@@ -37,7 +37,7 @@ io.on('connection', function (socket) {
     var color = socket.handshake.query.color;
 
     // Create the Player
-    var currentPlayer = null;
+    var currentPlayer = undefined;
 
     socket.on('respawn', function (isFirstSpawn) {
         var position = UTIL.safePlayerPosition();
@@ -60,7 +60,6 @@ io.on('connection', function (socket) {
 
             if (model.players[player.id]) {
                 // if current player is already in the players remove them
-                model.players[player.id] = null;
                 delete model.players[player.id];
             }
 
@@ -239,7 +238,6 @@ function capturePlayer(attackingPlayerId, targetPlayerId) {
     io.emit("playerDied", attackingPlayerId, targetPlayerId);
 
     // processing is done so clear processing state for target player
-    processingPlayerCapture[targetPlayerId] = null;
     delete processingPlayerCapture[targetPlayerId];
 
     removePlayerFromModel(targetPlayerId);
@@ -250,11 +248,9 @@ function removePlayerFromModel(playerId) {
     if (model.players[playerId]) {
         // remove player from model
         actorId = model.players[playerId].sphere.id;
-        model.players[playerId] = null;
         delete model.players[playerId];
     }
     if (model.actors[actorId]) {
-        model.actors[actorId] = null;
         delete model.actors[actorId];
     }
 }
@@ -262,7 +258,6 @@ function removePlayerFromModel(playerId) {
 function removePlayerSocket(playerId) {
     if (sockets[playerId]) {
         sockets[playerId].disconnect();
-        sockets[playerId] = null;
         delete sockets[playerId];
     }
 }
@@ -303,7 +298,6 @@ function sendServerTickData() {
     var serverTickData = {"fr": model.food_respawn_ready_queue};
     io.emit('serverTick', serverTickData);
     model.food_respawn_ready_queue = [];
-    serverTickData = null;
 }
 
 function playersChecks() {
@@ -313,7 +307,7 @@ function playersChecks() {
         var player = model.players[id];
 
         // Check for infractions
-        if (player.infractions > config.PLAYER_INFRACTION_TOLORANCE) {
+        if (player.infractions > config.PLAYER_INFRACTION_TOLERANCE) {
             var msg = "You were kicked because you had to many infractions";
             console.log('kicking player for cheating', id, msg, player.infractions);
             kickPlayer(id, msg);

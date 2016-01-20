@@ -20,7 +20,7 @@ var players = {};
 var gameStart = false;
 var kicked = false;
 var disconnected = false;
-var foodController = null;
+var foodController = undefined;
 
 var renderer;
 
@@ -235,8 +235,8 @@ function checkPlayerCaptures() {
         return;
     }
 
-    var attackingPlayer = null;
-    var targetPlayer = null;
+    var attackingPlayer = undefined;
+    var targetPlayer = undefined;
 
     // Iterate over players
     var playerIds = Object.getOwnPropertyNames(players);
@@ -458,7 +458,7 @@ function adjustVelocityWallHit( p, r, v, w ) {
 
 function cleanupMemory() {
     players = {};
-    zorbioModel = null;
+    zorbioModel = undefined;
 }
 
 function removePlayerFromGame(playerId) {
@@ -468,18 +468,15 @@ function removePlayerFromGame(playerId) {
         if (thePlayer && thePlayer.view) {
             // remove player from model actors
             var sphereId = thePlayer.getSphereId();
-            zorbioModel.actors[sphereId] = null;
             delete zorbioModel.actors[sphereId];
 
             // Remove player from the scene
             thePlayer.removeView(scene);
-            players[playerId] = null;
             delete players[playerId];
         }
 
         if (zorbioModel.players[playerId]) {
             // remove the player from the model
-            zorbioModel.players[playerId] = null;
             delete zorbioModel.players[playerId];
         }
 
