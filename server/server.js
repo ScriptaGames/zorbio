@@ -187,8 +187,17 @@ io.on('connection', function (socket) {
 });
 
 function sendActorUpdates() {
+    var actorUpdates = {};
+
+    // make the payload as small as possible, send only what's needed on the client
+    var actorIds = Object.getOwnPropertyNames(model.actors);
+    for (var i = 0, l = actorIds.length; i < l; i++) {
+        var id = actorIds[i];
+        actorUpdates[id] = {position: model.actors[id].position, scale: model.actors[id].scale};
+    }
+
     // Send actors to the client for updates
-    io.emit('actorPositions', model.actors);
+    io.emit('actorPositions', actorUpdates);
 }
 
 function checkHeartbeats() {
