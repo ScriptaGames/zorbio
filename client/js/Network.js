@@ -64,7 +64,7 @@ function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
         }
 
         console.log("socket.emit playerCapture: ", attackingPlayerId, targetPlayerId);
-        socket.emit('playerCapture', attackingPlayerId, targetPlayerId);
+        socket.emit('playerCapture', attackingPlayerId, targetPlayerId, player.model.sphere);
     }
 }
 

@@ -89,11 +89,12 @@ io.on('connection', function (socket) {
             var actor = model.actors[sphere.id];
 
             // update the players position in the model
-            actor.position = sphere.positions[sphere.positions.length - 1].position;
+            var latestPosition = sphere.positions[sphere.positions.length - 1];
+            actor.position = latestPosition.position;
             actor.scale = sphere.scale;
 
             // Recent positions
-            actor.recentPositions.push(actor.position);
+            actor.recentPositions.push({position: actor.position, radius: actor.scale, time: latestPosition.time});
             if (actor.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {
                 actor.recentPositions.shift();  // remove the oldest position
             }
@@ -126,12 +127,12 @@ io.on('connection', function (socket) {
         }
     });
 
-    socket.on('playerCapture', function (attackingPlayerId, targetPlayerId) {
+    socket.on('playerCapture', function (attackingPlayerId, targetPlayerId, sendingSphere) {
         currentPlayer.lastHeartbeat = Date.now();
 
-        console.log("received playerCapture: ", attackingPlayerId, targetPlayerId);
+        console.log("received playerCapture: ", attackingPlayerId, targetPlayerId, sendingSphere.id);
 
-        var err = Validators.playerCapture(attackingPlayerId, targetPlayerId, model);
+        var err = Validators.playerCapture(attackingPlayerId, targetPlayerId, model, sendingSphere);
         if (err === 0) {
             if (!processingPlayerCapture[targetPlayerId]) {
                 console.log("Valid Player capture: ", attackingPlayerId, targetPlayerId);

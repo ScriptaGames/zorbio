@@ -43,14 +43,14 @@ Validators.movement = function () {
                     actor.scale === sphere.scale) {
                 err = Validators.ErrorCodes.NO_CHANGE;
             }
-            else if (actor.recentPositions.length === config.PLAYER_POSITIONS_WINDOW) {
+            else if (sphere.positions.length > 1) {
                 var oldestPosition = sphere.positions[0];
+                var time = latestPosition.time - oldestPosition.time;
+                var minTime = ((config.PLAYER_POSITIONS_WINDOW * msPerFrame) - 180);
 
-                if (oldestPosition.radius !== latestPosition.radius) {
+                if ((oldestPosition.radius !== latestPosition.radius) || (time < minTime)) {
                     return 0; // only can calculate when radius are the same
                 }
-
-                var time = latestPosition.time - oldestPosition.time;
 
                 point_a.copy(oldestPosition.position);
                 point_b.copy(latestPosition.position);
@@ -140,39 +140,47 @@ Validators.foodCapture = function (model, fi, sphere_id) {
     return 0;
 };
 
-Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model) {
+Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, sendingSphere) {
     // Make sure target is in model
     if (!model.players[targetPlayerId]) {
         // target player not in model
         return Validators.ErrorCodes.PLAYER_NOT_IN_MODEL;
     }
 
-    // check that the attacking player was within range of the target player
-    var attackingPlayer = model.players[attackingPlayerId];
-    var attackingPlayerPositions = attackingPlayer.sphere.recentPositions;
+    var otherSphere = undefined;
+    var attackingPlayerSphere = model.players[attackingPlayerId].sphere;
 
-    var targetPlayer = model.players[targetPlayerId];
-    var targetPlayerPositions = targetPlayer.sphere.recentPositions;
+    if (sendingSphere.playerId === attackingPlayerId) {
+        otherSphere = model.players[targetPlayerId].sphere;
+    } else {
+        otherSphere = attackingPlayerSphere;
+    }
 
-    var positionsLength = Math.min(attackingPlayerPositions.length, targetPlayerPositions.length);
-    var captureDist = attackingPlayer.sphere.radius() + config.PLAYER_CAPTURE_EXTRA_TOLORANCE;
+    var captureDist = attackingPlayerSphere.radius() + config.PLAYER_CAPTURE_EXTRA_TOLORANCE;
     var aPosition = new THREE.Vector3();
-    var tPosition = new THREE.Vector3();
+    var bPosition = new THREE.Vector3();
     var vdist = null;
     var validCapture = false;
 
-    //TODO: refactor this to be the sample of recent positions from the client at time of capture
-    // iterate from the most recent position to the oldest position
-    for (var i = positionsLength - 1; i >= 0; i--) {
-        aPosition.copy(attackingPlayerPositions[i]);
-        tPosition.copy(targetPlayerPositions[i]);
+    // Check distances between sphere positions. iterate from the most recent position to the oldest position
+    for (var i = sendingSphere.recentPositions.length - 1; i >= 0; i--) {
+        aPosition.copy(sendingSphere.recentPositions[i].position);
 
-        vdist = tPosition.distanceTo(aPosition);
+        for (var j = otherSphere.recentPositions.length - 1; j >= 0; j--) {
+            bPosition.copy(otherSphere.recentPositions[j].position);
 
-        console.log("Validating player capture distance", vdist, captureDist);
+            vdist = aPosition.distanceTo(bPosition);
 
-        if (vdist < captureDist) {
-            validCapture = true;
+            console.log("Validating player capture distance", vdist, captureDist);
+
+            if (vdist < captureDist) {
+                console.log("valid capture!");
+                validCapture = true;
+                break;
+            }
+        }
+
+        if (validCapture) {
             break;
         }
     }
