@@ -108,19 +108,23 @@ io.on('connection', function (socket) {
         }
     });
 
-    socket.on('foodCapture', function (fi, sphere_id, radius, food_value) {
+    socket.on('foodCapture', function (fi, sphere_id, radius) {
         currentPlayer.lastHeartbeat = Date.now();
 
         var err = Validators.foodCapture(model, fi, sphere_id, radius);
         if (err === 0) {
             model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
+
+            // grow player on the server to track growth validation
+            currentPlayer.sphere.growExpected( config.FOOD_GET_VALUE(radius) );
+
             // notify clients of food capture so they can update their food view
             io.emit('foodCaptureComplete', fi);
         } else {
             switch (err) {
                 case Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR:
                     // inform client of invalid capture, and make them shrink, mark infraction
-                    socket.emit('invalidFoodCapture', fi, food_value);
+                    socket.emit('invalidFoodCapture', fi, config.FOOD_VALUE);
                     model.players[currentPlayer.id].infractions++;
                     break;
             }
@@ -220,6 +224,11 @@ function checkHeartbeats() {
 function capturePlayer(attackingPlayerId, targetPlayerId) {
     console.log("capturePlayer: ", attackingPlayerId, targetPlayerId);
 
+    // grow the attacking player the expected amount
+    var attackingSphere = model.players[attackingPlayerId].sphere;
+    var targetSphere = model.players[targetPlayerId].sphere;
+    attackingSphere.growExpected( config.PLAYER_CAPTURE_VALUE( targetSphere.radius() ) );
+
     // Inform the attacking player that capture was successful
     sockets[attackingPlayerId].emit('successfulCapture', targetPlayerId);
 
@@ -297,15 +306,19 @@ function sendServerTickData() {
     serverTickData = null;
 }
 
-function kickCheatingPlayers() {
+function playersChecks() {
     var playerIds = Object.getOwnPropertyNames(model.players);
     for (var i = 0, l = playerIds.length; i < l; i++) {
         var id = playerIds[i];
         var player = model.players[id];
+
+        // Check for infractions
         if (player.infractions > config.PLAYER_INFRACTION_TOLORANCE) {
             var msg = "You were kicked because you had to many infractions";
             console.log('kicking player for cheating', id, msg, player.infractions);
             kickPlayer(id, msg);
+        } else if (Validators.playerScale(player) !== 0) {
+            player.infractions++;
         }
     }
 }
@@ -316,7 +329,7 @@ function kickCheatingPlayers() {
 function serverTick() {
     updateFoodRespawns();
     sendServerTickData();
-    kickCheatingPlayers();
+    playersChecks();
 }
 
 setInterval(sendActorUpdates, config.ACTOR_UPDATE_INTERVAL);

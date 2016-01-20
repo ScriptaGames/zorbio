@@ -59,13 +59,17 @@ config.FOOD_VALUE                  = 0.8;     // amount to increase sphere by wh
 config.FOOD_CAPTURE_ASSIST         = 2;     // this number is added to player's radius for food capturing
 config.FOOD_COLORING_TYPE          = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][3];
 config.FOOD_COLORING_SINE_SEGMENTS = 8;  // with sine-cycle coloring, how many color cycles along each axis
+config.FOOD_GET_VALUE              = function FoodGetValue( r ) {
+    return config.FOOD_VALUE / r;
+};
 
 ////////////////////////////////////////////////////////////////////////
 //                         VALIDATION SETTINGS                        //
 ////////////////////////////////////////////////////////////////////////
 config.FOOD_CAPTURE_EXTRA_TOLORANCE   = 20;     // extra distance that we'll tolerate for valid food capture
 config.PLAYER_CAPTURE_EXTRA_TOLORANCE = 9;      // extra distance that we'll tolerate for valid player capture
-config.SPEED_EXTRA_TOLERANCE          = 0.1;   // extra speed tolerance for movement validation
+config.SPEED_EXTRA_TOLERANCE          = 0.1;    // extra speed tolerance for movement validation
+config.PLAYER_SCALE_EXTRA_TOLERANCE   = 1;      // extra tolerance for player scale
 config.PLAYER_POSITIONS_WINDOW        = 30;     // number of recent positions to save for the player for validation rewind
 config.PLAYER_POSITIONS_FULL_SAMPLE   = false;  // Send full sample to server, could slow down performance if true
 config.PLAYER_INFRACTION_TOLORANCE    = 1;      // how many infractions a player can have before they are kicked

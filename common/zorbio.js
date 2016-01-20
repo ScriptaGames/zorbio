@@ -121,8 +121,10 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
 
     if (scale) {
         this.scale = scale;
+        this.expectedScale = scale;
     } else {
         this.scale = config.INITIAL_PLAYER_RADIUS;
+        this.expectedScale = config.INITIAL_PLAYER_RADIUS;
     }
 
     if (velocity) {
@@ -147,6 +149,13 @@ ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
 ZOR.PlayerSphere.prototype.radius = function ZORPlayerSphereRadius() {
     // x, y, and z scale should all be the same for spheres
     return this.scale;
+};
+
+ZOR.PlayerSphere.prototype.growExpected = function ZORPlayerSphereGrowExpected(amount) {
+    this.expectedScale += amount;
+    if (this.expectedScale > config.MAX_PLAYER_RADIUS) {
+        this.expectedScale = config.MAX_PLAYER_RADIUS;
+    }
 };
 
 /**

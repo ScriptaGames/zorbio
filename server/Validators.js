@@ -7,7 +7,8 @@ Validators.ErrorCodes = {
     FOOD_CAPTURE_TO_FAR: 2,
     PLAYER_CAPTURE_TO_FAR: 3,
     NO_CHANGE: 4,
-    SPEED_TO_FAST: 5
+    SPEED_TO_FAST: 5,
+    PLAYER_SCALE_TO_BIG: 6
 };
 
 
@@ -35,78 +36,69 @@ Validators.movement = function () {
             // return error not in model
             err = Validators.ErrorCodes.PLAYER_NOT_IN_MODEL;
         }
-        else {
-            // see if the player position or has changed
-            if (actor.position.x === latestPosition.position.x &&
-                    actor.position.y === latestPosition.position.y &&
-                    actor.position.z === latestPosition.position.z &&
-                    actor.scale === sphere.scale) {
-                err = Validators.ErrorCodes.NO_CHANGE;
+        else if (sphere.positions.length > 1) {
+            var oldestPosition = sphere.positions[0];
+            var time = latestPosition.time - oldestPosition.time;
+            var minTime = ((config.PLAYER_POSITIONS_WINDOW * msPerFrame) - 180);
+
+            if ((oldestPosition.radius !== latestPosition.radius) || (time < minTime)) {
+                return 0; // only can calculate when radius are the same
             }
-            else if (sphere.positions.length > 1) {
-                var oldestPosition = sphere.positions[0];
-                var time = latestPosition.time - oldestPosition.time;
-                var minTime = ((config.PLAYER_POSITIONS_WINDOW * msPerFrame) - 180);
 
-                if ((oldestPosition.radius !== latestPosition.radius) || (time < minTime)) {
-                    return 0; // only can calculate when radius are the same
+            point_a.copy(oldestPosition.position);
+            point_b.copy(latestPosition.position);
+
+            // get distance from point A to point B
+            var vdist = point_a.distanceTo(point_b);
+
+            // find out what current speed should be based on scale
+            var expectedSpeed = config.PLAYER_GET_SPEED(sphere.scale);
+            var maxToleratedSpeed = expectedSpeed + config.SPEED_EXTRA_TOLERANCE;
+            var measuredSpeed = vdist / time;
+            var actualSpeed = msPerFrame * measuredSpeed;
+
+            // do the actual validation
+            if (actualSpeed > maxToleratedSpeed) {
+                // speeding
+                console.log("Player Speed to fast! expected, tolerated, actual:", expectedSpeed, maxToleratedSpeed, actualSpeed, sphere.id);
+                return Validators.ErrorCodes.SPEED_TO_FAST;
+            }
+
+            if (config.DEBUG) {
+                //console.log("expected, tolerated, actual:", expectedSpeed, maxToleratedSpeed, actualSpeed);
+
+                maxSpeed = Math.max(maxSpeed, actualSpeed);
+
+                if (currentScale !== sphere.scale) {
+                    currentScale = sphere.scale;
+                    oldAvgSpeed = currentAvgSpeed;
+                    currentAvgSpeed = 0;
+                    recentSpeeds = [];
+                    showAvgDiff = true;
+                    oldMaxSpeed = maxSpeed;
+                    maxSpeed = 0;
                 }
 
-                point_a.copy(oldestPosition.position);
-                point_b.copy(latestPosition.position);
-
-                // get distance from point A to point B
-                var vdist = point_a.distanceTo(point_b);
-
-                // find out what current speed should be based on scale
-                var expectedSpeed = config.PLAYER_GET_SPEED(sphere.scale);
-                var maxToleratedSpeed = expectedSpeed + config.SPEED_EXTRA_TOLERANCE;
-                var measuredSpeed = vdist / time;
-                var actualSpeed = msPerFrame * measuredSpeed;
-
-                //TODO: FIGURE OUT HOW TO TOLERATE LARGE CHANGES TO PLAYER SCALE
-                if (actualSpeed > maxToleratedSpeed) {
-                    // speeding
-                    console.log("Player Speed to fast! expected, tolerated, actual:", expectedSpeed, maxToleratedSpeed, actualSpeed, sphere.id);
-                    return Validators.ErrorCodes.SPEED_TO_FAST;
+                // Recent positions
+                recentSpeeds.push(actualSpeed);
+                if (recentSpeeds.length > 200) {
+                    recentSpeeds.shift();  // remove the oldest position
                 }
 
-                if (config.DEBUG) {
-                    //console.log("expected, tolerated, actual:", expectedSpeed, maxToleratedSpeed, actualSpeed);
-
-                    maxSpeed = Math.max(maxSpeed, actualSpeed);
-
-                    if (currentScale !== sphere.scale) {
-                        currentScale = sphere.scale;
-                        oldAvgSpeed = currentAvgSpeed;
-                        currentAvgSpeed = 0;
-                        recentSpeeds = [];
-                        showAvgDiff = true;
-                        oldMaxSpeed = maxSpeed;
-                        maxSpeed = 0;
+                if (recentSpeeds.length === 200 && showAvgDiff) {
+                    var sum = 0;
+                    for (var i = 0, l = recentSpeeds.length; i < l; i++) {
+                        sum += recentSpeeds[i];
                     }
+                    currentAvgSpeed = sum / recentSpeeds.length;
 
-                    // Recent positions
-                    recentSpeeds.push(actualSpeed);
-                    if (recentSpeeds.length > 200) {
-                        recentSpeeds.shift();  // remove the oldest position
-                    }
+                    var avgDiff = oldAvgSpeed - currentAvgSpeed;
+                    var maxDiff = oldMaxSpeed - maxSpeed;
+                    console.log("avgDiff", avgDiff);
+                    console.log("maxDiff", maxDiff);
+                    console.log('maxSpeed, avgSpeed, speed, INIT_SPEED, scale:', maxSpeed, currentAvgSpeed, actualSpeed, config.INITIAL_SPEED_EXPECTED, sphere.scale);
 
-                    if (recentSpeeds.length === 200 && showAvgDiff) {
-                        var sum = 0;
-                        for (var i = 0, l = recentSpeeds.length; i < l; i++) {
-                            sum += recentSpeeds[i];
-                        }
-                        currentAvgSpeed = sum / recentSpeeds.length;
-
-                        var avgDiff = oldAvgSpeed - currentAvgSpeed;
-                        var maxDiff = oldMaxSpeed - maxSpeed;
-                        console.log("avgDiff", avgDiff);
-                        console.log("maxDiff", maxDiff);
-                        console.log('maxSpeed, avgSpeed, speed, INIT_SPEED, scale:', maxSpeed, currentAvgSpeed, actualSpeed, config.INITIAL_SPEED_EXPECTED, sphere.scale);
-
-                        showAvgDiff = false;
-                    }
+                    showAvgDiff = false;
                 }
             }
         }
@@ -193,6 +185,29 @@ Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, s
     }
 
     return 0;  // valid capture
+};
+
+Validators.playerScale = function (player) {
+    var recentPositions = player.sphere.recentPositions;
+
+    // first make sure that we've given the client time to grow and sync with the server
+    if (recentPositions.length < config.PLAYER_POSITIONS_WINDOW) {
+        return 0;
+    }
+
+    var expectedScale = player.sphere.expectedScale;
+    var oldestScale = recentPositions[0].radius;
+    var latestScale = recentPositions[recentPositions.length - 1].radius;
+
+    if (oldestScale === latestScale) {
+        // make sure the expected scale within tolerance
+        if (latestScale > (expectedScale + config.PLAYER_SCALE_EXTRA_TOLERANCE)) {
+            console.log("player to big expectedScale, actualScale: ", expectedScale, latestScale);
+            return Validators.ErrorCodes.PLAYER_SCALE_TO_BIG;
+        }
+    }
+
+    return 0;  //no error
 };
 
 module.exports = Validators;

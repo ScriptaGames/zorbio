@@ -293,9 +293,10 @@ function updateActors() {
 function captureFood(fi) {
     if (foodController.aliveFood(fi)) {
         var mainSphere = player.view.mainSphere;
+        var origRadius = player.radius();
 
         // give food value diminishing returns to prevent runaway growth
-        var value = config.FOOD_VALUE / player.radius();
+        var value = config.FOOD_GET_VALUE( origRadius );
 
         // grow to new size!  yay!
         player.grow(value);
@@ -308,7 +309,7 @@ function captureFood(fi) {
 
         if (safe_to_grow) {
             adjustCamera( player.radius() );
-            sendFoodCapture(fi, player.model.sphere.id, player.radius(), value);  // send the food capture to the server
+            sendFoodCapture(fi, player.model.sphere.id, origRadius, value);  // send the food capture to the server
         }
         else {
             // aw, wasn't save to grow, go back to original size
