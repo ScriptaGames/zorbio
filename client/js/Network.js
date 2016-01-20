@@ -48,8 +48,8 @@ function sendPlayerSpherePosition() {
     socket.emit('myPosition', sphere);
 }
 
-function sendFoodCapture(fi, sphere_id, food_value) {
-    socket.emit('foodCapture', fi, sphere_id, food_value);
+function sendFoodCapture(fi, sphere_id, radius, food_value) {
+    socket.emit('foodCapture', fi, sphere_id, radius, food_value);
 }
 
 function sendPlayerCapture(attackingPlayerId, targetPlayerId) {

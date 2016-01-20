@@ -108,10 +108,10 @@ io.on('connection', function (socket) {
         }
     });
 
-    socket.on('foodCapture', function (fi, sphere_id, food_value) {
+    socket.on('foodCapture', function (fi, sphere_id, radius, food_value) {
         currentPlayer.lastHeartbeat = Date.now();
 
-        var err = Validators.foodCapture(model, fi, sphere_id);
+        var err = Validators.foodCapture(model, fi, sphere_id, radius);
         if (err === 0) {
             model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
             // notify clients of food capture so they can update their food view

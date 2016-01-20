@@ -72,7 +72,7 @@ Validators.movement = function () {
                 }
 
                 if (config.DEBUG) {
-                    console.log("expected, tolerated, actual:", expectedSpeed, maxToleratedSpeed, actualSpeed);
+                    //console.log("expected, tolerated, actual:", expectedSpeed, maxToleratedSpeed, actualSpeed);
 
                     maxSpeed = Math.max(maxSpeed, actualSpeed);
 
@@ -115,10 +115,9 @@ Validators.movement = function () {
     };
 }();
 
-Validators.foodCapture = function (model, fi, sphere_id) {
+Validators.foodCapture = function (model, fi, sphere_id, radius) {
     // sphere info
     var sphere = model.actors[sphere_id];
-    var sphere_radius = sphere.radius();
 
     // get food position
     var food_index = fi * 3;
@@ -129,7 +128,11 @@ Validators.foodCapture = function (model, fi, sphere_id) {
     // calculate dist and tolerance
     var foodPosition = new THREE.Vector3(food_x, food_y, food_z);
     var vdist = foodPosition.distanceTo(sphere.position);
-    var tolerance = sphere_radius + config.FOOD_CAPTURE_ASSIST + config.FOOD_CAPTURE_EXTRA_TOLORANCE;
+    var tolerance = radius + config.FOOD_CAPTURE_ASSIST + config.FOOD_CAPTURE_EXTRA_TOLORANCE;
+
+    if (config.DEBUG) {
+        console.log("food capture vdist, tolerance", vdist, tolerance);
+    }
 
     // Make sure the sphere is in range of the food being captured
     if (vdist > tolerance) {

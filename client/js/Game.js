@@ -308,7 +308,7 @@ function captureFood(fi) {
 
         if (safe_to_grow) {
             adjustCamera( player.radius() );
-            sendFoodCapture(fi, player.model.sphere.id, value);  // send the food capture to the server
+            sendFoodCapture(fi, player.model.sphere.id, player.radius(), value);  // send the food capture to the server
         }
         else {
             // aw, wasn't save to grow, go back to original size
