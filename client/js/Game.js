@@ -211,7 +211,8 @@ function initCameraAndPlayer() {
     // they spawn
     camera.position.copy( player.model.sphere.position.clone().multiplyScalar(1.2) );
 
-    adjustCamera( config.INITIAL_PLAYER_RADIUS );
+    player.setCameraControls( camera_controls );
+    player.view.adjustCamera();
 }
 
 function drawPlayers() {
@@ -308,7 +309,6 @@ function captureFood(fi) {
         foodController.hideFood(fi);
 
         if (safe_to_grow) {
-            adjustCamera( player.radius() );
             sendFoodCapture(fi, player.model.sphere.id, origRadius, value);  // send the food capture to the server
         }
         else {
@@ -318,14 +318,6 @@ function captureFood(fi) {
         }
 
     }
-}
-
-/**
- * Given a sphere radius, adjust the camera so the whole sphere is within view.
- */
-function adjustCamera( radius ) {
-    camera_controls.minDistance = radius / Math.tan( Math.PI * camera.fov / 360 ) + 100;
-    camera_controls.maxDistance = camera_controls.minDistance;
 }
 
 window.addEventListener("keydown", handleKeydown);

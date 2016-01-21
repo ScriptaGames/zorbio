@@ -176,3 +176,6 @@ ZOR.PlayerController.prototype.moveBackward = function ZORPlayerControllerMoveBa
     this.velocity.add( v );
 };
 
+ZOR.PlayerController.prototype.setCameraControls = function ZORPlayerControllerSetCameraControls(camera_controls) {
+    this.view.setCameraControls(camera_controls);
+};
