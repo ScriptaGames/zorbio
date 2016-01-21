@@ -183,7 +183,10 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.type = type;
     this.lastHeartbeat = new Date().getTime();
     this.sphere = new ZOR.PlayerSphere(this.id, color, position, scale, velocity);
-    this.infractions = 0;
+    this.infractions_food = 0;
+    this.infractions_pcap = 0;
+    this.infractions_speed = 0;
+    this.infractions_scale = 0;
 };
 
 

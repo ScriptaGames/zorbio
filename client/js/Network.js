@@ -242,9 +242,6 @@ function setupSocket(socket) {
         if (ZOR.pendingPlayerCaptures[targetPlayerId]) {
             delete ZOR.pendingPlayerCaptures[targetPlayerId];
         }
-
-        // mark infraction
-        player.infractions++;
     });
 
     socket.on('invalidFoodCapture', function invalidFoodCapture(fi, food_value) {
@@ -254,18 +251,12 @@ function setupSocket(socket) {
 
         // shrink player
         player.grow(-food_value);
-
-        // mark infraction
-        player.infractions++;
     });
 
     socket.on('speedingWarning', function speedingWarning() {
         if (!gameStart) return;
 
         console.log("WARNING! You are speeding!");
-
-        // mark infraction
-        player.infractions++;
     });
 
     socket.on('successfulCapture', function successfulCapture(targetPlayerId) {

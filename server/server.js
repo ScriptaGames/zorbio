@@ -100,7 +100,7 @@ io.on('connection', function (socket) {
             switch (err) {
                 case Validators.ErrorCodes.SPEED_TO_FAST:
                     socket.emit('speedingWarning');
-                    model.players[currentPlayer.id].infractions++;
+                    model.players[currentPlayer.id].infractions_speed++;
                     break;
             }
         }
@@ -123,7 +123,7 @@ io.on('connection', function (socket) {
                 case Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR:
                     // inform client of invalid capture, and make them shrink, mark infraction
                     socket.emit('invalidFoodCapture', fi, config.FOOD_VALUE);
-                    model.players[currentPlayer.id].infractions++;
+                    model.players[currentPlayer.id].infractions_food++;
                     break;
             }
         }
@@ -156,7 +156,7 @@ io.on('connection', function (socket) {
                     // the player who is connected to this socket is probably cheating
                     console.log("Invalid player capture distance to far", attackingPlayerId, targetPlayerId, currentPlayer.id);
                     socket.emit("invalidCaptureTargetToFar", attackingPlayerId, targetPlayerId);
-                    model.players[currentPlayer.id].infractions++;
+                    model.players[currentPlayer.id].infractions_pcap++;
                     break;
             }
         }
@@ -262,6 +262,8 @@ function removePlayerSocket(playerId) {
 }
 
 function kickPlayer(playerId, reason) {
+    console.log('kicking player: ', playerId, reason);
+
     // notify player
     sockets[playerId].emit('kick', reason);
 
@@ -299,19 +301,31 @@ function sendServerTickData() {
     model.food_respawn_ready_queue = [];
 }
 
+/**
+ * Any player checks that need to be done during serverTick, put here.
+ */
 function playersChecks() {
+    // Iterate over all players and perform checks
     var playerIds = Object.getOwnPropertyNames(model.players);
     for (var i = 0, l = playerIds.length; i < l; i++) {
         var id = playerIds[i];
         var player = model.players[id];
 
         // Check for infractions
-        if (player.infractions > config.PLAYER_INFRACTION_TOLERANCE) {
-            var msg = "You were kicked because you had to many infractions";
-            console.log('kicking player for cheating', id, msg, player.infractions);
-            kickPlayer(id, msg);
-        } else if (Validators.playerScale(player) !== 0) {
-            player.infractions++;
+        if (player.infractions_food > config.INFRACTION_TOLERANCE_FOOD) {
+            kickPlayer(id, "You were kicked because you had to many food infractions: " + player.infractions_food);
+        }
+        else if (player.infractions_pcap > config.INFRACTION_TOLERANCE_PCAP) {
+            kickPlayer(id, "You were kicked because you had to many player capture infractions: " + player.infractions_pcap);
+        }
+        else if (player.infractions_speed > config.INFRACTION_TOLERANCE_SPEED) {
+            kickPlayer(id, "You were kicked because you had to many speed infractions: " + player.infractions_speed);
+        }
+        else if (player.infractions_scale > config.INFRACTION_TOLERANCE_SCALE) {
+            kickPlayer(id, "You were kicked because you had to many size infractions: " + player.infractions_scale);
+        }
+        else if (Validators.playerScale(player) !== 0) {
+            player.infractions_scale++;
         }
     }
 }

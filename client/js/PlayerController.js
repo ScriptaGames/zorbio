@@ -12,7 +12,6 @@ ZOR.PlayerController = function ZORPlayerController(model, main_sphere, scene) {
     this.model = new ZOR.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
         model.sphere.scale, model.sphere.velocity);
     this.isDead = false;
-    this.infractions = 0;
 
     /**
      * Player velocity
