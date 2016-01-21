@@ -3,7 +3,6 @@
  */
 
 var socket;
-var pendingPlayerCaptures = {};
 var startPingTime;
 
 // handles to setInterval methods so we can clear them later
@@ -55,12 +54,12 @@ function sendFoodCapture(fi, sphere_id, radius, food_value) {
 function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
     console.log("sendPlayerCapture: ", attackingPlayerId, targetPlayerId);
 
-    if (!pendingPlayerCaptures[targetPlayerId]) {
+    if (!ZOR.pendingPlayerCaptures[targetPlayerId]) {
 
         if (targetPlayerId === player.getPlayerId()) {
             player.beingCaptured = true;
         } else {
-            pendingPlayerCaptures[targetPlayerId] = players[targetPlayerId];
+            ZOR.pendingPlayerCaptures[targetPlayerId] = config.PENDING_PLAYER_CAPTURE_TTL;  // stop sending dupe player captures
         }
 
         console.log("socket.emit playerCapture: ", attackingPlayerId, targetPlayerId);
@@ -214,7 +213,7 @@ function setupSocket(socket) {
         if (!gameStart) return;
 
         console.log("processingPlayerCapture: ", targetPlayerId);
-        pendingPlayerCaptures[targetPlayerId] = players[targetPlayerId];  // save player getting captured
+        ZOR.pendingPlayerCaptures[targetPlayerId] = config.PENDING_PLAYER_CAPTURE_TTL;  // stop sending dupe player captures
         socket.emit('continuePlayerCapture', player.getPlayerId(), targetPlayerId);
     });
 
@@ -226,8 +225,8 @@ function setupSocket(socket) {
         // clean up
         var playerId = player.getPlayerId();
         if (attackingPlayerId === playerId) {
-            if (pendingPlayerCaptures[targetPlayerId]) {
-                delete pendingPlayerCaptures[targetPlayerId];
+            if (ZOR.pendingPlayerCaptures[targetPlayerId]) {
+                delete ZOR.pendingPlayerCaptures[targetPlayerId];
             }
         } else if (targetPlayerId === playerId) {
             player.beingCaptured = false;
@@ -240,8 +239,8 @@ function setupSocket(socket) {
     socket.on("invalidCaptureTargetToFar", function invalidCaptureTargetToFar(attackingPlayerId, targetPlayerId) {
         console.log("invalidCaptureTargetToFar");
 
-        if (pendingPlayerCaptures[targetPlayerId]) {
-            delete pendingPlayerCaptures[targetPlayerId];
+        if (ZOR.pendingPlayerCaptures[targetPlayerId]) {
+            delete ZOR.pendingPlayerCaptures[targetPlayerId];
         }
 
         // mark infraction
@@ -273,11 +272,11 @@ function setupSocket(socket) {
         if (!gameStart) return;
 
         console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
-        var targetPlayer = pendingPlayerCaptures[targetPlayerId];
+        var targetPlayer = players[targetPlayerId];
         handleSuccessfulPlayerCapture(targetPlayer);
         removePlayerFromGame(targetPlayerId);
-        if (pendingPlayerCaptures[targetPlayerId]) {
-            delete pendingPlayerCaptures[targetPlayerId];
+        if (ZOR.pendingPlayerCaptures[targetPlayerId]) {
+            delete ZOR.pendingPlayerCaptures[targetPlayerId];
         }
     });
 

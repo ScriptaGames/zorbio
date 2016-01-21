@@ -485,10 +485,15 @@ function removePlayerFromGame(playerId) {
 }
 
 function handleServerTick(serverTickData) {
+    if (!gameStart) return;
+
     // handle food respawns
     for(var i = 0, l = serverTickData.fr.length; i < l; ++i) {
         foodController.showFood(serverTickData.fr[i]);  // Show the food index
     }
+
+    // expire pending player captures
+    ZOR.expirePendingPlayerCaptures();
 }
 
 function handleSuccessfulPlayerCapture(targetPlayer) {

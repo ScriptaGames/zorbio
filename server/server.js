@@ -21,7 +21,6 @@ var UTIL = require('../common/util.js');
 //var MAX_PLAYERS = 32;
 
 var model = new Zorbio.Model(config.WORLD_SIZE, config.FOOD_DENSITY);
-var processingPlayerCapture = {};
 
 // Define sockets as a hash so we can use string indexes
 var sockets = {};
@@ -137,10 +136,10 @@ io.on('connection', function (socket) {
 
         var err = Validators.playerCapture(attackingPlayerId, targetPlayerId, model, sendingSphere);
         if (err === 0) {
-            if (!processingPlayerCapture[targetPlayerId]) {
+            if (!Zorbio.pendingPlayerCaptures[targetPlayerId]) {
                 console.log("Valid Player capture: ", attackingPlayerId, targetPlayerId);
                 sockets[attackingPlayerId].emit('processingPlayerCapture', targetPlayerId);
-                processingPlayerCapture[targetPlayerId] = model.players[attackingPlayerId];
+                Zorbio.pendingPlayerCaptures[targetPlayerId] = config.PENDING_PLAYER_CAPTURE_TTL;
             }
         } else {
             switch (err) {
@@ -238,7 +237,7 @@ function capturePlayer(attackingPlayerId, targetPlayerId) {
     io.emit("playerDied", attackingPlayerId, targetPlayerId);
 
     // processing is done so clear processing state for target player
-    delete processingPlayerCapture[targetPlayerId];
+    delete Zorbio.pendingPlayerCaptures[targetPlayerId];
 
     removePlayerFromModel(targetPlayerId);
 }
@@ -324,6 +323,9 @@ function serverTick() {
     updateFoodRespawns();
     sendServerTickData();
     playersChecks();
+
+    // expire pending player captures
+    Zorbio.expirePendingPlayerCaptures();
 }
 
 setInterval(sendActorUpdates, config.ACTOR_UPDATE_INTERVAL);

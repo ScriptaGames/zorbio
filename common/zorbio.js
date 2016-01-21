@@ -186,6 +186,27 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.infractions = 0;
 };
 
+
+/**
+ * pendingPlayerCaptures
+ * This is in the model because it is code and state that is shared by the client and server
+ */
+ZOR.pendingPlayerCaptures = {};
+ZOR.expirePendingPlayerCaptures = function ZORModelExpirePendingPlayerCaptures() {
+    var playerIds = Object.getOwnPropertyNames(ZOR.pendingPlayerCaptures);
+    for (var i = 0, l = playerIds.length; i < l; i++) {
+        var id = playerIds[i];
+
+        if (ZOR.pendingPlayerCaptures[id] > 0) {
+            console.log("pending player capture expiring in: ", ZOR.pendingPlayerCaptures[id]);
+            ZOR.pendingPlayerCaptures[id] -= config.SERVER_TICK_INTERVAL;
+        } else {
+            console.log("pending player capture expired for id:", id);
+            delete ZOR.pendingPlayerCaptures[id];
+        }
+    }
+};
+
 // if we're in nodejs, export the root ZOR object
 if (NODEJS) module.exports = ZOR;
 
