@@ -47,7 +47,7 @@ config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
     var s = config.MAX_PLAYER_SPEED;
     return s - ((r * s) / config.STATIONARY_RADIUS);
 };
-config.AUTO_RUN_ENABLED      = true;
+config.AUTO_RUN_ENABLED      = false;
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
@@ -66,7 +66,7 @@ config.FOOD_GET_VALUE              = function FoodGetValue( r ) {
 ////////////////////////////////////////////////////////////////////////
 //                         VALIDATION SETTINGS                        //
 ////////////////////////////////////////////////////////////////////////
-config.ENABLE_VALIDATION              = true;   // enable validation checks on the server to prevent cheating
+config.ENABLE_VALIDATION              = false;  // enable validation checks on the server to prevent cheating
 config.FOOD_CAPTURE_EXTRA_TOLERANCE   = 20;     // extra distance that we'll tolerate for valid food capture
 config.PLAYER_CAPTURE_EXTRA_TOLERANCE = 9;      // extra distance that we'll tolerate for valid player capture
 config.SPEED_EXTRA_TOLERANCE          = 0.1;    // extra speed tolerance for movement validation

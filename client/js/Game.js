@@ -386,14 +386,17 @@ function keyDown( key ) {
     else if ( key === 's' ) {
         player.moveBackward(camera);
     }
+    else if ( key === 'space') {
+        player.animatedGrow(30, 15);
+    }
 }
 
 function keyJustPressed(key) {
-    //console.log('key ' + key + ' just pressed');
+    console.log('key ' + key + ' just pressed');
 }
 
 function keyReleased(key) {
-    //console.log('key ' + key + ' released');
+    console.log('key ' + key + ' released');
 }
 
 function removePlayerFromGame(playerId) {
