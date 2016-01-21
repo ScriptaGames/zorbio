@@ -15,7 +15,6 @@ Validators.ErrorCodes = {
 Validators.movement = function () {
 
     var msPerFrame = 1/60 * 1000;
-
     var recentSpeeds = [];
     var currentScale = 1;
     var currentAvgSpeed = 0;
@@ -28,6 +27,8 @@ Validators.movement = function () {
     var point_b = new THREE.Vector3();
 
     return function (sphere, model) {
+        if (!config.ENABLE_VALIDATION) return 0;
+
         var err = 0;
         var actor = model.actors[sphere.id];
         var latestPosition = sphere.positions[sphere.positions.length - 1];
@@ -108,6 +109,8 @@ Validators.movement = function () {
 }();
 
 Validators.foodCapture = function (model, fi, sphere_id, radius) {
+    if (!config.ENABLE_VALIDATION) return 0;
+
     // sphere info
     var sphere = model.actors[sphere_id];
 
@@ -136,6 +139,8 @@ Validators.foodCapture = function (model, fi, sphere_id, radius) {
 };
 
 Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, sendingSphere) {
+    if (!config.ENABLE_VALIDATION) return 0;
+
     // Make sure target is in model
     if (!model.players[targetPlayerId]) {
         // target player not in model
@@ -188,6 +193,8 @@ Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, s
 };
 
 Validators.playerScale = function (player) {
+    if (!config.ENABLE_VALIDATION) return 0;
+
     var recentPositions = player.sphere.recentPositions;
 
     // first make sure that we've given the client time to grow and sync with the server
