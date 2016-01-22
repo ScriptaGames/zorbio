@@ -25,7 +25,7 @@ var model = new Zorbio.Model(config.WORLD_SIZE, config.FOOD_DENSITY);
 // Define sockets as a hash so we can use string indexes
 var sockets = {};
 
-app.use(express.static(__dirname + '/../client'));
+app.use(express.static(__dirname + '/../' + (process.argv[2] || 'client')));
 
 io.on('connection', function (socket) {
     console.log("Player connected: ", JSON.stringify(socket.handshake));

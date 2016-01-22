@@ -6,7 +6,9 @@
   "scripts": {
     "test": "karma start",
     "start": "node server/server.js",
-    "css": "lessc client/css/main.less client/css/main.css"
+    "start-prod": "node server/server.js dist",
+    "css": "lessc client/css/main.less client/css/main.css",
+    "build": "bash build.sh"
   },
   "author": "Scripta Games, Inc.",
   "dependencies": {
@@ -15,6 +17,8 @@
     "three.js": "^0.73.0"
   },
   "devDependencies": {
+    "html-inline": "^1.2.0",
+    "html-minifier": "^1.1.1",
     "jasmine": "^2.3.2",
     "jasmine-core": "^2.3.4",
     "karma": "^0.13.10",
