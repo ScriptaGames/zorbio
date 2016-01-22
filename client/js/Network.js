@@ -173,10 +173,9 @@ function setupSocket(socket) {
     });
 
     socket.on('kick', function kick(msg) {
+        console.log('Server said: ', msg);
         handleNetworkTermination();
         kicked = true;
-        displayModalMessage(msg);
-        console.log('you were kicked', msg);
     });
 
     socket.on('playerKicked', function playerKicked(playerId) {
