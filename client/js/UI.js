@@ -17,6 +17,7 @@ ZOR.UI = function ZORUI() {
         LOGIN_SCREEN_ERROR : 'login-screen-error',
         PLAYING            : 'playing',
         RESPAWN_SCREEN     : 'respawn-screen',
+        GAME_INIT_ERROR    : 'game-init-error',
     };
 
     /**
@@ -27,6 +28,7 @@ ZOR.UI = function ZORUI() {
         PLAYER_LOGIN_KEYPRESS : 'player-login-keypress',
         PLAYER_LOGIN          : 'player-login',
         PLAYER_RESPAWN        : 'player-respawn',
+        PAGE_RELOAD           : 'page-reload',
     };
 
     /**

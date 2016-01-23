@@ -32,12 +32,11 @@ function startGame(type) {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
     playerType = type;
 
-    ZOR.UI.state( ZOR.UI.STATES.PLAYING );
-
     // Connect to the server
     var colorCode = UTIL.getRandomIntInclusive(0, ZOR.PlayerView.COLORS.length - 1);
     console.log('Player color', ZOR.PlayerView.COLORS[colorCode]);
     connectToServer(playerType, playerName, colorCode);
+    ZOR.UI.state( ZOR.UI.STATES.PLAYING );
 }
 
 // check if nick is valid alphanumeric characters (and underscores)
@@ -47,7 +46,7 @@ function validNick() {
     return regex.exec(playerNameInput.value) !== null;
 }
 
-window.onload = function () {
+window.addEventListener('load', function ZORLoadHandler() {
     'use strict';
 
     ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
@@ -58,6 +57,8 @@ window.onload = function () {
             ZOR.UI.state( ZOR.UI.STATES.LOGIN_SCREEN_ERROR );
         }
     });
+
+    ZOR.UI.on( ZOR.UI.ACTIONS.PAGE_RELOAD, location.reload.bind(location) );
 
     ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_RESPAWN, respawnPlayer );
 
@@ -73,7 +74,7 @@ window.onload = function () {
             }
         }
     });
-};
+});
 
 function respawnPlayer() {
     console.log("Respawning player: ", player.getPlayerId());
@@ -83,8 +84,14 @@ function respawnPlayer() {
 
 function createScene() {
 
-    init();
-    animate();
+    try {
+        init();
+        animate();
+    } catch (e) {
+        console.error('Failed to init game.  Possible WebGL failure.  Original error below.');
+        console.error(e.message);
+        ZOR.UI.state( ZOR.UI.STATES.GAME_INIT_ERROR );
+    }
 
     function init() {
 

@@ -35,6 +35,13 @@
             </div>
             {{ /if }}
 
+            {{ #if state === STATES.GAME_INIT_ERROR }}
+            <div id="game-init-error-screen">
+                <h1>GAME INIT FAILED</h1>
+                <button on-click="{{ ACTIONS.PAGE_RELOAD }}" id="reload-button"><span>Reload</span></button>
+            </div>
+            {{ /if }}
+
         </script>
 
         <!-- FOOD SHADERS -->
@@ -158,6 +165,7 @@
         </script>
 
         <!-- third party -->
+        <script src="./lib/modernizr.min.js"></script>
         <script src="./bower_components/ractive/ractive.js"></script>
         <script src="./bower_components/three.js/build/three.js"></script>
         <script src="./bower_components/three.js/examples/js/renderers/Projector.js"></script>
