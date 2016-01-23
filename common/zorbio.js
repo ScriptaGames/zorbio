@@ -43,7 +43,7 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
      * Tracks which food particles are currently respawning, on the server only!
      * @type {Int32Array}
      */
-    this.food_respawning = new Int32Array( this.foodCount );
+    this.food_respawning = new Int32Array(this.foodCount);
     this.food_respawning_indexes = [];
 
     /**
@@ -110,10 +110,7 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
     // call super class constructor
     ZOR.Actor.call(this);
 
-    // TODO: algorithm to place users initial position, This was copied from agar.io.clone
-    //var position = config.newPlayerInitialPosition == 'farthest' ? util.uniformPosition(users, radius) : util.randomPosition(radius);
-
-    this.type   = ZOR.ActorTypes.PLAYER_SPHERE;
+    this.type = ZOR.ActorTypes.PLAYER_SPHERE;
 
     if (position) {
         this.position = new THREE.Vector3(position.x, position.y, position.z);
@@ -131,7 +128,6 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
         this.velocity = velocity;
     }
 
-    //TODO: make color customizable
     this.color = color;
 
     // maintain a reference to the player who owns this sphere

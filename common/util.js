@@ -225,7 +225,7 @@ UTIL.safeRandomCoordinate = function UTILsafeRandomCoordinate() {
  * @param {Array} others an array of positions of all living players
  * @returns {Vector3} the position recommended for a player
  */
-UTIL.safePlayerPosition = function UTILsafePlayerPosition( others ) {
+UTIL.safePlayerPosition = function UTILsafePlayerPosition() {
     var x = UTIL.safeRandomCoordinate();
     var y = UTIL.safeRandomCoordinate();
     var z = UTIL.safeRandomCoordinate();

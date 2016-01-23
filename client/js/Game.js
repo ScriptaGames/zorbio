@@ -12,7 +12,7 @@ var playerType;
 var playerNameInput = document.getElementById('player-name-input');
 var player;
 
-//TODO: get rid of these globals, refactor into MVC Player and Food controllers
+//TODO: get rid of this globals, refactor into MVC Player and Food controllers
 var playerFogCenter = new THREE.Vector3();
 
 // Game state
@@ -67,7 +67,6 @@ window.onload = function () {
 
         if (key === KEY_ENTER) {
             if (validNick()) {
-                //TODO: allow ZOR.PlayerTypes.SPECTATOR type
                 startGame(ZOR.PlayerTypes.PLAYER);
             } else {
                 ZOR.UI.state( ZOR.UI.STATES.LOGIN_SCREEN_ERROR );
@@ -102,7 +101,6 @@ function createScene() {
 
         initCameraAndPlayer();
 
-        //TODO: refactor this into MVC to get rid of globals
         playerFogCenter.copy(player.view.mainSphere.position);
 
         // food

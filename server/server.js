@@ -175,7 +175,7 @@ io.on('connection', function (socket) {
 
     socket.on('error', function (err) {
         console.error(err.stack);
-        //TODO: handle error cleanup
+        kickPlayer(currentPlayer.id, 'An error occurred with your connection.');
     });
 
     socket.on('disconnect', function () {
@@ -349,7 +349,6 @@ if (config.HEARTBEAT_ENABLE) {
     setInterval(checkHeartbeats, config.HEARTBEAT_CHECK_INTERVAL);
 }
 
-var serverPort = process.env.PORT || config.PORT;
-http.listen(serverPort, function () {
-    console.log("Server is listening on http://localhost:" + serverPort);
+http.listen( config.PORT, function () {
+    console.log("Server is listening on http://localhost:" + config.PORT);
 });

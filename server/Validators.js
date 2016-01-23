@@ -97,7 +97,7 @@ Validators.movement = function () {
                     var maxDiff = oldMaxSpeed - maxSpeed;
                     console.log("avgDiff", avgDiff);
                     console.log("maxDiff", maxDiff);
-                    console.log('maxSpeed, avgSpeed, speed, INIT_SPEED, scale:', maxSpeed, currentAvgSpeed, actualSpeed, config.INITIAL_SPEED_EXPECTED, sphere.scale);
+                    console.log('maxSpeed, avgSpeed, speed, scale:', maxSpeed, currentAvgSpeed, actualSpeed, sphere.scale);
 
                     showAvgDiff = false;
                 }
