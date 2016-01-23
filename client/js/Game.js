@@ -32,11 +32,12 @@ function startGame(type) {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
     playerType = type;
 
+    ZOR.UI.state( ZOR.UI.STATES.PLAYING );
+
     // Connect to the server
     var colorCode = UTIL.getRandomIntInclusive(0, ZOR.PlayerView.COLORS.length - 1);
     console.log('Player color', ZOR.PlayerView.COLORS[colorCode]);
     connectToServer(playerType, playerName, colorCode);
-    ZOR.UI.state( ZOR.UI.STATES.PLAYING );
 }
 
 // check if nick is valid alphanumeric characters (and underscores)

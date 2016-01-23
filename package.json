@@ -14,7 +14,8 @@
   "dependencies": {
     "express": "^4.13.3",
     "socket.io": "^1.3.7",
-    "three.js": "^0.73.0"
+    "three.js": "^0.73.0",
+    "lodash": "~4.0.0"
   },
   "devDependencies": {
     "html-inline": "https://github.com/mwcz/html-inline/archive/node-0.10-compat.tar.gz",

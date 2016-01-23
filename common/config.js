@@ -94,6 +94,12 @@ config.PLAYER_SPHERE_POLYCOUNT = 64; // height and width segments of the spheres
 config.LAG_SCALE_ENABLE        = true; // disable lag scale adjustment until proven
 
 ////////////////////////////////////////////////////////////////////////
+//                      BROWSER FEATURE SETTINGS                      //
+////////////////////////////////////////////////////////////////////////
+
+config.BROWSER_FORCE_DISABLED_FEATURES = []; // these items will be forcibly set to disabled, for testing purposes.  for example, ['json', 'webgl']
+
+////////////////////////////////////////////////////////////////////////
 //                          NODEJS EXPORTER                           //
 ////////////////////////////////////////////////////////////////////////
 

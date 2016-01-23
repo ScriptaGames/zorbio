@@ -36,10 +36,18 @@ ZOR.UI = function ZORUI() {
      */
 
     var uidata = {
-        state   : STATES.INITIAL,
-        STATES  : STATES,
-        ACTIONS : ACTIONS,
-    } ;
+        state            : STATES.INITIAL,
+        STATES           : STATES,
+        ACTIONS          : ACTIONS,
+        MISSING_FEATURES : [],
+    };
+
+    /**
+     * A list of the browser features that are required to run Zorbio.  The
+     * match the names provided by Modernizr.
+     */
+
+    var REQUIRED_FEATURES = [ 'json', 'websockets', 'webgl', 'flexbox' ];
 
     /**
      * The Ractive template engine.  Data + Templates = HTML
@@ -63,7 +71,7 @@ ZOR.UI = function ZORUI() {
      */
 
     function valid_state( newstate ) {
-        return _.contains( _.values( ZOR.UI.STATES ), newstate );
+        return _.includes( _.values( STATES ), newstate );
     }
 
     /**
@@ -87,6 +95,44 @@ ZOR.UI = function ZORUI() {
     function on( event, handler ) {
         engine.on( event, handler );
     }
+
+    /**
+     * Update the UI state with any missing browser features.
+     */
+
+    function validate_browser_features() {
+
+        var missing_feature_names = _.chain(missing_browser_features())
+            .keys()
+            .union(config.BROWSER_FORCE_DISABLED_FEATURES)
+            .value();
+
+        _.assign(uidata.MISSING_FEATURES, missing_feature_names);
+
+        console.log('Missing browser feature(s) found: ' + JSON.stringify(missing_feature_names));
+
+        if (missing_feature_names.length) {
+            state( STATES.GAME_INIT_ERROR );
+        }
+    }
+
+    /**
+     * Get an object representing the browser features we need that came up
+     * false in the Modernizr check.
+     */
+
+    function missing_browser_features() {
+        // find the own (non-inherited properties on the Modernizr object which
+        // have a value of false (omitBy defaults to _.identity which grants us
+        // falsy values only).
+        return _.chain(Modernizr).forOwn().omitBy().value();
+    }
+
+    function init() {
+        validate_browser_features();
+    }
+
+    init();
 
     // public properties of ZOR.UI
 
