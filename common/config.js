@@ -5,7 +5,7 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 
 if (NODEJS) {
     global.self = {}; // threejs expects there to be a global named 'self'... for some reason..
-    global.THREE = require('three.js');
+    global.THREE = require('three');
 }
 
 var config = {};
