@@ -179,8 +179,10 @@ io.on('connection', function (socket) {
     });
 
     socket.on('disconnect', function () {
-        // don't remove player on disconnect, let heartbeat clean them up, this should prevent logout griefing
-        console.log('User ' + currentPlayer.id + ' disconnected');
+        if (currentPlayer.id) {
+            // don't remove player on disconnect, let heartbeat clean them up, this should prevent logout griefing
+            console.log('User ' + currentPlayer.id + ' disconnected');
+        }
     });
 
     socket.on('ping', function () {
