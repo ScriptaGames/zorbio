@@ -105,6 +105,7 @@ ZOR.UI = function ZORUI() {
         var missing_feature_names = _.chain(missing_browser_features())
             .keys()
             .union(config.BROWSER_FORCE_DISABLED_FEATURES)
+            .intersection(REQUIRED_FEATURES)
             .value();
 
         _.assign(uidata.MISSING_FEATURES, missing_feature_names);
