@@ -184,10 +184,6 @@ io.on('connection', function (socket) {
             console.log('User ' + currentPlayer.id + ' disconnected');
         }
     });
-
-    socket.on('ping', function () {
-        socket.emit('pong');
-    });
 });
 
 function sendActorUpdates() {

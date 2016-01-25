@@ -67,11 +67,6 @@ function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
     }
 }
 
-function sendPing() {
-    startPingTime = performance.now();
-    socket.emit('ping');
-}
-
 function sendHeartbeat() {
     socket.emit('playerHeartbeat');
 }
@@ -292,9 +287,8 @@ function setupSocket(socket) {
         }
     });
 
-    socket.on('pong', function pong() {
-        var latency = performance.now() - startPingTime;
-        console.log('Ping: ' + latency.toFixed(2) + 'ms');
+    socket.on('pong', function pong(number) {
+        console.log('Ping: ' + number + 'ms');
     });
 
     /*
