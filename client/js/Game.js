@@ -62,6 +62,7 @@ window.addEventListener('load', function ZORLoadHandler() {
     'use strict';
 
     ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
+
         // check if the nick is valid
         if (validNick()) {
             startGame(ZOR.PlayerTypes.PLAYER);
@@ -75,7 +76,7 @@ window.addEventListener('load', function ZORLoadHandler() {
     ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_RESPAWN, respawnPlayer );
 
     ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_LOGIN_KEYPRESS, function ZORPlayerLoginKeypressHandler(e) {
-        var key = e.which || e.keyCode;
+        var key = e.original.which || e.original.keyCode;
         var KEY_ENTER = 13;
 
         if (key === KEY_ENTER) {
