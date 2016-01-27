@@ -425,7 +425,7 @@ function removePlayerFromGame(playerId) {
             delete zorbioModel.players[playerId];
         }
 
-        console.log('Removed player from game: ', playerId);
+        console.log('Removed player: ', playerId);
     }
 }
 

@@ -179,9 +179,10 @@ io.on('connection', function (socket) {
     });
 
     socket.on('disconnect', function () {
-        if (currentPlayer.id) {
-            // don't remove player on disconnect, let heartbeat clean them up, this should prevent logout griefing
+        if (currentPlayer && currentPlayer.id) {
+            // remove player from the game
             console.log('User ' + currentPlayer.id + ' disconnected');
+            kickPlayer(currentPlayer.id, 'disconnected');
         }
     });
 });
@@ -266,7 +267,7 @@ function kickPlayer(playerId, reason) {
     sockets[playerId].emit('kick', reason);
 
     // notify other clients
-    io.emit('playerKicked', playerId);
+    io.emit('removePlayer', playerId);
 
     removePlayerFromModel(playerId);
     removePlayerSocket(playerId);

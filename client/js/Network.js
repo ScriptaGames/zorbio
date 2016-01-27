@@ -173,10 +173,9 @@ function setupSocket(socket) {
         kicked = true;
     });
 
-    socket.on('playerKicked', function playerKicked(playerId) {
+    socket.on('removePlayer', function playerKicked(playerId) {
         if (!gameStart) return;
 
-        console.log('player kicked', playerId);
         removePlayerFromGame(playerId);
     });
 
