@@ -11,7 +11,8 @@ var interval_id_heartbeat;
 
 function connectToServer(playerType, playerName, color) {
     if (!socket) {
-        socket = io({query: "type=" + playerType + "&name=" + playerName + "&color=" + color});
+        //TODO: make which balancer they use configurable on the client
+        socket = io(config.BALANCER_NA, {query: "type=" + playerType + "&name=" + playerName + "&color=" + color});
         setupSocket(socket);
     }
     sendRespawn(true);
