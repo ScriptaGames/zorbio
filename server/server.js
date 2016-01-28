@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var basicAuth = require('basic-auth');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var config = require('../common/config.js');
@@ -13,19 +14,37 @@ var Zorbio = require('../common/zorbio.js');
 var Validators = require('./Validators.js');
 var UTIL = require('../common/util.js');
 
-// this array holds multiple game instances.  when one fills up, a new one is
-// created.
-//var Zorbios = [];
-
-// max players per game instance
-//var MAX_PLAYERS = 32;
-
 var model = new Zorbio.Model(config.WORLD_SIZE, config.FOOD_DENSITY);
 
 // Define sockets as a hash so we can use string indexes
 var sockets = {};
 
 app.use(express.static(__dirname + '/../' + (process.argv[2] || 'client')));
+
+// Basic Auth
+var auth = function (req, res, next) {
+    var user = basicAuth(req);
+    if (!user || !user.name || !user.pass) {
+        res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+        res.sendStatus(401);
+        return;
+    }
+
+    if (user.name === 'zoruser' && user.pass === 'Z0r-b!0') {
+        next();
+    } else {
+        res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+        res.sendStatus(401);
+    }
+};
+app.all("/api/*", auth);
+
+app.get('/api/players/count', function (req, res) {
+    var playerIds = Object.getOwnPropertyNames(model.players);
+    var count = typeof playerIds.length !== 'undefined' ? playerIds.length : 0;
+    console.log('Sending player count: ', count);
+    res.end( "count: " + count );
+});
 
 io.on('connection', function (socket) {
     console.log("Player connected: ", JSON.stringify(socket.handshake));
@@ -35,11 +54,12 @@ io.on('connection', function (socket) {
     var name = socket.handshake.query.name;
     var color = socket.handshake.query.color;
 
-    // Create the Player
-    var currentPlayer = undefined;
+    var currentPlayer;
 
     socket.on('respawn', function (isFirstSpawn) {
         var position = UTIL.safePlayerPosition();
+
+        // Create the Player
         currentPlayer = new Zorbio.Player(socket.id, name, color, type, position);
 
         socket.emit('welcome', currentPlayer, isFirstSpawn);
