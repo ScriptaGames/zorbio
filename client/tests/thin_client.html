@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>Thin-client</title>
+        <link rel="stylesheet" href="./css/main.css"/>
+    </head>
+
+    <body>
+
+        <h1>Thin client</h1>
+        <h2>Just opens a websocket connection and sends and receives game messages as a normal game client.</h2>
+
+        <!-- third party -->
+        <script src="../bower_components/three.js/build/three.js"></script>
+        <script src="../bower_components/three.js/examples/js/renderers/Projector.js"></script>
+        <script src="../bower_components/three.js/examples/js/renderers/CanvasRenderer.js"></script>
+        <script src="../bower_components/lodash/dist/lodash.min.js"></script>
+        <script src="../bower_components/socket.io/socket.io.js"></script>
+
+        <!-- first party -->
+        <script src="../js/config.js"></script>
+        <script src="../js/FollowOrbitControls.js"></script>
+        <script src="../lib/util.js"></script>
+        <script src="../lib/zorbio.js"></script>
+        <script src="../js/LagScale.js"></script>
+        <script src="../js/Game.js"></script>
+        <script src="../js/PlayerController.js"></script>
+        <script src="../js/PlayerView.js"></script>
+        <script src="../js/FoodController.js"></script>
+        <script src="../js/FoodView.js"></script>
+        <script src="../js/Main.js"></script>
+        <script src="./thin_client.js"></script>
+
+        <script>
+            connectToServer(ZOR.PlayerTypes.PLAYER, 'Jared' + Date.now(), 1);
+        </script>
+
+    </body>
+</html>

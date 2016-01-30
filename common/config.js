@@ -22,7 +22,7 @@ config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //
 ////////////////////////////////////////////////////////////////////////
-config.PORT                     = 80;
+config.PORT                     = 3000;
 config.HEARTBEAT_ENABLE         = true;
 config.HEARTBEAT_TIMEOUT        = 30000; // how long before a client is considered disconnected
 config.HEARTBEAT_CHECK_INTERVAL = 1000;  // server heartbeat test interval
@@ -30,9 +30,9 @@ config.HEARTBEAT_PULSE_INTERVAL = 3000;  // client heartbeat pulse
 config.SERVER_TICK_INTERVAL     = 250;   // General server updates in milliseconds
 config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their position in milliseconds
 config.PENDING_PLAYER_CAPTURE_TTL = 3000;  // how long pending player capture lives before it expires in milliseconds
-config.BALANCER_NA              = 'http://localhost/';
-config.BALANCER_EU              = 'http://eu.zor.bio/';
-config.BALANCER_APAC            = 'http://apac.zor.bio/';
+config.BALANCER_NA              = 'http://localhost';
+config.BALANCER_EU              = 'http://eu.zor.bio';
+config.BALANCER_APAC            = 'http://apac.zor.bio';
 
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
