@@ -10,7 +10,7 @@ var interval_id_heartbeat;
 
 function connectToServer(playerType, playerName, color) {
     if (!socket) {
-        socket = io(config.BALANCER_NA, {query: "type=" + playerType + "&name=" + playerName + "&color=" + color});
+        socket = io(config.BALANCER_NA + ':' + config.PORT, {query: "type=" + playerType + "&name=" + playerName + "&color=" + color});
         setupSocket(socket);
     }
     sendRespawn(true);
