@@ -23,6 +23,7 @@ config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD
 //                          NETWORK SETTINGS                          //
 ////////////////////////////////////////////////////////////////////////
 config.PORT                     = 3000;
+config.MAX_PLAYERS              = 50;
 config.HEARTBEAT_ENABLE         = true;
 config.HEARTBEAT_TIMEOUT        = 30000; // how long before a client is considered disconnected
 config.HEARTBEAT_CHECK_INTERVAL = 1000;  // server heartbeat test interval
