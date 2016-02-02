@@ -420,7 +420,7 @@
 
             }
 
-            if ( config.STEERING_METHOD === config.STEERING_METHODS.SPIN ) {
+            if ( config.STEERING_METHOD === config.STEERING_METHODS.MOUSE_FOLLOW ) {
 
                 if ( scope.enableRotate === false ) return;
 
@@ -482,7 +482,7 @@
         function onMouseDown( event ) {
 
             if ( scope.enabled === false ) return;
-            if ( config.STEERING_METHOD !== config.STEERING_METHODS.DRAG ) return;
+            if ( config.STEERING_METHOD !== config.STEERING_METHODS.MOUSE_DRAG ) return;
 
             event.preventDefault();
 
@@ -524,7 +524,7 @@
             mouseY = event.clientY;
 
             if ( scope.enabled === false ) return;
-            if ( config.STEERING_METHOD !== config.STEERING_METHODS.DRAG ) return;
+            if ( config.STEERING_METHOD !== config.STEERING_METHODS.MOUSE_DRAG ) return;
 
             event.preventDefault();
 
