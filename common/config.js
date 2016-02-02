@@ -51,6 +51,7 @@ config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
     var s = config.MAX_PLAYER_SPEED;
     return s - ((r * s) / config.STATIONARY_RADIUS);
 };
+config.AUTO_RUN_ENABLED      = true;
 config.STEERING_METHODS      = { // enum-ish
     DRAG: 0,
     SPIN: 1, // https://www.desmos.com/calculator/wszojiyufd
