@@ -52,10 +52,10 @@ config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
     return s - ((r * s) / config.STATIONARY_RADIUS);
 };
 config.AUTO_RUN_ENABLED      = true;
-config.STEERING_METHODS      = { // enum-ish
+config.STEERING_METHODS      = Object.freeze({ // enum-ish
     DRAG: 0,
     SPIN: 1, // https://www.desmos.com/calculator/wszojiyufd
-};
+});
 config.STEERING_METHOD       = config.STEERING_METHODS.SPIN;
 
 // settings for the SPIN method of steering
