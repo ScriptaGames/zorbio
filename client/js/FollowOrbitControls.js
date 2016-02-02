@@ -208,7 +208,6 @@
                 }
                 else {
                     if (phi + phiDelta > Math.PI || phi + phiDelta < 0) {
-                        console.log('FLIP!');
                         theta += Math.PI;
                         phi %= Math.PI;
                         scope.upside_down = true;
@@ -382,6 +381,9 @@
 
         var STATE = { NONE : - 1, ROTATE : 0, DOLLY : 1, PAN : 2, TOUCH_ROTATE : 3, TOUCH_DOLLY : 4, TOUCH_PAN : 5 };
 
+        var mouseX = 0;
+        var mouseY = 0;
+
         var state = STATE.NONE;
 
         // for reset
@@ -396,6 +398,10 @@
         var startEvent = { type: 'start' };
         var endEvent = { type: 'end' };
 
+        // for spin steering calculations
+        var spin = new THREE.Vector2();
+
+        var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
         // pass in x,y of change desired in pixel space,
         // right and down are positive
         function pan( deltaX, deltaY ) {
@@ -411,6 +417,30 @@
             if ( this.autoRotate && state === STATE.NONE ) {
 
                 constraint.rotateLeft( getAutoRotationAngle() );
+
+            }
+
+            if ( config.STEERING_METHOD === config.STEERING_METHODS.SPIN ) {
+
+                if ( scope.enableRotate === false ) return;
+
+                spin.setX( element.clientWidth  / 2 - mouseX );
+                spin.setY( element.clientHeight / 2 - mouseY );
+
+                var r = spin.length();
+
+                spin.normalize().multiplyScalar( slopewell( r ) );
+
+                rotateEnd.copy( spin );
+                rotateDelta.subVectors( rotateEnd, rotateStart );
+
+                // rotating across whole screen goes 360 degrees around
+                constraint.rotateLeft( spin.x );
+
+                // rotating up and down along whole screen attempts to go 360, but limited to 180
+                constraint.rotateUp( spin.y );
+
+                rotateStart.copy( rotateEnd );
 
             }
 
@@ -452,6 +482,7 @@
         function onMouseDown( event ) {
 
             if ( scope.enabled === false ) return;
+            if ( config.STEERING_METHOD !== config.STEERING_METHODS.DRAG ) return;
 
             event.preventDefault();
 
@@ -462,14 +493,6 @@
                 state = STATE.ROTATE;
 
                 rotateStart.set( event.clientX, event.clientY );
-
-            } else if ( event.button === scope.mouseButtons.ZOOM ) {
-
-                if ( scope.enableZoom === false ) return;
-
-                state = STATE.DOLLY;
-
-                dollyStart.set( event.clientX, event.clientY );
 
             } else if ( event.button === scope.mouseButtons.PAN ) {
 
@@ -491,9 +514,17 @@
 
         }
 
+        function slopewell( r ) {
+            return config.STEERING_SPIN_SLOPE * ( r - config.STEERING_SPIN_WELL );
+        }
+
         function onMouseMove( event ) {
 
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+
             if ( scope.enabled === false ) return;
+            if ( config.STEERING_METHOD !== config.STEERING_METHODS.DRAG ) return;
 
             event.preventDefault();
 
@@ -791,6 +822,7 @@
         this.domElement.addEventListener( 'contextmenu', contextmenu, false );
 
         this.domElement.addEventListener( 'mousedown', onMouseDown, false );
+        this.domElement.addEventListener( 'mousemove', onMouseMove, false );
         this.domElement.addEventListener( 'mousewheel', onMouseWheel, false );
         this.domElement.addEventListener( 'MozMousePixelScroll', onMouseWheel, false ); // firefox
 

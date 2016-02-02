@@ -1,3 +1,8 @@
+// this is here to prep for modularizing (de-globalifying) this file
+var ZOR = ZOR || {};
+
+ZOR.Game = {};
+
 // Scene and canvas
 var scene;
 var canvas = document.getElementById('render-canvas');
@@ -20,9 +25,7 @@ var players = {};
 var gameStart = false;
 var kicked = false;
 var disconnected = false;
-var foodController = undefined;
-
-var renderer;
+var foodController;
 
 // Model that represents the game state shared with server
 var zorbioModel;
@@ -114,10 +117,10 @@ function createScene() {
             scene.fog = new THREE.Fog( config.FOG_COLOR, config.FOG_NEAR, config.FOG_FAR );
         }
 
-        renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
-        renderer.setClearColor( config.FOG_COLOR );
-        renderer.setPixelRatio( window.devicePixelRatio );
-        renderer.setSize( window.innerWidth, window.innerHeight );
+        ZOR.Game.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
+        ZOR.Game.renderer.setClearColor( config.FOG_COLOR );
+        ZOR.Game.renderer.setPixelRatio( window.devicePixelRatio );
+        ZOR.Game.renderer.setSize( window.innerWidth, window.innerHeight );
 
         initCameraAndPlayer();
 
@@ -161,7 +164,7 @@ function createScene() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
 
-        renderer.setSize( window.innerWidth, window.innerHeight );
+        ZOR.Game.renderer.setSize( window.innerWidth, window.innerHeight );
     }
 
     function animate() {
@@ -195,7 +198,7 @@ function createScene() {
 
     function render() {
 
-        renderer.render( scene, camera );
+        ZOR.Game.renderer.render( scene, camera );
 
     }
 }
@@ -209,7 +212,7 @@ function initCameraAndPlayer() {
         config.WORLD_HYPOTENUSE + 100 // world hypot plus a little extra for camera distance
     );
 
-    camera_controls = new THREE.FollowOrbitControls( camera, renderer.domElement );
+    camera_controls = new THREE.FollowOrbitControls( camera, ZOR.Game.renderer.domElement );
     camera_controls.enableDamping = true;
     camera_controls.dampingFactor = 0.25;
     camera_controls.enableZoom = false;
@@ -301,7 +304,7 @@ function updateActors() {
                 var otherPlayer = players[actor.playerId];
                 if (otherPlayer.view) {
                     // update players sphere position
-                    otherPlayer.updatePosition(actor.position, scene, camera, renderer);
+                    otherPlayer.updatePosition(actor.position, scene, camera, ZOR.Game.renderer);
                     otherPlayer.setScale(actor.scale);
                 }
             }

@@ -51,7 +51,15 @@ config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
     var s = config.MAX_PLAYER_SPEED;
     return s - ((r * s) / config.STATIONARY_RADIUS);
 };
-config.AUTO_RUN_ENABLED      = true;
+config.STEERING_METHODS      = { // enum-ish
+    DRAG: 0,
+    SPIN: 1, // https://www.desmos.com/calculator/wszojiyufd
+};
+config.STEERING_METHOD       = config.STEERING_METHODS.DRAG;
+
+// settings for the SPIN method of steering
+config.STEERING_SPIN_WELL  = 100; // pixel radius of well (or deadzone) in center of screen
+config.STEERING_SPIN_SLOPE = 0.00004; // rate at which rotation increases once outside the well
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
