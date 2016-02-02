@@ -1,0 +1,32 @@
+{{ #if state === STATES.LOGIN_SCREEN || state === STATES.LOGIN_SCREEN_ERROR }}
+<div id="start-menu" >
+    <p>ZOR.BIO</p>
+    <input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" tabindex="0" autofocus placeholder="Enter your name here" id="player-name-input"/>
+    {{ #if state === STATES.LOGIN_SCREEN_ERROR }}
+    <b class="error-text">Nick name must be alphanumeric characters only!</b>
+    {{ /if }}
+    <button on-click="{{ ACTIONS.PLAYER_LOGIN }}" id="start-button"><span>Play</span></button>
+</div>
+{{ /if }}
+
+{{ #if state === STATES.RESPAWN_SCREEN }}
+<div id="death-screen">
+    <p>YOU WERE EATEN!</p>
+    <button on-click="{{ ACTIONS.PLAYER_RESPAWN }}" id="respawn-button"><span>Respawn</span></button>
+</div>
+{{ /if }}
+
+{{ #if state === STATES.GAME_INIT_ERROR }}
+<div id="game-init-error-screen">
+    <h1>GAME INIT FAILED</h1>
+    {{ #if MISSING_FEATURES }}
+    <p class="error-text">These features are required to play Zorbio, but are not supported by your browser.</p>
+    <ul>
+        {{ #each MISSING_FEATURES:i }}
+        <li>{{ MISSING_FEATURES[i] }}</li>
+        {{ /each }}
+    </ul>
+    {{ /if }}
+    <button on-click="{{ ACTIONS.PAGE_RELOAD }}" id="reload-button"><span>Reload</span></button>
+</div>
+{{ /if }}

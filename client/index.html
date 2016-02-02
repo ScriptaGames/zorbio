@@ -15,162 +15,19 @@
 
         <!-- UI TEMPLATES -->
 
-        <script id="ui-template" type="text/ractive">
-
-            {{ #if state === STATES.LOGIN_SCREEN || state === STATES.LOGIN_SCREEN_ERROR }}
-            <div id="start-menu" >
-                <p>ZOR.BIO</p>
-                <input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" tabindex="0" autofocus placeholder="Enter your name here" id="player-name-input"/>
-                {{ #if state === STATES.LOGIN_SCREEN_ERROR }}
-                <b class="error-text">Nick name must be alphanumeric characters only!</b>
-                {{ /if }}
-                <button on-click="{{ ACTIONS.PLAYER_LOGIN }}" id="start-button"><span>Play</span></button>
-            </div>
-            {{ /if }}
-
-            {{ #if state === STATES.RESPAWN_SCREEN }}
-            <div id="death-screen">
-                <p>YOU WERE EATEN!</p>
-                <button on-click="{{ ACTIONS.PLAYER_RESPAWN }}" id="respawn-button"><span>Respawn</span></button>
-            </div>
-            {{ /if }}
-
-            {{ #if state === STATES.GAME_INIT_ERROR }}
-            <div id="game-init-error-screen">
-                <h1>GAME INIT FAILED</h1>
-                {{ #if MISSING_FEATURES }}
-                <p class="error-text">These features are required to play Zorbio, but are not supported by your browser.</p>
-                <ul>
-                    {{ #each MISSING_FEATURES:i }}
-                    <li>{{ MISSING_FEATURES[i] }}</li>
-                    {{ /each }}
-                </ul>
-                {{ /if }}
-                <button on-click="{{ ACTIONS.PAGE_RELOAD }}" id="reload-button"><span>Reload</span></button>
-            </div>
-            {{ /if }}
-
-        </script>
+        <script id="ui-template" src="templates/main.html" type="text/ractive"></script>
 
         <!-- FOOD SHADERS -->
 
-        <script type="x-shader/x-vertex" id="food-vertex-shader">
+        <script type="x-shader/x-vertex" src="shaders/food.vert" id="food-vertex-shader"></script>
 
-            uniform float size;
-            uniform vec3 mainSpherePos;
-
-            attribute vec3 ca;
-            attribute float respawning;
-
-            varying vec3 vColor;
-            varying float vRespawning;
-            varying float sDist;
-            varying float vDist;
-
-            void main() {
-
-                vRespawning = respawning;
-                vColor      = ca;
-
-                vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-
-                vDist = length( mvPosition.xyz ); // distance from camera
-
-                sDist = length( position - mainSpherePos ); // distance from sphere to particle
-
-                // point size is relative to distance from camera
-                gl_PointSize = size / vDist;
-
-                gl_Position = projectionMatrix * mvPosition;
-
-            }
-
-        </script>
-
-        <script type="x-shader/x-fragment" id="food-fragment-shader">
-
-            uniform vec3 color;
-            uniform sampler2D texture;
-            uniform float FOG_ENABLED;
-            uniform float FOG_FAR;
-
-            varying vec3 vColor;
-            varying float vRespawning;
-            varying float sDist;
-
-            void main() {
-
-                float fogp = 1.0;
-
-                // when food's respawning value is > 0.0, it's still counting
-                // down to respawn
-                if ( vRespawning > 0.0 ) discard;
-
-                if ( FOG_ENABLED != 0.0 ) {
-                    fogp = 1.0 - sDist / FOG_FAR;
-                }
-
-                gl_FragColor = vec4( fogp * vColor, 1.0 );
-
-                // texture2D( texture, gl_PointCoord );
-
-            }
-
-        </script>
+        <script type="x-shader/x-fragment" src="shaders/food.frag" id="food-fragment-shader"></script>
 
         <!-- SPHERE SHADERS -->
 
-        <script type="x-shader/x-vertex" id="sphere-vertex-shader">
-            uniform vec3 color;
-            uniform vec3 cameraPos;
-            uniform vec3 mainSpherePos;
-            uniform vec3 spherePos;
+        <script type="x-shader/x-vertex" src="shaders/sphere.vert" id="sphere-vertex-shader"></script>
 
-            uniform float c;
-            uniform float p;
-
-            uniform float FOG_ENABLED;
-            uniform float FOG_FAR;
-
-            varying float intensity;
-            varying float sDist;
-
-            void main() {
-                vec3 viewVector = cameraPos - spherePos;
-                vec3 vNormal = normalize( normalMatrix * normal );
-                vec3 vNormel = normalize( normalMatrix * viewVector );
-                intensity = pow( c - dot(vNormal, vNormel), p );
-
-                vec4 mMainSpherePos = modelViewMatrix * vec4( mainSpherePos, 1.0 );
-                vec4 mSpherePos = modelViewMatrix * vec4( spherePos, 1.0 );
-
-                sDist = length( mainSpherePos - spherePos ); // distance from main sphere to this sphere
-
-                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-            }
-        </script>
-
-        <script type="x-shader/x-fragment" id="sphere-fragment-shader">
-            uniform vec3 color;
-            uniform float FOG_ENABLED;
-            uniform float FOG_FAR;
-
-            varying float intensity;
-            varying float sDist;
-
-            void main() {
-
-                float fogp = 1.0;
-
-                if ( FOG_ENABLED != 0.0 ) {
-                    fogp = 1.0 - sDist / FOG_FAR;
-                }
-
-                float strength = intensity * fogp; // min( fogp, intensity );
-
-                gl_FragColor = vec4( color, strength );
-            }
-        </script>
+        <script type="x-shader/x-fragment" src="shaders/sphere.frag" id="sphere-fragment-shader"></script>
 
         <!-- third party -->
         <script src="./lib/modernizr.min.js"></script>
@@ -197,15 +54,6 @@
         <script src="./js/Main.js"></script>
         <script src="./js/Network.js"></script>
 
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-            ga('create', 'UA-73203609-1', 'auto');
-            ga('send', 'pageview');
-
-        </script>
+        <script src="./lib/ga.js"></script>
     </body>
 </html>
