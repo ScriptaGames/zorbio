@@ -56,10 +56,10 @@ config.STEERING_METHODS      = { // enum-ish
     DRAG: 0,
     SPIN: 1, // https://www.desmos.com/calculator/wszojiyufd
 };
-config.STEERING_METHOD       = config.STEERING_METHODS.DRAG;
+config.STEERING_METHOD       = config.STEERING_METHODS.SPIN;
 
 // settings for the SPIN method of steering
-config.STEERING_SPIN_WELL  = 100; // pixel radius of well (or deadzone) in center of screen
+config.STEERING_SPIN_WELL  = 15; // pixel radius of well (or deadzone) in center of screen
 config.STEERING_SPIN_SLOPE = 0.00004; // rate at which rotation increases once outside the well
 
 ////////////////////////////////////////////////////////////////////////

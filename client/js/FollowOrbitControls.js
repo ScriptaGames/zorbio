@@ -515,7 +515,7 @@
         }
 
         function slopewell( r ) {
-            return config.STEERING_SPIN_SLOPE * ( r - config.STEERING_SPIN_WELL );
+            return Math.min(0, -1 * config.STEERING_SPIN_SLOPE * ( r - config.STEERING_SPIN_WELL ));
         }
 
         function onMouseMove( event ) {
