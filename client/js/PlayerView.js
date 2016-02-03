@@ -24,7 +24,6 @@ ZOR.PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
             "c"           : { type : "f",  value : 1.41803 },
             "p"           : { type : "f",  value : 2.71828 },
             color         : { type : "c",  value : new THREE.Color(this.playerColor) },
-            cameraPos     : { type : "v3", value : camera.position },
             spherePos     : { type : "v3", value : actor.position },
             mainSpherePos : { type : "v3", value : playerFogCenter },
             FOG_FAR       : { type : "f",  value : config.FOG_FAR },
@@ -55,7 +54,6 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 };
 
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera) {
-    this.material.uniforms.cameraPos.value = camera.position;
 };
 
 ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position, scene, camera, renderer) {

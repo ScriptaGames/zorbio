@@ -128,7 +128,6 @@
 
         <script type="x-shader/x-vertex" id="sphere-vertex-shader">
             uniform vec3 color;
-            uniform vec3 cameraPos;
             uniform vec3 mainSpherePos;
             uniform vec3 spherePos;
 
@@ -142,7 +141,7 @@
             varying float sDist;
 
             void main() {
-                vec3 viewVector = cameraPos - spherePos;
+                vec3 viewVector = cameraPosition - spherePos;
                 vec3 vNormal = normalize( normalMatrix * normal );
                 vec3 vNormel = normalize( normalMatrix * viewVector );
                 intensity = pow( c - dot(vNormal, vNormel), p );
