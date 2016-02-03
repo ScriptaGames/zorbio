@@ -62,13 +62,13 @@ var FoodView = function ZORFoodView() {
                 size          : { type : "f", value  : 3000 },
                 mainSpherePos : { type : "v3", value : fogCenterPosition },
                 FOG_FAR       : { type : "f", value  : config.FOG_FAR },
-                FOG_ENABLED   : { type : "f", value  : ~~config.FOG_ENABLED }
+                FOG_ENABLED   : { type : "f", value  : ~~config.FOG_ENABLED },
+                ALPHA_ENABLED : { type : "f", value  : ~~config.PARTICLE_ALPHA_ENABLED },
             },
-            vertexShader:   document.getElementById( 'food-vertex-shader' ).textContent,
-            fragmentShader: document.getElementById( 'food-fragment-shader' ).textContent,
-            transparent:    false,
-            depthTest:      true
-
+            vertexShader   : document.getElementById( 'food-vertex-shader' ).textContent,
+            fragmentShader : document.getElementById( 'food-fragment-shader' ).textContent,
+            transparent    : config.PARTICLE_ALPHA_ENABLED,
+            blending       : THREE.AdditiveBlending,
         });
 
         this.particleSystem = new THREE.Points( this.geometry, this.material );

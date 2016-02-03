@@ -34,8 +34,10 @@ ZOR.PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
         fragmentShader: document.getElementById( 'sphere-fragment-shader' ).textContent,
         transparent: true
     } );
-    this.material.transparent = true;
-    this.material.depthTest = true;
+
+    if (config.PARTICLE_ALPHA_ENABLED) {
+        this.material.depthWrite = true;
+    }
 
     this.mainSphere = new THREE.Mesh( this.geometry, this.material );
     this.mainSphere.position.copy(actor.position);

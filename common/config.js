@@ -104,7 +104,8 @@ config.WALL_GRID_SEGMENTS      = 20;
 config.INITIAL_FOV             = 50;
 config.PLAYER_MOVE_LERP_WEIGHT = 0.4;
 config.PLAYER_SPHERE_POLYCOUNT = 64; // height and width segments of the spheres
-config.LAG_SCALE_ENABLE        = true; // disable lag scale adjustment until proven
+config.PARTICLE_ALPHA_ENABLED  = false;
+config.LAG_SCALE_ENABLE        = true;
 
 ////////////////////////////////////////////////////////////////////////
 //                      BROWSER FEATURE SETTINGS                      //

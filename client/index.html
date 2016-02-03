@@ -93,6 +93,7 @@
             uniform sampler2D texture;
             uniform float FOG_ENABLED;
             uniform float FOG_FAR;
+            uniform float ALPHA_ENABLED;
 
             varying vec3 vColor;
             varying float vRespawning;
@@ -101,6 +102,7 @@
             void main() {
 
                 float fogp = 1.0;
+                float alpha = 1.0;
 
                 // when food's respawning value is > 0.0, it's still counting
                 // down to respawn
@@ -110,7 +112,11 @@
                     fogp = 1.0 - sDist / FOG_FAR;
                 }
 
-                gl_FragColor = vec4( fogp * vColor, 1.0 );
+                if ( ALPHA_ENABLED != 0.0 ) {
+                    alpha = fogp - 0.3;
+                }
+
+                gl_FragColor = vec4( fogp * vColor, alpha );
 
                 // texture2D( texture, gl_PointCoord );
 
