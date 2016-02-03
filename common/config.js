@@ -56,7 +56,7 @@ config.STEERING_METHODS      = Object.freeze({ // enum-ish
     MOUSE_DRAG: 0,
     MOUSE_FOLLOW: 1 // https://www.desmos.com/calculator/wszojiyufd
 });
-config.STEERING_METHOD       = config.STEERING_METHODS.MOUSE_DRAG;
+config.STEERING_METHOD       = config.STEERING_METHODS.MOUSE_FOLLOW;
 
 // settings for the MOUSE_FOLLOW method of steering
 config.STEERING_SPIN_WELL  = 15; // pixel radius of well (or deadzone) in center of screen

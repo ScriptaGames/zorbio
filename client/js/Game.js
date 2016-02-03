@@ -90,6 +90,13 @@ window.addEventListener('load', function ZORLoadHandler() {
             }
         }
     });
+
+    // init mobile
+    if (isMobile.any) {
+        // mobile must always use drag steering
+        config.STEERING_METHOD   = config.STEERING_METHODS.MOUSE_DRAG;
+    }
+
 });
 
 function respawnPlayer() {
