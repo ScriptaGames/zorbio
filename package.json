@@ -8,7 +8,7 @@
     "start": "node server/server.js",
     "start-prod": "node server/server.js dist",
     "css": "lessc client/css/main.less client/css/main.css",
-    "build": "bash build.sh"
+    "build": "bash build.sh 1"
   },
   "author": "Scripta Games, Inc.",
   "dependencies": {
