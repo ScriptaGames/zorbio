@@ -4,6 +4,7 @@ var basicAuth = require('basic-auth');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var config = require('../common/config.js');
+var pjson = require('../package.json');
 
 // Load ThreeJS, so we have access to the same vector and matrix functions the
 // client uses
@@ -369,5 +370,5 @@ if (config.HEARTBEAT_ENABLE) {
 }
 
 http.listen( config.PORT, function () {
-    console.log("Server is listening on http://localhost:" + config.PORT);
+    console.log("Zorbio v" + pjson.version + " is listening on http://localhost:" + config.PORT);
 });
