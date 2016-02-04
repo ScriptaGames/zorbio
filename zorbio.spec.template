@@ -29,6 +29,7 @@ cp -pr common %{buildroot}%{_datarootdir}/games/%{name}/common
 cp -pr dist %{buildroot}%{_datarootdir}/games/%{name}/dist
 cp -pr server %{buildroot}%{_datarootdir}/games/%{name}/server
 cp -pr node_modules %{buildroot}%{_datarootdir}/games/%{name}/node_modules
+cp package.json %{buildroot}%{_datarootdir}/games/%{name}/
 cp zorbio.service %{buildroot}%{_unitdir}/
 
 %files
