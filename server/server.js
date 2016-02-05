@@ -370,5 +370,5 @@ if (config.HEARTBEAT_ENABLE) {
 }
 
 http.listen( config.PORT, function () {
-    console.log("Zorbio v" + pjson.version + " is listening on http://localhost:" + config.PORT);
+    console.log("Zorbio v" + pjson.version + "-" + pjson.build + " is listening on http://localhost:" + config.PORT);
 });
