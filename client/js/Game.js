@@ -94,7 +94,7 @@ window.addEventListener('load', function ZORLoadHandler() {
     // init mobile
     if (isMobile.any) {
         // mobile must always use drag steering
-        config.STEERING_METHOD   = config.STEERING_METHODS.MOUSE_DRAG;
+        config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
     }
 
 });
@@ -219,21 +219,25 @@ function initCameraAndPlayer() {
         config.WORLD_HYPOTENUSE + 100 // world hypot plus a little extra for camera distance
     );
 
-    camera_controls = new THREE.FollowOrbitControls( camera, ZOR.Game.renderer.domElement );
-    camera_controls.enableDamping = true;
-    camera_controls.dampingFactor = 0.25;
-    camera_controls.enableZoom = false;
+    camera_controls = new THREE.TrackballControls( camera, ZOR.Game.renderer.domElement );
+    camera_controls.staticMoving = true;
+    camera_controls.noZoom = false;
+    camera_controls.noPan = true;
+    camera_controls.dynamicDampingFactor = 0.0;
+    camera_controls.rotateSpeed = config.STEERING.SPEED;
     camera_controls.minDistance = config.INITIAL_CAMERA_DISTANCE;
     camera_controls.maxDistance = config.INITIAL_CAMERA_DISTANCE;
-    // controls.minPolarAngle = Infinity; // radians
-    // controls.maxPolarAngle = -Infinity; // radians
+
+    // camera_controls.enableDamping = true;
+    // camera_controls.dampingFactor = 0.25;
+    // camera_controls.enableZoom = false;
 
     // sphere
     // Create the player view and adds the player sphere to the scene
     player.initView(player.model.sphere, scene);
 
-    // camera
-    camera_controls.target = player.view.mainSphere;
+    // follow the main sphere
+    camera_controls.target = player.view.mainSphere.position;
 
     // move camera so that the player is facing towards the origin each time
     // they spawn
