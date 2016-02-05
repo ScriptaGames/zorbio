@@ -32,3 +32,41 @@ rm -f zorbio.spec
 cp zorbio.spec.template zorbio.spec
 sed -i "s/VERSION/$VERSION/g" zorbio.spec
 sed -i "s/BUILD/$BUILD/g" zorbio.spec
+
+
+###############################################
+# Build the rpm
+###############################################
+echo "Building the rpm"
+cp zorbio.spec ~/rpmbuild/SPECS/
+# save a copy of the current node_modules
+mv node_modules node_modules_orig
+
+# remove current node modules to get rid of dev dependancies
+rm -rf node_modules
+
+# Install only production dependancies
+echo "Install production dependancies"
+npm install --production
+
+# Tar up the source for the rpm build
+echo "tar source"
+cd ../
+tar czf ~/rpmbuild/SOURCES/zorbio.tar.gz zorbio/
+
+# Restore original node_modules
+echo "clean up node modules"
+cd -
+rm -rf node_modules
+mv node_modules_orig node_modules
+
+# Finally build the rpm
+echo "bulding the rpm"
+cd ~/rpmbuild
+rpmbuild -bb SPECS/zorbio.spec
+
+
+# Upload the rpm and update the yum repo database
+if [ "$1" = "--upload" ]; then
+    echo "upload: $1"
+fi
