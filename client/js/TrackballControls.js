@@ -44,6 +44,7 @@ THREE.TrackballControls = function ( object, domElement ) {
     // internals
 
     this.target = new THREE.Vector3();
+    this.follow_controls_on = config.STEERING.NAME === 'FOLLOW';
 
     var EPS = 0.000001;
 
@@ -165,7 +166,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
         return function rotateCamera() {
 
-            if (config.STEERING.NAME === 'FOLLOW') {
+            if (this.follow_controls_on) {
                 spin.set( _moveCurr.x, _moveCurr.y );
 
                 var dist_from_center = spin.length();
@@ -412,8 +413,6 @@ THREE.TrackballControls = function ( object, domElement ) {
 
     function mousedown( event ) {
 
-        var follow_controls_on = config.STEERING.NAME === 'FOLLOW';
-
         if ( _this.enabled === false ) return;
 
         event.preventDefault();
@@ -442,7 +441,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
         }
 
-        if (!follow_controls_on) {
+        if (!this.follow_controls_on) {
             document.addEventListener( 'mousemove', mousemove, false );
             document.addEventListener( 'mouseup', mouseup, false );
         }
@@ -458,9 +457,7 @@ THREE.TrackballControls = function ( object, domElement ) {
         event.preventDefault();
         event.stopPropagation();
 
-        var follow_controls_on = config.STEERING.NAME === 'FOLLOW';
-
-        if ( _state === STATE.ROTATE && ! _this.noRotate || follow_controls_on) {
+        if ( _state === STATE.ROTATE && ! _this.noRotate || this.follow_controls_on ) {
 
             _movePrev.copy( _moveCurr );
             _moveCurr.copy( getMouseOnCircle( event.pageX, event.pageY ) );
@@ -479,7 +476,6 @@ THREE.TrackballControls = function ( object, domElement ) {
 
     function mouseup( event ) {
 
-        var follow_controls_on = config.STEERING.NAME === 'FOLLOW';
 
         if ( _this.enabled === false ) return;
 
@@ -488,7 +484,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
         _state = STATE.NONE;
 
-        if (!follow_controls_on) {
+        if (!this.follow_controls_on) {
             document.removeEventListener( 'mousemove', mousemove );
             document.removeEventListener( 'mouseup', mouseup );
         }
