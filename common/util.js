@@ -205,6 +205,17 @@ UTIL.adjustVelocityWallHit = function UTILadjustVelocityWallHit( p, r, v, w ) {
 };
 
 /**
+ * For the 'FOLLOW' steering mode, given a distance from the center of the
+ * screen, calculate how quickly the camera should turn.
+ *
+ * @param {Number} r percentage distance from center of the screen, for example
+ * 0.5 would mean halfway between screen center and screen edge.
+ */
+UTIL.slopewell = function slopewell( r ) {
+    return Math.max(0, ( -config.STEERING.WELL + r ) / config.STEERING.SLOPE);
+}
+
+/**
  * Get a random world coordinate which a sphere could be placed in.  Because
  * the world is a cube, the coordinate can be used on any axis.
  *

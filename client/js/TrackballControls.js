@@ -5,10 +5,6 @@
  * @author Luca Antiga  / http://lantiga.github.io
  */
 
-function slopewell( r ) {
-    return Math.max(0, ( -config.STEERING.WELL + r ) / config.STEERING.SLOPE);
-}
-
 THREE.TrackballControls = function ( object, domElement ) {
 
     var _this = this;
@@ -171,7 +167,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
                 var dist_from_center = spin.length();
 
-                spin.normalize().multiplyScalar( slopewell( dist_from_center ) );
+                spin.normalize().multiplyScalar( UTIL.slopewell( dist_from_center ) );
                 moveDirection.set( spin.x, spin.y, 0 );
                 _movePrev.set( 0, 0 );
                 angle += moveDirection.length();
