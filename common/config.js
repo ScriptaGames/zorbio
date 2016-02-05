@@ -73,6 +73,7 @@ config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
 
 config.FOOD_DENSITY                = 10;    // How much food there is, total food = this number cubed
 config.FOOD_VALUE                  = 0.8;   // amount to increase sphere by when food is consumed
+config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
 config.FOOD_CAPTURE_ASSIST         = 2;     // this number is added to player's radius for food capturing
 config.FOOD_COLORING_TYPE          = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][3];

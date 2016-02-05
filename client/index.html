@@ -70,6 +70,7 @@
             varying float vRespawning;
             varying float sDist;
             varying float vDist;
+            varying float vGrowing;
 
             void main() {
 
@@ -83,6 +84,7 @@
                 sDist = length( position - mainSpherePos ); // distance from sphere to particle
 
                 float growing = 1.0 - respawning / FOOD_RESPAWN_ANIM_DURATION;
+                vGrowing = growing;
 
                 // point size is relative to distance from camera
                 gl_PointSize =  growing * ( size / vDist );
@@ -105,6 +107,7 @@
             varying vec3 vColor;
             varying float vRespawning;
             varying float sDist;
+            varying float vGrowing;
 
             void main() {
 
@@ -121,6 +124,7 @@
 
                 if ( ALPHA_ENABLED != 0.0 ) {
                     alpha = fogp - 0.3;
+                    alpha *= vGrowing;
                 }
 
                 gl_FragColor = vec4( fogp * vColor, alpha );

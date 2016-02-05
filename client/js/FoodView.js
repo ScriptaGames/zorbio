@@ -105,10 +105,7 @@ var FoodView = function ZORFoodView() {
      * @param fi
      */
     this.hideFood = function ZORFoodViewHideFood(fi) {
-        if (typeof this.respawning[fi] !== 'undefined') {
-            this.respawning[fi] = config.FOOD_RESPAWN_ANIM_DURATION + 1; // hide food
-            this.particleSystem.geometry.attributes.respawning.needsUpdate = true;
-        }
+        this.respawning[fi] = config.FOOD_RESPAWN_ANIM_DURATION + 1; // hide food
     };
 
 
@@ -117,20 +114,13 @@ var FoodView = function ZORFoodView() {
      * @param fi
      */
     this.showFood = function ZORFoodViewShowFood(fi) {
-        if (typeof this.respawning[fi] !== 'undefined') {
-            this.respawning[fi] = config.FOOD_RESPAWN_ANIM_DURATION;
-            this.particleSystem.geometry.attributes.respawning.needsUpdate = true;
-        }
+        this.respawning[fi] = config.FOOD_RESPAWN_ANIM_DURATION;
     };
 
     /**
      * Hide multiple foods
      */
     this.hideFoodMultiple = function ZORFoodViewHideFoodMultiple(foodToHide) {
-        // hide all food in the array
-        for (var i = 0, l = foodToHide.length; i < l; i++) {
-            this.respawning[foodToHide[i]] = 1; // hide food
-        }
-        this.particleSystem.geometry.attributes.respawning.needsUpdate = true;
+        _.each( foodToHide, this.hideFood.bind(this) );
     };
 };
