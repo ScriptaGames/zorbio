@@ -10,7 +10,7 @@ echo "dist/index.html written"
 
 # generate the RPM spec file
 VERSION="$(util/jsawk 'return this.version' < package.json)"
-BUILD=$1
+BUILD="$(util/jsawk 'return this.build' < package.json)"
 rm -f zorbio.spec
 cp zorbio.spec.template zorbio.spec
 sed -i "s/VERSION/$VERSION/g" zorbio.spec
