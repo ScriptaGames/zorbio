@@ -52,17 +52,20 @@ config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
     return s - ((r * s) / config.STATIONARY_RADIUS);
 };
 config.AUTO_RUN_ENABLED      = true;
-config.STEERING_SENSITIVITY  = 0.3; // higher makes camera move faster
 config.STEERING_METHODS      = Object.freeze({ // enum-ish
-    MOUSE_DRAG: 0,
-    MOUSE_FOLLOW: 1
+    MOUSE_DRAG: {
+        NAME: 'DRAG',
+        SPEED : 4.0,
+    },
+    MOUSE_FOLLOW: {
+        // https://www.desmos.com/calculator/wszojiyufd
+        NAME  : 'FOLLOW',
+        WELL  : 0.01, // mouse follow deadzone, defined as percentage distance from screen center
+        SLOPE : 10,   // rate at which rotation increases once outside the well
+        SPEED : 0.3,  // higher makes camera rotate faster
+    },
 });
-config.STEERING_METHOD       = config.STEERING_METHODS.MOUSE_FOLLOW;
-
-// settings for the MOUSE_FOLLOW method of steering
-// https://www.desmos.com/calculator/wszojiyufd
-config.STEERING_SPIN_WELL  = 0.01; // mouse follow deadzone, defined as percentage distance from screen center
-config.STEERING_SPIN_SLOPE = 10; // rate at which rotation increases once outside the well
+config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //

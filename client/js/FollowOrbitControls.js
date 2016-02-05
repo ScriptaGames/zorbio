@@ -420,7 +420,7 @@
 
             }
 
-            if ( config.STEERING_METHOD === config.STEERING_METHODS.MOUSE_FOLLOW ) {
+            if ( config.STEERING.NAME === 'FOLLOW' ) {
 
                 if ( scope.enableRotate === false ) return;
 
@@ -482,7 +482,7 @@
         function onMouseDown( event ) {
 
             if ( scope.enabled === false ) return;
-            if ( config.STEERING_METHOD !== config.STEERING_METHODS.MOUSE_DRAG ) return;
+            if ( config.STEERING.NAME !== 'DRAG' ) return;
 
             event.preventDefault();
 
@@ -515,7 +515,7 @@
         }
 
         function slopewell( r ) {
-            return Math.min(0, -1 * config.STEERING_SPIN_SLOPE * ( r - config.STEERING_SPIN_WELL ));
+            return Math.min(0, -1 * config.STEERING.SLOPE * ( r - config.STEERING.WELL ));
         }
 
         function onMouseMove( event ) {
@@ -524,7 +524,7 @@
             mouseY = event.clientY;
 
             if ( scope.enabled === false ) return;
-            if ( config.STEERING_METHOD !== config.STEERING_METHODS.MOUSE_DRAG ) return;
+            if ( config.STEERING.NAME !== 'DRAG' ) return;
 
             event.preventDefault();
 

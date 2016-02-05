@@ -94,7 +94,7 @@ window.addEventListener('load', function ZORLoadHandler() {
     // init mobile
     if (isMobile.any) {
         // mobile must always use drag steering
-        config.STEERING_METHOD   = config.STEERING_METHODS.MOUSE_DRAG;
+        config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
     }
 
 });
@@ -223,8 +223,8 @@ function initCameraAndPlayer() {
     camera_controls.staticMoving = true;
     camera_controls.noZoom = false;
     camera_controls.noPan = true;
-    camera_controls.dynamicDampingFactor = 0.3;
-    camera_controls.rotateSpeed = config.STEERING_SENSITIVITY;
+    camera_controls.dynamicDampingFactor = 0.0;
+    camera_controls.rotateSpeed = config.STEERING.SPEED;
     camera_controls.minDistance = config.INITIAL_CAMERA_DISTANCE;
     camera_controls.maxDistance = config.INITIAL_CAMERA_DISTANCE;
 

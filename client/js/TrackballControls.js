@@ -6,7 +6,7 @@
  */
 
 function slopewell( r ) {
-    return Math.max(0, ( -config.STEERING_SPIN_WELL + r ) / config.STEERING_SPIN_SLOPE);
+    return Math.max(0, ( -config.STEERING.WELL + r ) / config.STEERING.SLOPE);
 }
 
 THREE.TrackballControls = function ( object, domElement ) {
@@ -165,7 +165,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
         return function rotateCamera() {
 
-            if (config.STEERING_METHOD === config.STEERING_METHODS.MOUSE_FOLLOW) {
+            if (config.STEERING.NAME === 'FOLLOW') {
                 spin.set( _moveCurr.x, _moveCurr.y );
 
                 var dist_from_center = spin.length();
@@ -412,7 +412,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
     function mousedown( event ) {
 
-        var follow_controls_on = config.STEERING_METHOD === config.STEERING_METHODS.MOUSE_FOLLOW;
+        var follow_controls_on = config.STEERING.NAME === 'FOLLOW';
 
         if ( _this.enabled === false ) return;
 
@@ -461,7 +461,7 @@ THREE.TrackballControls = function ( object, domElement ) {
         event.preventDefault();
         event.stopPropagation();
 
-        var follow_controls_on = config.STEERING_METHOD === config.STEERING_METHODS.MOUSE_FOLLOW;
+        var follow_controls_on = config.STEERING.NAME === 'FOLLOW';
 
         if ( _state === STATE.ROTATE && ! _this.noRotate || follow_controls_on) {
 
@@ -482,7 +482,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
     function mouseup( event ) {
 
-        var follow_controls_on = config.STEERING_METHOD === config.STEERING_METHODS.MOUSE_FOLLOW;
+        var follow_controls_on = config.STEERING.NAME === 'FOLLOW';
 
         if ( _this.enabled === false ) return;
 
