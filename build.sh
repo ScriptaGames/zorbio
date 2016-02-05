@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if [ ! -f /usr/bin/js ]; then
+    echo "ERROR: missing dependancy js. 'dnf install js-devel' to fix."
+    exit
+fi
+
 #Gather values to replace in the templates
 VERSION="$(util/jsawk 'return this.version' < package.json)"
 BUILD="$(util/jsawk 'return this.build' < package.json)"
