@@ -455,9 +455,6 @@ THREE.TrackballControls = function ( object, domElement ) {
 
         if ( _this.enabled === false ) return;
 
-        mouseX = event.clientX;
-        mouseY = event.clientY;
-
         event.preventDefault();
         event.stopPropagation();
 
