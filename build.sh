@@ -68,5 +68,9 @@ rpmbuild -bb SPECS/zorbio.spec
 
 # Upload the rpm and update the yum repo database
 if [ "$1" = "--upload" ]; then
-    echo "upload: $1"
+    echo "Uploading rpm..."
+    scp -P 4460 ~/rpmbuild/RPMS/x86_64/zorbio-$VERSION-$BUILD.fc23.x86_64.rpm mcp.zor.bio:/var/www/html/repo/
+    # Update the rpm repo database
+    echo "Updating the rpm reopdata"
+    ssh -p 4460 mcp.zor.bio 'sudo createrepo --update /var/www/html/repo'
 fi
