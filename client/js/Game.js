@@ -224,7 +224,7 @@ function initCameraAndPlayer() {
     camera_controls.noZoom = false;
     camera_controls.noPan = true;
     camera_controls.dynamicDampingFactor = 0.3;
-    camera_controls.rotateSpeed = 0.1;
+    camera_controls.rotateSpeed = config.STEERING_SENSITIVITY;
     camera_controls.minDistance = config.INITIAL_CAMERA_DISTANCE;
     camera_controls.maxDistance = config.INITIAL_CAMERA_DISTANCE;
 

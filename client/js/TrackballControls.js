@@ -6,7 +6,7 @@
  */
 
 function slopewell( r ) {
-    return Math.min(0, -1 * config.STEERING_SPIN_SLOPE * ( r - config.STEERING_SPIN_WELL ));
+    return Math.max(0, ( -config.STEERING_SPIN_WELL + r ) / config.STEERING_SPIN_SLOPE);
 }
 
 THREE.TrackballControls = function ( object, domElement ) {
@@ -166,19 +166,19 @@ THREE.TrackballControls = function ( object, domElement ) {
         return function rotateCamera() {
 
             if (config.STEERING_METHOD === config.STEERING_METHODS.MOUSE_FOLLOW) {
-                spin.setX( this.domElement.clientWidth  / 2 - _moveCurr.x );
-                spin.setY( this.domElement.clientHeight / 2 - _moveCurr.y );
+                spin.set( _moveCurr.x, _moveCurr.y );
 
                 var dist_from_center = spin.length();
 
                 spin.normalize().multiplyScalar( slopewell( dist_from_center ) );
-                moveDirection.set( _moveCurr.x, _moveCurr.y, 0 );
+                moveDirection.set( spin.x, spin.y, 0 );
                 _movePrev.set( 0, 0 );
+                angle += moveDirection.length();
             }
             else {
                 moveDirection.set( _moveCurr.x - _movePrev.x, _moveCurr.y - _movePrev.y, 0 );
+                angle = moveDirection.length();
             }
-            angle += moveDirection.length();
 
             if ( angle ) {
 
