@@ -61,6 +61,7 @@
 
             uniform float size;
             uniform vec3 mainSpherePos;
+            uniform float FOOD_RESPAWN_ANIM_DURATION;
 
             attribute vec3 ca;
             attribute float respawning;
@@ -81,8 +82,10 @@
 
                 sDist = length( position - mainSpherePos ); // distance from sphere to particle
 
+                float growing = 1.0 - respawning / FOOD_RESPAWN_ANIM_DURATION;
+
                 // point size is relative to distance from camera
-                gl_PointSize = size / vDist;
+                gl_PointSize =  growing * ( size / vDist );
 
                 gl_Position = projectionMatrix * mvPosition;
 
@@ -97,6 +100,7 @@
             uniform float FOG_ENABLED;
             uniform float FOG_FAR;
             uniform float ALPHA_ENABLED;
+            uniform float FOOD_RESPAWN_ANIM_DURATION;
 
             varying vec3 vColor;
             varying float vRespawning;
@@ -109,7 +113,7 @@
 
                 // when food's respawning value is > 0.0, it's still counting
                 // down to respawn
-                if ( vRespawning > 0.0 ) discard;
+                if ( vRespawning > FOOD_RESPAWN_ANIM_DURATION ) discard;
 
                 if ( FOG_ENABLED != 0.0 ) {
                     fogp = 1.0 - sDist / FOG_FAR;

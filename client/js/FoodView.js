@@ -56,14 +56,15 @@ var FoodView = function ZORFoodView() {
         this.material = new THREE.ShaderMaterial( {
 
             uniforms: {
-                amplitude     : { type : "f", value  : 1.0 },
-                color         : { type : "c", value  : new THREE.Color( 0xffffff ) },
-                texture       : { type : "t", value  : this.texture },
-                size          : { type : "f", value  : 3000 },
-                mainSpherePos : { type : "v3", value : fogCenterPosition },
-                FOG_FAR       : { type : "f", value  : config.FOG_FAR },
-                FOG_ENABLED   : { type : "f", value  : ~~config.FOG_ENABLED },
-                ALPHA_ENABLED : { type : "f", value  : ~~config.PARTICLE_ALPHA_ENABLED },
+                amplitude                  : { type : "f",  value : 1.0 },
+                color                      : { type : "c",  value : new THREE.Color( 0xffffff ) },
+                texture                    : { type : "t",  value : this.texture },
+                size                       : { type : "f",  value : 3000 },
+                mainSpherePos              : { type : "v3", value : fogCenterPosition },
+                FOG_FAR                    : { type : "f",  value : config.FOG_FAR },
+                FOG_ENABLED                : { type : "f",  value : ~~config.FOG_ENABLED },
+                ALPHA_ENABLED              : { type : "f",  value : ~~config.PARTICLE_ALPHA_ENABLED },
+                FOOD_RESPAWN_ANIM_DURATION : { type : "f",  value : config.FOOD_RESPAWN_ANIM_DURATION },
             },
             vertexShader   : document.getElementById( 'food-vertex-shader' ).textContent,
             fragmentShader : document.getElementById( 'food-fragment-shader' ).textContent,
@@ -73,6 +74,21 @@ var FoodView = function ZORFoodView() {
 
         this.particleSystem = new THREE.Points( this.geometry, this.material );
         scene.add( this.particleSystem );
+    };
+
+    /**
+     * Decrement the food item at index i if it is gt 0.
+     */
+    function decfood( v, i, c ) {
+        if ( v <= config.FOOD_RESPAWN_ANIM_DURATION ) {
+            c[i] = Math.max( 0, v - Math.round( ZOR.LagScale.get() ) );
+        }
+    };
+
+    this.update = function ZORFoodViewUpdate() {
+        // Decrement each food value
+        _.map( this.respawning, decfood );
+        this.particleSystem.geometry.attributes.respawning.needsUpdate = true;
     };
 
     /**
@@ -90,7 +106,7 @@ var FoodView = function ZORFoodView() {
      */
     this.hideFood = function ZORFoodViewHideFood(fi) {
         if (typeof this.respawning[fi] !== 'undefined') {
-            this.respawning[fi] = 1; // hide food
+            this.respawning[fi] = config.FOOD_RESPAWN_ANIM_DURATION + 1; // hide food
             this.particleSystem.geometry.attributes.respawning.needsUpdate = true;
         }
     };
@@ -102,7 +118,7 @@ var FoodView = function ZORFoodView() {
      */
     this.showFood = function ZORFoodViewShowFood(fi) {
         if (typeof this.respawning[fi] !== 'undefined') {
-            this.respawning[fi] = 0;
+            this.respawning[fi] = config.FOOD_RESPAWN_ANIM_DURATION;
             this.particleSystem.geometry.attributes.respawning.needsUpdate = true;
         }
     };

@@ -25,6 +25,8 @@ var FoodController = function ZORFoodController(model, fogCenterPosition) {
 
         // update the center position of the fog
         this.fogCenterPosition.copy(fogCenterPosition);
+
+        this.view.update();
     };
 
     /**
