@@ -6,6 +6,10 @@ Absorb the Orbs!
 
 ## Install
 
+Install package dependancies:
+
+    dnf install nodejs npm js-dev fedora-packager @development-tools
+
 After cloning the repository, cd into it and install dependencies:
 
     bower install
