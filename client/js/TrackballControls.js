@@ -162,7 +162,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
         return function rotateCamera() {
 
-            if (this.follow_controls_on) {
+            if (_this.follow_controls_on) {
                 spin.set( _moveCurr.x, _moveCurr.y );
 
                 var dist_from_center = spin.length();
@@ -437,7 +437,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
         }
 
-        if (!this.follow_controls_on) {
+        if (!_this.follow_controls_on) {
             document.addEventListener( 'mousemove', mousemove, false );
             document.addEventListener( 'mouseup', mouseup, false );
         }
@@ -453,7 +453,7 @@ THREE.TrackballControls = function ( object, domElement ) {
         event.preventDefault();
         event.stopPropagation();
 
-        if ( _state === STATE.ROTATE && ! _this.noRotate || this.follow_controls_on ) {
+        if ( _state === STATE.ROTATE && ! _this.noRotate || _this.follow_controls_on ) {
 
             _movePrev.copy( _moveCurr );
             _moveCurr.copy( getMouseOnCircle( event.pageX, event.pageY ) );
@@ -480,7 +480,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
         _state = STATE.NONE;
 
-        if (!this.follow_controls_on) {
+        if (!_this.follow_controls_on) {
             document.removeEventListener( 'mousemove', mousemove );
             document.removeEventListener( 'mouseup', mouseup );
         }

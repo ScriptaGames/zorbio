@@ -65,7 +65,7 @@ config.STEERING_METHODS      = Object.freeze({ // enum-ish
         SPEED : 0.3,  // higher makes camera rotate faster
     },
 });
-config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
+config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
