@@ -87,8 +87,8 @@ config.FOOD_CAPTURE_ASSIST         = 2;     // this number is added to player's 
 config.FOOD_COLORING_TYPE          = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][3];
 config.FOOD_COLORING_SINE_SEGMENTS = 8;     // with sine-cycle coloring, how many color cycles along each axis
 config.FOOD_GET_VALUE              = function FoodGetValue( r ) {
-    //https://www.desmos.com/calculator/xivf0spbsv
-    return (config.FOOD_VALUE / (r - 0.5)) * 1.5;
+    //https://www.desmos.com/calculator/3ll8ifi3y4
+    return (config.FOOD_VALUE / r) * 1.75;
 };
 
 ////////////////////////////////////////////////////////////////////////
