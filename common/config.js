@@ -87,7 +87,8 @@ config.FOOD_CAPTURE_ASSIST         = 2;     // this number is added to player's 
 config.FOOD_COLORING_TYPE          = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][3];
 config.FOOD_COLORING_SINE_SEGMENTS = 8;     // with sine-cycle coloring, how many color cycles along each axis
 config.FOOD_GET_VALUE              = function FoodGetValue( r ) {
-    return config.FOOD_VALUE / r;
+    //https://www.desmos.com/calculator/xivf0spbsv
+    return (config.FOOD_VALUE / (r - 0.5)) * 1.5;
 };
 
 ////////////////////////////////////////////////////////////////////////
@@ -108,12 +109,11 @@ config.INFRACTION_TOLERANCE_SCALE     = 1;      // how many scale infractions a 
 ////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
-
-config.INITIAL_CAMERA_DISTANCE = 50;
 config.FOG_ENABLED             = true;
 config.FOG_NEAR                = 100;
 config.FOG_FAR                 = 1000;
 config.FOG_COLOR               = THREE.ColorKeywords.black;
+config.INITIAL_CAMERA_DISTANCE = 50;
 config.WALL_GRID_SEGMENTS      = 20;
 config.INITIAL_FOV             = 50;
 config.PLAYER_MOVE_LERP_WEIGHT = 0.4;
