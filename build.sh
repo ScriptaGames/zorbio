@@ -10,6 +10,12 @@ VERSION="$(util/jsawk 'return this.version' < package.json)"
 BUILD="$(util/jsawk 'return this.build' < package.json)"
 GIT_REF="$(git rev-parse HEAD)"
 
+
+# Point the common/environment.js symlink to environment_prod.js
+cd common/
+ln -f -s ./environment_prod.js ./environment.js
+cd ../
+
 # Inline and minify
 echo "Inlining and minifying content"
 mkdir -p dist > /dev/null
@@ -59,6 +65,10 @@ echo "clean up node modules"
 cd -
 rm -rf node_modules
 mv node_modules_orig node_modules
+
+# restore orig environment.js symlink back to dev
+cd common/
+ln -f -s ./environment_dev.js ./environment.js
 
 # Finally build the rpm
 echo "bulding the rpm"

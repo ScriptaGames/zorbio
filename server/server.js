@@ -369,6 +369,7 @@ if (config.HEARTBEAT_ENABLE) {
     setInterval(checkHeartbeats, config.HEARTBEAT_CHECK_INTERVAL);
 }
 
-http.listen( config.PORT, function () {
-    console.log("Zorbio v" + pjson.version + "-" + pjson.build + " is listening on http://localhost:" + config.PORT);
+var port = config.PORT;
+http.listen( port, function () {
+    console.log("Zorbio v" + pjson.version + "-" + pjson.build + " is listening on http://localhost:" + port);
 });

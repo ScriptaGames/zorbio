@@ -3,9 +3,12 @@
 
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
+var zor_env = zor_env || undefined;
+
 if (NODEJS) {
     global.self = {}; // threejs expects there to be a global named 'self'... for some reason..
     global.THREE = require('three');
+    zor_env = require('../common/environment.js');
 }
 
 var config = {};
@@ -22,7 +25,7 @@ config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //
 ////////////////////////////////////////////////////////////////////////
-config.PORT                     = 3000;
+config.PORT                     = zor_env.PORT || 80;
 config.MAX_PLAYERS              = 50;
 config.HEARTBEAT_ENABLE         = true;
 config.HEARTBEAT_TIMEOUT        = 30000; // how long before a client is considered disconnected
@@ -31,9 +34,14 @@ config.HEARTBEAT_PULSE_INTERVAL = 3000;  // client heartbeat pulse
 config.SERVER_TICK_INTERVAL     = 250;   // General server updates in milliseconds
 config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their position in milliseconds
 config.PENDING_PLAYER_CAPTURE_TTL = 3000;  // how long pending player capture lives before it expires in milliseconds
-config.BALANCER_NA              = 'http://localhost';
-config.BALANCER_EU              = 'http://eu.zor.bio';
-config.BALANCER_APAC            = 'http://apac.zor.bio';
+
+config.BALANCERS = Object.freeze({
+    LOCAL: 'http://localhost',
+    NA:    'http://na.zor.bio',
+    EU:    'http://eu.zor.bio',
+    APAC:  'http://apac.zor.bio'
+});
+config.BALANCER = config.BALANCERS[zor_env.BALANCER] || config.BALANCERS.NA;
 
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
