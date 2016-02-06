@@ -465,3 +465,14 @@ function handleServerTick(serverTickData) {
 function handleSuccessfulPlayerCapture(targetPlayer) {
     player.animatedGrow( config.PLAYER_CAPTURE_VALUE( targetPlayer.radius() ), 40 );
 }
+
+function steeringPrefEventHandler(event) {
+    console.log("steering change " + event.target.value);
+
+    if (event.target.value === 'follow') {
+        config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
+    }
+    else if (event.target.value === 'drag') {
+        config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
+    }
+}
