@@ -11,12 +11,15 @@ BUILD="$(util/jsawk 'return this.build' < package.json)"
 GIT_REF="$(git rev-parse HEAD)"
 
 
+###############################################
+# Inline and minify
+###############################################
 # Point the common/environment.js symlink to environment_prod.js
+# Do this first, so inlined index.html get's prod config
 cd common/
 ln -f -s ./environment_prod.js ./environment.js
 cd ../
 
-# Inline and minify
 echo "Inlining and minifying content"
 mkdir -p dist > /dev/null
 cp -r client/textures dist/
@@ -32,7 +35,10 @@ sed -i "s/{{ GIT_REF }}/$GIT_REF/g" dist/index.html
 
 echo "dist/index.html written"
 
-# generate the RPM spec file
+
+###############################################
+# Generate the RPM spec file
+###############################################
 echo "Generating RPM spec file: zorbio.spec"
 rm -f zorbio.spec
 cp zorbio.spec.template zorbio.spec
@@ -76,7 +82,9 @@ cd ~/rpmbuild
 rpmbuild -bb SPECS/zorbio.spec
 
 
-# Upload the rpm and update the yum repo database
+###############################################
+# Upload the rpm and update yum repo database
+###############################################
 if [ "$1" = "--upload" ]; then
     echo "Uploading rpm..."
     scp -P 4460 ~/rpmbuild/RPMS/x86_64/zorbio-$VERSION-$BUILD.fc23.x86_64.rpm mcp.zor.bio:/var/www/html/repo/
