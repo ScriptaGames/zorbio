@@ -211,6 +211,10 @@ function createScene() {
 }
 
 function initCameraAndPlayer() {
+    // sphere
+    // Create the player view and adds the player sphere to the scene
+    player.initView(player.model.sphere, scene);
+
     // orbit camera
     camera = new THREE.PerspectiveCamera(
         config.INITIAL_FOV,
@@ -219,25 +223,28 @@ function initCameraAndPlayer() {
         config.WORLD_HYPOTENUSE + 100 // world hypot plus a little extra for camera distance
     );
 
-    camera_controls = new THREE.TrackballControls( camera, ZOR.Game.renderer.domElement );
-    camera_controls.staticMoving = true;
-    camera_controls.noZoom = false;
-    camera_controls.noPan = true;
-    camera_controls.dynamicDampingFactor = 0.0;
-    camera_controls.rotateSpeed = config.STEERING.SPEED;
+    if ( config.STEERING.NAME === 'FOLLOW' ) {
+        // Trackball settings for steering Follow method
+        camera_controls = new THREE.TrackballControls( camera, ZOR.Game.renderer.domElement );
+        camera_controls.staticMoving = true;
+        camera_controls.noZoom = false;
+        camera_controls.noPan = true;
+        camera_controls.dynamicDampingFactor = 0.0;
+        camera_controls.rotateSpeed = config.STEERING.SPEED;
+        camera_controls.target = player.view.mainSphere.position;
+    }
+    else if (config.STEERING.NAME === 'DRAG') {
+        // FollowOrbit settings for drag steering method
+        camera_controls = new THREE.FollowOrbitControls( camera, ZOR.Game.renderer.domElement );
+        camera_controls.enableDamping = true;
+        camera_controls.dampingFactor = 0.25;
+        camera_controls.enableZoom = false;
+        camera_controls.target = player.view.mainSphere;
+    }
+
+    // Common settings between Trackball and FollowOrbit
     camera_controls.minDistance = config.INITIAL_CAMERA_DISTANCE;
     camera_controls.maxDistance = config.INITIAL_CAMERA_DISTANCE;
-
-    // camera_controls.enableDamping = true;
-    // camera_controls.dampingFactor = 0.25;
-    // camera_controls.enableZoom = false;
-
-    // sphere
-    // Create the player view and adds the player sphere to the scene
-    player.initView(player.model.sphere, scene);
-
-    // follow the main sphere
-    camera_controls.target = player.view.mainSphere.position;
 
     // move camera so that the player is facing towards the origin each time
     // they spawn
