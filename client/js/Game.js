@@ -50,7 +50,9 @@ function startGame(type) {
 
     // Connect to the server
     var colorCode = UTIL.getRandomIntInclusive(0, ZOR.PlayerView.COLORS.length - 1);
-    console.log('Player color', ZOR.PlayerView.COLORS[colorCode]);
+    var colorHex = ZOR.PlayerView.COLORS[colorCode];
+    document.querySelector("meta[name=theme-color]").content = colorHex;
+    console.log('Player color', colorHex);
     connectToServer(playerType, playerName, colorCode);
 }
 

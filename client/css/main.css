@@ -47,7 +47,7 @@ body {
   margin-top: 0;
 }
 .error-text {
-  color: #0B7BF4;
+  color: #0b7bf4;
   font-size: 21px;
   text-align: center;
 }
@@ -96,7 +96,7 @@ button:focus {
 button {
   -moz-osx-font-smoothing: grayscale;
   -webkit-backface-visibility: hidden;
-  background: #0B7BF4;
+  background: #0b7bf4;
   border: none;
   color: #f7f7f7;
   display: block;
