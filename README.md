@@ -32,6 +32,10 @@ To perform a production build:
 
     npm run build
 
+To build and upload the built RPM to the prod yum repo:
+
+    npm run buld-upload
+
 This will build all the client assets into a single HTML file
 (`dist/index.html`) with all CSS and JavaScript inlined and minified.  Images
 are still loaded via HTTP requests.
