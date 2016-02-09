@@ -8,7 +8,7 @@ Absorb the Orbs!
 
 Install package dependancies:
 
-    dnf install nodejs npm js-dev fedora-packager @development-tools
+    dnf install nodejs npm js-devel fedora-packager @development-tools
 
 After cloning the repository, cd into it and install dependencies:
 
@@ -39,6 +39,8 @@ To perform a production build:
 To build and upload the built RPM to the prod yum repo:
 
     npm run buld-upload
+
+Note: The above command requires you have installed your ssh pub key on mcp.zor.bio
 
 This will build all the client assets into a single HTML file
 (`dist/index.html`) with all CSS and JavaScript inlined and minified.  Images
