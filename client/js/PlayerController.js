@@ -125,7 +125,7 @@ ZOR.PlayerController.prototype.applyVelocity = function ZORPlayerControllerApply
     this.view.mainSphere.position.sub(
         UTIL.adjustVelocityWallHit(
             this.view.mainSphere.position,
-            this.radius(),
+            0,
             this.velocity,
             zorbioModel.worldSize
         )
