@@ -44,11 +44,20 @@ var auth = function (req, res, next) {
 };
 app.all("/api/*", auth);
 
+/**
+ * API to return the current count of players on this server
+ */
 app.get('/api/players/count', function (req, res) {
     var playerIds = Object.getOwnPropertyNames(model.players);
     var count = typeof playerIds.length !== 'undefined' ? playerIds.length : 0;
-    console.log('Sending player count: ', count);
-    res.end( "count: " + count );
+    res.send( "{\"count\": " + count + "}" );
+});
+
+/**
+ * API to return all the player objects on this server
+ */
+app.get('/api/players', function (req, res) {
+    res.send( JSON.stringify(model.players) );
 });
 
 io.on('connection', function (socket) {
