@@ -30,13 +30,6 @@
                 {{ #if state === STATES.LOGIN_SCREEN_ERROR }}
                 <b class="error-text">Nick name must be alphanumeric characters only!</b>
                 {{ /if }}
-                {{ #if !isMobile.any }}
-                <div>Steering Method</div>
-                <select name="select" onchange="steeringPrefEventHandler(event);">
-                    <option value="follow" selected>Mouse Follow</option>
-                    <option value="drag" >Mouse Drag</option>
-                </select>
-                {{ /if }}
                 <button on-click="{{ ACTIONS.PLAYER_LOGIN }}" id="start-button"><span>Play</span></button>
             </div>
             {{ /if }}
