@@ -30,6 +30,17 @@ var foodController;
 // Model that represents the game state shared with server
 var zorbioModel;
 
+ZOR.Game.fullscreen = function go_fullscreen() {
+    if (canvas.requestFullscreen) {
+        canvas.requestFullscreen();
+    } else if (canvas.msRequestFullscreen) {
+        canvas.msRequestFullscreen();
+    } else if (canvas.mozRequestFullScreen) {
+        canvas.mozRequestFullScreen();
+    } else if (canvas.webkitRequestFullscreen) {
+        canvas.webkitRequestFullscreen();
+    }
+};
 
 function startGame(type) {
 
@@ -42,6 +53,8 @@ function startGame(type) {
         ZOR.UI.state( ZOR.UI.STATES.GAME_INIT_ERROR );
         return;
     }
+
+    ZOR.Game.fullscreen();
 
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
     playerType = type;
