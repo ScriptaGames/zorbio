@@ -10,6 +10,7 @@ VERSION="$(util/jsawk 'return this.version' < package.json)"
 BUILD="$(util/jsawk 'return this.build' < package.json)"
 GIT_REF="$(git rev-parse HEAD)"
 
+SCRIPT_DIR=$( dirname $(realpath --relative-base=../ "$0") )
 
 ###############################################
 # Inline and minify
@@ -63,12 +64,10 @@ npm install --production
 
 # Tar up the source for the rpm build
 echo "tar source"
-cd ../
-tar czf ~/rpmbuild/SOURCES/zorbio.tar.gz zorbio/
+tar -czf ~/rpmbuild/SOURCES/zorbio.tar.gz ../$SCRIPT_DIR --transform="s/^$SCRIPT_DIR/zorbio/"
 
 # Restore original node_modules
 echo "clean up node modules"
-cd -
 rm -rf node_modules
 mv node_modules_orig node_modules
 
