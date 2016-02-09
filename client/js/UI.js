@@ -18,6 +18,7 @@ ZOR.UI = function ZORUI() {
         PLAYING            : 'playing',
         RESPAWN_SCREEN     : 'respawn-screen',
         GAME_INIT_ERROR    : 'game-init-error',
+        SERVER_MSG_SCREEN  : 'server_msg_screen',
     };
 
     /**

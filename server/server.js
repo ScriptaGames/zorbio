@@ -5,6 +5,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var config = require('../common/config.js');
 var pjson = require('../package.json');
+var request = require('request');
 
 // Load ThreeJS, so we have access to the same vector and matrix functions the
 // client uses
@@ -19,6 +20,9 @@ var model = new Zorbio.Model(config.WORLD_SIZE, config.FOOD_DENSITY);
 
 // Define sockets as a hash so we can use string indexes
 var sockets = {};
+
+// server message
+var serverRestartMsg = '';
 
 app.use(express.static(__dirname + '/../' + (process.argv[2] || 'client')));
 
@@ -316,7 +320,7 @@ function updateFoodRespawns() {
  * Send any updates to client per server tick
  */
 function sendServerTickData() {
-    var serverTickData = {"fr": model.food_respawn_ready_queue};
+    var serverTickData = {"fr": model.food_respawn_ready_queue, "sm": serverRestartMsg};
     io.emit('serverTick', serverTickData);
     model.food_respawn_ready_queue = [];
 }
@@ -362,8 +366,33 @@ function serverTick() {
     Zorbio.expirePendingPlayerCaptures();
 }
 
+function versionCheck() {
+    var options = {
+        url: 'https://zoruser:wk-4<a<9ASW!J{ae@mcp.zor.bio/zapi/version',
+        agentOptions: {
+            rejectUnauthorized: false
+        }
+    };
+
+    request(options, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            var res = JSON.parse(body);
+
+            if (pjson.version !== res.version || pjson.build !== res.build) {
+                console.log("version out of date, old version:", pjson.version, pjson.build);
+                console.log("version out of date, new version:", res.version, res.build);
+                serverRestartMsg = "Server restart imminent!";
+            }
+        }
+    })
+}
+
 setInterval(sendActorUpdates, config.ACTOR_UPDATE_INTERVAL);
 setInterval(serverTick, config.SERVER_TICK_INTERVAL);
+
+if (config.CHECK_VERSION) {
+    setInterval(versionCheck, config.CHECK_VERSION_INTERVAL);
+}
 
 if (config.HEARTBEAT_ENABLE) {
     setInterval(checkHeartbeats, config.HEARTBEAT_CHECK_INTERVAL);

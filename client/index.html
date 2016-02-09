@@ -41,6 +41,13 @@
             </div>
             {{ /if }}
 
+            {{ #if state === STATES.SERVER_MSG_SCREEN }}
+            <!-- TODO: ask michael to fix CSS for this -->
+            <div id="server-msg-screen">
+                <p id="serverMsg">This is the server message</p>
+            </div>
+            {{ /if }}
+
             {{ #if state === STATES.GAME_INIT_ERROR }}
             <div id="game-init-error-screen">
                 <h1>GAME INIT FAILED</h1>

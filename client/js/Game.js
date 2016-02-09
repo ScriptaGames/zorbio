@@ -460,21 +460,18 @@ function handleServerTick(serverTickData) {
         foodController.showFood(serverTickData.fr[i]);  // Show the food index
     }
 
+    // Display server message if there is one
+    if (serverTickData.sm.length > 0) {
+        ZOR.UI.state( ZOR.UI.STATES.SERVER_MSG_SCREEN );
+
+        //TODO: ask Michael how to use this as a template variable
+        document.getElementById("serverMsg").innerHTML = serverTickData.sm;
+    }
+
     // expire pending player captures
     ZOR.expirePendingPlayerCaptures();
 }
 
 function handleSuccessfulPlayerCapture(targetPlayer) {
     player.animatedGrow( config.PLAYER_CAPTURE_VALUE( targetPlayer.radius() ), 40 );
-}
-
-function steeringPrefEventHandler(event) {
-    console.log("steering change " + event.target.value);
-
-    if (event.target.value === 'follow') {
-        config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
-    }
-    else if (event.target.value === 'drag') {
-        config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
-    }
 }

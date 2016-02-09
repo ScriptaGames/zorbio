@@ -34,6 +34,8 @@ config.HEARTBEAT_PULSE_INTERVAL = 3000;  // client heartbeat pulse
 config.SERVER_TICK_INTERVAL     = 250;   // General server updates in milliseconds
 config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their position in milliseconds
 config.PENDING_PLAYER_CAPTURE_TTL = 3000;  // how long pending player capture lives before it expires in milliseconds
+config.CHECK_VERSION            = zor_env.CHECK_VERSION || true;
+config.CHECK_VERSION_INTERVAL   = 30000;
 
 config.BALANCERS = Object.freeze({
     LOCAL: 'http://localhost',
