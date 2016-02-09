@@ -347,30 +347,15 @@ function updateActors() {
 
 function captureFood(fi) {
     if (foodController.aliveFood(fi)) {
-        var mainSphere = player.view.mainSphere;
         var origRadius = player.radius();
-
-        // give food value diminishing returns to prevent runaway growth
         var value = config.FOOD_GET_VALUE( origRadius );
 
         // grow to new size!  yay!
         player.grow(value);
 
-        var new_radius = player.radius();
-
-        var safe_to_grow = !UTIL.checkWallCollision( mainSphere.position, new_radius, new THREE.Vector3(), zorbioModel.worldSize );
-
         foodController.hideFood(fi);
 
-        if (safe_to_grow) {
-            sendFoodCapture(fi, player.model.sphere.id, origRadius, value);  // send the food capture to the server
-        }
-        else {
-            // aw, wasn't save to grow, go back to original size
-            player.grow(-value);
-            console.log("NOT SAFE TO GROW!");
-        }
-
+        sendFoodCapture(fi, player.model.sphere.id, origRadius, value);  // send the food capture to the server
     }
 }
 
