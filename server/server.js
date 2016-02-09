@@ -80,6 +80,14 @@ app.get('/api/food', function (req, res) {
     res.send( JSON.stringify(foodModel) );
 });
 
+/**
+ * API to number of socket connections
+ */
+app.get('/api/sockets/count', function (req, res) {
+    var socketIds = Object.getOwnPropertyNames(sockets);
+    var count = typeof socketIds.length !== 'undefined' ? socketIds.length : 0;
+    res.send( "{\"count\": " + count + "}" );
+});
 
 io.on('connection', function (socket) {
     console.log("Player connected: ", JSON.stringify(socket.handshake));
