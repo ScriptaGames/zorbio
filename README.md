@@ -17,6 +17,10 @@ After cloning the repository, cd into it and install dependencies:
 
 Edit `common/config.js` to your heart's content.
 
+In order to push to production, you'll need to create a rpm build tree.
+
+    $ cd ~ && rpmdev-setuptree
+
 ## Hacking
 
 To launch a local server:
@@ -45,3 +49,9 @@ which really just causes the server to serve up `dist/` instead of `client/`.
 Here's the command:
 
     npm run start-prod
+
+## Pushing to production
+
+ - update package.json version number and/or build number
+ - update puppet repo to match desired version and build number https://github.com/Jared-Sprague/scripta_env/edit/master/manifests/zorbio.pp
+
