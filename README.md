@@ -54,6 +54,7 @@ Here's the command:
 
 ## Pushing to production
 
- - update package.json version number and/or build number
- - update puppet repo to match desired version and build number https://github.com/Jared-Sprague/scripta_env/edit/master/manifests/zorbio.pp
+ 1. Update package.json version number and/or build number.
+ 2. Build and upload the rpm with: `npm run build-upload`
+ 3. Update puppet repo to match desired version and build number https://github.com/Jared-Sprague/scripta_env/edit/master/manifests/zorbio.pp
 
