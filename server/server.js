@@ -60,6 +60,27 @@ app.get('/api/players', function (req, res) {
     res.send( JSON.stringify(model.players) );
 });
 
+/**
+ * API to return all the actor objects on this server
+ */
+app.get('/api/actors', function (req, res) {
+    res.send( JSON.stringify(model.actors) );
+});
+
+/**
+ * API to return all the actor objects on this server
+ */
+app.get('/api/food', function (req, res) {
+    var foodModel = {};
+    foodModel.foodDensity = model.foodDensity;
+    foodModel.foodCount = model.foodCount;
+    foodModel.food_respawning_indexes = model.food_respawning_indexes;
+    foodModel.food_respawn_ready_queue = model.food_respawn_ready_queue;
+
+    res.send( JSON.stringify(foodModel) );
+});
+
+
 io.on('connection', function (socket) {
     console.log("Player connected: ", JSON.stringify(socket.handshake));
 
