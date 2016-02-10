@@ -96,6 +96,7 @@ io.on('connection', function (socket) {
     var type = socket.handshake.query.type;
     var name = socket.handshake.query.name;
     var color = socket.handshake.query.color;
+    var key = socket.handshake.query.key;
 
     var currentPlayer;
 
@@ -115,7 +116,13 @@ io.on('connection', function (socket) {
         if (!UTIL.validNick(player.name)) {
             socket.emit('kick', 'Invalid username');
             socket.disconnect();
-        } else {
+        }
+        else if (!Validators.validAlphaKey(key)) {
+            console.log('ALPHA KEY INVALID');
+            socket.emit('kick', 'Invalid alpha key');
+            socket.disconnect();
+        }
+        else {
             console.log('Player ' + player.id + ' connected!');
             sockets[player.id] = socket;
             currentPlayer.lastHeartbeat = Date.now();

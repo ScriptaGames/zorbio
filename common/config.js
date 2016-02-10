@@ -3,29 +3,30 @@
 
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
-var zor_env = zor_env || undefined;
 
 if (NODEJS) {
     global.self = {}; // threejs expects there to be a global named 'self'... for some reason..
     global.THREE = require('three');
-    zor_env = require('../common/environment.js');
+    var _ = require('lodash');
+    var ZOR = { Env: require('../common/environment.js') };
 }
 
 var config = {};
 
 config.DEBUG = false;
+config.REQUIRE_ALPHA_KEY = true;
 
 ////////////////////////////////////////////////////////////////////////
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE       = 1600;
+config.WORLD_SIZE       = 100;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
 
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //
 ////////////////////////////////////////////////////////////////////////
-config.PORT                     = zor_env.PORT || 80;
+config.PORT                     = 80;
 config.MAX_PLAYERS              = 50;
 config.HEARTBEAT_ENABLE         = true;
 config.HEARTBEAT_TIMEOUT        = 30000; // how long before a client is considered disconnected
@@ -34,7 +35,7 @@ config.HEARTBEAT_PULSE_INTERVAL = 3000;  // client heartbeat pulse
 config.SERVER_TICK_INTERVAL     = 250;   // General server updates in milliseconds
 config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their position in milliseconds
 config.PENDING_PLAYER_CAPTURE_TTL = 3000;  // how long pending player capture lives before it expires in milliseconds
-config.CHECK_VERSION            = zor_env.CHECK_VERSION || true;
+config.CHECK_VERSION            = true;
 config.CHECK_VERSION_INTERVAL   = 30000;
 config.LEADERS_LENGTH           = 10;    // How many players to include in the leaders array
 
@@ -44,7 +45,7 @@ config.BALANCERS = Object.freeze({
     EU:    'http://eu.zor.bio',
     APAC:  'http://apac.zor.bio'
 });
-config.BALANCER = config.BALANCERS[zor_env.BALANCER] || config.BALANCERS.NA;
+config.BALANCER = 'NA';
 
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
@@ -65,7 +66,7 @@ config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
 config.PLAYER_GET_SCORE      = function PlayerGetScore( radius ) {
     return Math.floor(radius * 10) ;
 };
-config.AUTO_RUN_ENABLED      = true;
+config.AUTO_RUN_ENABLED      = !true;
 config.STEERING_METHODS      = Object.freeze({ // enum-ish
     MOUSE_DRAG: {
         NAME: 'DRAG',
@@ -86,7 +87,7 @@ config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 26;    // How much food there is, total food = this number cubed
+config.FOOD_DENSITY                = 10;    // How much food there is, total food = this number cubed
 config.FOOD_VALUE                  = 0.6;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
@@ -135,8 +136,10 @@ config.LAG_SCALE_ENABLE        = true;
 
 config.BROWSER_FORCE_DISABLED_FEATURES = []; // these items will be forcibly set to disabled, for testing purposes.  for example, ['json', 'webgl']
 
-////////////////////////////////////////////////////////////////////////
-//                          NODEJS EXPORTER                           //
-////////////////////////////////////////////////////////////////////////
+// Merge environment-specific settings into config
+_.assign(config, ZOR.Env);
+config.BALANCER = config.BALANCERS[ config.BALANCER ];
 
-if (NODEJS) module.exports = config;
+if (NODEJS) {
+    module.exports = config;
+}

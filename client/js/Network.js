@@ -8,9 +8,11 @@ var socket;
 var interval_id_heartbeat;
 
 function connectToServer(playerType, playerName, color) {
+    var key;
     if (!socket) {
         //TODO: make which balancer they use configurable on the client
-        socket = io(config.BALANCER + ':' + config.PORT, {query: "type=" + playerType + "&name=" + playerName + "&color=" + color});
+        key = ZOR.UI.engine.get('alpha_key');
+        socket = io(config.BALANCER + ':' + config.PORT, {query: 'type=' + playerType + '&name=' + playerName + '&color=' + color + '&key=' + key});
         setupSocket(socket);
     }
     sendRespawn(true);

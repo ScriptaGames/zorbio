@@ -1,9 +1,12 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
-var zor_env = {
-    PORT          : 80,
-    BALANCER      : "NA",
-    CHECK_VERSION : true
+var ZOR = ZOR || {};
+
+ZOR.Env = {
+    PORT              : 80,
+    BALANCER          : "NA",
+    CHECK_VERSION     : true
+    REQUIRE_ALPHA_KEY : true,
 };
 
 if (NODEJS) module.exports = zor_env;

@@ -26,7 +26,8 @@
             {{ #if state === STATES.LOGIN_SCREEN || state === STATES.LOGIN_SCREEN_ERROR }}
             <div id="start-menu" >
                 <p>ZOR.BIO</p>
-                <input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" tabindex="0" autofocus placeholder="Enter your name here" id="player-name-input"/>
+                <input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" autofocus placeholder="Player name" value="{{ player_name }}"/>
+                <input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" placeholder="Alpha key" value="{{ alpha_key }}"/>
                 {{ #if state === STATES.LOGIN_SCREEN_ERROR }}
                 <b class="error-text">Nick name must be alphanumeric characters only!</b>
                 {{ /if }}

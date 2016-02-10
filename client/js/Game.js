@@ -12,9 +12,7 @@ var camera;
 var camera_controls;
 
 // Player
-var playerName;
 var playerType;
-var playerNameInput = document.getElementById('player-name-input');
 var player;
 
 //TODO: get rid of this globals, refactor into MVC Player and Food controllers
@@ -60,28 +58,43 @@ function startGame(type) {
         ZOR.Game.fullscreen();
     }
 
-    playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
     playerType = type;
 
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
+
+    // save player name and alpha key in storage
+    localStorage.player_name = ZOR.UI.engine.get('player_name');
+    localStorage.alpha_key = ZOR.UI.engine.get('alpha_key');
 
     // Connect to the server
     var colorCode = UTIL.getRandomIntInclusive(0, ZOR.PlayerView.COLORS.length - 1);
     var colorHex = ZOR.PlayerView.COLORS[colorCode];
     document.querySelector("meta[name=theme-color]").content = colorHex;
     console.log('Player color', colorHex);
-    connectToServer(playerType, playerName, colorCode);
+    connectToServer(
+        playerType,
+        ZOR.UI.engine.get('player_name'),
+        colorCode
+    );
 }
 
 // check if nick is valid alphanumeric characters (and underscores)
 function validNick() {
     var regex = /^\w*$/;
-    console.log('Regex Test', regex.exec(playerNameInput.value));
-    return regex.exec(playerNameInput.value) !== null;
+    var name = ZOR.UI.engine.get('player_name');
+    console.log('Regex Test', regex.exec(name));
+    return regex.exec(name) !== null;
 }
 
 window.addEventListener('load', function ZORLoadHandler() {
     'use strict';
+
+    if (localStorage.alpha_key) {
+        ZOR.UI.engine.set('alpha_key', localStorage.alpha_key)
+    }
+    if (localStorage.player_name) {
+        ZOR.UI.engine.set('player_name', localStorage.player_name)
+    }
 
     ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
 

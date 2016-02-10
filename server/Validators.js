@@ -1,4 +1,6 @@
 var config = require('../common/config.js');
+var _ = require('lodash');
+var alphakeys = require('./alphakeys');
 
 var Validators = {};
 
@@ -216,5 +218,17 @@ Validators.playerScale = function (player) {
 
     return 0;  //no error
 };
+
+/**
+ * Checks for a valid nick
+ *
+ * @param {String} nickname
+ * @returns {boolean}
+ */
+Validators.validAlphaKey = function ZORValidatorsValidAlphaKey(key) {
+    if (!config.REQUIRE_ALPHA_KEY) return true;
+    return _.includes(alphakeys, key);
+};
+
 
 module.exports = Validators;

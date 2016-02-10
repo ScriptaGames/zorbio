@@ -27,14 +27,14 @@ body {
 #start-menu {
   background-color: #171717;
 }
-#player-name-input {
+input {
   padding: 20px;
   background: #dedede;
   color: #171717;
   border: none;
   outline: none;
 }
-#player-name-input:focus {
+input:focus {
   background: #ffffff;
 }
 #start-menu h3 {
