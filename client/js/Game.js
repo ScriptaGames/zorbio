@@ -55,7 +55,10 @@ function startGame(type) {
         return;
     }
 
-    ZOR.Game.fullscreen();
+    // only automatically fullscreen on mobile devices
+    if (isMobile.any) {
+        ZOR.Game.fullscreen();
+    }
 
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
     playerType = type;
