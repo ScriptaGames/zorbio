@@ -1,6 +1,7 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
 if (NODEJS) var config = require('./config.js');
+if (NODEJS) var _ = require('lodash');
 
 var UTIL = {};
 
@@ -15,7 +16,6 @@ var UTIL = {};
 UTIL.getRandomIntInclusive = function UTILGetRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
-
 
 /**
  * Returns a random number between min (inclusive) and max (exclusive)
@@ -261,6 +261,14 @@ UTIL.trimPosition = function UTILTrimPosition(position, trim) {
         y: +position.y.toFixed(trim),
         z: +position.z.toFixed(trim)
     };
+};
+
+/**
+ * Utility function used to push data into the
+ * array while maintaining the sort order.
+ */
+UTIL.sortedObjectPush = function UTILSortedObjectPush( array, value, iteratee ) {
+    array.splice( _.sortedIndexBy(array, value, iteratee) , 0, value );
 };
 
 var coloringMethods = {

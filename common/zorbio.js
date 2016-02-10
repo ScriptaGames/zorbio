@@ -17,6 +17,7 @@ var ZOR = ZOR || {};
 ZOR.Model = function ZORModel(worldSize, foodDensity) {
     this.actors = {};
     this.players = {};
+    this.leaders = [];
     this.worldSize = new THREE.Vector3(worldSize, worldSize, worldSize);
     this.foodDensity = foodDensity;
 

@@ -365,7 +365,11 @@ function updateFoodRespawns() {
  * Send any updates to client per server tick
  */
 function sendServerTickData() {
-    var serverTickData = {"fr": model.food_respawn_ready_queue, "sm": serverRestartMsg};
+    var serverTickData = {
+        "fr": model.food_respawn_ready_queue,
+        "sm": serverRestartMsg,
+        "leaders": model.leaders
+    };
     io.emit('serverTick', serverTickData);
     model.food_respawn_ready_queue = [];
 }
@@ -374,6 +378,8 @@ function sendServerTickData() {
  * Any player checks that need to be done during serverTick, put here.
  */
 function playersChecks() {
+    model.leaders = [];
+
     // Iterate over all players and perform checks
     var playerIds = Object.getOwnPropertyNames(model.players);
     for (var i = 0, l = playerIds.length; i < l; i++) {
@@ -396,7 +402,18 @@ function playersChecks() {
         else if (Validators.playerScale(player) !== 0) {
             player.infractions_scale++;
         }
+
+        // Add players to leaders array in sorted order by score
+        var leader = {
+            name: player.name,
+            score: config.PLAYER_GET_SCORE( player.sphere.radius() )
+        };
+        UTIL.sortedObjectPush(model.leaders, leader, 'score');
     }
+
+    // Prepare leaders array
+    model.leaders.reverse();  // reverse for descending order
+    model.leaders.length = config.LEADERS_LENGTH;  // limit size based on config
 }
 
 /**

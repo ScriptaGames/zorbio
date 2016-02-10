@@ -36,6 +36,7 @@ config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their positi
 config.PENDING_PLAYER_CAPTURE_TTL = 3000;  // how long pending player capture lives before it expires in milliseconds
 config.CHECK_VERSION            = zor_env.CHECK_VERSION || true;
 config.CHECK_VERSION_INTERVAL   = 30000;
+config.LEADERS_LENGTH           = 10;    // How many players to include in the leaders array
 
 config.BALANCERS = Object.freeze({
     LOCAL: 'http://localhost',
@@ -61,6 +62,9 @@ config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
     var s = config.MAX_PLAYER_SPEED;
     return s - ((r * s) / config.STATIONARY_RADIUS);
 };
+config.PLAYER_GET_SCORE      = function PlayerGetScore( radius ) {
+    return Math.floor(radius * 10) ;
+};
 config.AUTO_RUN_ENABLED      = true;
 config.STEERING_METHODS      = Object.freeze({ // enum-ish
     MOUSE_DRAG: {
@@ -76,6 +80,7 @@ config.STEERING_METHODS      = Object.freeze({ // enum-ish
     },
 });
 config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
+
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
