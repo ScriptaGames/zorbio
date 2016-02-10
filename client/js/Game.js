@@ -31,14 +31,15 @@ var foodController;
 var zorbioModel;
 
 ZOR.Game.fullscreen = function go_fullscreen() {
-    if (canvas.requestFullscreen) {
-        canvas.requestFullscreen();
-    } else if (canvas.msRequestFullscreen) {
-        canvas.msRequestFullscreen();
-    } else if (canvas.mozRequestFullScreen) {
-        canvas.mozRequestFullScreen();
-    } else if (canvas.webkitRequestFullscreen) {
-        canvas.webkitRequestFullscreen();
+    var el = document.body;
+    if (el.requestFullscreen) {
+        el.requestFullscreen();
+    } else if (el.msRequestFullscreen) {
+        el.msRequestFullscreen();
+    } else if (el.mozRequestFullScreen) {
+        el.mozRequestFullScreen();
+    } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
     }
 };
 
