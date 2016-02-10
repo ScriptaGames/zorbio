@@ -195,6 +195,7 @@ function createScene() {
         updateActors();
 
         if (gameStart && !player.isDead) {
+            throttledSendPlayerSpherePosition();
 
             player.resetVelocity();
 

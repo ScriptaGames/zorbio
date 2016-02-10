@@ -5,7 +5,6 @@
 var socket;
 
 // handles to setInterval methods so we can clear them later
-var interval_id_player_position;
 var interval_id_heartbeat;
 
 function connectToServer(playerType, playerName, color) {
@@ -47,6 +46,8 @@ function sendPlayerSpherePosition() {
     socket.emit('myPosition', sphere);
 }
 
+var throttledSendPlayerSpherePosition = _.throttle(sendPlayerSpherePosition, config.ACTOR_UPDATE_INTERVAL);
+
 function sendFoodCapture(fi, sphere_id, radius, food_value) {
     socket.emit('foodCapture', fi, sphere_id, radius, food_value);
 }
@@ -76,15 +77,11 @@ function handleNetworkTermination() {
 }
 
 function setIntervalMethods() {
-    // start sending the players position
-    interval_id_player_position = window.setInterval(sendPlayerSpherePosition, config.ACTOR_UPDATE_INTERVAL);
-
     // start sending heartbeat
     interval_id_heartbeat = window.setInterval(sendHeartbeat, config.HEARTBEAT_PULSE_INTERVAL);
 }
 
 function clearIntervalMethods() {
-    window.clearInterval(interval_id_player_position);
     window.clearInterval(interval_id_heartbeat);
 }
 
