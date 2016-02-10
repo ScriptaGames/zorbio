@@ -176,6 +176,9 @@ io.on('connection', function (socket) {
         if (err === 0) {
             model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
 
+            // Increment the players food captures
+            currentPlayer.foodCaptures++;
+
             // grow player on the server to track growth validation
             currentPlayer.sphere.growExpected( config.FOOD_GET_VALUE(radius) );
 
@@ -284,8 +287,12 @@ function checkHeartbeats() {
 function capturePlayer(attackingPlayerId, targetPlayerId) {
     console.log("capturePlayer: ", attackingPlayerId, targetPlayerId);
 
+    // Increment player captures for the attacking player
+    var attackingPlayer = model.players[attackingPlayerId];
+    attackingPlayer.playerCaptures++;
+
     // grow the attacking player the expected amount
-    var attackingSphere = model.players[attackingPlayerId].sphere;
+    var attackingSphere = attackingPlayer.sphere;
     var targetSphere = model.players[targetPlayerId].sphere;
     attackingSphere.growExpected( config.PLAYER_CAPTURE_VALUE( targetSphere.radius() ) );
 
