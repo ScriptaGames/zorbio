@@ -66,6 +66,7 @@ input:focus {
   margin: 0;
 }
 #ui-overlay > * {
+  max-width: calc(90%);
   pointer-events: auto;
   display: flex;
   flex-direction: column;
