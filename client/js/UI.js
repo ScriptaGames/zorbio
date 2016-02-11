@@ -54,6 +54,7 @@ ZOR.UI = function ZORUI() {
      * The Ractive template engine.  Data + Templates = HTML
      */
 
+    Ractive.DEBUG = config.DEBUG;
     var engine = new Ractive({
         // The `el` option can be a node, an ID, or a CSS selector.
         el: '#ui-overlay',

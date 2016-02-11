@@ -145,3 +145,10 @@ config.BALANCER = config.BALANCERS[ config.BALANCER ];
 if (NODEJS) {
     module.exports = config;
 }
+else {
+    // Disable console.log on the client, in production.  This should really go
+    // into a client init function, but it's here for now.
+    if (!config.DEBUG) {
+        console.log = function() {};
+    }
+}
