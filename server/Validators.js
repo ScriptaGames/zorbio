@@ -44,7 +44,7 @@ Validators.movement = function () {
             var time = latestPosition.time - oldestPosition.time;
             var minTime = ((config.PLAYER_POSITIONS_WINDOW * msPerFrame) - 180);
 
-            if ((oldestPosition.radius !== latestPosition.radius) || (time < minTime)) {
+            if (time < minTime) {
                 return 0; // only can calculate when radius are the same
             }
 
@@ -55,7 +55,7 @@ Validators.movement = function () {
             var vdist = point_a.distanceTo(point_b);
 
             // find out what current speed should be based on scale
-            var expectedSpeed = config.PLAYER_GET_SPEED(sphere.scale);
+            var expectedSpeed = config.PLAYER_GET_SPEED(oldestPosition.radius);
             var maxToleratedSpeed = expectedSpeed + config.SPEED_EXTRA_TOLERANCE;
             var measuredSpeed = vdist / time;
             var actualSpeed = msPerFrame * measuredSpeed;
