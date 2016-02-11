@@ -152,7 +152,16 @@ io.on('connection', function (socket) {
     socket.on('myPosition', function (sphere) {
         currentPlayer.lastHeartbeat = Date.now();
 
-        var err = Validators.movement(sphere, model);
+        var err = 0;
+
+        // Take validation sample since this event happens many times per second
+        if (currentPlayer.ticksToNextSample === 0) {
+            err = Validators.movement(sphere, model);
+            currentPlayer.ticksToNextSample = config.VALIDATION_SAMPLE_RATE;
+        } else {
+            currentPlayer.ticksToNextSample--;
+        }
+
         if (err === 0) {
             var actor = model.actors[sphere.id];
 
@@ -179,7 +188,16 @@ io.on('connection', function (socket) {
     socket.on('foodCapture', function (fi, sphere_id, radius) {
         currentPlayer.lastHeartbeat = Date.now();
 
-        var err = Validators.foodCapture(model, fi, sphere_id, radius);
+        var err = 0;
+
+        // Take validation sample since this event happens many times per second
+        if (currentPlayer.ticksToNextSample === 0) {
+            err = Validators.foodCapture(model, fi, sphere_id, radius);
+            currentPlayer.ticksToNextSample = config.VALIDATION_SAMPLE_RATE;
+        } else {
+            currentPlayer.ticksToNextSample--;
+        }
+
         if (err === 0) {
             model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
 

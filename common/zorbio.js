@@ -179,6 +179,7 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.name = name;
     this.type = type;
     this.lastHeartbeat = new Date().getTime();
+    this.ticksToNextSample = config.VALIDATION_SAMPLE_RATE;
     this.sphere = new ZOR.PlayerSphere(this.id, color, position, scale, velocity);
 
     // Stats

@@ -114,6 +114,7 @@ config.INFRACTION_TOLERANCE_FOOD      = 20;     // how many food infractions a p
 config.INFRACTION_TOLERANCE_PCAP      = 1;      // how many player capture infractions a player can have before they are kicked
 config.INFRACTION_TOLERANCE_SPEED     = 10;     // how many speed infractions a player can have before they are kicked
 config.INFRACTION_TOLERANCE_SCALE     = 1;      // how many scale infractions a player can have before they are kicked
+config.VALIDATION_SAMPLE_RATE         = 10;     // How often to sample, 1 would be ever time, 10 would be every 10th check
 
 ////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //
