@@ -11,7 +11,9 @@ Install package dependancies:
     dnf install nodejs npm js-devel fedora-packager @development-tools
 
 After cloning the repository, cd into it and install dependencies:
-
+   
+    npm install -g bower
+    npm install -g less
     bower install
     npm install
 
