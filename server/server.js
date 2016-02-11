@@ -153,11 +153,16 @@ io.on('connection', function (socket) {
     socket.on('myPosition', function (sphere) {
         currentPlayer.lastHeartbeat = Date.now();
 
-        var err = Validators.movementSampled(sphere, model);
+        // Fixes bug #145 the client may send one last position update before they are removed from the game
+        var err;
+        var actor = model.actors[sphere.id];
+        if (!actor) {
+            err = Validators.ErrorCodes.PLAYER_NOT_IN_MODEL;
+        } else {
+            err = Validators.movementSampled(sphere, actor, model);
+        }
 
         if (!err) {
-            var actor = model.actors[sphere.id];
-
             // update the players position in the model
             var latestPosition = sphere.positions[sphere.positions.length - 1];
             actor.position = latestPosition.position;
@@ -173,6 +178,9 @@ io.on('connection', function (socket) {
                 case Validators.ErrorCodes.SPEED_TO_FAST:
                     socket.emit('speedingWarning');
                     model.players[currentPlayer.id].infractions_speed++;
+                    break;
+                case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
+                    console.log("Recieved 'myPosition' from player not in model!", sphere.id);
                     break;
             }
         }

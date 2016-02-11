@@ -29,10 +29,8 @@ Validators.movement = function () {
     var point_a = new THREE.Vector3();
     var point_b = new THREE.Vector3();
 
-    return function (sphere, model) {
+    return function (sphere, actor, model) {
         if (!config.ENABLE_VALIDATION) return 0;
-
-        var actor = model.actors[sphere.id];
 
         // Give the player a grace period while they are loading before validating movement.
         var zPlayer = model.players[actor.playerId];
@@ -42,14 +40,9 @@ Validators.movement = function () {
             return 0;
         }
 
-        var err = 0;
         var latestPosition = sphere.positions[sphere.positions.length - 1];
 
-        if (typeof actor === 'undefined') {
-            // return error not in model
-            err = Validators.ErrorCodes.PLAYER_NOT_IN_MODEL;
-        }
-        else if (sphere.positions.length > 1) {
+        if (sphere.positions.length > 1) {
             var oldestPosition = sphere.positions[0];
             var time = latestPosition.time - oldestPosition.time;
             var minTime = ((config.PLAYER_POSITIONS_WINDOW * msPerFrame) - 180);
@@ -116,7 +109,7 @@ Validators.movement = function () {
             }
         }
 
-        return err;
+        return 0;
     };
 }();
 
