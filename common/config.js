@@ -115,6 +115,7 @@ config.INFRACTION_TOLERANCE_PCAP      = 1;      // how many player capture infra
 config.INFRACTION_TOLERANCE_SPEED     = 10;     // how many speed infractions a player can have before they are kicked
 config.INFRACTION_TOLERANCE_SCALE     = 1;      // how many scale infractions a player can have before they are kicked
 config.VALIDATION_SAMPLE_RATE         = 10;     // How often to sample, 1 would be ever time, 10 would be every 10th check
+config.LOADING_WAIT_DURATION          = 10000;  // How many milliseconds to wait before starting to track movement validation
 
 ////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //

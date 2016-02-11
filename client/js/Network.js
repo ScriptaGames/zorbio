@@ -263,10 +263,12 @@ function setupSocket(socket) {
         }
     });
 
-    socket.on('youDied', function youDied(attackingPlayerId) {
+    socket.on('youDied', function youDied(attackingPlayerId, targetPlayer) {
         if (!gameStart) return;
 
-        console.log("YOU DIED! Killed by: ", attackingPlayerId);
+        var timeAlive = Math.floor((targetPlayer.deathTime - targetPlayer.spawnTime) / 1000);
+
+        console.log("YOU DIED! You were alive for " + timeAlive + " seconds. Killed by: ", attackingPlayerId);
         player.beingCaptured = false;
         player.isDead = true;
         clearIntervalMethods();

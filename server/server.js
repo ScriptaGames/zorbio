@@ -126,6 +126,7 @@ io.on('connection', function (socket) {
             console.log('Player ' + player.id + ' connected!');
             sockets[player.id] = socket;
             currentPlayer.lastHeartbeat = Date.now();
+            currentPlayer.spawnTime = Date.now();
 
             if (model.players[player.id]) {
                 // if current player is already in the players remove them
@@ -312,20 +313,23 @@ function checkHeartbeats() {
 function capturePlayer(attackingPlayerId, targetPlayerId) {
     console.log("capturePlayer: ", attackingPlayerId, targetPlayerId);
 
-    // Increment player captures for the attacking player
     var attackingPlayer = model.players[attackingPlayerId];
+    var targetPlayer = model.players[targetPlayerId];
+
+    // Increment player captures for the attacking player
     attackingPlayer.playerCaptures++;
 
     // grow the attacking player the expected amount
     var attackingSphere = attackingPlayer.sphere;
-    var targetSphere = model.players[targetPlayerId].sphere;
+    var targetSphere = targetPlayer.sphere;
     attackingSphere.growExpected( config.PLAYER_CAPTURE_VALUE( targetSphere.radius() ) );
 
     // Inform the attacking player that capture was successful
     sockets[attackingPlayerId].emit('successfulCapture', targetPlayerId);
 
     // Inform the target player that they died
-    sockets[targetPlayerId].emit('youDied', attackingPlayerId);
+    targetPlayer.deathTime = Date.now();
+    sockets[targetPlayerId].emit('youDied', attackingPlayerId, targetPlayer);
 
     // Inform other clients that target player died
     io.emit("playerDied", attackingPlayerId, targetPlayerId);
@@ -483,6 +487,7 @@ if (config.CHECK_VERSION) {
     setInterval(versionCheck, config.CHECK_VERSION_INTERVAL);
 }
 
+//TODO: merge this into server tick, this doesn't need a separate setInterval
 if (config.HEARTBEAT_ENABLE) {
     setInterval(checkHeartbeats, config.HEARTBEAT_CHECK_INTERVAL);
 }

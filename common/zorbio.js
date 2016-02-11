@@ -185,6 +185,8 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     // Stats
     this.foodCaptures = 0;
     this.playerCaptures = 0;
+    this.spawnTime = 0;
+    this.deathTime = 0;
 
     // Infractions
     this.infractions_food = 0;

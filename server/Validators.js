@@ -31,8 +31,17 @@ Validators.movement = function () {
     return function (sphere, model) {
         if (!config.ENABLE_VALIDATION) return 0;
 
-        var err = 0;
         var actor = model.actors[sphere.id];
+
+        // Give the player a grace period while they are loading before validating movement.
+        var zPlayer = model.players[actor.playerId];
+        var curTime = Date.now();
+        var timeSinceSpawn = curTime - zPlayer.spawnTime;
+        if (timeSinceSpawn < config.LOADING_WAIT_DURATION) {
+            return 0;
+        }
+
+        var err = 0;
         var latestPosition = sphere.positions[sphere.positions.length - 1];
 
         if (typeof actor === 'undefined') {
@@ -45,7 +54,7 @@ Validators.movement = function () {
             var minTime = ((config.PLAYER_POSITIONS_WINDOW * msPerFrame) - 180);
 
             if (time < minTime) {
-                return 0; // only can calculate when radius are the same
+                return 0; // only can calculate enough time has passed
             }
 
             point_a.copy(oldestPosition.position);
