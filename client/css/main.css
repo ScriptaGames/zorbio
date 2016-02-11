@@ -27,15 +27,6 @@ body {
 #start-menu {
   background-color: #171717;
 }
-#credits {
-  font-size: 12px;
-}
-#credits a:link,
-#credits a:visited,
-#credits a:hover {
-  font-size: 12px;
-  color: #FFFFFF;
-}
 input {
   padding: 20px;
   background: #dedede;
@@ -56,7 +47,7 @@ input:focus {
   margin-top: 0;
 }
 .error-text {
-  color: #0B7BF4;
+  color: #0b7bf4;
   font-size: 21px;
   text-align: center;
 }
@@ -96,8 +87,17 @@ input:focus {
 #ui-overlay > * > *:last-child {
   margin-bottom: 0;
 }
+#ui-overlay > * h1 {
+  text-align: center;
+  font-size: 60px;
+}
 #ui-overlay > * p {
   text-align: center;
+}
+#ui-overlay > * p,
+#ui-overlay > * p a {
+  font-size: 15px;
+  color: #f7f7f7;
 }
 button:focus {
   outline: none;
@@ -105,7 +105,7 @@ button:focus {
 button {
   -moz-osx-font-smoothing: grayscale;
   -webkit-backface-visibility: hidden;
-  background: #0B7BF4;
+  background: #0b7bf4;
   border: none;
   color: #f7f7f7;
   display: block;

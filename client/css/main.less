@@ -12,9 +12,11 @@
 @modal-background: darken(@secondary-color, 10%);
 @accent-color: #0B7BF4;
 
-//
+// spacing
 
 @default-padding: 20px;
+
+//
 
 * {
     font-family : @primary-font;
@@ -46,18 +48,6 @@ html, body {
 #start-menu {
     background-color : @secondary-color;
 }
-
-#credits {
-    font-size   : 12px;
-}
-
-#credits a:link,
-#credits a:visited,
-#credits a:hover {
-    font-size   : 12px;
-    color: #FFFFFF;
-}
-
 
 input {
     padding    : @default-padding;
@@ -134,8 +124,17 @@ input {
             margin-bottom: 0;
         }
 
+        h1 {
+            text-align: center;
+            font-size: @font-size-base * 2;
+        }
+
         p {
             text-align: center;
+            &, a {
+                font-size: @font-size-base * 0.5;
+                color: @primary-color;
+            }
         }
 
     }
