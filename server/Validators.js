@@ -1,6 +1,7 @@
 var config = require('../common/config.js');
 var _ = require('lodash');
 var alphakeys = require('./alphakeys');
+var UTIL = require('../common/util');
 
 var Validators = {};
 
@@ -119,6 +120,8 @@ Validators.movement = function () {
     };
 }();
 
+Validators.movementSampled = UTIL.nth( Validators.movement, config.VALIDATION_SAMPLE_RATE );
+
 Validators.foodCapture = function (model, fi, sphere_id, radius) {
     if (!config.ENABLE_VALIDATION) return 0;
 
@@ -148,6 +151,8 @@ Validators.foodCapture = function (model, fi, sphere_id, radius) {
 
     return 0;
 };
+
+Validators.foodCaptureSampled = UTIL.nth( Validators.foodCapture, config.VALIDATION_SAMPLE_RATE );
 
 Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, sendingSphere) {
     if (!config.ENABLE_VALIDATION) return 0;

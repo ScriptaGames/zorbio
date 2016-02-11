@@ -307,5 +307,28 @@ var coloringMethods = {
 
 };
 
+/**
+ * Wrap your function such that it will be executed every N times it's called.
+ * This is useful in a long-running loop such as the main loop in a game, where
+ * you want to execute certain functions every 10 frames, or similar, but don't
+ * want to manage a dozen separate "timers".
+ *
+ * @param {Function} f the function to wrap
+ * @param {Number} n execute the function every `n` times
+ */
+UTIL.nth = function nth(f, n) {
+    var _i = 0;
+    var _n = Math.max(n, 0);
+    return function() {
+        if (_i === _n) {
+            _i = 0;
+            return f.apply(this, arguments);
+        }
+        else {
+            _i++;
+        }
+    }
+};
+
 // if we're in nodejs, export the root UTIL object
 if (NODEJS) module.exports = UTIL;
