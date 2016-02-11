@@ -9,4 +9,4 @@ ZOR.Env = {
     REQUIRE_ALPHA_KEY : true,
 };
 
-if (NODEJS) module.exports = zor_env;
+if (NODEJS) module.exports = ZOR.Env;
