@@ -184,19 +184,6 @@ io.on('connection', function (socket) {
                     break;
             }
         }
-
-        // make the payload as small as possible, send only what's needed on the client
-        var actorUpdates = {};
-        var actorIds = Object.getOwnPropertyNames(model.actors);
-        for (var i = 0, l = actorIds.length; i < l; i++) {
-            var id = actorIds[i];
-            if (sphere.id !== id) {
-                actorUpdates[id] = {p: model.actors[id].position, s: +model.actors[id].scale.toFixed(4)};
-            }
-        }
-
-        // Send actors to the client for updates
-        socket.emit('actorPositions', actorUpdates);
     });
 
     socket.on('foodCapture', function (fi, sphere_id, radius) {
@@ -291,7 +278,7 @@ function sendActorUpdates() {
     var actorIds = Object.getOwnPropertyNames(model.actors);
     for (var i = 0, l = actorIds.length; i < l; i++) {
         var id = actorIds[i];
-        actorUpdates[id] = {position: model.actors[id].position, scale: model.actors[id].scale};
+        actorUpdates[id] = {p: model.actors[id].position, s: +model.actors[id].scale.toFixed(4)};
     }
 
     // Send actors to the client for updates
@@ -485,7 +472,7 @@ function versionCheck() {
     })
 }
 
-//setInterval(sendActorUpdates, config.ACTOR_UPDATE_INTERVAL);
+setInterval(sendActorUpdates, config.ACTOR_UPDATE_INTERVAL);
 setInterval(serverTick, config.SERVER_TICK_INTERVAL);
 
 if (config.CHECK_VERSION) {
