@@ -263,6 +263,10 @@ UTIL.trimPosition = function UTILTrimPosition(position, trim) {
     };
 };
 
+UTIL.trimFloat = function UTILTrimFloat(num, trim) {
+    return +num.toFixed(trim);
+};
+
 /**
  * Utility function used to push data into the
  * array while maintaining the sort order.

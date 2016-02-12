@@ -134,7 +134,7 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
     // maintain a reference to the player who owns this sphere
     this.playerId = playerId;
 
-    this.id = this.type + '-' + this.playerId;
+    this.id = 'PS-' + this.playerId;
 };
 ZOR.PlayerSphere.prototype = Object.create(ZOR.Actor.prototype);
 ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
@@ -179,7 +179,6 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.name = name;
     this.type = type;
     this.lastHeartbeat = new Date().getTime();
-    this.ticksToNextSample = config.VALIDATION_SAMPLE_RATE;
     this.sphere = new ZOR.PlayerSphere(this.id, color, position, scale, velocity);
 
     // Stats

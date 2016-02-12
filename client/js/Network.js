@@ -154,8 +154,8 @@ function setupSocket(socket) {
             var id = actorIds[i];
             if (zorbioModel.actors[id]) {
                 var actor = actors[id];
-                zorbioModel.actors[id].position.copy(actor.position);
-                zorbioModel.actors[id].scale = actor.scale;
+                zorbioModel.actors[id].position.copy(actor.p);
+                zorbioModel.actors[id].scale = actor.s;
             }
         }
     });
