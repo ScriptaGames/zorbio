@@ -187,6 +187,8 @@ function createScene() {
             materialArray[i].side = THREE.DoubleSide;
             materialArray[i].transparent = true;
             materialArray[i].alphaTest = 0.5;
+            materialArray[i].map.magFilter = THREE.NearestFilter;
+            materialArray[i].map.minFilter = THREE.LinearFilter;
         }
         var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
         var skyboxGeom = new THREE.BoxGeometry( zorbioModel.worldSize.x, zorbioModel.worldSize.y, zorbioModel.worldSize.z, 1, 1, 1 );
