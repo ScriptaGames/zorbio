@@ -85,6 +85,7 @@ var FoodController = function ZORFoodController(model, fogCenterPosition) {
                 if (dist <= (sphere_radius + config.FOOD_CAPTURE_ASSIST)) {
                     var fi = i / 3;
                     callback( fi );
+                    _.sample(ZOR.Sounds.food_capture).play();
                 }
             }
         }

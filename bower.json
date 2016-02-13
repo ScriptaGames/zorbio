@@ -25,6 +25,7 @@
     "three.js": "threejs#*",
     "lodash": "~4.0.0",
     "ractive": "~0.7.3",
-    "socket.io": "git@github.com:socketio/socket.io-client.git#1.4.4"
+    "socket.io": "git@github.com:socketio/socket.io-client.git#1.4.4",
+    "howler.js": "^1.1.29"
   }
 }
