@@ -67,6 +67,90 @@
 
         </script>
 
+
+        <script id="food-geo-frag-shader" type="x-shader/x-fragment">
+            precision highp float;
+
+            uniform sampler2D map;
+
+            uniform float FOG_ENABLED;
+            uniform float FOG_FAR;
+            uniform float ALPHA_ENABLED;
+            uniform float FOOD_RESPAWN_ANIM_DURATION;
+
+            varying vec2 vUv;
+            varying vec3 vColor;
+            varying float vRespawning;
+            varying float sDist;
+            varying float vGrowing;
+
+            void main() {
+
+                float fogp = 1.0;
+                float alpha = 1.0;
+                vec4 diffuseColor = texture2D( map, vUv );
+
+                if ( diffuseColor.w < 0.5 ) discard;
+                if ( vRespawning > FOOD_RESPAWN_ANIM_DURATION ) discard;
+
+                if ( FOG_ENABLED != 0.0 ) {
+                    fogp = 1.0 - sDist / FOG_FAR;
+                }
+
+                if ( ALPHA_ENABLED != 0.0 ) {
+                    alpha = fogp - 0.3;
+                    alpha *= vGrowing;
+                }
+
+                alpha *= diffuseColor.w;
+
+                gl_FragColor = vec4( fogp * diffuseColor.xyz * vColor, alpha );
+
+            }
+        </script>
+
+        <script type="x-shader/x-vertex" id="food-geo-vertex-shader">
+            precision highp float;
+            uniform mat4 modelViewMatrix;
+            uniform mat4 projectionMatrix;
+            uniform vec3 mainSpherePos;
+            uniform float FOOD_RESPAWN_ANIM_DURATION;
+
+            attribute vec3 translate;
+            attribute vec2 uv;
+            attribute vec3 normal;
+            attribute vec3 position;
+            attribute vec3 color;
+            attribute float respawning;
+
+            varying vec2 vUv;
+            varying vec3 vColor;
+
+            varying float vRespawning;
+            varying float sDist;
+            varying float vDist;
+            varying float vGrowing;
+
+            void main() {
+
+                vec4 mvPosition = modelViewMatrix * vec4( translate, 1.0 );
+
+                float growing = 1.0 - respawning / FOOD_RESPAWN_ANIM_DURATION;
+
+                mvPosition.xyz += position * growing;
+
+                vRespawning = respawning;
+                vUv         = uv;
+                vColor      = color;
+                vDist       = length( mvPosition.xyz ); // distance from camera
+                sDist       = length( translate - mainSpherePos ); // distance from sphere to particle
+                vGrowing    = growing;
+
+                gl_Position = projectionMatrix * mvPosition;
+
+            }
+        </script>
+
         <!-- FOOD SHADERS -->
 
         <script type="x-shader/x-vertex" id="food-vertex-shader">
@@ -141,7 +225,9 @@
 
                 gl_FragColor = vec4( fogp * vColor, alpha );
 
-                // texture2D( texture, gl_PointCoord );
+                if ( ALPHA_ENABLED != 0.0 ) {
+                    gl_FragColor *= texture2D( texture, gl_PointCoord );
+                }
 
             }
 

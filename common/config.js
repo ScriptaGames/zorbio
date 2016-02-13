@@ -91,7 +91,7 @@ config.FOOD_DENSITY                = 26;    // How much food there is, total foo
 config.FOOD_VALUE                  = 0.6;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
-config.FOOD_CAPTURE_ASSIST         = 2;     // this number is added to player's radius for food capturing
+config.FOOD_CAPTURE_ASSIST         = 1.0;     // this number is added to player's radius for food capturing
 config.FOOD_COLORING_TYPE          = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][3];
 config.FOOD_COLORING_SINE_SEGMENTS = 8;     // with sine-cycle coloring, how many color cycles along each axis
 config.FOOD_GET_VALUE              = function FoodGetValue( r ) {
@@ -129,7 +129,7 @@ config.WALL_GRID_SEGMENTS      = 20;
 config.INITIAL_FOV             = 50;
 config.PLAYER_MOVE_LERP_WEIGHT = 0.3;
 config.PLAYER_SPHERE_POLYCOUNT = 64; // height and width segments of the spheres
-config.PARTICLE_ALPHA_ENABLED  = false;
+config.FOOD_ALPHA_ENABLED      = false;
 config.LAG_SCALE_ENABLE        = true;
 
 ////////////////////////////////////////////////////////////////////////

@@ -34,7 +34,7 @@ ZOR.PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
         transparent: true
     } );
 
-    if (config.PARTICLE_ALPHA_ENABLED) {
+    if (config.FOOD_ALPHA_ENABLED) {
         this.material.depthWrite = true;
     }
 

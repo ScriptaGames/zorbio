@@ -5,22 +5,26 @@
 var FoodView = function ZORFoodView() {
 
     this.drawFood = function ZORFoodViewDrawFood(scene, food, foodCount, fogCenterPosition) {
-        this.positions = new Float32Array( foodCount * 3 );
+        this.translate = new Float32Array( foodCount * 3 );
         this.colors = new Float32Array( foodCount * 3 );
         this.respawning = new Float32Array( foodCount );
 
+        this.geometry = new THREE.InstancedBufferGeometry();
+        this.geometry.copy( new THREE.PlaneBufferGeometry( 2, 2 ) );
+        // this.geometry.copy( new THREE.CircleBufferGeometry( 1, 6 ) );
+
         var foodCrayon = UTIL.getFoodCrayon( config.FOOD_COLORING_TYPE );
 
-        var positions = this.positions;
+        var translate = this.translate;
         var colors = this.colors;
         var respawning = this.respawning;
 
-        // copy food position and food color values from the food array
+        // copy food translate and food color values from the food array
         // into the typed arrays for the particle system
 
         var X, Y, Z, R, G, B;
         var offset = 0;
-        for (var i = 0; i < foodCount; i++) {
+        for (var i = 0, l = foodCount; i < l; i++) {
 
             X = food[ offset     ];
             Y = food[ offset + 1 ];
@@ -33,9 +37,9 @@ var FoodView = function ZORFoodView() {
 
             respawning[ i ] = 0;
 
-            positions[ offset     ] = X;
-            positions[ offset + 1 ] = Y;
-            positions[ offset + 2 ] = Z;
+            translate[ offset     ] = X;
+            translate[ offset + 1 ] = Y;
+            translate[ offset + 2 ] = Z;
 
             colors[ offset     ] = R;
             colors[ offset + 1 ] = G;
@@ -44,36 +48,32 @@ var FoodView = function ZORFoodView() {
             offset += 3;
         }
 
-        this.geometry = new THREE.BufferGeometry();
-        this.geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-        this.geometry.addAttribute( 'respawning', new THREE.BufferAttribute( respawning, 1 ) );
-        this.geometry.addAttribute( 'ca', new THREE.BufferAttribute( colors, 3 ) );
+        this.geometry.addAttribute( 'translate', new THREE.InstancedBufferAttribute( translate, 3, 1 ) );
+        this.geometry.addAttribute( 'respawning', new THREE.InstancedBufferAttribute( respawning, 1, 1 ) );
+        this.geometry.addAttribute( 'color', new THREE.InstancedBufferAttribute( colors, 3, 1 ) );
 
-        this.texture = THREE.ImageUtils.loadTexture( "textures/solid-particle.png" );
-        this.texture.wrapS = THREE.RepeatWrapping;
-        this.texture.wrapT = THREE.RepeatWrapping;
-
-        this.material = new THREE.ShaderMaterial( {
-
+        this.material = new THREE.RawShaderMaterial( {
             uniforms: {
-                amplitude                  : { type : "f",  value : 1.0 },
-                color                      : { type : "c",  value : new THREE.Color( 0xffffff ) },
-                texture                    : { type : "t",  value : this.texture },
-                size                       : { type : "f",  value : 3000 },
+                map: { type: "t", value: THREE.ImageUtils.loadTexture( "textures/soft-square.png" ) },
                 mainSpherePos              : { type : "v3", value : fogCenterPosition },
                 FOG_FAR                    : { type : "f",  value : config.FOG_FAR },
                 FOG_ENABLED                : { type : "f",  value : ~~config.FOG_ENABLED },
-                ALPHA_ENABLED              : { type : "f",  value : ~~config.PARTICLE_ALPHA_ENABLED },
+                ALPHA_ENABLED              : { type : "f",  value : ~~config.FOOD_ALPHA_ENABLED },
                 FOOD_RESPAWN_ANIM_DURATION : { type : "f",  value : config.FOOD_RESPAWN_ANIM_DURATION },
             },
-            vertexShader   : document.getElementById( 'food-vertex-shader' ).textContent,
-            fragmentShader : document.getElementById( 'food-fragment-shader' ).textContent,
-            transparent    : config.PARTICLE_ALPHA_ENABLED,
-            blending       : THREE.AdditiveBlending,
-        });
+            vertexShader: document.getElementById( 'food-geo-vertex-shader' ).textContent,
+            fragmentShader: document.getElementById( 'food-geo-frag-shader' ).textContent,
+            depthTest: true,
+            depthWrite: true,
+            // alphaTest: 0.5,
+            // transparent: true,
+        } );
 
-        this.particleSystem = new THREE.Points( this.geometry, this.material );
-        scene.add( this.particleSystem );
+        this.mesh = new THREE.Mesh( this.geometry, this.material );
+
+        this.mesh.frustumCulled = false;
+
+        scene.add( this.mesh );
     };
 
     /**
@@ -88,7 +88,7 @@ var FoodView = function ZORFoodView() {
     this.update = function ZORFoodViewUpdate() {
         // Decrement each food value
         _.map( this.respawning, decfood );
-        this.particleSystem.geometry.attributes.respawning.needsUpdate = true;
+        this.mesh.geometry.attributes.respawning.needsUpdate = true;
     };
 
     /**

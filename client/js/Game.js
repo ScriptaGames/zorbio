@@ -169,7 +169,6 @@ function createScene() {
         foodController = new FoodController(zorbioModel, player.view.mainSphere.position);
         foodController.drawFood(scene);
 
-
         // Hide currently respawning food
         foodController.hideFoodMultiple(zorbioModel.food_respawning_indexes);
 
@@ -193,6 +192,7 @@ function createScene() {
         var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
         var skyboxGeom = new THREE.BoxGeometry( zorbioModel.worldSize.x, zorbioModel.worldSize.y, zorbioModel.worldSize.z, 1, 1, 1 );
         var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
+        skybox.renderOrder = -1;
         scene.add( skybox );
 
         // lights

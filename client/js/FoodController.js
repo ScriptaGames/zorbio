@@ -74,11 +74,11 @@ var FoodController = function ZORFoodController(model, fogCenterPosition) {
         var mainSphere = thePlayer.view.mainSphere;
         var sphere_radius = thePlayer.radius();
 
-        for ( i = 0, l = this.view.positions.length; i < l; i += 3 ) {
+        for ( i = 0, l = this.view.translate.length; i < l; i += 3 ) {
             if (this.aliveFood( i / 3 )) {
-                x = this.view.positions[ i     ];
-                y = this.view.positions[ i + 1 ];
-                z = this.view.positions[ i + 2 ];
+                x = this.view.translate[ i     ];
+                y = this.view.translate[ i + 1 ];
+                z = this.view.translate[ i + 2 ];
                 this.vdist.set(x, y, z);
 
                 dist = this.vdist.distanceTo(mainSphere.position);
