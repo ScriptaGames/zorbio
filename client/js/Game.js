@@ -184,7 +184,9 @@ function createScene() {
             wall_texture.wrapS = wall_texture.wrapT = THREE.MirroredRepeatWrapping;
             wall_texture.repeat.set(config.WALL_GRID_SEGMENTS, config.WALL_GRID_SEGMENTS);
             materialArray.push(new THREE.MeshBasicMaterial( { map: wall_texture }));
-            materialArray[i].side = THREE.BackSide;
+            materialArray[i].side = THREE.DoubleSide;
+            materialArray[i].transparent = true;
+            materialArray[i].alphaTest = 0.5;
         }
         var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
         var skyboxGeom = new THREE.BoxGeometry( zorbioModel.worldSize.x, zorbioModel.worldSize.y, zorbioModel.worldSize.z, 1, 1, 1 );
