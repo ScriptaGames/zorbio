@@ -4,6 +4,8 @@
 
 var socket;
 
+var heartBeatStart;
+
 // handles to setInterval methods so we can clear them later
 var interval_id_heartbeat;
 
@@ -71,7 +73,16 @@ function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
 }
 
 function sendHeartbeat() {
-    socket.emit('playerHeartbeat');
+    heartBeatStart = performance.now();
+    var bufArr = new ArrayBuffer(4);
+    var bufView = new Uint8Array(bufArr);
+    bufView[0]=6;
+    bufView[1]=7;
+    bufView[2]=8;
+    bufView[3]=9;
+
+    // heart beat send
+    socket.emit('serverPing', bufArr);
 }
 
 function handleNetworkTermination() {
@@ -287,8 +298,15 @@ function setupSocket(socket) {
         }
     });
 
-    socket.on('pong', function pong(number) {
-        console.log('Ping: ' + number + 'ms');
+    //socket.on('pong', function pong(number) {
+    //    console.log('Ping: ' + number + 'ms');
+    //});
+
+    socket.on('clientPing', function (bufArr) {
+        var bufView = new Uint8Array(bufArr);
+        var duration = performance.now() - heartBeatStart;
+        console.log('Ping: ' + duration + 'ms');
+        console.log("Data: ", bufView[0], bufView[1], bufView[2], bufView[3])
     });
 
     /*
