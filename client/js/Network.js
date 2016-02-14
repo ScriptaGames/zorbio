@@ -72,7 +72,7 @@ function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
     }
 }
 
-function sendHeartbeat() {
+function sendMessage() {
     heartBeatStart = performance.now();
     var bufArr = new ArrayBuffer(4);
     var bufView = new Uint8Array(bufArr);
@@ -81,8 +81,8 @@ function sendHeartbeat() {
     bufView[2]=8;
     bufView[3]=9;
 
-    // heart beat send
-    socket.emit('serverPing', bufArr);
+    // send binary message to server
+    socket.emit('serverMsg', bufArr);
 }
 
 function handleNetworkTermination() {
@@ -91,7 +91,7 @@ function handleNetworkTermination() {
 
 function setIntervalMethods() {
     // start sending heartbeat
-    interval_id_heartbeat = window.setInterval(sendHeartbeat, config.HEARTBEAT_PULSE_INTERVAL);
+    interval_id_heartbeat = window.setInterval(sendMessage, config.HEARTBEAT_PULSE_INTERVAL);
 }
 
 function clearIntervalMethods() {
@@ -302,11 +302,11 @@ function setupSocket(socket) {
     //    console.log('Ping: ' + number + 'ms');
     //});
 
-    socket.on('clientPing', function (bufArr) {
-        var bufView = new Uint8Array(bufArr);
+    socket.on('clientMsg', function (bufArr) {
         var duration = performance.now() - heartBeatStart;
         console.log('Ping: ' + duration + 'ms');
-        console.log("Data: ", bufView[0], bufView[1], bufView[2], bufView[3])
+        //var bufView = new Uint8Array(bufArr);
+        //console.log("Data: ", bufView[0], bufView[1], bufView[2], bufView[3])
     });
 
     /*

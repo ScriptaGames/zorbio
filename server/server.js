@@ -253,7 +253,7 @@ io.on('connection', function (socket) {
         capturePlayer(attackingPlayerId, targetPlayerId);
     });
 
-    socket.on('serverPing', function (bufArr) {
+    socket.on('serverMsg', function (bufArr) {
         currentPlayer.lastHeartbeat = Date.now();
 
         var ba = new ArrayBuffer(4);
@@ -263,10 +263,10 @@ io.on('connection', function (socket) {
         bv[2]=12;
         bv[3]=13;
 
-        var bufView = new Uint8Array(bufArr);
-        console.log("heartbeat Data: ", bufView[0], bufView[1], bufView[2], bufView[3]);
+        //var bufView = new Uint8Array(bufArr);
+        //console.log("heartbeat Data: ", bufView[0], bufView[1], bufView[2], bufView[3]);
 
-        socket.emit("clientPing", ba);
+        socket.emit("clientMsg", ba);
     });
 
     socket.on('error', function (err) {

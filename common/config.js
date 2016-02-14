@@ -13,7 +13,7 @@ if (NODEJS) {
 
 var config = {};
 
-config.DEBUG = true;
+config.DEBUG = false;
 config.REQUIRE_ALPHA_KEY = true;
 
 ////////////////////////////////////////////////////////////////////////
