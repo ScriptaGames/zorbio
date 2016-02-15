@@ -33,6 +33,8 @@
                 {{ /if }}
                 <button on-click="{{ ACTIONS.PLAYER_LOGIN }}" id="start-button"><span>Play</span></button>
                 <p id="credits">Created By <a href="https://twitter.com/caramelcode">Jared Sprague</a> and <a href="https://twitter.com/mwcz">Michael Clayton</a></p>
+
+                {{ > social }}
             </div>
             {{ /if }}
 
@@ -40,6 +42,7 @@
             <div id="death-screen">
                 <h2>YOU WERE EATEN!</h2>
                 <button on-click="{{ ACTIONS.PLAYER_RESPAWN }}" id="respawn-button"><span>Respawn</span></button>
+                {{ > social }}
             </div>
             {{ /if }}
 

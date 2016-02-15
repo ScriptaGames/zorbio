@@ -59,6 +59,10 @@ ZOR.UI = function ZORUI() {
         // The `el` option can be a node, an ID, or a CSS selector.
         el: '#ui-overlay',
 
+        partials: {
+            social: '<p id="social">Follow us on <a href="https://facebook.com/Zorbio">Facebook</a>!  Meet players, devs and share alpha feedback.</p>',
+        },
+
         // We could pass in a string, but for the sake of convenience
         // we're passing the ID of the <script> tag above.
         template: '#ui-template',
