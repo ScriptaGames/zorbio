@@ -161,6 +161,35 @@ button:hover::before {
   align-items: center;
   margin-bottom: 10px;
 }
+#death-screen #leaders .leaderboard-circle {
+  color: #f7f7f7;
+}
+#leaderboard-playing {
+  background: none;
+  pointer-events: none;
+  border-radius: 0;
+  align-self: flex-start;
+  margin-right: auto;
+  padding: 0;
+  margin: 10px auto 0 10px;
+}
+#leaderboard-playing ul li,
+#leaderboard-playing .leaderboard-circle {
+  font-size: 21px;
+}
+#leaderboard-playing #leaders .leaderboard-circle {
+  background: none !important;
+  border-radius: 0;
+  height: auto;
+  width: auto;
+}
+#leaderboard-playing #leaders.mobile ul li {
+  margin-bottom: 2px;
+  font-size: 12px;
+}
+#leaderboard-playing #leaders.mobile ul li .leaderboard-circle {
+  font-size: 12px;
+}
 .leaderboard-circle {
   display: flex;
   justify-content: center;

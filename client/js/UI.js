@@ -43,6 +43,7 @@ ZOR.UI = function ZORUI() {
         COLORS           : ZOR.PlayerView.COLORS,
         MISSING_FEATURES : [],
         leaders          : [],
+        is_mobile        : isMobile.any,
     };
 
     /**
@@ -62,7 +63,8 @@ ZOR.UI = function ZORUI() {
         el: '#ui-overlay',
 
         partials: {
-            social: '<p id="social">Follow us on <a href="https://facebook.com/Zorbio">Facebook</a>!  Meet players, devs and share alpha feedback.</p>',
+            social      : document.querySelector('#social-template').textContent,
+            leaderboard : document.querySelector('#leaderboard-template').textContent,
         },
 
         // We could pass in a string, but for the sake of convenience
@@ -152,7 +154,7 @@ ZOR.UI = function ZORUI() {
         engine   : engine,
         state    : state,
         on       : on,
-        update   : UTIL.nth( engine.update.bind(engine), 60 ), // automatically update this many times per second
+        update   : UTIL.nth( engine.update.bind(engine), 20 ), // automatically update UI every N frames, really only affects leaderboard
     };
 
 }();

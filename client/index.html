@@ -21,6 +21,29 @@
 
         <!-- UI TEMPLATES -->
 
+        <script id="leaderboard-template" type="text/ractive">
+            <div id="leaders" class="{{ is_mobile ? 'mobile' : '' }}">
+                <ul>
+                {{ #each leaders:i }}
+                    <li style="color: {{ COLORS[leaders[i].color] }}">
+                        <div class="leaderboard-circle" style="background: {{ COLORS[leaders[i].color] }}">
+                        {{ leaders[i].score }}
+                        </div>
+                        {{ leaders[i].name }}
+                    </li>
+                {{ /each }}
+                </ul>
+            </div>
+        </script>
+
+        <script id="social-template" type="text/ractive">
+            <p id="social">
+                Follow us on <a
+                href="https://facebook.com/Zorbio">Facebook</a>!  Meet players,
+                devs and share alpha feedback.
+            </p>
+        </script>
+
         <script id="ui-template" type="text/ractive">
 
             {{ #if state === STATES.LOGIN_SCREEN || state === STATES.LOGIN_SCREEN_ERROR }}
@@ -38,23 +61,18 @@
             </div>
             {{ /if }}
 
+            {{ #if state === STATES.PLAYING }}
+            <div id="leaderboard-playing">
+                {{ > leaderboard }}
+            </div>
+            {{ /if }}
+
             {{ #if state === STATES.RESPAWN_SCREEN }}
             <div id="death-screen">
                 <h2>YOU WERE EATEN!</h2>
                 <button on-click="{{ ACTIONS.PLAYER_RESPAWN }}" id="respawn-button"><span>Respawn</span></button>
-                <div id="leaders">
-                    The most tremendous...
-                    <ul>
-                    {{ #each leaders:i }}
-                        <li>
-                            <div class="leaderboard-circle" style="background: {{ COLORS[leaders[i].color] }}">
-                            {{ leaders[i].score }}
-                            </div>
-                            {{ leaders[i].name }}
-                        </li>
-                    {{ /each }}
-                    </ul>
-                </div>
+                The most tremendous are...
+                {{ > leaderboard }}
                 {{ > social }}
             </div>
             {{ /if }}

@@ -478,7 +478,7 @@ function handleServerTick(serverTickData) {
     if (!gameStart) return;
 
     // ZOR.UI.engine.set( 'leaders', serverTickData.leaders );
-    _.assign( ZOR.UI.data.leaders, serverTickData.leaders );
+    ZOR.UI.data.leaders = serverTickData.leaders;
 
     // handle food respawns
     for(var i = 0, l = serverTickData.fr.length; i < l; ++i) {
