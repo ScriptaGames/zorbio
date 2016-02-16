@@ -119,6 +119,7 @@ button {
   border: none;
   color: #f7f7f7;
   display: flex;
+  justify-content: center;
   min-height: 80px;
   overflow: hidden;
   padding: 20px;
