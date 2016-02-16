@@ -13,6 +13,13 @@ body {
   padding: 0;
   background-color: #171717;
 }
+a {
+  font-size: 1em;
+  color: #f7f7f7;
+}
+a:hover {
+  color: #0b7bf4;
+}
 #render-canvas {
   width: 100%;
   height: 100%;
@@ -47,7 +54,7 @@ input:focus {
   margin-top: 0;
 }
 .error-text {
-  color: #0B7BF4;
+  color: #0b7bf4;
   font-size: 21px;
   text-align: center;
 }
@@ -98,11 +105,7 @@ input:focus {
 }
 #ui-overlay > * p {
   text-align: center;
-}
-#ui-overlay > * p,
-#ui-overlay > * p a {
   font-size: 15px;
-  color: #f7f7f7;
 }
 button:focus {
   outline: none;
@@ -110,7 +113,7 @@ button:focus {
 button {
   -moz-osx-font-smoothing: grayscale;
   -webkit-backface-visibility: hidden;
-  background: #0B7BF4;
+  background: #0b7bf4;
   border: none;
   color: #f7f7f7;
   display: block;

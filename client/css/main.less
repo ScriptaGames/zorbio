@@ -33,6 +33,14 @@ html, body {
     background-color : @secondary-color;
 }
 
+a {
+    font-size: 1em;
+    color: @primary-color;
+    &:hover {
+        color: @accent-color;
+    }
+}
+
 #render-canvas {
     width        : 100%;
     height       : 100%;
@@ -138,10 +146,7 @@ input {
 
         p {
             text-align: center;
-            &, a {
-                font-size: @font-size-base * 0.5;
-                color: @primary-color;
-            }
+            font-size: @font-size-base * 0.5;
         }
 
     }
