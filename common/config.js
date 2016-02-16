@@ -64,7 +64,7 @@ config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
     return s - ((r * s) / config.STATIONARY_RADIUS);
 };
 config.PLAYER_GET_SCORE      = function PlayerGetScore( radius ) {
-    return Math.floor(radius * 10) ;
+    return Math.floor(radius) * 10;
 };
 config.AUTO_RUN_ENABLED      = true;
 config.STEERING_METHODS      = Object.freeze({ // enum-ish
