@@ -439,7 +439,8 @@ function playersChecks() {
         // Add players to leaders array in sorted order by score
         var leader = {
             name: player.name,
-            score: config.PLAYER_GET_SCORE( player.sphere.radius() )
+            score: config.PLAYER_GET_SCORE( player.sphere.radius() ),
+            color: player.sphere.color,
         };
         UTIL.sortedObjectPush(model.leaders, leader, 'score');
     }
@@ -456,8 +457,8 @@ function playersChecks() {
  */
 function serverTick() {
     updateFoodRespawns();
-    sendServerTickData();
     playersChecks();
+    sendServerTickData();
 
     // expire pending player captures
     Zorbio.expirePendingPlayerCaptures();

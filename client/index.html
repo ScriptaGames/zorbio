@@ -42,6 +42,19 @@
             <div id="death-screen">
                 <h2>YOU WERE EATEN!</h2>
                 <button on-click="{{ ACTIONS.PLAYER_RESPAWN }}" id="respawn-button"><span>Respawn</span></button>
+                <div id="leaders">
+                    The most tremendous...
+                    <ul>
+                    {{ #each leaders:i }}
+                        <li>
+                            <div class="leaderboard-circle" style="background: {{ COLORS[leaders[i].color] }}">
+                            {{ leaders[i].score }}
+                            </div>
+                            {{ leaders[i].name }}
+                        </li>
+                    {{ /each }}
+                    </ul>
+                </div>
                 {{ > social }}
             </div>
             {{ /if }}
@@ -309,10 +322,10 @@
         <script src="./lib/zorbio.js"></script>
         <script src="./js/LagScale.js"></script>
         <script src="./js/Sounds.js"></script>
+        <script src="./js/PlayerView.js"></script>
         <script src="./js/UI.js"></script>
         <script src="./js/Game.js"></script>
         <script src="./js/PlayerController.js"></script>
-        <script src="./js/PlayerView.js"></script>
         <script src="./js/FoodController.js"></script>
         <script src="./js/FoodView.js"></script>
         <script src="./js/Main.js"></script>

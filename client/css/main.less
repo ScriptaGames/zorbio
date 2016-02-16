@@ -15,6 +15,7 @@
 // spacing
 
 @default-padding: 20px;
+@leaderboard-circle-diameter: 80px;
 
 //
 
@@ -106,7 +107,10 @@ input {
     margin          : 0;
 
     & > * {
-        max-width       : calc(100% - 10px);
+        max-width       : calc(~"100% - 10px");
+        max-height      : calc(~"100% - 80px");
+
+        overflow-y      : auto; // scroll if ya gotta
 
         pointer-events  : auto; // enable click/touch events on UI elements
         display         : flex;
@@ -161,7 +165,8 @@ button {
     background                  : @accent-color;
     border                      : none;
     color                       : @primary-color;
-    display                     : block;
+    display                     : flex;
+    min-height                  : @leaderboard-circle-diameter;
     overflow                    : hidden;
     padding                     : @default-padding;
     position                    : relative;
@@ -192,4 +197,27 @@ button > span {
 button:hover::before {
     -webkit-transform : scale3d(9, 9, 1);
     transform         : scale3d(9, 9, 1);
+}
+
+#leaders {
+    ul {
+        list-style : none;
+        padding    : 0;
+        margin     : 0;
+        li {
+            display       : flex;
+            flex-wrap     : wrap;
+            align-items   : center;
+            margin-bottom : 10px;
+        }
+    }
+}
+.leaderboard-circle {
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+    height          : @leaderboard-circle-diameter;
+    width           : @leaderboard-circle-diameter;
+    border-radius   : 50%;
+    margin-right    : 20px;
 }

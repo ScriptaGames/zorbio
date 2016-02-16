@@ -73,7 +73,9 @@ input:focus {
   margin: 0;
 }
 #ui-overlay > * {
-  max-width: calc(90%);
+  max-width: calc(100% - 10px);
+  max-height: calc(100% - 80px);
+  overflow-y: auto;
   pointer-events: auto;
   display: flex;
   flex-direction: column;
@@ -116,7 +118,8 @@ button {
   background: #0b7bf4;
   border: none;
   color: #f7f7f7;
-  display: block;
+  display: flex;
+  min-height: 80px;
   overflow: hidden;
   padding: 20px;
   position: relative;
@@ -145,4 +148,24 @@ button > span {
 button:hover::before {
   -webkit-transform: scale3d(9, 9, 1);
   transform: scale3d(9, 9, 1);
+}
+#leaders ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#leaders ul li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.leaderboard-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+  margin-right: 20px;
 }

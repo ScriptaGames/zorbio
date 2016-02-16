@@ -40,7 +40,9 @@ ZOR.UI = function ZORUI() {
         state            : STATES.INITIAL,
         STATES           : STATES,
         ACTIONS          : ACTIONS,
+        COLORS           : ZOR.PlayerView.COLORS,
         MISSING_FEATURES : [],
+        leaders          : [],
     };
 
     /**
@@ -150,6 +152,7 @@ ZOR.UI = function ZORUI() {
         engine   : engine,
         state    : state,
         on       : on,
+        update   : UTIL.nth( engine.update.bind(engine), 60 ), // automatically update this many times per second
     };
 
 }();

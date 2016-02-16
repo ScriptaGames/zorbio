@@ -237,6 +237,8 @@ function createScene() {
             camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
         }
 
+        ZOR.UI.update();
+
         render();
     }
 
@@ -475,18 +477,16 @@ function removePlayerFromGame(playerId) {
 function handleServerTick(serverTickData) {
     if (!gameStart) return;
 
+    // ZOR.UI.engine.set( 'leaders', serverTickData.leaders );
+    _.assign( ZOR.UI.data.leaders, serverTickData.leaders );
+
     // handle food respawns
     for(var i = 0, l = serverTickData.fr.length; i < l; ++i) {
         foodController.showFood(serverTickData.fr[i]);  // Show the food index
     }
 
-    // Display server message if there is one
-    if (serverTickData.sm.length > 0) {
-        ZOR.UI.state( ZOR.UI.STATES.SERVER_MSG_SCREEN );
-
-        //TODO: ask Michael how to use this as a template variable
-        document.getElementById("serverMsg").innerHTML = serverTickData.sm;
-    }
+    // Send server message to the UI (either real message, or undefined)
+    ZOR.UI.engine.set('server_message', serverTickData.sm);
 
     // expire pending player captures
     ZOR.expirePendingPlayerCaptures();
