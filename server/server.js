@@ -447,9 +447,6 @@ function playersChecks() {
 
     // Prepare leaders array
     model.leaders.reverse();  // reverse for descending order
-    if (model.leaders.length > config.LEADERS_LENGTH) {
-        model.leaders.length = config.LEADERS_LENGTH;  // limit size based on config
-    }
 }
 
 /**
