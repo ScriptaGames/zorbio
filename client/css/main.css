@@ -206,3 +206,13 @@ button:hover::before {
   color: #f7f7f7;
   font-size: 18px;
 }
+#copy {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: 12px;
+  background: none;
+  color: #404040;
+  padding: 0;
+  margin: 2px;
+}
