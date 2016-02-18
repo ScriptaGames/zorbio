@@ -43,9 +43,19 @@ ZOR.Game.fullscreen = function go_fullscreen() {
 
 function startGame(type) {
 
+    var fake_renderer, missing_extensions;
+
     // Before we do anything, make sure WebGL is supported by this browser
     try {
-        new THREE.WebGLRenderer();
+        fake_renderer = new THREE.WebGLRenderer();
+        missing_extensions = _.chain( config.REQUIRED_WEBGL_EXTENSIONS )
+            .map( fake_renderer.extensions.get )
+            .some( _.isNull )
+            .value();
+        fake_renderer = undefined;
+        if (missing_extensions) {
+            throw new Error('missing WebGL extensions');
+        }
     } catch (e) {
         console.error('Failed to init game.  Possible WebGL failure.  Original error below.');
         console.error(e.message);

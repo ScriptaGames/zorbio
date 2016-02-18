@@ -131,6 +131,7 @@ config.PLAYER_MOVE_LERP_WEIGHT = 0.3;
 config.PLAYER_SPHERE_POLYCOUNT = 64; // height and width segments of the spheres
 config.FOOD_ALPHA_ENABLED      = false;
 config.LAG_SCALE_ENABLE        = true;
+config.REQUIRED_WEBGL_EXTENSIONS = ['ANGLE_instanced_arrays'];
 
 ////////////////////////////////////////////////////////////////////////
 //                      BROWSER FEATURE SETTINGS                      //
