@@ -170,7 +170,7 @@ THREE.TrackballControls = function ( object, domElement ) {
                 spin.normalize().multiplyScalar( UTIL.slopewell( dist_from_center ) );
                 moveDirection.set( spin.x, spin.y, 0 );
                 _movePrev.set( 0, 0 );
-                angle += moveDirection.length();
+                angle += moveDirection.length() * ZOR.LagScale.get();
             }
             else {
                 moveDirection.set( _moveCurr.x - _movePrev.x, _moveCurr.y - _movePrev.y, 0 );
