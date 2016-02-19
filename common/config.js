@@ -92,7 +92,7 @@ config.FOOD_VALUE                  = 0.6;   // amount to increase sphere by when
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
 config.FOOD_CAPTURE_ASSIST         = 1.0;     // this number is added to player's radius for food capturing
-config.FOOD_COLORING_TYPE          = ['rgbcube', 'random', 'rgbcube-randomized', 'sine-cycle'][3];
+config.FOOD_COLORING_TYPE          = 'hsl01';
 config.FOOD_COLORING_SINE_SEGMENTS = 8;     // with sine-cycle coloring, how many color cycles along each axis
 config.FOOD_GET_VALUE              = function FoodGetValue( r ) {
     // give food value diminishing returns to prevent runaway growth

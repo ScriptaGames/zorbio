@@ -285,6 +285,18 @@ var coloringMethods = {
         };
     },
 
+    hsl01: function foodColoringHSL01( x, y, z ) {
+        var h = ( x + y + z ) / config.WORLD_SIZE;
+        var s = 1.0;
+        var l = _.random(0.7, 0.8);
+        var color = new THREE.Color().setHSL(h,s,l);
+        return {
+            r: color.r,
+            g: color.g,
+            b: color.b,
+        };
+    },
+
     rgbcube: function foodColoringRgbCube( x, y, z ) {
         return {
             r: 0.5 + x / config.WORLD_SIZE,
