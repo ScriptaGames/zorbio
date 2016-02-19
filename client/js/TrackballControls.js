@@ -645,6 +645,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
     window.addEventListener( 'keydown', keydown, false );
     window.addEventListener( 'keyup', keyup, false );
+    window.addEventListener( 'resize', _.throttle( this.handleResize.bind(this), 500, { leading: false, trailing: true } ), false );
 
     this.handleResize();
 
