@@ -18,7 +18,8 @@ ZOR.UI = function ZORUI() {
         PLAYING            : 'playing',
         RESPAWN_SCREEN     : 'respawn-screen',
         GAME_INIT_ERROR    : 'game-init-error',
-        SERVER_MSG_SCREEN  : 'server_msg_screen',
+        SERVER_MSG_SCREEN  : 'server-msg-screen',
+        CREDITS_SCREEN     : 'credits-screen',
     };
 
     /**
@@ -30,6 +31,8 @@ ZOR.UI = function ZORUI() {
         PLAYER_LOGIN          : 'player-login',
         PLAYER_RESPAWN        : 'player-respawn',
         PAGE_RELOAD           : 'page-reload',
+        SHOW_CREDITS          : 'show-credits',
+        SHOW_LOGIN            : 'show-login',
     };
 
     /**
@@ -42,6 +45,7 @@ ZOR.UI = function ZORUI() {
         ACTIONS          : ACTIONS,
         COLORS           : ZOR.PlayerView.COLORS,
         MISSING_FEATURES : [],
+        AUTHORS          : ['Michael Clayton', 'Jared Sprague'],
         leaders          : [],
         is_mobile        : isMobile.any,
     };

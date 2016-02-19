@@ -16,6 +16,7 @@ body {
 a {
   font-size: 1em;
   color: #f7f7f7;
+  cursor: pointer;
 }
 a:hover {
   color: #0b7bf4;
@@ -207,6 +208,7 @@ button:hover::before {
   font-size: 18px;
 }
 #copy {
+  display: block;
   position: absolute;
   bottom: 0;
   right: 0;
@@ -215,4 +217,8 @@ button:hover::before {
   color: #404040;
   padding: 0;
   margin: 2px;
+}
+#copy a {
+  color: #404040;
+  text-decoration: underline;
 }

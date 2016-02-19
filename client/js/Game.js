@@ -106,6 +106,14 @@ window.addEventListener('load', function ZORLoadHandler() {
         ZOR.UI.engine.set('player_name', localStorage.player_name)
     }
 
+    ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_CREDITS, function ZORLoginHandler() {
+        ZOR.UI.state( ZOR.UI.STATES.CREDITS_SCREEN );
+    });
+
+    ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_LOGIN, function ZORLoginHandler() {
+        ZOR.UI.state( ZOR.UI.STATES.LOGIN_SCREEN );
+    });
+
     ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
 
         // check if the nick is valid

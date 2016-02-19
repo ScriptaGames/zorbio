@@ -60,7 +60,10 @@
                 {{ > social }}
 
             </div>
-            <p id="copy">&copy; 2016 Scripta, Inc.  All rights reserved.</p>
+            <p id="copy">
+                &copy; 2016 <a href="http://scripta.co">Scripta, Inc.</a>  All rights reserved.  
+                <a on-click="{{ ACTIONS.SHOW_CREDITS }}">Credits</a>.
+            </p>
             {{ /if }}
 
             {{ #if state === STATES.PLAYING }}
@@ -95,6 +98,21 @@
                 </ul>
                 {{ /if }}
                 <button on-click="{{ ACTIONS.PAGE_RELOAD }}" id="reload-button"><span>Reload</span></button>
+            </div>
+            {{ /if }}
+
+            {{ #if state === STATES.CREDITS_SCREEN }}
+            <div id="credits">
+                <p> Zorbio was created by {{ Math.random()>0.5?AUTHORS.join(' and '):AUTHORS.reverse().join(' and ') }}.  </p>
+                <p> Zorbio is &copy; 2016 by <a href="http://scripta.co">Scripta, Inc.</a>  </p>
+                <p> Zorbio makes use of these heroic and fun open source libraries: </p>
+                <ul>
+                    <li> <a href="http://threejs.org/">three.js</a> &mdash; <a href="https://raw.githubusercontent.com/mrdoob/three.js/r74/LICENSE">LICENSE</a> </li>
+                    <li> <a href="http://expressjs.com/">express</a> &mdash; <a href="https://raw.githubusercontent.com/expressjs/express/4.13.3/LICENSE">LICENSE</a> </li>
+                    <li> <a href="http://socket.io/">socket.io</a> &mdash; <a href="https://raw.githubusercontent.com/socketio/socket.io/1.4.4/LICENSE">LICENSE</a> </li>
+                    <li> <a href="https://lodash.com/">lodash</a> &mdash; <a href="https://raw.githubusercontent.com/lodash/lodash/4.0.0/LICENSE">LICENSE</a> </li>
+                </ul>
+                <button on-click="{{ ACTIONS.SHOW_LOGIN }}">Back</button>
             </div>
             {{ /if }}
 
