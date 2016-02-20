@@ -161,19 +161,27 @@ function setupSocket(socket) {
         console.log('Player ' + newPlayer.name + ' joined!');
     });
 
-    socket.on('actorPositions', function actorPositions(actors) {
+    socket.on('au', function actorUpdates(buf) {
+
         if (!gameStart) {
             return; // don't start updating player positions in the client until their game has started
         }
 
+        var actorsArray = new Float32Array(buf);
+
         // sync the actors positions from the server model to the client model
-        var actorIds = Object.getOwnPropertyNames(actors);
-        for (var i = 0, l = actorIds.length; i < l; i++) {
-            var id = +actorIds[i];  // make sure id is a number
+        for (var i = 0, l = actorsArray.length; i < l; i += 5) {
+            var id = +actorsArray[ i ];
+
             if (zorbioModel.actors[id]) {
-                var actor = actors[id];
-                zorbioModel.actors[id].position.copy(actor.p);
-                zorbioModel.actors[id].scale = actor.s;
+
+                var x = actorsArray[ i + 1 ];
+                var y = actorsArray[ i + 2 ];
+                var z = actorsArray[ i + 3 ];
+                var s = actorsArray[ i + 4 ];
+
+                zorbioModel.actors[id].position.copy({x: x, y: y, z: z});
+                zorbioModel.actors[id].scale = s;
             }
         }
     });

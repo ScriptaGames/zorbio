@@ -310,17 +310,29 @@ io.on('connection', function (socket) {
 });
 
 function sendActorUpdates() {
-    var actorUpdates = {};
+    var actorIds = Object.getOwnPropertyNames(model.actors);
+    if (actorIds.length === 0) return;  // nothing to do if there's no actors
+
+    var actorsArray = new Float32Array(actorIds.length * 5);
 
     // make the payload as small as possible, send only what's needed on the client
-    var actorIds = Object.getOwnPropertyNames(model.actors);
+    var offset = 0;
     for (var i = 0, l = actorIds.length; i < l; i++) {
         var id = +actorIds[i];  // make sure id is a number
-        actorUpdates[id] = {p: model.actors[id].position, s: +model.actors[id].scale.toFixed(4)};
+        var actor = model.actors[id];
+        var position = actor.position;
+
+        actorsArray[ offset ]     = id;
+        actorsArray[ offset + 1 ] = position.x;
+        actorsArray[ offset + 2 ] = position.y;
+        actorsArray[ offset + 3 ] = position.z;
+        actorsArray[ offset + 4 ] = actor.scale;
+
+        offset += 5;
     }
 
-    // Send actors to the client for updates
-    io.emit('actorPositions', actorUpdates);
+    // Send au "actors updates"
+    io.emit('au', actorsArray.buffer);
 }
 
 function checkHeartbeats() {
