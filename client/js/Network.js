@@ -114,7 +114,8 @@ function setupSocket(socket) {
         // iterate over actors and create THREE objects that don't serialize over websockets
         var actorIds = Object.getOwnPropertyNames(zorbioModel.actors);
         for (var i = 0, l = actorIds.length; i < l; i++) {
-            var actor = zorbioModel.actors[actorIds[i]];
+            var actorId = +actorIds[i];  // make sure id is a number
+            var actor = zorbioModel.actors[actorId];
             var position = actor.position;
             actor.position = new THREE.Vector3(position.x, position.y, position.z);
         }
@@ -162,7 +163,7 @@ function setupSocket(socket) {
         // sync the actors positions from the server model to the client model
         var actorIds = Object.getOwnPropertyNames(actors);
         for (var i = 0, l = actorIds.length; i < l; i++) {
-            var id = actorIds[i];
+            var id = +actorIds[i];  // make sure id is a number
             if (zorbioModel.actors[id]) {
                 var actor = actors[id];
                 zorbioModel.actors[id].position.copy(actor.p);

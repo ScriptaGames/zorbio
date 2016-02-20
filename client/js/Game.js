@@ -308,7 +308,7 @@ function drawPlayers() {
     // Iterate over player
     var playerIds = Object.getOwnPropertyNames(playerModels);
     for (var i = 0, l = playerIds.length; i < l; i++) {
-        var id = playerIds[i];
+        var id = +playerIds[i];  // make sure id is a number
         var playerModel = playerModels[id];
         if (playerModel.type === ZOR.PlayerTypes.PLAYER) {
             // Only draw other players
@@ -330,7 +330,8 @@ function checkPlayerCaptures() {
     // Iterate over players
     var playerIds = Object.getOwnPropertyNames(players);
     for (var i = 0, l = playerIds.length; i < l; i++) {
-        var otherPlayer = players[playerIds[i]];
+        var playerId = +playerIds[i];  // make sure id is a number
+        var otherPlayer = players[playerId];
 
         if ((otherPlayer.getPlayerId() !== player.getPlayerId()) && (otherPlayer.radius() !== player.radius())) {
 
@@ -364,7 +365,7 @@ function updateActors() {
     // Iterate over actor properties in the actors object
     var actorIds = Object.getOwnPropertyNames(actors);
     for (var i = 0, l = actorIds.length; i < l; i++) {
-        var id = actorIds[i];
+        var id = +actorIds[i];  // make sure id is a number
         var actor = actors[id];
         if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
             if (id !== player.getSphereId()) {

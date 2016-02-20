@@ -134,7 +134,7 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
     // maintain a reference to the player who owns this sphere
     this.playerId = playerId;
 
-    this.id = 'PS-' + this.playerId;
+    this.id = this.playerId;
 };
 ZOR.PlayerSphere.prototype = Object.create(ZOR.Actor.prototype);
 ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
@@ -203,7 +203,7 @@ ZOR.pendingPlayerCaptures = {};
 ZOR.expirePendingPlayerCaptures = function ZORModelExpirePendingPlayerCaptures() {
     var playerIds = Object.getOwnPropertyNames(ZOR.pendingPlayerCaptures);
     for (var i = 0, l = playerIds.length; i < l; i++) {
-        var id = playerIds[i];
+        var id = +playerIds[i];  // make sure id is a number
 
         if (ZOR.pendingPlayerCaptures[id] > 0) {
             console.log("pending player capture expiring in: ", ZOR.pendingPlayerCaptures[id]);
@@ -214,6 +214,22 @@ ZOR.expirePendingPlayerCaptures = function ZORModelExpirePendingPlayerCaptures()
         }
     }
 };
+
+/**
+ * Static ID Generator, used to generate player IDs
+ */
+ZOR.IdGenerator = function ZORIdGenerator() {
+
+    var next_id = 0;
+
+    function get_next_id() {
+        return ++next_id;
+    }
+
+    return {
+        get_next_id : get_next_id
+    };
+}();
 
 // if we're in nodejs, export the root ZOR object
 if (NODEJS) module.exports = ZOR;

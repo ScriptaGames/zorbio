@@ -104,7 +104,7 @@ io.on('connection', function (socket) {
         var position = UTIL.safePlayerPosition();
 
         // Create the Player
-        currentPlayer = new Zorbio.Player(socket.id, name, color, type, position);
+        currentPlayer = new Zorbio.Player(Zorbio.IdGenerator.get_next_id(), name, color, type, position);
 
         socket.emit('welcome', currentPlayer, isFirstSpawn);
         console.log('User ' + currentPlayer.id + ' spawning into the game');
@@ -289,7 +289,7 @@ function sendActorUpdates() {
     // make the payload as small as possible, send only what's needed on the client
     var actorIds = Object.getOwnPropertyNames(model.actors);
     for (var i = 0, l = actorIds.length; i < l; i++) {
-        var id = actorIds[i];
+        var id = +actorIds[i];  // make sure id is a number
         actorUpdates[id] = {p: model.actors[id].position, s: +model.actors[id].scale.toFixed(4)};
     }
 
@@ -302,7 +302,7 @@ function checkHeartbeats() {
 
     var playerIds = Object.getOwnPropertyNames(model.players);
     for (var i = 0, l = playerIds.length; i < l; i++) {
-        var id = playerIds[i];
+        var id = +playerIds[i];  // make sure id is a number
         var player = model.players[id];
         if (player && player.lastHeartbeat) {
             if ((time - player.lastHeartbeat) > config.HEARTBEAT_TIMEOUT) {
@@ -416,7 +416,7 @@ function playersChecks() {
     // Iterate over all players and perform checks
     var playerIds = Object.getOwnPropertyNames(model.players);
     for (var i = 0, l = playerIds.length; i < l; i++) {
-        var id = playerIds[i];
+        var id = +playerIds[i];  // make sure id is a number
         var player = model.players[id];
 
         // Check for infractions
