@@ -148,10 +148,37 @@ io.on('connection', function (socket) {
     });
 
     /**
-     * This message is sent by all clients every 40ms so keep this function as fast and light as possible
+     * pp "Player Position" This message is sent by all clients every 40ms so keep this function as fast and light as possible
      */
-    socket.on('myPosition', function (sphere) {
+    socket.on('pp', function (buffer) {
         currentPlayer.lastHeartbeat = Date.now();
+
+        // Read binary data
+        var bufArr  = new ArrayBuffer(buffer.length);
+        var bufView = new Float32Array(bufArr);
+        var viewIndex = 0;
+        for (var bufferIndex = 0, l = buffer.length; bufferIndex < l; bufferIndex = bufferIndex + 4)            {
+            bufView[viewIndex] = buffer.readFloatLE(bufferIndex);
+            viewIndex++;
+        }
+
+        // Pull out the data
+        var sphere_id = bufView[0];
+        var old_x     = bufView[1];
+        var old_y     = bufView[2];
+        var old_z     = bufView[3];
+        var old_r     = bufView[4];
+        var old_t     = bufView[5];
+        var new_x     = bufView[6];
+        var new_y     = bufView[7];
+        var new_z     = bufView[8];
+        var new_r     = bufView[9];
+        var new_t     = bufView[10];
+
+        // Build the sphere object
+        var oldestPosition = {position: {x: old_x, y: old_y, z: old_z}, radius: old_r, time: old_t};
+        var latestPosition = {position: {x: new_x, y: new_y, z: new_z}, radius: new_r, time: new_t};
+        var sphere = {id: sphere_id, oldestPosition: oldestPosition, latestPosition: latestPosition, "scale": new_r};
 
         // Fixes bug #145 the client may send one last position update before they are removed from the game
         var err;
@@ -164,7 +191,6 @@ io.on('connection', function (socket) {
 
         if (!err) {
             // update the players position in the model
-            var latestPosition = sphere.positions[sphere.positions.length - 1];
             actor.position = latestPosition.position;
             actor.scale = sphere.scale;
 

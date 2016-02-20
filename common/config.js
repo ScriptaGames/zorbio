@@ -109,7 +109,6 @@ config.PLAYER_CAPTURE_EXTRA_TOLERANCE = 9;      // extra distance that we'll tol
 config.SPEED_EXTRA_TOLERANCE          = 0.1;    // extra speed tolerance for movement validation
 config.PLAYER_SCALE_EXTRA_TOLERANCE   = 0.1;    // extra tolerance for player scale
 config.PLAYER_POSITIONS_WINDOW        = 30;     // number of recent positions to save for the player for validation rewind
-config.PLAYER_POSITIONS_FULL_SAMPLE   = false;  // Send full sample to server, could slow down performance if true
 config.INFRACTION_TOLERANCE_FOOD      = 20;     // how many food infractions a player can have before they are kicked
 config.INFRACTION_TOLERANCE_PCAP      = 1;      // how many player capture infractions a player can have before they are kicked
 config.INFRACTION_TOLERANCE_SPEED     = 10;     // how many speed infractions a player can have before they are kicked

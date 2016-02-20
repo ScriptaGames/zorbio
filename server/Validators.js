@@ -40,10 +40,10 @@ Validators.movement = function () {
             return 0;
         }
 
-        var latestPosition = sphere.positions[sphere.positions.length - 1];
+        var latestPosition = sphere.latestPosition;
 
-        if (sphere.positions.length > 1) {
-            var oldestPosition = sphere.positions[0];
+        if (sphere.oldestPosition) {
+            var oldestPosition = sphere.oldestPosition;
             var time = latestPosition.time - oldestPosition.time;
             var minTime = ((config.PLAYER_POSITIONS_WINDOW * msPerFrame) - 180);
 

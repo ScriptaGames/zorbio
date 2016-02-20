@@ -30,24 +30,30 @@ function sendPlayerSpherePosition() {
     player.refreshSphereModel();
 
     var sphereModel = player.model.sphere;
-    var positions = [];
 
     if (sphereModel.recentPositions.length < 2) {
         player.addRecentPosition();  // make sure we always have at least 2 recent positions
     }
 
-    if (config.PLAYER_POSITIONS_FULL_SAMPLE) {
-        positions = sphereModel.recentPositions;
-    } else {
-        // for now we only need to send the oldest position and the most recent position
-        var oldestPosition = sphereModel.recentPositions[0];
-        var latestPosition = sphereModel.recentPositions[sphereModel.recentPositions.length - 1];
-        positions.push(oldestPosition);
-        positions.push(latestPosition);
-    }
+    // for now we only need to send the oldest position and the most recent position
+    var oldestPosition = sphereModel.recentPositions[0];
+    var latestPosition = sphereModel.recentPositions[sphereModel.recentPositions.length - 1];
 
-    var sphere = {"id": sphereModel.id, "positions": positions, "scale": sphereModel.scale};
-    socket.emit('myPosition', sphere);
+    var sphereData = new Float32Array(11);
+    sphereData[0] = sphereModel.id;            // Actor ID
+    sphereData[1] = oldestPosition.position.x; // Old position X
+    sphereData[2] = oldestPosition.position.y; // Old position Y
+    sphereData[3] = oldestPosition.position.z; // Old position Z
+    sphereData[4] = oldestPosition.radius;     // Old radius
+    sphereData[5] = oldestPosition.time;       // Old time
+    sphereData[6] = latestPosition.position.x; // New position X
+    sphereData[7] = latestPosition.position.y; // New position Y
+    sphereData[8] = latestPosition.position.z; // New position Z
+    sphereData[9] = latestPosition.radius;     // New radius
+    sphereData[10] = latestPosition.time;      // New time
+
+    // pp "Player Position"
+    socket.emit('pp', sphereData.buffer);
 }
 
 var throttledSendPlayerSpherePosition = _.throttle(sendPlayerSpherePosition, config.ACTOR_UPDATE_INTERVAL);
