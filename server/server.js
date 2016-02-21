@@ -103,10 +103,18 @@ io.on('connection', function (socket) {
     socket.on('respawn', function (isFirstSpawn) {
         var position = UTIL.safePlayerPosition();
 
+        // First make sure this player isn't already connected and playing
+        if (currentPlayer && isPlayerInGame(currentPlayer.id)) {
+            console.log("Respawn error: Player is already in game");
+            kickPlayer(currentPlayer.id, "Forced respawn.");
+            return;
+        }
+
         // Create the Player
         currentPlayer = new Zorbio.Player(Zorbio.IdGenerator.get_next_id(), name, color, type, position);
 
         socket.emit('welcome', currentPlayer, isFirstSpawn);
+
         console.log('User ' + currentPlayer.id + ' spawning into the game');
     });
 
@@ -380,6 +388,10 @@ function capturePlayer(attackingPlayerId, targetPlayerId) {
     delete Zorbio.pendingPlayerCaptures[targetPlayerId];
 
     removePlayerFromModel(targetPlayerId);
+}
+
+function isPlayerInGame(player_id) {
+    return (model.players[player_id] && sockets[player_id]);
 }
 
 function removePlayerFromModel(playerId) {
