@@ -405,7 +405,9 @@ function kickPlayer(playerId, reason) {
     console.log('kicking player: ', playerId, reason);
 
     // notify player
-    sockets[playerId].emit('kick', reason);
+    if (sockets[playerId]) {
+        sockets[playerId].emit('kick', reason);
+    }
 
     // notify other clients
     io.emit('removePlayer', playerId);
