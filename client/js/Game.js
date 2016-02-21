@@ -21,7 +21,6 @@ var playerFogCenter = new THREE.Vector3();
 // Game state
 var players = {};
 var gameStart = false;
-var kicked = false;
 var disconnected = false;
 var foodController;
 
@@ -513,4 +512,18 @@ function handleServerTick(serverTickData) {
 
 function handleSuccessfulPlayerCapture(targetPlayer) {
     player.animatedGrow( config.PLAYER_CAPTURE_VALUE( targetPlayer.radius() ), 40 );
+}
+
+function handlePlayerKick(msg) {
+    ZOR.UI.state( ZOR.UI.STATES.KICKED_SCREEN );
+
+    // Send server message to the UI (either real message, or undefined)
+    ZOR.UI.engine.set('kicked_message', msg);
+}
+
+function setDeadState() {
+    player.beingCaptured = false;
+    player.isDead = true;
+    clearIntervalMethods();
+    KeysDown = {};
 }

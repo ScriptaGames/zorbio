@@ -413,7 +413,6 @@ function kickPlayer(playerId, reason) {
     io.emit('removePlayer', playerId);
 
     removePlayerFromModel(playerId);
-    removePlayerSocket(playerId);
 }
 
 function updateFoodRespawns() {
@@ -461,16 +460,16 @@ function playersChecks() {
 
         // Check for infractions
         if (player.infractions_food > config.INFRACTION_TOLERANCE_FOOD) {
-            kickPlayer(id, "You were kicked because you had to many food infractions: " + player.infractions_food);
+            kickPlayer(id, "You were removed because you had to many food infractions.");
         }
         else if (player.infractions_pcap > config.INFRACTION_TOLERANCE_PCAP) {
-            kickPlayer(id, "You were kicked because you had to many player capture infractions: " + player.infractions_pcap);
+            kickPlayer(id, "You were removed because you had to many player capture infractions.");
         }
         else if (player.infractions_speed > config.INFRACTION_TOLERANCE_SPEED) {
-            kickPlayer(id, "You were kicked because you had to many speed infractions: " + player.infractions_speed);
+            kickPlayer(id, "You were removed because you had to many speed infractions.");
         }
         else if (player.infractions_scale > config.INFRACTION_TOLERANCE_SCALE) {
-            kickPlayer(id, "You were kicked because you had to many size infractions: " + player.infractions_scale);
+            kickPlayer(id, "You were removed because you had to many size infractions.");
         }
         else if (Validators.playerScale(player) !== 0) {
             player.infractions_scale++;

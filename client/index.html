@@ -82,6 +82,15 @@
             </div>
             {{ /if }}
 
+            {{ #if state === STATES.KICKED_SCREEN }}
+            <div id="death-screen">
+                <h2>YOU WERE REMOVED</h2>
+                <p>{{ kicked_message }}</p>
+                <p>You can report this on our <a href=https://github.com/ScriptaGames/zorbio-issues/issues>github page</a></p>
+                <button on-click="{{ ACTIONS.PAGE_RELOAD }}" id="respawn-button"><span>Reload</span></button>
+            </div>
+            {{ /if }}
+
             {{ #if server_message }}
             <div id="server-message"> {{ server_message }} </div>
             {{ /if }}

@@ -194,8 +194,8 @@ function setupSocket(socket) {
 
     socket.on('kick', function kick(msg) {
         console.log('Server said: ', msg);
-        handleNetworkTermination();
-        kicked = true;
+        setDeadState();
+        handlePlayerKick(msg);
     });
 
     socket.on('removePlayer', function playerKicked(playerId) {
@@ -295,10 +295,7 @@ function setupSocket(socket) {
         var timeAlive = Math.floor((targetPlayer.deathTime - targetPlayer.spawnTime) / 1000);
 
         console.log("YOU DIED! You were alive for " + timeAlive + " seconds. Killed by: ", attackingPlayerId);
-        player.beingCaptured = false;
-        player.isDead = true;
-        clearIntervalMethods();
-        KeysDown = {};
+        setDeadState();
 
         ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
     });
