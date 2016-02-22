@@ -113,7 +113,7 @@ Validators.movement = function () {
     };
 }();
 
-Validators.movementSampled = UTIL.nth( Validators.movement, config.VALIDATION_SAMPLE_RATE );
+Validators.movementSampled = UTIL.nth( Validators.movement, config.MOVE_VALIDATION_SAMPLE_RATE );
 
 Validators.foodCapture = function (model, fi, sphere_id, radius) {
     if (!config.ENABLE_VALIDATION) return 0;
@@ -147,7 +147,7 @@ Validators.foodCapture = function (model, fi, sphere_id, radius) {
     return 0;
 };
 
-Validators.foodCaptureSampled = UTIL.nth( Validators.foodCapture, config.VALIDATION_SAMPLE_RATE );
+Validators.foodCaptureSampled = UTIL.nth( Validators.foodCapture, config.FOOD_VALIDATION_SAMPLE_RATE );
 
 Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, sendingSphere) {
     if (!config.ENABLE_VALIDATION) return 0;
@@ -215,14 +215,11 @@ Validators.playerScale = function (player) {
 
     var expectedScale = player.sphere.expectedScale;
     var oldestScale = recentPositions[0].radius;
-    var latestScale = recentPositions[recentPositions.length - 1].radius;
 
-    if (oldestScale === latestScale) {
-        // make sure the expected scale within tolerance
-        if (latestScale > (expectedScale + config.PLAYER_SCALE_EXTRA_TOLERANCE)) {
-            console.log("player to big expectedScale, actualScale: ", expectedScale, latestScale);
-            return Validators.ErrorCodes.PLAYER_SCALE_TO_BIG;
-        }
+    // make sure the expected scale within tolerance
+    if (oldestScale > (expectedScale + config.PLAYER_SCALE_EXTRA_TOLERANCE)) {
+        console.log("player to big expectedScale, actualScale: ", expectedScale, oldestScale);
+        return Validators.ErrorCodes.PLAYER_SCALE_TO_BIG;
     }
 
     return 0;  //no error

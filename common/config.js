@@ -32,7 +32,7 @@ config.HEARTBEAT_ENABLE         = true;
 config.HEARTBEAT_TIMEOUT        = 30000; // how long before a client is considered disconnected
 config.HEARTBEAT_CHECK_INTERVAL = 1000;  // server heartbeat test interval
 config.HEARTBEAT_PULSE_INTERVAL = 3000;  // client heartbeat pulse
-config.SERVER_TICK_INTERVAL     = 250;   // General server updates in milliseconds
+config.SERVER_TICK_INTERVAL     = 200;   // General server updates in milliseconds
 config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their position in milliseconds
 config.PENDING_PLAYER_CAPTURE_TTL = 3000;  // how long pending player capture lives before it expires in milliseconds
 config.CHECK_VERSION            = true;
@@ -106,14 +106,15 @@ config.FOOD_GET_VALUE              = function FoodGetValue( r ) {
 config.ENABLE_VALIDATION              = true;   // enable validation checks on the server to prevent cheating
 config.FOOD_CAPTURE_EXTRA_TOLERANCE   = 50;    // extra distance that we'll tolerate for valid food capture
 config.PLAYER_CAPTURE_EXTRA_TOLERANCE = 9;      // extra distance that we'll tolerate for valid player capture
-config.SPEED_EXTRA_TOLERANCE          = 0.1;    // extra speed tolerance for movement validation
+config.SPEED_EXTRA_TOLERANCE          = 0.12;   // extra speed tolerance for movement validation
 config.PLAYER_SCALE_EXTRA_TOLERANCE   = 0.1;    // extra tolerance for player scale
 config.PLAYER_POSITIONS_WINDOW        = 30;     // number of recent positions to save for the player for validation rewind
 config.INFRACTION_TOLERANCE_FOOD      = 20;     // how many food infractions a player can have before they are kicked
 config.INFRACTION_TOLERANCE_PCAP      = 1;      // how many player capture infractions a player can have before they are kicked
-config.INFRACTION_TOLERANCE_SPEED     = 10;     // how many speed infractions a player can have before they are kicked
+config.INFRACTION_TOLERANCE_SPEED     = 5;      // how many speed infractions a player can have before they are kicked
 config.INFRACTION_TOLERANCE_SCALE     = 1;      // how many scale infractions a player can have before they are kicked
-config.VALIDATION_SAMPLE_RATE         = 10;     // How often to sample, 1 would be ever time, 10 would be every 10th check
+config.FOOD_VALIDATION_SAMPLE_RATE    = 10;     // How often to sample, 1 would be ever time, 10 would be every 10th check
+config.MOVE_VALIDATION_SAMPLE_RATE    = 5;      // How often to sample, 1 would be ever time, 10 would be every 10th check
 config.LOADING_WAIT_DURATION          = 10000;  // How many milliseconds to wait before starting to track movement validation
 
 ////////////////////////////////////////////////////////////////////////
