@@ -472,16 +472,16 @@ function playersChecks() {
 
         // Check for infractions
         if (player.infractions_food > config.INFRACTION_TOLERANCE_FOOD) {
-            kickPlayer(id, "You were removed because you had to many food infractions.");
+            kickPlayer(id, "You were removed because you had too many food infractions.");
         }
         else if (player.infractions_pcap > config.INFRACTION_TOLERANCE_PCAP) {
-            kickPlayer(id, "You were removed because you had to many player capture infractions.");
+            kickPlayer(id, "You were removed because you had too many player capture infractions.");
         }
         else if (player.infractions_speed > config.INFRACTION_TOLERANCE_SPEED) {
-            kickPlayer(id, "You were removed because you had to many speed infractions.");
+            kickPlayer(id, "You were removed because you had too many speed infractions.");
         }
         else if (player.infractions_scale > config.INFRACTION_TOLERANCE_SCALE) {
-            kickPlayer(id, "You were removed because you had to many size infractions.");
+            kickPlayer(id, "You were removed because you had too many size infractions.");
         }
         else if (Validators.playerScale(player) !== 0) {
             player.infractions_scale++;
