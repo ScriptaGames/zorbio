@@ -379,6 +379,7 @@ function capturePlayer(attackingPlayerId, targetPlayerId) {
 
     // Inform the target player that they died
     targetPlayer.deathTime = Date.now();
+    targetPlayer.score = config.PLAYER_GET_SCORE( targetPlayer.sphere.scale );
     sockets[targetPlayerId].emit('youDied', attackingPlayerId, targetPlayer);
 
     // Inform other clients that target player died
