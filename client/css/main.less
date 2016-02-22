@@ -201,23 +201,6 @@ button:hover::before {
     transform         : scale3d(9, 9, 1);
 }
 
-#leaders {
-    ul {
-        list-style : none;
-        padding    : 0;
-        margin     : 0;
-        li {
-            display       : flex;
-            flex-wrap     : wrap;
-            align-items   : center;
-            margin-bottom : 10px;
-
-        }
-    }
-}
-#death-screen #leaders .leaderboard-circle {
-    color: @primary-color;
-}
 #leaderboard-playing {
 
     background     : none;
@@ -235,6 +218,18 @@ button:hover::before {
         font-size: @font-size-base * 0.7;
     }
     #leaders {
+        ul {
+            list-style : none;
+            padding    : 0;
+            margin     : 0;
+            li {
+                display       : flex;
+                flex-wrap     : wrap;
+                align-items   : center;
+                margin-bottom : 10px;
+
+            }
+        }
         .leaderboard-circle {
             background    : none !important;
             border-radius : 0;

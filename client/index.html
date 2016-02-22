@@ -21,6 +21,16 @@
 
         <!-- UI TEMPLATES -->
 
+        <script id="stats-template" type="text/ractive">
+            <div id="leaders" class="{{ is_mobile ? 'mobile' : '' }}">
+                <ul>
+                    <li> Food captures: {{ player.foodCaptures }} </li>
+                    <li> Player captures: {{ player.playerCaptures }} </li>
+                    <li> Size: {{ player.sphere.scale * 10 }} </li>
+                </ul>
+            </div>
+        </script>
+
         <script id="leaderboard-template" type="text/ractive">
             <div id="leaders" class="{{ is_mobile ? 'mobile' : '' }}">
                 <ul>
@@ -76,8 +86,8 @@
             <div id="death-screen">
                 <h2>YOU WERE EATEN!</h2>
                 <button on-click="{{ ACTIONS.PLAYER_RESPAWN }}" id="respawn-button"><span>Respawn</span></button>
-                The most tremendous are...
-                {{ > leaderboard }}
+                <p>Nice run!  Your stats that time were:</p>
+                {{ > stats }}
                 {{ > social }}
             </div>
             {{ /if }}

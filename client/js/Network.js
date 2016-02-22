@@ -108,6 +108,7 @@ function setupSocket(socket) {
     // Handle connection
     socket.on('welcome', function welcome(playerModel, isFirstSpawn) {
         player = new ZOR.PlayerController(playerModel, playerModel.sphere);
+        ZOR.UI.engine.set('player', player.model);
 
         socket.emit('gotit', player.model, isFirstSpawn);
     });

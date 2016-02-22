@@ -70,6 +70,7 @@ ZOR.UI = function ZORUI() {
         partials: {
             social      : document.querySelector('#social-template').textContent,
             leaderboard : document.querySelector('#leaderboard-template').textContent,
+            stats       : document.querySelector('#stats-template').textContent,
         },
 
         // We could pass in a string, but for the sake of convenience
