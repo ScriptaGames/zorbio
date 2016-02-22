@@ -82,9 +82,9 @@ ZOR.PlayerView.prototype.adjustCamera = function ZORPlayerViewAdjustCamera() {
 };
 
 ZOR.PlayerView.COLORS = [
-    '#00bfff', // deepskyblue
+    '#00ffff', // cyan
     '#0000cd', // mediumblue
-    '#000080', // navy
+    '#1e90ff', // dodgerblue
     '#00ff7f', // springgreen
     '#00ff00', // lime
     '#228b22', // forestgreen
@@ -94,7 +94,6 @@ ZOR.PlayerView.COLORS = [
     '#ff00ff', // magenta
     '#ff6347', // tomato
     '#ff0000', // red
-    '#a52a2a', // brown
     '#800000', // maroon
     '#ff4500', // orangered
     '#ff8c00', // darkorange
