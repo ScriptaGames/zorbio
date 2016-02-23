@@ -71,6 +71,7 @@ ZOR.UI = function ZORUI() {
             social      : document.querySelector('#social-template').textContent,
             leaderboard : document.querySelector('#leaderboard-template').textContent,
             stats       : document.querySelector('#stats-template').textContent,
+            ad          : document.querySelector('#ad-template').textContent,
         },
 
         // We could pass in a string, but for the sake of convenience

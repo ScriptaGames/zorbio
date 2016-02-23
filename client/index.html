@@ -54,6 +54,19 @@
             </p>
         </script>
 
+        <script id="ad-template" type="text/ractive">
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <!-- zor-login-screen-center -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-3460249463041072"
+                 data-ad-slot="5413768947"
+                 data-ad-format="auto"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </script>
+
         <script id="ui-template" type="text/ractive">
 
             {{ #if state === STATES.LOGIN_SCREEN || state === STATES.LOGIN_SCREEN_ERROR }}
@@ -68,6 +81,10 @@
                 <p id="credits">Created By <a href="https://twitter.com/caramelcode">Jared Sprague</a> and <a href="https://twitter.com/mwcz">Michael Clayton</a></p>
 
                 {{ > social }}
+
+                <div id="ad-login-center">
+                    {{ > ad }}
+                </div>
 
             </div>
             <p id="copy">
@@ -142,7 +159,6 @@
             {{ /if }}
 
         </script>
-
 
         <script id="food-geo-frag-shader" type="x-shader/x-fragment">
             precision highp float;
