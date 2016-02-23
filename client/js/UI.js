@@ -70,6 +70,7 @@ ZOR.UI = function ZORUI() {
         partials: {
             social      : document.querySelector('#social-template').textContent,
             leaderboard : document.querySelector('#leaderboard-template').textContent,
+            ad          : document.querySelector('#ad-template').textContent,
         },
 
         // We could pass in a string, but for the sake of convenience
@@ -146,11 +147,6 @@ ZOR.UI = function ZORUI() {
 
     function init() {
         validate_browser_features();
-
-        // Add adsense code
-        var centerAd = "<script async src=\"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script><ins class=\"adsbygoogle\" style=\"display:block\" data-ad-client=\"ca-pub-3460249463041072\" data-ad-slot=\"5413768947\" data-ad-format=\"auto\"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script>";
-
-        engine.set('center_ad', centerAd);
     }
 
     init();

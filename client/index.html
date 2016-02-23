@@ -44,6 +44,19 @@
             </p>
         </script>
 
+        <script id="ad-template" type="text/ractive">
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <!-- zor-login-screen-center -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-3460249463041072"
+                 data-ad-slot="5413768947"
+                 data-ad-format="auto"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </script>
+
         <script id="ui-template" type="text/ractive">
 
             {{ #if state === STATES.LOGIN_SCREEN || state === STATES.LOGIN_SCREEN_ERROR }}
@@ -60,7 +73,7 @@
                 {{ > social }}
 
                 <div id="ad-login-center">
-                    {{{ center_ad }}}
+                    {{ > ad }}
                 </div>
 
             </div>
