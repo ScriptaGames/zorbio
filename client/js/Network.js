@@ -58,8 +58,8 @@ function sendPlayerSpherePosition() {
 
 var throttledSendPlayerSpherePosition = _.throttle(sendPlayerSpherePosition, config.ACTOR_UPDATE_INTERVAL);
 
-function sendFoodCapture(fi, sphere_id, radius, food_value) {
-    socket.emit('foodCapture', fi, sphere_id, radius, food_value);
+function sendFoodCapture(fi, sphere_id, radius, timestamp) {
+    socket.emit('foodCapture', fi, sphere_id, radius, timestamp);
 }
 
 function sendPlayerCapture(attackingPlayerId, targetPlayerId) {

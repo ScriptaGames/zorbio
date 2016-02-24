@@ -220,10 +220,12 @@ io.on('connection', function (socket) {
         }
     });
 
-    socket.on('foodCapture', function (fi, sphere_id, radius) {
+    socket.on('foodCapture', function (fi, sphere_id, radius, timestamp) {
         currentPlayer.lastHeartbeat = Date.now();
 
-        var err = Validators.foodCaptureSampled(model, fi, sphere_id, radius);
+        var food_value = config.FOOD_GET_VALUE(radius);
+
+        var err = Validators.foodCaptureSampled(model, fi, sphere_id, radius, timestamp);
 
         if (!err) {
             model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
@@ -232,7 +234,7 @@ io.on('connection', function (socket) {
             currentPlayer.foodCaptures++;
 
             // grow player on the server to track growth validation
-            currentPlayer.sphere.growExpected( config.FOOD_GET_VALUE(radius) );
+            currentPlayer.sphere.growExpected( food_value );
 
             // notify clients of food capture so they can update their food view
             io.emit('foodCaptureComplete', fi);
@@ -240,7 +242,8 @@ io.on('connection', function (socket) {
             switch (err) {
                 case Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR:
                     // inform client of invalid capture, and make them shrink, mark infraction
-                    socket.emit('invalidFoodCapture', fi, config.FOOD_VALUE);
+                    console.log("food capture adjustment: -", food_value);
+                    socket.emit('invalidFoodCapture', fi, food_value);
                     model.players[currentPlayer.id].infractions_food++;
                     break;
             }

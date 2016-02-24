@@ -387,18 +387,16 @@ function updateActors() {
     }
 }
 
-function captureFood(fi) {
-    if (foodController.aliveFood(fi)) {
-        var origRadius = player.radius();
-        var value = config.FOOD_GET_VALUE( origRadius );
+function captureFood(fi, timestamp) {
+    var origRadius = player.radius();
+    var value = config.FOOD_GET_VALUE( origRadius );
 
-        // grow to new size!  yay!
-        player.grow(value);
+    // grow to new size!  yay!
+    player.grow(value);
 
-        foodController.hideFood(fi);
+    foodController.hideFood(fi);
 
-        sendFoodCapture(fi, player.model.sphere.id, origRadius, value);  // send the food capture to the server
-    }
+    sendFoodCapture(fi, player.model.sphere.id, origRadius, timestamp);  // send the food capture to the server
 }
 
 window.addEventListener("keydown", handleKeydown);

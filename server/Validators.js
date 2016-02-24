@@ -115,7 +115,7 @@ Validators.movement = function () {
 
 Validators.movementSampled = UTIL.nth( Validators.movement, config.MOVE_VALIDATION_SAMPLE_RATE );
 
-Validators.foodCapture = function (model, fi, sphere_id, radius) {
+Validators.foodCapture = function (model, fi, sphere_id, radius, timestamp) {
     if (!config.ENABLE_VALIDATION) return 0;
 
     // sphere info
@@ -132,10 +132,15 @@ Validators.foodCapture = function (model, fi, sphere_id, radius) {
     var vdist = foodPosition.distanceTo(sphere.position);
     var tolerance = radius + config.FOOD_CAPTURE_ASSIST + config.FOOD_CAPTURE_EXTRA_TOLERANCE;
 
+
     //if (config.DEBUG) {
+    var server_time = Date.now();
+    console.log("----------------");
+    console.log("DEBUG: food capture: timestamp, server Date.now(), elapsed", timestamp, server_time, server_time - timestamp );
     console.log("DEBUG: food capture: food_index, food_x, food_y, food_z", food_index, food_x, food_y, food_z);
     console.log("DEBUG: food capture: sphere_id, sphere_x, sphere_y, sphere_z", sphere_id, sphere.position.x, sphere.position.y, sphere.position.z);
     console.log("DEBUG: food capture: fi, sphere_id, radius, vdist, tolerance", fi, sphere_id, radius, vdist, tolerance);
+    console.log("----------------");
     //}
 
     // Make sure the sphere is in range of the food being captured
