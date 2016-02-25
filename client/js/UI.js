@@ -21,6 +21,7 @@ ZOR.UI = function ZORUI() {
         GAME_INIT_ERROR    : 'game-init-error',
         SERVER_MSG_SCREEN  : 'server-msg-screen',
         CREDITS_SCREEN     : 'credits-screen',
+        TUTORIAL_SCREEN    : 'tutorial-screen',
     };
 
     /**
@@ -34,6 +35,7 @@ ZOR.UI = function ZORUI() {
         PAGE_RELOAD           : 'page-reload',
         SHOW_CREDITS          : 'show-credits',
         SHOW_LOGIN            : 'show-login',
+        SHOW_TUTORIAL         : 'show-tutorial',
     };
 
     /**

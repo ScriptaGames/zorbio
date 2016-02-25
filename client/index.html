@@ -21,6 +21,10 @@
 
         <!-- UI TEMPLATES -->
 
+        <script id="tutorial-template" type="text/ractive">
+            <h2>TUTORIAL TIME!</h2>
+        </script>
+
         <script id="stats-template" type="text/ractive">
             <div id="leaders" class="{{ is_mobile ? 'mobile' : '' }}">
                 <ul>
@@ -78,6 +82,7 @@
                 <b class="error-text">Nick name must be alphanumeric characters only!</b>
                 {{ /if }}
                 <button on-click="{{ ACTIONS.PLAYER_LOGIN }}" id="start-button"><span>Play</span></button>
+                <button on-click="{{ ACTIONS.SHOW_TUTORIAL }}" id="tutorial-button"><span>Tutorial</span></button>
                 <p id="credits">Created By <a href="https://twitter.com/caramelcode">Jared Sprague</a> and <a href="https://twitter.com/mwcz">Michael Clayton</a></p>
 
                 {{ > social }}
@@ -97,6 +102,10 @@
             <div id="leaderboard-playing">
                 {{ > leaderboard }}
             </div>
+            {{ /if }}
+
+            {{ #if state === STATES.TUTORIAL_SCREEN }}
+                {{ > tutorial }}
             {{ /if }}
 
             {{ #if state === STATES.RESPAWN_SCREEN }}

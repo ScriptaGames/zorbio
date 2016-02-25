@@ -105,11 +105,15 @@ window.addEventListener('load', function ZORLoadHandler() {
         ZOR.UI.engine.set('player_name', localStorage.player_name)
     }
 
-    ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_CREDITS, function ZORLoginHandler() {
+    ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_CREDITS, function ZORShowCredits() {
         ZOR.UI.state( ZOR.UI.STATES.CREDITS_SCREEN );
     });
 
-    ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_LOGIN, function ZORLoginHandler() {
+    ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_TUTORIAL, function ZORShowTutorial() {
+        ZOR.UI.state( ZOR.UI.STATES.TUTORIAL_SCREEN );
+    });
+
+    ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_LOGIN, function ZORShowLogin() {
         ZOR.UI.state( ZOR.UI.STATES.LOGIN_SCREEN );
     });
 
