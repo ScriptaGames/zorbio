@@ -67,13 +67,6 @@ ZOR.UI = function ZORUI() {
         // The `el` option can be a node, an ID, or a CSS selector.
         el: '#ui-overlay',
 
-        partials: {
-            social      : document.querySelector('#social-template').textContent,
-            leaderboard : document.querySelector('#leaderboard-template').textContent,
-            stats       : document.querySelector('#stats-template').textContent,
-            ad          : document.querySelector('#ad-template').textContent,
-        },
-
         // We could pass in a string, but for the sake of convenience
         // we're passing the ID of the <script> tag above.
         template: '#ui-template',
@@ -81,6 +74,11 @@ ZOR.UI = function ZORUI() {
         // Here, we're passing in some initial data
         data: uidata,
     });
+
+    function register_partial( el ) {
+        var name = el.id.replace('-template', '');
+        engine.partials[name] = el.textContent;
+    }
 
     /**
      * Given a state string, returns true if it's a real, defined state,
@@ -148,6 +146,7 @@ ZOR.UI = function ZORUI() {
 
     function init() {
         validate_browser_features();
+        _.each( document.querySelectorAll('script[type="text/ractive"]'), register_partial ); // register all ractive templates as partials
     }
 
     init();
