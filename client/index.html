@@ -36,17 +36,18 @@
         </script>
 
         <script id="leaderboard-template" type="text/ractive">
-            <div id="leaders" class="{{ is_mobile ? 'mobile' : '' }}">
-                <ul>
-                {{ #each leaders:i }}
-                    <li style="color: {{ COLORS[leaders[i].color] }}">
-                        <div class="leaderboard-circle" style="background: {{ COLORS[leaders[i].color] }}">
-                        {{ leaders[i].score }}
-                        </div>
-                        {{ leaders[i].name }}
-                    </li>
-                {{ /each }}
-                </ul>
+            <div id="leaderboard-playing">
+                <div id="leaders" class="{{ is_mobile ? 'mobile' : '' }}">
+                    <ul>
+                    {{ #each leaders:i }}
+                        <li style="color: {{ COLORS[leaders[i].color] }}">
+                            {{ leaders[i].score }}
+                            </div>
+                            {{ leaders[i].name }}
+                        </li>
+                    {{ /each }}
+                    </ul>
+                </div>
             </div>
         </script>
 
@@ -71,14 +72,12 @@
             </script>
         </script>
 
-        <script id="ui-template" type="text/ractive">
-
-            {{ #if state === STATES.LOGIN_SCREEN || state === STATES.LOGIN_SCREEN_ERROR }}
+        <script id="login-template" type="text/ractive">
             <div id="start-menu" >
                 <h1>ZOR.BIO</h1>
                 <input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" autofocus placeholder="Player name" value="{{ player_name }}"/>
                 <input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" placeholder="Alpha key" value="{{ alpha_key }}"/>
-                {{ #if state === STATES.LOGIN_SCREEN_ERROR }}
+                {{ #if login_error_msg }}
                 <b class="error-text">Nick name must be alphanumeric characters only!</b>
                 {{ /if }}
                 <button on-click="{{ ACTIONS.PLAYER_LOGIN }}" id="start-button"><span>Play</span></button>
@@ -96,19 +95,9 @@
                 &copy; 2016 <a href="http://scripta.co">Scripta, Inc.</a>  All rights reserved.  
                 <a on-click="{{ ACTIONS.SHOW_CREDITS }}">Credits</a>.
             </p>
-            {{ /if }}
+        </script>
 
-            {{ #if state === STATES.PLAYING }}
-            <div id="leaderboard-playing">
-                {{ > leaderboard }}
-            </div>
-            {{ /if }}
-
-            {{ #if state === STATES.TUTORIAL_SCREEN }}
-                {{ > tutorial }}
-            {{ /if }}
-
-            {{ #if state === STATES.RESPAWN_SCREEN }}
+        <script id="death-template" type="text/ractive">
             <div id="death-screen">
                 <h2>YOU WERE EATEN!</h2>
                 <button on-click="{{ ACTIONS.PLAYER_RESPAWN }}" id="respawn-button"><span>Respawn</span></button>
@@ -116,22 +105,33 @@
                 {{ > stats }}
                 {{ > social }}
             </div>
-            {{ /if }}
+        </script>
 
-            {{ #if state === STATES.KICKED_SCREEN }}
+        <script id="credits-template" type="text/ractive">
+            <div id="credits">
+                <p> Zorbio was created by {{ Math.random()>0.5?AUTHORS.join(' and '):AUTHORS.reverse().join(' and ') }}.  </p>
+                <p> Zorbio is &copy; 2016 by <a href="http://scripta.co">Scripta, Inc.</a>  </p>
+                <p> Zorbio makes use of these heroic and fun open source libraries: </p>
+                <ul>
+                    <li> <a href="http://threejs.org/">three.js</a> &mdash; <a href="https://raw.githubusercontent.com/mrdoob/three.js/r74/LICENSE">LICENSE</a> </li>
+                    <li> <a href="http://expressjs.com/">express</a> &mdash; <a href="https://raw.githubusercontent.com/expressjs/express/4.13.3/LICENSE">LICENSE</a> </li>
+                    <li> <a href="http://socket.io/">socket.io</a> &mdash; <a href="https://raw.githubusercontent.com/socketio/socket.io/1.4.4/LICENSE">LICENSE</a> </li>
+                    <li> <a href="https://lodash.com/">lodash</a> &mdash; <a href="https://raw.githubusercontent.com/lodash/lodash/4.0.0/LICENSE">LICENSE</a> </li>
+                </ul>
+                <button on-click="{{ ACTIONS.SHOW_LOGIN }}">Back</button>
+            </div>
+        </script>
+
+        <script id="kicked-template" type="text/ractive">
             <div id="death-screen">
                 <h2>YOU WERE REMOVED</h2>
                 <p>{{ kicked_message }}</p>
                 <p>You can report this on our <a href=https://github.com/ScriptaGames/zorbio-issues/issues>github page</a></p>
                 <button on-click="{{ ACTIONS.PAGE_RELOAD }}" id="respawn-button"><span>Reload</span></button>
             </div>
-            {{ /if }}
+        </script>
 
-            {{ #if server_message }}
-            <div id="server-message"> {{ server_message }} </div>
-            {{ /if }}
-
-            {{ #if state === STATES.GAME_INIT_ERROR }}
+        <script id="initerror-template" type="text/ractive">
             <div id="game-init-error-screen">
                 <h1>WebGL fell over :(</h1>
                 {{ #if MISSING_FEATURES }}
@@ -150,21 +150,20 @@
                 {{ /if }}
                 <button on-click="{{ ACTIONS.PAGE_RELOAD }}" id="reload-button"><span>Reload</span></button>
             </div>
-            {{ /if }}
+        </script>
 
-            {{ #if state === STATES.CREDITS_SCREEN }}
-            <div id="credits">
-                <p> Zorbio was created by {{ Math.random()>0.5?AUTHORS.join(' and '):AUTHORS.reverse().join(' and ') }}.  </p>
-                <p> Zorbio is &copy; 2016 by <a href="http://scripta.co">Scripta, Inc.</a>  </p>
-                <p> Zorbio makes use of these heroic and fun open source libraries: </p>
-                <ul>
-                    <li> <a href="http://threejs.org/">three.js</a> &mdash; <a href="https://raw.githubusercontent.com/mrdoob/three.js/r74/LICENSE">LICENSE</a> </li>
-                    <li> <a href="http://expressjs.com/">express</a> &mdash; <a href="https://raw.githubusercontent.com/expressjs/express/4.13.3/LICENSE">LICENSE</a> </li>
-                    <li> <a href="http://socket.io/">socket.io</a> &mdash; <a href="https://raw.githubusercontent.com/socketio/socket.io/1.4.4/LICENSE">LICENSE</a> </li>
-                    <li> <a href="https://lodash.com/">lodash</a> &mdash; <a href="https://raw.githubusercontent.com/lodash/lodash/4.0.0/LICENSE">LICENSE</a> </li>
-                </ul>
-                <button on-click="{{ ACTIONS.SHOW_LOGIN }}">Back</button>
-            </div>
+        <script id="ui-template" type="text/ractive">
+
+            {{ #if state === STATES.LOGIN_SCREEN    }} {{ > login       }} {{ /if }}
+            {{ #if state === STATES.PLAYING         }} {{ > leaderboard }} {{ /if }}
+            {{ #if state === STATES.TUTORIAL_SCREEN }} {{ > tutorial    }} {{ /if }}
+            {{ #if state === STATES.RESPAWN_SCREEN  }} {{ > death       }} {{ /if }}
+            {{ #if state === STATES.KICKED_SCREEN   }} {{ > kicked      }} {{ /if }}
+            {{ #if state === STATES.GAME_INIT_ERROR }} {{ > initerror   }} {{ /if }}
+            {{ #if state === STATES.CREDITS_SCREEN  }} {{ > credits     }} {{ /if }}
+
+            {{ #if server_message }}
+            <div id="server-message"> {{ server_message }} </div>
             {{ /if }}
 
         </script>

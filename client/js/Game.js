@@ -123,7 +123,8 @@ window.addEventListener('load', function ZORLoadHandler() {
         if (validNick()) {
             startGame(ZOR.PlayerTypes.PLAYER);
         } else {
-            ZOR.UI.state( ZOR.UI.STATES.LOGIN_SCREEN_ERROR );
+            ZOR.UI.engine.set( 'login_error_msg', 'Nick name must be alphanumeric characters only!' );
+
         }
     });
 
@@ -139,7 +140,7 @@ window.addEventListener('load', function ZORLoadHandler() {
             if (validNick()) {
                 startGame(ZOR.PlayerTypes.PLAYER);
             } else {
-                ZOR.UI.state( ZOR.UI.STATES.LOGIN_SCREEN_ERROR );
+                ZOR.UI.engine.set( 'login_error_msg', 'Nick name must be alphanumeric characters only!' );
             }
         }
     });

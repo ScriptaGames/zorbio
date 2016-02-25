@@ -14,7 +14,6 @@ ZOR.UI = function ZORUI() {
     var STATES = {
         INITIAL            : 'login-screen',
         LOGIN_SCREEN       : 'login-screen',
-        LOGIN_SCREEN_ERROR : 'login-screen-error',
         PLAYING            : 'playing',
         RESPAWN_SCREEN     : 'respawn-screen',
         KICKED_SCREEN      : 'kicked-screen',
@@ -149,6 +148,7 @@ ZOR.UI = function ZORUI() {
     function init() {
         validate_browser_features();
         _.each( document.querySelectorAll('script[type="text/ractive"]'), register_partial ); // register all ractive templates as partials
+        state( STATES.INITIAL );
     }
 
     init();
