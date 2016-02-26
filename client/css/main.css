@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Orbitron");
+@import url("reset.css");
 body {
   -webkit-backface-visibility: hidden;
 }
