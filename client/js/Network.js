@@ -300,6 +300,7 @@ function setupSocket(socket) {
         console.log("YOU DIED! You were alive for " + timeAlive + " seconds. Killed by: ", attackingPlayerId);
         setDeadState();
 
+        ZOR.UI.engine.set('attacker', zorbioModel.players[attackingPlayerId]);
         ZOR.UI.engine.set('player', targetPlayer);
         ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
     });
