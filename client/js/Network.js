@@ -314,6 +314,22 @@ function setupSocket(socket) {
         }
     });
 
+    socket.on('levelUp', function levelUp() {
+        if (!gameStart) return;
+
+        console.log("You leveled up!");
+        setDeadState();
+
+        handleLevelUp();
+    });
+
+    socket.on('playerLeveled', function playerDied(playerId) {
+        if (!gameStart) return;
+
+        removePlayerFromGame(playerId);
+    });
+
+
     //socket.on('pong', function pong(number) {
     //    console.log('Ping: ' + number + 'ms');
     //});
@@ -324,29 +340,4 @@ function setupSocket(socket) {
         //var bufView = new Uint8Array(bufArr);
         //console.log("Data: ", bufView[0], bufView[1], bufView[2], bufView[3])
     });
-
-    /*
-
-     socket.on('leaderboard', function leaderboard(data) {
-     leaderboard = data.leaderboard;
-     var status = '<span class="title">Leaderboard</span>';
-     for (var i = 0; i < leaderboard.length; i++) {
-     status += '<br />';
-     if (leaderboard[i].id == player.id){
-     if(leaderboard[i].name.length !== 0)
-     status += '<span class="me">' + (i + 1) + '. ' + leaderboard[i].name + "</span>";
-     else
-     status += '<span class="me">' + (i + 1) + ". A cell unnamed</span>";
-     } else {
-     if(leaderboard[i].name.length !== 0)
-     status += (i + 1) + '. ' + leaderboard[i].name;
-     else
-     status += (i + 1) + '. A cell unnamed';
-     }
-     }
-     //status += '<br />Players: ' + data.players;
-     document.getElementById('status').innerHTML = status;
-     });
-
-     */
 }

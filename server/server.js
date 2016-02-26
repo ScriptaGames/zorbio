@@ -108,6 +108,10 @@ io.on('connection', function (socket) {
             console.log("Respawn error: Player is already in game");
             kickPlayer(currentPlayer.id, "Forced respawn.");
             return;
+        } else if (currentPlayer && sockets[currentPlayer.id]) {
+            // use the name from the current socket for "Level up" name change
+            //TODO: temporary endgame code
+            name = sockets[currentPlayer.id].handshake.query.name;
         }
 
         // Create the Player
@@ -121,7 +125,8 @@ io.on('connection', function (socket) {
     socket.on('gotit', function (player, isFirstSpawn) {
         console.log('Player ' + player.id + ' connecting');
 
-        if (!UTIL.validNick(player.name) || Validators.is_profane(player.name)) {
+        //TODO: move profanity filter to client side
+        if (Validators.is_profane(player.name)) {
             socket.emit('kick', 'Invalid username');
             socket.disconnect({ restart: false });
         }
@@ -492,9 +497,22 @@ function playersChecks() {
         }
 
         // Add players to leaders array in sorted order by score
+        var score = config.PLAYER_GET_SCORE( player.sphere.radius() );
+
+        //TODO: figure out what the endgame should be, this is a temporary solution
+        if (score >= 1500) {
+            var player_socket = sockets[id];
+            player_socket.emit('levelUp');
+            io.emit('playerLeveled', id);
+            player.name = '+' + player.name;
+            player_socket.handshake.query.name = player.name;
+            console.log("Level up player:", id, player.name);
+            removePlayerFromModel(id);
+        }
+
         var leader = {
             name: player.name,
-            score: config.PLAYER_GET_SCORE( player.sphere.radius() ),
+            score: score,
             color: player.sphere.color,
         };
         UTIL.sortedObjectPush(model.leaders, leader, 'score');

@@ -87,14 +87,6 @@ function startGame(type) {
     );
 }
 
-// check if nick is valid alphanumeric characters (and underscores)
-function validNick() {
-    var regex = /^\w*$/;
-    var name = ZOR.UI.engine.get('player_name');
-    console.log('Regex Test', regex.exec(name));
-    return regex.exec(name) !== null;
-}
-
 window.addEventListener('load', function ZORLoadHandler() {
     'use strict';
 
@@ -120,7 +112,7 @@ window.addEventListener('load', function ZORLoadHandler() {
     ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
 
         // check if the nick is valid
-        if (validNick()) {
+        if (UTIL.validNick(ZOR.UI.engine.get('player_name'))) {
             startGame(ZOR.PlayerTypes.PLAYER);
         } else {
             ZOR.UI.engine.set( 'login_error_msg', 'Nick name must be alphanumeric characters only!' );
@@ -137,7 +129,7 @@ window.addEventListener('load', function ZORLoadHandler() {
         var KEY_ENTER = 13;
 
         if (key === KEY_ENTER) {
-            if (validNick()) {
+            if (UTIL.validNick(ZOR.UI.engine.get('player_name'))) {
                 startGame(ZOR.PlayerTypes.PLAYER);
             } else {
                 ZOR.UI.engine.set( 'login_error_msg', 'Nick name must be alphanumeric characters only!' );
@@ -522,6 +514,10 @@ function handlePlayerKick(msg) {
 
     // Send server message to the UI (either real message, or undefined)
     ZOR.UI.engine.set('kicked_message', msg);
+}
+
+function handleLevelUp() {
+    ZOR.UI.state( ZOR.UI.STATES.LEVELUP_SCREEN );
 }
 
 function setDeadState() {
