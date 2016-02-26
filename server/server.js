@@ -481,7 +481,7 @@ function playersChecks() {
 
         // Check for infractions
         if (player.infractions_food > config.INFRACTION_TOLERANCE_FOOD) {
-            kickPlayer(id, "You were removed because you had too many food infractions.");
+            console.log("Player over food infraction tolerance:", id, player.infractions_food, config.INFRACTION_TOLERANCE_FOOD);
         }
         else if (player.infractions_pcap > config.INFRACTION_TOLERANCE_PCAP) {
             kickPlayer(id, "You were removed because you had too many player capture infractions.");
