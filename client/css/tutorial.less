@@ -1,34 +1,142 @@
-@animationDurationTime: 1.618s;
-@animationDelayTime: 0s;
 @animationFillMode: both;
 @animationLessLocation: '../bower_components/animate.less/source';
+@sphere-radius: 8vw;
+@food-radius: 2vw;
+
+@msg-1-start: 0s;
+@msg-1-lasts: 4s;
+
+@msg-2-start: 4s;
+@msg-2-lasts: 4s;
+
+@msg-3-start: 8s;
+@msg-3-lasts: 4s;
+
+@msg-4-start: 12s;
+@msg-4-lasts: 4s;
+
+@msg-5-start: 16s;
+@msg-5-lasts: 4s;
+
+@msg-6-start: 20s;
+@msg-6-lasts: 4s;
+
+@sphere-flyin-start: 1s;
+@sphere-flyin-lasts: 8.618s;
+
+@food-start: @msg-2-start;
+@food-lasts: 1s;
 
 @import "@{animationLessLocation}/animated.less";
-
-@import "@{animationLessLocation}/bounce.less";
 @import "@{animationLessLocation}/bounceIn.less";
-@import "@{animationLessLocation}/bounceInDown.less";
-@import "@{animationLessLocation}/bounceInLeft.less";
-@import "@{animationLessLocation}/bounceInRight.less";
-@import "@{animationLessLocation}/bounceInUp.less";
-@import "@{animationLessLocation}/bounceOut.less";
-@import "@{animationLessLocation}/bounceOutDown.less";
-@import "@{animationLessLocation}/bounceOutLeft.less";
-@import "@{animationLessLocation}/bounceOutRight.less";
-@import "@{animationLessLocation}/bounceOutUp.less";
+@import "elements.less";
+@import "sphereAnim.less";
+@import "foodAnim.less";
 
-#tutorial {
+@-webkit-keyframes fadeInOut {
+    0% {opacity: 0;  }
+    20% {opacity: 1; }
+    80% {opacity: 1; }
+    100% {opacity: 0; }
+}
 
-    width   : 100%;
-    height  : 100%;
-    display : flex;
+@-moz-keyframes fadeInOut {
+    0% {opacity: 0;  }
+    20% {opacity: 1; }
+    80% {opacity: 1; }
+    100% {opacity: 0; }
+}
+
+@-o-keyframes fadeInOut {
+    0% {opacity: 0;  }
+    20% {opacity: 1; }
+    80% {opacity: 1; }
+    100% {opacity: 0; }
+}
+
+@keyframes fadeInOut {
+    0% {opacity: 0;  }
+    20% {opacity: 1; }
+    80% {opacity: 1; }
+    100% {opacity: 0; }
+}
+
+.fadeInOut {
+    -webkit-animation-name: fadeInOut;
+    -moz-animation-name: fadeInOut;
+    -o-animation-name: fadeInOut;
+    animation-name: fadeInOut;
+}
+#ui-overlay #tutorial {
+
+    width           : 100%;
+    height          : 100%;
+    display         : flex;
+    justify-content : flex-end;
+    position        : relative;
+
+    .msg-1, .msg-2, .msg-3,
+    .msg-4, .msg-5, .msg-6 {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        .fadeInOut;
+        font-size: 2rem;
+    }
+
+    .msg-1 {
+        .animated(
+                @animationDurationTime: @msg-1-lasts;
+                @animationDelayTime: @msg-1-start;
+                );
+    }
+
+    .msg-2 {
+        .animated(
+                @animationDurationTime: @msg-2-lasts;
+                @animationDelayTime: @msg-2-start;
+                );
+    }
+
+    .msg-3 {
+        .animated(
+                @animationDurationTime: @msg-3-lasts;
+                @animationDelayTime: @msg-3-start;
+                );
+    }
+
+    .msg-4 {
+        .animated(
+                @animationDurationTime: @msg-4-lasts;
+                @animationDelayTime: @msg-4-start;
+                );
+    }
+
+    .msg-5 {
+        .animated(
+                @animationDurationTime: @msg-5-lasts;
+                @animationDelayTime: @msg-5-start;
+                );
+    }
+
+    .msg-6 {
+        .animated(
+                @animationDurationTime: @msg-6-lasts;
+                @animationDelayTime: @msg-6-start;
+                );
+    }
 
     .player-sphere {
         border-radius : 50%;
-        height        : 260px;
-        width         : 260px;
+        height        : @sphere-radius * 2;
+        width         : @sphere-radius * 2;
 
-        align-self: center;
+        position: absolute;
+        left: ~"calc(50% - @{sphere-radius})";
+        top: 50%;
+        margin-top: -@sphere-radius;
+        margin-left: -@sphere-radius;
 
         /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#00e2f7+0,00e2f7+100&0+0,0+0,0.65+54,1+69 */
         background: -moz-radial-gradient(center, ellipse cover, rgba(0,226,247,0) 0%, rgba(0,226,247,0.65) 54%, rgba(0,226,247,1) 69%, rgba(0,226,247,1) 100%); /* FF3.6-15 */
@@ -36,8 +144,28 @@
         background: radial-gradient(ellipse at center, rgba(0,226,247,0) 0%,rgba(0,226,247,0.65) 54%,rgba(0,226,247,1) 69%,rgba(0,226,247,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0000e2f7', endColorstr='#00e2f7',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 
-        .animated(@animationDurationTime: @animationDurationTime; @animationDelayTime: @animationDelayTime );
-        .bounceInLeft;
+        .animated(
+            @animationDurationTime: @sphere-flyin-lasts;
+            @animationDelayTime: @sphere-flyin-start );
+        .sphereAnim;
+    }
+
+    .food {
+        border-radius: 10%;
+        background-color: #ffd700;
+        height        : @food-radius * 2;
+        width         : @food-radius * 2;
+
+        position: absolute;
+        left: ~"calc(50% + @{sphere-radius})";
+        top: 50%;
+        /* margin-top: -@food-radius; */
+        /* margin-left: -@food-radius; */
+
+        .animated(
+            @animationDurationTime: @food-lasts;
+            @animationDelayTime: @food-start );
+        .bounceIn;
     }
 
 }

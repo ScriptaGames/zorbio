@@ -22,9 +22,15 @@
         <!-- UI TEMPLATES -->
 
         <script id="tutorial-template" type="text/ractive">
-            <div id="tutorial">
-                <p>This is you.</p>
+            <div id="tutorial" class="{{ is_mobile ? 'mobile' : '' }}">
+                <p class="msg-1">This is you.  A sphere!</p>
+                <p class="msg-2">This is food.</p>
+                <p class="msg-3">Eat food to grow!</p>
+                <p class="msg-4">Here's another player.</p>
+                <p class="msg-5">If you're bigger, you can eat them!</p>
+                <p class="msg-6">Move your mouse towards where you want to go.</p>
                 <div class="player-sphere"></div>
+                <div class="food"></div>
                 <button on-click="{{ ACTIONS.SHOW_LOGIN }}">Back</button>
             </div>
         </script>

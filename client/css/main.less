@@ -21,12 +21,6 @@
 
 //
 
-* {
-    font-family : @primary-font;
-    font-size   : @font-size-base;
-    font-weight : bold;
-}
-
 html, body {
     overflow         : hidden;
     width            : 100%;
@@ -34,6 +28,19 @@ html, body {
     margin           : 0;
     padding          : 0;
     background-color : @secondary-color;
+}
+
+body #ui-overlay {
+    font-family    : @primary-font;
+    font-size      : @font-size-base;
+    font-weight    : bold;
+    letter-spacing : 1px;
+}
+
+input, textarea, select, button {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
 }
 
 a {
