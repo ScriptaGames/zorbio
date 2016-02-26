@@ -22,7 +22,11 @@
         <!-- UI TEMPLATES -->
 
         <script id="tutorial-template" type="text/ractive">
-            <h2>TUTORIAL TIME!</h2>
+            <div id="tutorial">
+                <p>This is you.</p>
+                <div class="player-sphere"></div>
+                <button on-click="{{ ACTIONS.SHOW_LOGIN }}">Back</button>
+            </div>
         </script>
 
         <script id="stats-template" type="text/ractive">
