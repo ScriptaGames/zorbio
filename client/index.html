@@ -38,15 +38,16 @@
         <script id="leaderboard-template" type="text/ractive">
             <div id="leaderboard-playing">
                 <div id="leaders" class="{{ is_mobile ? 'mobile' : '' }}">
-                    <ul>
+                    <div>
                     {{ #each leaders:i }}
-                        <li style="color: {{ COLORS[leaders[i].color] }}">
-                            {{ leaders[i].score }}
-                            </div>
-                            {{ leaders[i].name }}
-                        </li>
+                        <div style="color: {{ COLORS[leaders[i].color] }}"> {{ leaders[i].name }} </div>
                     {{ /each }}
-                    </ul>
+                    </div>
+                    <div>
+                    {{ #each leaders:i }}
+                        <div style="color: {{ COLORS[leaders[i].color] }}"> {{ leaders[i].score }} </div>
+                    {{ /each }}
+                    </div>
                 </div>
             </div>
         </script>

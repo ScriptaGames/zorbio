@@ -15,7 +15,6 @@
 // spacing
 
 @default-padding: 20px;
-@leaderboard-circle-diameter: 80px;
 
 //
 
@@ -168,7 +167,7 @@ button {
     color                       : @primary-color;
     display                     : flex;
     justify-content             : center;
-    min-height                  : @leaderboard-circle-diameter;
+    min-height                  : 80px;
     overflow                    : hidden;
     padding                     : @default-padding;
     position                    : relative;
@@ -211,42 +210,22 @@ button:hover::before {
     align-self   : flex-start;
     margin-right : auto;
     padding      : 0;
-    margin       : 10px auto 0 10px;
+    margin       : 0 auto 0 0;
 
     ul li,
     #leaders {
-        ul {
-            list-style : none;
-            padding    : 0;
-            margin     : 0;
-            li {
-                display       : flex;
-                flex-wrap     : wrap;
-                align-items   : center;
-                margin-bottom : 10px;
-
-            }
+        display    : flex;
+        div {
+            margin    : 3px;
+            font-size : @font-size-base * 0.6;
         }
-        &.mobile ul li {
+        &.mobile {
             margin-bottom : 2px;
             font-size     : @font-size-base * 0.4;
-        }
-        &.mobile ul li .leaderboard-circle {
-            font-size: @font-size-base * 0.4;
         }
     }
 }
 
-
-.leaderboard-circle {
-    display         : flex;
-    justify-content : center;
-    align-items     : center;
-    height          : @leaderboard-circle-diameter;
-    width           : @leaderboard-circle-diameter;
-    border-radius   : 50%;
-    margin-right    : 20px;
-}
 
 #server-message {
     position  : absolute;

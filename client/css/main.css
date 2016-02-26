@@ -158,44 +158,21 @@ button:hover::before {
   align-self: flex-start;
   margin-right: auto;
   padding: 0;
-  margin: 10px auto 0 10px;
+  margin: 0 auto 0 0;
 }
 #leaderboard-playing ul li,
-#leaderboard-playing .leaderboard-circle {
-  font-size: 21px;
-}
-#leaderboard-playing #leaders ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-#leaderboard-playing #leaders ul li {
+#leaderboard-playing #leaders {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-bottom: 10px;
 }
-#leaderboard-playing #leaders .leaderboard-circle {
-  background: none !important;
-  border-radius: 0;
-  height: auto;
-  width: auto;
+#leaderboard-playing ul li div,
+#leaderboard-playing #leaders div {
+  margin: 3px;
+  font-size: 18px;
 }
-#leaderboard-playing #leaders.mobile ul li {
+#leaderboard-playing ul li.mobile,
+#leaderboard-playing #leaders.mobile {
   margin-bottom: 2px;
   font-size: 12px;
-}
-#leaderboard-playing #leaders.mobile ul li .leaderboard-circle {
-  font-size: 12px;
-}
-.leaderboard-circle {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80px;
-  width: 80px;
-  border-radius: 50%;
-  margin-right: 20px;
 }
 #server-message {
   position: absolute;
