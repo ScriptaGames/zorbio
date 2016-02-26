@@ -2,6 +2,7 @@ var config = require('../common/config.js');
 var _ = require('lodash');
 var alphakeys = require('./alphakeys');
 var UTIL = require('../common/util');
+var profanity = require('profanity-censor');
 
 var Validators = {};
 
@@ -14,6 +15,9 @@ Validators.ErrorCodes = {
     PLAYER_SCALE_TO_BIG: 6
 };
 
+Validators.is_profane = function (str) {
+    return profanity.filter(str).indexOf('*') >= 0;
+};
 
 Validators.movement = function () {
 

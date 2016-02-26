@@ -19,7 +19,8 @@
     "three": "^0.73.0",
     "lodash": "~4.0.0",
     "basic-auth": "1.0.3",
-    "request": "2.69.0"
+    "request": "2.69.0",
+    "profanity-censor": "~1.0.4"
   },
   "devDependencies": {
     "html-inline": "https://github.com/mwcz/html-inline/archive/node-0.10-compat.tar.gz",

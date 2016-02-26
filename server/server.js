@@ -121,14 +121,14 @@ io.on('connection', function (socket) {
     socket.on('gotit', function (player, isFirstSpawn) {
         console.log('Player ' + player.id + ' connecting');
 
-        if (!UTIL.validNick(player.name)) {
+        if (!UTIL.validNick(player.name) || Validators.is_profane(player.name)) {
             socket.emit('kick', 'Invalid username');
-            socket.disconnect();
+            socket.disconnect({ restart: false });
         }
         else if (!Validators.validAlphaKey(key)) {
             console.log('ALPHA KEY INVALID');
             socket.emit('kick', 'Invalid alpha key');
-            socket.disconnect();
+            socket.disconnect({ restart: true });
         }
         else {
             console.log('Player ' + player.id + ' connected!');

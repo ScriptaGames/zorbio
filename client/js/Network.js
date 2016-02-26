@@ -209,8 +209,10 @@ function setupSocket(socket) {
         console.log("Successfully connected to WebSocket");
     });
 
-    socket.on('disconnect', function disconnect() {
-        handleNetworkTermination();
+    socket.on('disconnect', function disconnect(data) {
+        if (data.restart) {
+            handleNetworkTermination();
+        }
         disconnected = true;
         console.log('You were disconnected');
     });
