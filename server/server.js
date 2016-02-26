@@ -504,7 +504,7 @@ function playersChecks() {
             var player_socket = sockets[id];
             player_socket.emit('levelUp');
             io.emit('playerLeveled', id);
-            player.name = '+' + player.name;
+            player.name += '+';
             player_socket.handshake.query.name = player.name;
             console.log("Level up player:", id, player.name);
             removePlayerFromModel(id);
