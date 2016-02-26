@@ -481,10 +481,12 @@ function playersChecks() {
 
         // Check for infractions
         if (player.infractions_food > config.INFRACTION_TOLERANCE_FOOD) {
-            console.log("Player over food infraction tolerance:", id, player.infractions_food, config.INFRACTION_TOLERANCE_FOOD);
+            console.log("INFRACTION: Player reached food infraction tolerance:", id, player.infractions_food, config.INFRACTION_TOLERANCE_FOOD);
+            player.infractions_food = 0;
         }
         else if (player.infractions_pcap > config.INFRACTION_TOLERANCE_PCAP) {
-            kickPlayer(id, "You were removed because you had too many player capture infractions.");
+            console.log("INFRACTION: Player reached player capture infraction tolerance:", id, player.infractions_pcap, config.INFRACTION_TOLERANCE_PCAP);
+            player.infractions_pcap = 0;
         }
         else if (player.infractions_speed > config.INFRACTION_TOLERANCE_SPEED) {
             kickPlayer(id, "You were removed because you had too many speed infractions.");
