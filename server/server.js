@@ -230,7 +230,7 @@ io.on('connection', function (socket) {
 
         var food_value = config.FOOD_GET_VALUE(radius);
 
-        var err = Validators.foodCaptureSampled(model, fi, sphere_id, radius, timestamp);
+        var err = Validators.foodCapture(model, fi, sphere_id, radius, timestamp);
 
         if (!err) {
             model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
