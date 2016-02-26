@@ -210,7 +210,7 @@ function setupSocket(socket) {
     });
 
     socket.on('disconnect', function disconnect(data) {
-        if (data.restart) {
+        if (data.restart || data === 'transport close') {
             handleNetworkTermination();
         }
         disconnected = true;
