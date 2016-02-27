@@ -87,7 +87,7 @@ config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 20;    // How much food there is, total food = this number cubed
+config.FOOD_DENSITY                = 14;    // How much food there is, total food = this number cubed
 config.FOOD_VALUE                  = 0.6;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
