@@ -311,10 +311,10 @@ io.on('connection', function (socket) {
         socket.emit("clientMsg", ba);
     });
 
-    socket.on('error', function (err) {
-        console.error(err.stack);
-        kickPlayer(currentPlayer.id, 'An error occurred with your connection.');
-    });
+    //socket.on('error', function (err) {
+    //    //console.error(err.stack);
+    //    //kickPlayer(currentPlayer.id, 'An error occurred with your connection.');
+    //});
 
     socket.on('disconnect', function () {
         if (currentPlayer && currentPlayer.id) {
