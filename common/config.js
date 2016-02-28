@@ -14,7 +14,7 @@ if (NODEJS) {
 var config = {};
 
 config.DEBUG = false;
-config.REQUIRE_ALPHA_KEY = true;
+config.REQUIRE_ALPHA_KEY = false;
 
 ////////////////////////////////////////////////////////////////////////
 //                           WORLD SETTINGS                           //

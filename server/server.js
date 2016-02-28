@@ -131,9 +131,9 @@ io.on('connection', function (socket) {
             socket.disconnect({ restart: false });
         }
         else if (!Validators.validAlphaKey(key)) {
-            //console.log('ALPHA KEY INVALID');
-            //socket.emit('kick', 'Invalid alpha key');
-            //socket.disconnect({ restart: true });
+            console.log('ALPHA KEY INVALID');
+            socket.emit('kick', 'Invalid alpha key');
+            socket.disconnect({ restart: true });
         }
         else {
             console.log('Player ' + player.id + ' connected!');
