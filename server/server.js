@@ -93,29 +93,38 @@ io.on('connection', function (socket) {
     console.log("Player connected: ", JSON.stringify(socket.handshake));
 
     // Handle new connection
+    var player_id = Zorbio.IdGenerator.get_next_id();
     var type = socket.handshake.query.type;
     var name = socket.handshake.query.name;
     var color = socket.handshake.query.color;
     var key = socket.handshake.query.key;
+
+    // Handle blank name
+    if (UTIL.isBlank(name)) {
+        name = socket.handshake.query.name = "Player " + player_id;
+    }
 
     var currentPlayer;
 
     socket.on('respawn', function (isFirstSpawn) {
         var position = UTIL.safePlayerPosition();
 
-        // First make sure this player isn't already connected and playing
-        if (currentPlayer && isPlayerInGame(currentPlayer.id)) {
-            console.log("Respawn error: Player is already in game");
-            kickPlayer(currentPlayer.id, "Forced respawn.");
-            return;
-        } else if (currentPlayer && sockets[currentPlayer.id]) {
-            // use the name from the current socket for "Level up" name change
-            //TODO: temporary endgame code
-            name = sockets[currentPlayer.id].handshake.query.name;
+        if (currentPlayer) {
+            if (isPlayerInGame(currentPlayer.id)) {
+                // <ake sure this player isn't already connected and playing
+                console.log("Respawn error: Player is already in game");
+                kickPlayer(currentPlayer.id, "Forced respawn.");
+                return;
+            }
+            else if (sockets[currentPlayer.id]) {
+                // use the name from the current socket for "Level up" name change
+                //TODO: temporary endgame code
+                name = sockets[currentPlayer.id].handshake.query.name;
+            }
         }
 
         // Create the Player
-        currentPlayer = new Zorbio.Player(Zorbio.IdGenerator.get_next_id(), name, color, type, position);
+        currentPlayer = new Zorbio.Player(player_id, name, color, type, position);
 
         socket.emit('welcome', currentPlayer, isFirstSpawn);
 

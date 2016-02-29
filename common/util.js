@@ -346,5 +346,14 @@ UTIL.nth = function nth(f, n) {
     }
 };
 
+/**
+ * Test if a string is undefinted null or blank
+ * @param str
+ * @returns {boolean}
+ */
+UTIL.isBlank = function isBlank(str) {
+    return (!str || /^\s*$/.test(str));
+};
+
 // if we're in nodejs, export the root UTIL object
 if (NODEJS) module.exports = UTIL;
