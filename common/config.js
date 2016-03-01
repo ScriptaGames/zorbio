@@ -29,15 +29,15 @@ config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD
 config.PORT                     = 80;
 config.MAX_PLAYERS              = 50;
 config.HEARTBEAT_ENABLE         = true;
-config.HEARTBEAT_TIMEOUT        = 30000; // how long before a client is considered disconnected
-config.HEARTBEAT_CHECK_INTERVAL = 1000;  // server heartbeat test interval
-config.HEARTBEAT_PULSE_INTERVAL = 3000;  // client heartbeat pulse
-config.SERVER_TICK_INTERVAL     = 200;   // General server updates in milliseconds
-config.ACTOR_UPDATE_INTERVAL    = 50;    // How often actors update their position in milliseconds
-config.PENDING_PLAYER_CAPTURE_TTL = 3000;  // how long pending player capture lives before it expires in milliseconds
-config.CHECK_VERSION            = true;
-config.CHECK_VERSION_INTERVAL   = 30000;
-config.LEADERS_LENGTH           = 10;    // How many players to include in the leaders array
+config.HEARTBEAT_TIMEOUT        = 300000; // how long before a client is considered disconnected
+config.HEARTBEAT_CHECK_INTERVAL = 1000;   // server heartbeat test interval
+config.HEARTBEAT_PULSE_INTERVAL = 3000;   // client heartbeat pulse
+config.SERVER_TICK_INTERVAL     = 200;    // General server updates in milliseconds
+config.ACTOR_UPDATE_INTERVAL    = 50;     // How often actors update their position in milliseconds
+config.PENDING_PLAYER_CAPTURE_TTL = 3000; // how long pending player capture lives before it expires in milliseconds
+config.CHECK_VERSION            = true;   // check for latest version of the game through the zapi
+config.CHECK_VERSION_INTERVAL   = 30000;  // how often to check for new version
+config.LEADERS_LENGTH           = 10;     // How many players to include in the leaders array
 
 config.BALANCERS = Object.freeze({
     LOCAL: 'http://localhost',
