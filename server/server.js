@@ -253,6 +253,9 @@ io.on('connection', function (socket) {
                     socket.emit('invalidFoodCapture', fi, food_value);
                     model.players[currentPlayer.id].infractions_food++;
                     break;
+                case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
+                    console.log("Recieved 'foodCapture' from player not in model!", sphere_id);
+                    break;
             }
         }
     });
@@ -313,10 +316,14 @@ io.on('connection', function (socket) {
         socket.emit("clientMsg", ba);
     });
 
-    //socket.on('error', function (err) {
-    //    //console.error(err.stack);
-    //    //kickPlayer(currentPlayer.id, 'An error occurred with your connection.');
-    //});
+    socket.on('error', function (err) {
+        if (err && err.stack) {
+            console.error("SOCKET ERROR: ", err.stack);
+        }
+        else {
+            console.error("SOCKET ERROR: unknown");
+        }
+    });
 
     socket.on('disconnect', function () {
         if (currentPlayer && currentPlayer.id) {

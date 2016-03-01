@@ -125,6 +125,11 @@ Validators.foodCapture = function (model, fi, sphere_id, radius, timestamp) {
     // sphere info
     var sphere = model.actors[sphere_id];
 
+    // Make sure this actor is in the model
+    if (!sphere) {
+        return Validators.ErrorCodes.PLAYER_NOT_IN_MODEL;
+    }
+
     // get food position
     var food_index = fi * 3;
     var food_x = model.food[food_index];
