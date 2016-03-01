@@ -25,48 +25,15 @@
 @sphere-flyin-lasts: 8.618s;
 
 @food-start: @msg-2-start;
-@food-lasts: 1s;
+@food-lasts: 5s;
 
 @import "@{animationLessLocation}/animated.less";
 @import "@{animationLessLocation}/bounceIn.less";
 @import "elements.less";
 @import "sphereAnim.less";
 @import "foodAnim.less";
+@import "tutorialMessageAnim.less";
 
-@-webkit-keyframes fadeInOut {
-    0% {opacity: 0;  }
-    20% {opacity: 1; }
-    80% {opacity: 1; }
-    100% {opacity: 0; }
-}
-
-@-moz-keyframes fadeInOut {
-    0% {opacity: 0;  }
-    20% {opacity: 1; }
-    80% {opacity: 1; }
-    100% {opacity: 0; }
-}
-
-@-o-keyframes fadeInOut {
-    0% {opacity: 0;  }
-    20% {opacity: 1; }
-    80% {opacity: 1; }
-    100% {opacity: 0; }
-}
-
-@keyframes fadeInOut {
-    0% {opacity: 0;  }
-    20% {opacity: 1; }
-    80% {opacity: 1; }
-    100% {opacity: 0; }
-}
-
-.fadeInOut {
-    -webkit-animation-name: fadeInOut;
-    -moz-animation-name: fadeInOut;
-    -o-animation-name: fadeInOut;
-    animation-name: fadeInOut;
-}
 #ui-overlay #tutorial {
 
     width           : 100%;
@@ -81,7 +48,7 @@
         top: 20px;
         left: 50%;
         transform: translateX(-50%);
-        .fadeInOut;
+        .tutorialMessageAnim;
         font-size: 2rem;
     }
 
@@ -165,7 +132,7 @@
         .animated(
             @animationDurationTime: @food-lasts;
             @animationDelayTime: @food-start );
-        .bounceIn;
+        .foodAnim;
     }
 
 }
