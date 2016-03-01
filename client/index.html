@@ -132,15 +132,6 @@
             </div>
         </script>
 
-        <script id="levelup-template" type="text/ractive">
-            <div id="death-screen">
-                <h2>Max Size</h2>
-                <p>Congratulations you reached max size and gained a level!</p>
-                <p>You will reset to starting size but have a "+" by your name so people know how awesome you are.</p>
-                <button on-click="{{ ACTIONS.PLAYER_RESPAWN }}" id="respawn-button"><span>Level Up</span></button>
-            </div>
-        </script>
-
         <script id="initerror-template" type="text/ractive">
             <div id="game-init-error-screen">
                 <h1>WebGL fell over :(</h1>
@@ -169,7 +160,6 @@
             {{ #if state === STATES.TUTORIAL_SCREEN }} {{ > tutorial    }} {{ /if }}
             {{ #if state === STATES.RESPAWN_SCREEN  }} {{ > death       }} {{ /if }}
             {{ #if state === STATES.KICKED_SCREEN   }} {{ > kicked      }} {{ /if }}
-            {{ #if state === STATES.LEVELUP_SCREEN  }} {{ > levelup     }} {{ /if }}
             {{ #if state === STATES.GAME_INIT_ERROR }} {{ > initerror   }} {{ /if }}
             {{ #if state === STATES.CREDITS_SCREEN  }} {{ > credits     }} {{ /if }}
 

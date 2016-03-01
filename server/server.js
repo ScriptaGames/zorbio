@@ -109,18 +109,11 @@ io.on('connection', function (socket) {
     socket.on('respawn', function (isFirstSpawn) {
         var position = UTIL.safePlayerPosition();
 
-        if (currentPlayer) {
-            if (isPlayerInGame(currentPlayer.id)) {
-                // <ake sure this player isn't already connected and playing
-                console.log("Respawn error: Player is already in game");
-                kickPlayer(currentPlayer.id, "Forced respawn.");
-                return;
-            }
-            else if (sockets[currentPlayer.id]) {
-                // use the name from the current socket for "Level up" name change
-                //TODO: temporary endgame code
-                name = sockets[currentPlayer.id].handshake.query.name;
-            }
+        if (currentPlayer && isPlayerInGame(currentPlayer.id)) {
+            // <ake sure this player isn't already connected and playing
+            console.log("Respawn error: Player is already in game");
+            kickPlayer(currentPlayer.id, "Forced respawn.");
+            return;
         }
 
         // Create the Player
@@ -509,18 +502,6 @@ function playersChecks() {
 
         // Add players to leaders array in sorted order by score
         var score = config.PLAYER_GET_SCORE( player.sphere.radius() );
-
-        //TODO: figure out what the endgame should be, this is a temporary solution
-        if (score >= 1500) {
-            var player_socket = sockets[id];
-            player_socket.emit('levelUp');
-            io.emit('playerLeveled', id);
-            player.name += '+';
-            player_socket.handshake.query.name = player.name;
-            console.log("Level up player:", id, player.name);
-            removePlayerFromModel(id);
-        }
-
         var leader = {
             name: player.name,
             score: score,

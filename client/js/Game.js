@@ -516,10 +516,6 @@ function handlePlayerKick(msg) {
     ZOR.UI.engine.set('kicked_message', msg);
 }
 
-function handleLevelUp() {
-    ZOR.UI.state( ZOR.UI.STATES.LEVELUP_SCREEN );
-}
-
 function setDeadState() {
     player.beingCaptured = false;
     player.isDead = true;

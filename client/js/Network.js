@@ -315,22 +315,6 @@ function setupSocket(socket) {
         }
     });
 
-    socket.on('levelUp', function levelUp() {
-        if (!gameStart) return;
-
-        console.log("You leveled up!");
-        setDeadState();
-
-        handleLevelUp();
-    });
-
-    socket.on('playerLeveled', function playerDied(playerId) {
-        if (!gameStart) return;
-
-        removePlayerFromGame(playerId);
-    });
-
-
     //socket.on('pong', function pong(number) {
     //    console.log('Ping: ' + number + 'ms');
     //});

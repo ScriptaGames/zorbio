@@ -17,7 +17,6 @@ ZOR.UI = function ZORUI() {
         PLAYING            : 'playing',
         RESPAWN_SCREEN     : 'respawn-screen',
         KICKED_SCREEN      : 'kicked-screen',
-        LEVELUP_SCREEN     : 'levelup-screen',
         GAME_INIT_ERROR    : 'game-init-error',
         SERVER_MSG_SCREEN  : 'server-msg-screen',
         CREDITS_SCREEN     : 'credits-screen',
