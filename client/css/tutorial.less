@@ -1,6 +1,8 @@
+
 @animationFillMode: both;
 @animationLessLocation: '../bower_components/animate.less/source';
 @sphere-radius: 8vw;
+@sphere2-radius: @sphere-radius * 0.75;
 @food-radius: 2vw;
 
 @msg-1-start: 0s;
@@ -24,6 +26,9 @@
 @sphere-flyin-start: 1s;
 @sphere-flyin-lasts: 8.618s;
 
+@sphere2-flyin-start: @msg-4-start;
+@sphere2-flyin-lasts: 4s;
+
 @food-start: @msg-2-start;
 @food-lasts: 5s;
 
@@ -31,6 +36,7 @@
 @import "@{animationLessLocation}/bounceIn.less";
 @import "elements.less";
 @import "sphereAnim.less";
+@import "sphere2Anim.less";
 @import "foodAnim.less";
 @import "tutorialMessageAnim.less";
 
@@ -109,12 +115,33 @@
         background: -moz-radial-gradient(center, ellipse cover, rgba(0,226,247,0) 0%, rgba(0,226,247,0.65) 54%, rgba(0,226,247,1) 69%, rgba(0,226,247,1) 100%); /* FF3.6-15 */
         background: -webkit-radial-gradient(center, ellipse cover, rgba(0,226,247,0) 0%,rgba(0,226,247,0.65) 54%,rgba(0,226,247,1) 69%,rgba(0,226,247,1) 100%); /* Chrome10-25,Safari5.1-6 */
         background: radial-gradient(ellipse at center, rgba(0,226,247,0) 0%,rgba(0,226,247,0.65) 54%,rgba(0,226,247,1) 69%,rgba(0,226,247,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0000e2f7', endColorstr='#00e2f7',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 
         .animated(
             @animationDurationTime: @sphere-flyin-lasts;
             @animationDelayTime: @sphere-flyin-start );
         .sphereAnim;
+    }
+
+    .player2-sphere {
+        border-radius : 50%;
+        height        : @sphere2-radius * 2;
+        width         : @sphere2-radius * 2;
+
+        position: absolute;
+        left: ~"calc(50% - @{sphere2-radius})";
+        top: 50%;
+        margin-top: -@sphere2-radius;
+        margin-left: -@sphere2-radius;
+
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff00ff+0,ff00ff+100&0+0,0+0,0.65+54,1+69 */
+        background: -moz-radial-gradient(center, ellipse cover, rgba(255,0,255,0) 0%, rgba(255,0,255,0.65) 54%, rgba(255,0,255,1) 69%, rgba(255,0,255,1) 100%); /* FF3.6-15 */
+        background: -webkit-radial-gradient(center, ellipse cover, rgba(255,0,255,0) 0%,rgba(255,0,255,0.65) 54%,rgba(255,0,255,1) 69%,rgba(255,0,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: radial-gradient(ellipse at center, rgba(255,0,255,0) 0%,rgba(255,0,255,0.65) 54%,rgba(255,0,255,1) 69%,rgba(255,0,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+
+        .animated(
+            @animationDurationTime: @sphere2-flyin-lasts;
+            @animationDelayTime: @sphere2-flyin-start );
+        .sphere2Anim;
     }
 
     .food {

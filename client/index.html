@@ -30,6 +30,7 @@
                 <p class="msg-5">If you're bigger, you can eat them too!</p>
                 <p class="msg-6">Move your mouse towards where you want to go.</p>
                 <div class="player-sphere"></div>
+                <div class="player2-sphere"></div>
                 <div class="food"></div>
                 <button on-click="{{ ACTIONS.SHOW_LOGIN }}">Back</button>
             </div>
@@ -91,7 +92,7 @@
                 <b class="error-text">Nick name must be alphanumeric characters only!</b>
                 {{ /if }}
                 <button on-click="{{ ACTIONS.PLAYER_LOGIN }}" id="start-button"><span>Play</span></button>
-                <!-- <button on-click="{{ ACTIONS.SHOW_TUTORIAL }}" id="tutorial-button"><span>Tutorial</span></button> -->
+                <button on-click="{{ ACTIONS.SHOW_TUTORIAL }}" class="secondary" id="tutorial-button"><span>Tutorial</span></button>
                 <p id="credits">Created By <a href="https://twitter.com/caramelcode">Jared Sprague</a> and <a href="https://twitter.com/mwcz">Michael Clayton</a></p>
 
                 {{ > social }}

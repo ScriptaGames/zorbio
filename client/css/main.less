@@ -182,32 +182,39 @@ button {
     padding                     : @default-padding;
     position                    : relative;
     z-index                     : 1;
-}
-button::before {
-    content                  : '';
-    z-index                  : -1;
-    position                 : absolute;
-    top                      : 50%;
-    left                     : 100%;
-    margin                   : -15px 0 0 1px;
-    width                    : 30px;
-    height                   : 30px;
-    border-radius            : 50%;
-    background               : lighten(@accent-color, 10%);
-    -webkit-transform-origin : 150% 50%;
-    transform-origin         : 150% 50%;
-    // -webkit-transform     : scale3d(1, 2, 1);
-    // transform             : scale3d(1, 2, 1);
-    -webkit-transition       : -webkit-transform 0.4s, opacity 0.4s;
-    transition               : transform 0.4s, opacity 0.4s;
-}
-button > span {
-    vertical-align : middle;
-    padding-left   : 0.75em;
-}
-button:hover::before {
-    -webkit-transform : scale3d(9, 9, 1);
-    transform         : scale3d(9, 9, 1);
+    &.secondary {
+        @alt-bg-color: darken(@primary-color, 50%);
+        background: @alt-bg-color;
+        &::before {
+            background: lighten(@alt-bg-color, 10%);
+        }
+    }
+    &::before {
+        content                  : '';
+        z-index                  : -1;
+        position                 : absolute;
+        top                      : 50%;
+        left                     : 100%;
+        margin                   : -15px 0 0 1px;
+        width                    : 30px;
+        height                   : 30px;
+        border-radius            : 50%;
+        background               : lighten(@accent-color, 10%);
+        -webkit-transform-origin : 150% 50%;
+        transform-origin         : 150% 50%;
+        // -webkit-transform     : scale3d(1, 2, 1);
+        // transform             : scale3d(1, 2, 1);
+        -webkit-transition       : -webkit-transform 0.4s, opacity 0.4s;
+        transition               : transform 0.4s, opacity 0.4s;
+    }
+    & > span {
+        vertical-align : middle;
+        padding-left   : 0.75em;
+    }
+    &:hover::before {
+        -webkit-transform : scale3d(9, 9, 1);
+        transform         : scale3d(9, 9, 1);
+    }
 }
 
 #leaderboard-playing {
