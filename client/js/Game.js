@@ -380,6 +380,10 @@ function updateActors() {
                     otherPlayer.setScale(actor.scale);
                 }
             }
+            else if (actor.serverAdjust == 1) {
+                // Adjust self from server
+                player.setScale(actor.scale);
+            }
         }
     }
 }

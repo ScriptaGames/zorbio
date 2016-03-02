@@ -226,6 +226,13 @@ io.on('connection', function (socket) {
             if (actor.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {
                 actor.recentPositions.shift();  // remove the oldest position
             }
+
+            // validate the new scale
+            if (Validators.playerSphereScale(actor) === Validators.ErrorCodes.PLAYER_SCALE_TO_BIG) {
+                // Adjust scale to what the server expects it to be, and mark it for update
+                actor.scale = actor.expectedScale;
+                actor.serverAdjust = 1;
+            }
         } else {
             switch (err) {
                 case Validators.ErrorCodes.SPEED_TO_FAST:
@@ -349,7 +356,7 @@ function sendActorUpdates() {
     var actorIds = Object.getOwnPropertyNames(model.actors);
     if (actorIds.length === 0) return;  // nothing to do if there's no actors
 
-    var actorsArray = new Float32Array(actorIds.length * 5);
+    var actorsArray = new Float32Array(actorIds.length * 6);
 
     // make the payload as small as possible, send only what's needed on the client
     var offset = 0;
@@ -363,8 +370,11 @@ function sendActorUpdates() {
         actorsArray[ offset + 2 ] = position.y;
         actorsArray[ offset + 3 ] = position.z;
         actorsArray[ offset + 4 ] = actor.scale;
+        actorsArray[ offset + 5 ] = actor.serverAdjust;
 
-        offset += 5;
+        actor.serverAdjust = 0;
+
+        offset += 6;
     }
 
     // Send au "actors updates"
@@ -512,10 +522,8 @@ function playersChecks() {
             kickPlayer(id, "You were removed because you had too many speed infractions.");
         }
         else if (player.infractions_scale > config.INFRACTION_TOLERANCE_SCALE) {
-            kickPlayer(id, "You were removed because you had too many size infractions.");
-        }
-        else if (Validators.playerScale(player) !== 0) {
-            player.infractions_scale++;
+            console.log("INFRACTION: Player reached scale infraction tolerance:", id, player.infractions_scale, config.INFRACTION_TOLERANCE_SCALE);
+            player.infractions_scale = 0;
         }
 
         // Add players to leaders array in sorted order by score

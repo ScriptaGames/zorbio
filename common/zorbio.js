@@ -125,6 +125,8 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
         this.expectedScale = config.INITIAL_PLAYER_RADIUS;
     }
 
+    this.serverAdjust = 0;
+
     if (velocity) {
         this.velocity = velocity;
     }

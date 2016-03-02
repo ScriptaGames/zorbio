@@ -216,22 +216,22 @@ Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, s
     return 0;  // valid capture
 };
 
-Validators.playerScale = function (player) {
+Validators.playerSphereScale = function (sphere) {
     if (!config.ENABLE_VALIDATION) return 0;
 
-    var recentPositions = player.sphere.recentPositions;
+    var recentPositions = sphere.recentPositions;
 
     // first make sure that we've given the client time to grow and sync with the server
     if (recentPositions.length < config.PLAYER_POSITIONS_WINDOW) {
         return 0;
     }
 
-    var expectedScale = player.sphere.expectedScale;
-    var oldestScale = recentPositions[0].radius;
+    var expectedScale = sphere.expectedScale;
+    var actualScale = sphere.scale;
 
     // make sure the expected scale within tolerance
-    if (oldestScale > (expectedScale + config.PLAYER_SCALE_EXTRA_TOLERANCE)) {
-        console.log("player to big expectedScale, actualScale: ", expectedScale, oldestScale);
+    if (actualScale > (expectedScale + config.PLAYER_SCALE_EXTRA_TOLERANCE)) {
+        console.log("player to big expectedScale, actualScale: ", expectedScale, actualScale);
         return Validators.ErrorCodes.PLAYER_SCALE_TO_BIG;
     }
 

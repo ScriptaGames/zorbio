@@ -178,18 +178,20 @@ function setupSocket(socket) {
         var actorsArray = new Float32Array(buf);
 
         // sync the actors positions from the server model to the client model
-        for (var i = 0, l = actorsArray.length; i < l; i += 5) {
+        for (var i = 0, l = actorsArray.length; i < l; i += 6) {
             var id = +actorsArray[ i ];
+            var actor = zorbioModel.actors[id];
 
-            if (zorbioModel.actors[id]) {
-
+            if (actor) {
                 var x = actorsArray[ i + 1 ];
                 var y = actorsArray[ i + 2 ];
                 var z = actorsArray[ i + 3 ];
                 var s = actorsArray[ i + 4 ];
+                var serverAdjust = actorsArray[ i + 5 ];
 
-                zorbioModel.actors[id].position.copy({x: x, y: y, z: z});
-                zorbioModel.actors[id].scale = s;
+                actor.position.copy({x: x, y: y, z: z});
+                actor.scale = s;
+                actor.serverAdjust = serverAdjust;
             }
         }
     });
