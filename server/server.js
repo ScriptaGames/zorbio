@@ -166,7 +166,7 @@ io.on('connection', function (socket) {
      * pp "Player Position" This message is sent by all clients every 40ms so keep this function as fast and light as possible
      */
     socket.on('pp', function (buffer) {
-        currentPlayer.lastHeartbeat = Date.now();
+        if (currentPlayer) currentPlayer.lastHeartbeat = Date.now();
 
         // Read binary data
         var bufArr  = new ArrayBuffer(buffer.length);
@@ -279,8 +279,6 @@ io.on('connection', function (socket) {
     };
 
     socket.on('playerCapture', function (attackingPlayerId, targetPlayerId, sendingSphere) {
-        currentPlayer.lastHeartbeat = Date.now();
-
         console.log("received playerCapture: ", attackingPlayerId, targetPlayerId, sendingSphere.id);
 
         var err = Validators.playerCapture(attackingPlayerId, targetPlayerId, model, sendingSphere);
@@ -312,8 +310,6 @@ io.on('connection', function (socket) {
     });
 
     socket.on('continuePlayerCapture', function (attackingPlayerId, targetPlayerId) {
-        currentPlayer.lastHeartbeat = Date.now();
-
         console.log("received continuePlayerCapture: ", attackingPlayerId, targetPlayerId);
         capturePlayer(attackingPlayerId, targetPlayerId);
     });
