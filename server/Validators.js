@@ -141,8 +141,6 @@ Validators.foodCapture = function (model, fi, sphere_id, radius) {
     var vdist = foodPosition.distanceTo(sphere.position);
     var tolerance = radius + config.FOOD_CAPTURE_ASSIST + config.FOOD_CAPTURE_EXTRA_TOLERANCE;
 
-    var server_time = Date.now();
-
     if (config.DEBUG) {
         console.log("----------------");
         console.log("DEBUG: food capture: food_index, food_x, food_y, food_z", food_index, food_x, food_y, food_z);

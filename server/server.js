@@ -191,11 +191,15 @@ io.on('connection', function (socket) {
         var new_t     = bufView[10];
 
         // Pull out the food captures if there are any
-        if (bufView.length > 11) {
+        var foodCapLength = bufView.length - config.BIN_PP_POSITIONS_LENGTH;
+        if (foodCapLength > 1 && (foodCapLength % 2 === 0)) { // prevent buffer overflow
             // Iterate over food capture fi, radius pairs
-            //while () {
-            //
-            //}
+            for (var i = config.BIN_PP_POSITIONS_LENGTH; i < bufView.length; i += 2) {
+                var fi         = bufView[ i ];
+                var origRadius = bufView[ i + 1 ];
+
+                foodCapture(fi, sphere_id, origRadius);
+            }
         }
 
         // Build the sphere object
@@ -235,7 +239,7 @@ io.on('connection', function (socket) {
         }
     });
 
-    function foodCapture (fi, sphere_id, radius) {
+    var foodCapture = function iofoodCapture (fi, sphere_id, radius) {
         var food_value = config.FOOD_GET_VALUE(radius);
 
         var err = Validators.foodCapture(model, fi, sphere_id, radius);
@@ -250,6 +254,7 @@ io.on('connection', function (socket) {
             currentPlayer.sphere.growExpected( food_value );
 
             // notify clients of food capture so they can update their food view
+            // TODO: queue this into the actorUpdate message from the server
             io.emit('foodCaptureComplete', fi);
         } else {
             switch (err) {
@@ -264,7 +269,7 @@ io.on('connection', function (socket) {
                     break;
             }
         }
-    }
+    };
 
     socket.on('playerCapture', function (attackingPlayerId, targetPlayerId, sendingSphere) {
         currentPlayer.lastHeartbeat = Date.now();

@@ -38,6 +38,7 @@ config.PENDING_PLAYER_CAPTURE_TTL = 3000; // how long pending player capture liv
 config.CHECK_VERSION            = true;   // check for latest version of the game through the zapi
 config.CHECK_VERSION_INTERVAL   = 30000;  // how often to check for new version
 config.LEADERS_LENGTH           = 10;     // How many players to include in the leaders array
+config.BIN_PP_POSITIONS_LENGTH  = 11;
 
 config.BALANCERS = Object.freeze({
     LOCAL: 'http://localhost',
@@ -80,14 +81,14 @@ config.STEERING_METHODS      = Object.freeze({ // enum-ish
         SPEED : 0.3,  // higher makes camera rotate faster
     },
 });
-config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
+config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
 
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 45;    // How much food there is, total food = this number cubed
+config.FOOD_DENSITY                = 27;    // How much food there is, total food = this number cubed
 config.FOOD_VALUE                  = 0.5;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
@@ -103,7 +104,7 @@ config.FOOD_GET_VALUE              = function FoodGetValue( r ) {
 ////////////////////////////////////////////////////////////////////////
 //                         VALIDATION SETTINGS                        //
 ////////////////////////////////////////////////////////////////////////
-config.ENABLE_VALIDATION              = false;  // enable validation checks on the server to prevent cheating
+config.ENABLE_VALIDATION              = true;   // enable validation checks on the server to prevent cheating
 config.FOOD_CAPTURE_EXTRA_TOLERANCE   = 50;     // extra distance that we'll tolerate for valid food capture
 config.PLAYER_CAPTURE_EXTRA_TOLERANCE = 9;      // extra distance that we'll tolerate for valid player capture
 config.SPEED_EXTRA_TOLERANCE          = 0.08;   // extra speed tolerance for movement validation

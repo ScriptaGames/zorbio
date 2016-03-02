@@ -39,7 +39,7 @@ function sendPlayerSpherePosition() {
     var oldestPosition = sphereModel.recentPositions[0];
     var latestPosition = sphereModel.recentPositions[sphereModel.recentPositions.length - 1];
 
-    var bufferView = new Float32Array(11 + (player.food_capture_queue.length * 2));
+    var bufferView = new Float32Array(config.BIN_PP_POSITIONS_LENGTH + (player.food_capture_queue.length * 2));
     var index = 0;
     bufferView[index++] = sphereModel.id;            // Actor ID
     bufferView[index++] = oldestPosition.position.x; // Old position X
@@ -194,6 +194,7 @@ function setupSocket(socket) {
         }
     });
 
+    // TODO: queue this into the actorUpdate message from the server
     socket.on('foodCaptureComplete', function foodCaptureComplete(fi) {
         if (!gameStart) return;
 
