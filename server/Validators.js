@@ -119,7 +119,7 @@ Validators.movement = function () {
 
 Validators.movementSampled = UTIL.nth( Validators.movement, config.MOVE_VALIDATION_SAMPLE_RATE );
 
-Validators.foodCapture = function (model, fi, sphere_id, radius, timestamp) {
+Validators.foodCapture = function (model, fi, sphere_id, radius) {
     if (!config.ENABLE_VALIDATION) return 0;
 
     // sphere info
@@ -141,11 +141,8 @@ Validators.foodCapture = function (model, fi, sphere_id, radius, timestamp) {
     var vdist = foodPosition.distanceTo(sphere.position);
     var tolerance = radius + config.FOOD_CAPTURE_ASSIST + config.FOOD_CAPTURE_EXTRA_TOLERANCE;
 
-    var server_time = Date.now();
-
     if (config.DEBUG) {
         console.log("----------------");
-        console.log("DEBUG: food capture: timestamp, server Date.now(), elapsed", timestamp, server_time, server_time - timestamp );
         console.log("DEBUG: food capture: food_index, food_x, food_y, food_z", food_index, food_x, food_y, food_z);
         console.log("DEBUG: food capture: sphere_id, sphere_x, sphere_y, sphere_z", sphere_id, sphere.position.x, sphere.position.y, sphere.position.z);
         console.log("DEBUG: food capture: fi, sphere_id, radius, vdist, tolerance", fi, sphere_id, radius, vdist, tolerance);
@@ -156,7 +153,6 @@ Validators.foodCapture = function (model, fi, sphere_id, radius, timestamp) {
     if (vdist > tolerance) {
         console.log("----------------");
         console.log("INVALID: food capture: fi, sphere_id, radius, vdist, tolerance", fi, sphere_id, radius, vdist, tolerance);
-        console.log("DEBUG: food capture: timestamp, server Date.now(), elapsed", timestamp, server_time, server_time - timestamp );
         console.log("DEBUG: food capture: food_index, food_x, food_y, food_z", food_index, food_x, food_y, food_z);
         console.log("DEBUG: food capture: sphere_id, sphere_x, sphere_y, sphere_z", sphere_id, sphere.position.x, sphere.position.y, sphere.position.z);
         console.log("----------------");

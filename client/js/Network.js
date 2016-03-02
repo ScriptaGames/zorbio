@@ -39,28 +39,35 @@ function sendPlayerSpherePosition() {
     var oldestPosition = sphereModel.recentPositions[0];
     var latestPosition = sphereModel.recentPositions[sphereModel.recentPositions.length - 1];
 
-    var sphereData = new Float32Array(11);
-    sphereData[0] = sphereModel.id;            // Actor ID
-    sphereData[1] = oldestPosition.position.x; // Old position X
-    sphereData[2] = oldestPosition.position.y; // Old position Y
-    sphereData[3] = oldestPosition.position.z; // Old position Z
-    sphereData[4] = oldestPosition.radius;     // Old radius
-    sphereData[5] = oldestPosition.time;       // Old time
-    sphereData[6] = latestPosition.position.x; // New position X
-    sphereData[7] = latestPosition.position.y; // New position Y
-    sphereData[8] = latestPosition.position.z; // New position Z
-    sphereData[9] = latestPosition.radius;     // New radius
-    sphereData[10] = latestPosition.time;      // New time
+    var bufferView = new Float32Array(config.BIN_PP_POSITIONS_LENGTH + (player.food_capture_queue.length * 2));
+    var index = 0;
+    bufferView[index++] = sphereModel.id;            // Actor ID
+    bufferView[index++] = oldestPosition.position.x; // Old position X
+    bufferView[index++] = oldestPosition.position.y; // Old position Y
+    bufferView[index++] = oldestPosition.position.z; // Old position Z
+    bufferView[index++] = oldestPosition.radius;     // Old radius
+    bufferView[index++] = oldestPosition.time;       // Old time
+    bufferView[index++] = latestPosition.position.x; // New position X
+    bufferView[index++] = latestPosition.position.y; // New position Y
+    bufferView[index++] = latestPosition.position.z; // New position Z
+    bufferView[index++] = latestPosition.radius;     // New radius
+    bufferView[index++] = latestPosition.time;       // New time
+
+    // Now add any queued food captures
+    for(var i = 0, l = player.food_capture_queue.length; i < l; i++) {
+        var food_cap = player.food_capture_queue[i];
+        bufferView[index++] = food_cap.fi;
+        bufferView[index++] = food_cap.radius;
+    }
+
+    // clear food queue
+    player.food_capture_queue = [];
 
     // pp "Player Position"
-    socket.emit('pp', sphereData.buffer);
+    socket.emit('pp', bufferView.buffer);
 }
 
 var throttledSendPlayerSpherePosition = _.throttle(sendPlayerSpherePosition, config.ACTOR_UPDATE_INTERVAL);
-
-function sendFoodCapture(fi, sphere_id, radius, timestamp) {
-    socket.emit('foodCapture', fi, sphere_id, radius, timestamp);
-}
 
 function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
     console.log("sendPlayerCapture: ", attackingPlayerId, targetPlayerId);
@@ -187,6 +194,7 @@ function setupSocket(socket) {
         }
     });
 
+    // TODO: queue this into the actorUpdate message from the server
     socket.on('foodCaptureComplete', function foodCaptureComplete(fi) {
         if (!gameStart) return;
 
