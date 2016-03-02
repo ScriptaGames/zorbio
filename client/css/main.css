@@ -564,9 +564,6 @@ a:hover {
   touch-action: none;
   z-index: 10;
 }
-#start-menu {
-  background-color: #171717;
-}
 input {
   padding: 20px;
   background: #dedede;
@@ -634,6 +631,10 @@ input:focus {
   text-align: center;
   font-size: 60px;
 }
+#ui-overlay > * h1 small {
+  float: right;
+  clear: both;
+}
 #ui-overlay > * h2 {
   text-align: center;
   font-size: 30px;
@@ -641,6 +642,14 @@ input:focus {
 #ui-overlay > * p {
   text-align: center;
   font-size: 15px;
+}
+#ui-overlay #start-menu h1 {
+  margin-bottom: 5px;
+}
+#ui-overlay #start-menu h2 {
+  letter-spacing: 6px;
+  color: #696969;
+  font-size: 1rem;
 }
 button:focus {
   outline: none;

@@ -64,10 +64,6 @@ a {
     z-index      : 10;
 }
 
-#start-menu {
-    background-color : @secondary-color;
-}
-
 input {
     padding    : @default-padding;
     background : darken(@primary-color, 10%);
@@ -151,6 +147,10 @@ input {
         h1 {
             text-align: center;
             font-size: @font-size-base * 2;
+            small {
+                float: right;
+                clear: both;
+            }
         }
 
         h2 {
@@ -164,6 +164,18 @@ input {
         }
 
     }
+
+    #start-menu {
+        & h1 {
+            margin-bottom: 5px;
+        }
+        & h2 {
+            letter-spacing: 6px;
+            color: lighten(@secondary-color, 32%);
+            font-size: 1rem;
+        }
+    }
+
 }
 
 button:focus {
