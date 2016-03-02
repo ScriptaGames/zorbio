@@ -22,9 +22,22 @@ ZOR.PlayerController = function ZORPlayerController(model, main_sphere, scene) {
     this.move_forward_v = new THREE.Vector3();
     this.move_backward_v = new THREE.Vector3();
 
+    this.food_capture_queue = [];
+
     if (scene) {
         this.initView(main_sphere, scene);
     }
+};
+
+ZOR.PlayerController.prototype.queueFoodCapture = function ZORPlayerControllerQueueFoodCapture(fi) {
+    var origRadius = this.radius();
+    var value = config.FOOD_GET_VALUE(origRadius);
+
+    // instant grow
+    this.grow(value);
+
+    // queue food capture to send to server on next position update
+    this.food_capture_queue.push({fi: fi, radius: origRadius});
 };
 
 ZOR.PlayerController.prototype.getPlayerId = function ZORPlayerControllerGetPlayerId() {

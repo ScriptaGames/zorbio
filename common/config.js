@@ -80,14 +80,14 @@ config.STEERING_METHODS      = Object.freeze({ // enum-ish
         SPEED : 0.3,  // higher makes camera rotate faster
     },
 });
-config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
+config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
 
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 27;    // How much food there is, total food = this number cubed
+config.FOOD_DENSITY                = 45;    // How much food there is, total food = this number cubed
 config.FOOD_VALUE                  = 0.5;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
@@ -103,8 +103,8 @@ config.FOOD_GET_VALUE              = function FoodGetValue( r ) {
 ////////////////////////////////////////////////////////////////////////
 //                         VALIDATION SETTINGS                        //
 ////////////////////////////////////////////////////////////////////////
-config.ENABLE_VALIDATION              = true;   // enable validation checks on the server to prevent cheating
-config.FOOD_CAPTURE_EXTRA_TOLERANCE   = 50;    // extra distance that we'll tolerate for valid food capture
+config.ENABLE_VALIDATION              = false;  // enable validation checks on the server to prevent cheating
+config.FOOD_CAPTURE_EXTRA_TOLERANCE   = 50;     // extra distance that we'll tolerate for valid food capture
 config.PLAYER_CAPTURE_EXTRA_TOLERANCE = 9;      // extra distance that we'll tolerate for valid player capture
 config.SPEED_EXTRA_TOLERANCE          = 0.08;   // extra speed tolerance for movement validation
 config.PLAYER_SCALE_EXTRA_TOLERANCE   = 0.1;    // extra tolerance for player scale
