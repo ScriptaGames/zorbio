@@ -506,204 +506,21 @@ body {
   animation-name: tutorialMessageAnim;
 }
 #ui-overlay #tutorial {
-  width: 100%;
-  height: 100%;
   display: flex;
-  justify-content: flex-end;
-  position: relative;
+  overflow-y: none;
 }
-#ui-overlay #tutorial .msg-1,
-#ui-overlay #tutorial .msg-2,
-#ui-overlay #tutorial .msg-3,
-#ui-overlay #tutorial .msg-4,
-#ui-overlay #tutorial .msg-5,
-#ui-overlay #tutorial .msg-6 {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  -webkit-animation-name: tutorialMessageAnim;
-  -moz-animation-name: tutorialMessageAnim;
-  -o-animation-name: tutorialMessageAnim;
-  animation-name: tutorialMessageAnim;
-  font-size: 2rem;
+#ui-overlay #tutorial #tutorial-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  text-align: center;
 }
-#ui-overlay #tutorial .msg-1 {
-  -webkit-animation-duration: 4s;
-  -moz-animation-duration: 4s;
-  -o-animation-duration: 4s;
-  animation-duration: 4s;
-  -webkit-animation-delay: 0s;
-  -moz-animation-delay: 0s;
-  -o-animation-delay: 0s;
-  animation-delay: 0s;
-  -webkit-animation-fill-mode: both;
-  -moz-animation-fill-mode: both;
-  -o-animation-fill-mode: both;
-  animation-fill-mode: both;
+#ui-overlay #tutorial #tutorial-content > * {
+  border-radius: 12px;
+  margin: 10px auto;
 }
-#ui-overlay #tutorial .msg-2 {
-  -webkit-animation-duration: 4s;
-  -moz-animation-duration: 4s;
-  -o-animation-duration: 4s;
-  animation-duration: 4s;
-  -webkit-animation-delay: 4s;
-  -moz-animation-delay: 4s;
-  -o-animation-delay: 4s;
-  animation-delay: 4s;
-  -webkit-animation-fill-mode: both;
-  -moz-animation-fill-mode: both;
-  -o-animation-fill-mode: both;
-  animation-fill-mode: both;
-}
-#ui-overlay #tutorial .msg-3 {
-  -webkit-animation-duration: 4s;
-  -moz-animation-duration: 4s;
-  -o-animation-duration: 4s;
-  animation-duration: 4s;
-  -webkit-animation-delay: 8s;
-  -moz-animation-delay: 8s;
-  -o-animation-delay: 8s;
-  animation-delay: 8s;
-  -webkit-animation-fill-mode: both;
-  -moz-animation-fill-mode: both;
-  -o-animation-fill-mode: both;
-  animation-fill-mode: both;
-}
-#ui-overlay #tutorial .msg-4 {
-  -webkit-animation-duration: 4s;
-  -moz-animation-duration: 4s;
-  -o-animation-duration: 4s;
-  animation-duration: 4s;
-  -webkit-animation-delay: 12s;
-  -moz-animation-delay: 12s;
-  -o-animation-delay: 12s;
-  animation-delay: 12s;
-  -webkit-animation-fill-mode: both;
-  -moz-animation-fill-mode: both;
-  -o-animation-fill-mode: both;
-  animation-fill-mode: both;
-}
-#ui-overlay #tutorial .msg-5 {
-  -webkit-animation-duration: 4s;
-  -moz-animation-duration: 4s;
-  -o-animation-duration: 4s;
-  animation-duration: 4s;
-  -webkit-animation-delay: 16s;
-  -moz-animation-delay: 16s;
-  -o-animation-delay: 16s;
-  animation-delay: 16s;
-  -webkit-animation-fill-mode: both;
-  -moz-animation-fill-mode: both;
-  -o-animation-fill-mode: both;
-  animation-fill-mode: both;
-}
-#ui-overlay #tutorial .msg-6 {
-  -webkit-animation-duration: 4s;
-  -moz-animation-duration: 4s;
-  -o-animation-duration: 4s;
-  animation-duration: 4s;
-  -webkit-animation-delay: 20s;
-  -moz-animation-delay: 20s;
-  -o-animation-delay: 20s;
-  animation-delay: 20s;
-  -webkit-animation-fill-mode: both;
-  -moz-animation-fill-mode: both;
-  -o-animation-fill-mode: both;
-  animation-fill-mode: both;
-}
-#ui-overlay #tutorial .player-sphere {
-  border-radius: 50%;
-  height: 16vw;
-  width: 16vw;
-  position: absolute;
-  left: calc(50% - 8vw);
-  top: 50%;
-  margin-top: -8vw;
-  margin-left: -8vw;
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#00e2f7+0,00e2f7+100&0+0,0+0,0.65+54,1+69 */
-  background: -moz-radial-gradient(center, ellipse cover, rgba(0, 226, 247, 0) 0%, rgba(0, 226, 247, 0.65) 54%, #00e2f7 69%, #00e2f7 100%);
-  /* FF3.6-15 */
-  background: -webkit-radial-gradient(center, ellipse cover, rgba(0, 226, 247, 0) 0%, rgba(0, 226, 247, 0.65) 54%, #00e2f7 69%, #00e2f7 100%);
-  /* Chrome10-25,Safari5.1-6 */
-  background: radial-gradient(ellipse at center, rgba(0, 226, 247, 0) 0%, rgba(0, 226, 247, 0.65) 54%, #00e2f7 69%, #00e2f7 100%);
-  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  -webkit-animation-duration: 8.618s;
-  -moz-animation-duration: 8.618s;
-  -o-animation-duration: 8.618s;
-  animation-duration: 8.618s;
-  -webkit-animation-delay: 1s;
-  -moz-animation-delay: 1s;
-  -o-animation-delay: 1s;
-  animation-delay: 1s;
-  -webkit-animation-fill-mode: both;
-  -moz-animation-fill-mode: both;
-  -o-animation-fill-mode: both;
-  animation-fill-mode: both;
-  -webkit-animation-name: sphereAnim;
-  -moz-animation-name: sphereAnim;
-  -o-animation-name: sphereAnim;
-  animation-name: sphereAnim;
-}
-#ui-overlay #tutorial .player2-sphere {
-  border-radius: 50%;
-  height: 12vw;
-  width: 12vw;
-  position: absolute;
-  left: calc(50% - 6vw);
-  top: 50%;
-  margin-top: -6vw;
-  margin-left: -6vw;
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff00ff+0,ff00ff+100&0+0,0+0,0.65+54,1+69 */
-  background: -moz-radial-gradient(center, ellipse cover, rgba(255, 0, 255, 0) 0%, rgba(255, 0, 255, 0.65) 54%, #ff00ff 69%, #ff00ff 100%);
-  /* FF3.6-15 */
-  background: -webkit-radial-gradient(center, ellipse cover, rgba(255, 0, 255, 0) 0%, rgba(255, 0, 255, 0.65) 54%, #ff00ff 69%, #ff00ff 100%);
-  /* Chrome10-25,Safari5.1-6 */
-  background: radial-gradient(ellipse at center, rgba(255, 0, 255, 0) 0%, rgba(255, 0, 255, 0.65) 54%, #ff00ff 69%, #ff00ff 100%);
-  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  -webkit-animation-duration: 4s;
-  -moz-animation-duration: 4s;
-  -o-animation-duration: 4s;
-  animation-duration: 4s;
-  -webkit-animation-delay: 12s;
-  -moz-animation-delay: 12s;
-  -o-animation-delay: 12s;
-  animation-delay: 12s;
-  -webkit-animation-fill-mode: both;
-  -moz-animation-fill-mode: both;
-  -o-animation-fill-mode: both;
-  animation-fill-mode: both;
-  -webkit-animation-name: sphere2Anim;
-  -moz-animation-name: sphere2Anim;
-  -o-animation-name: sphere2Anim;
-  animation-name: sphere2Anim;
-}
-#ui-overlay #tutorial .food {
-  border-radius: 10%;
-  background-color: #ffd700;
-  height: 4vw;
-  width: 4vw;
-  position: absolute;
-  left: calc(50% + 8vw);
-  top: 50%;
-  /* margin-top: -@food-radius; */
-  /* margin-left: -@food-radius; */
-  -webkit-animation-duration: 5s;
-  -moz-animation-duration: 5s;
-  -o-animation-duration: 5s;
-  animation-duration: 5s;
-  -webkit-animation-delay: 4s;
-  -moz-animation-delay: 4s;
-  -o-animation-delay: 4s;
-  animation-delay: 4s;
-  -webkit-animation-fill-mode: both;
-  -moz-animation-fill-mode: both;
-  -o-animation-fill-mode: both;
-  animation-fill-mode: both;
-  -webkit-animation-name: foodAnim;
-  -moz-animation-name: foodAnim;
-  -o-animation-name: foodAnim;
-  animation-name: foodAnim;
+#ui-overlay #tutorial #tutorial-content img {
+  max-width: 100%;
+  height: auto;
 }
 html,
 body {

@@ -42,124 +42,145 @@
 
 #ui-overlay #tutorial {
 
-    width           : 100%;
-    height          : 100%;
+    // width           : 100%;
+    // height          : 100%;
     display         : flex;
-    justify-content : flex-end;
-    position        : relative;
+    // position        : relative;
 
-    .msg-1, .msg-2, .msg-3,
-    .msg-4, .msg-5, .msg-6 {
-        position: absolute;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        .tutorialMessageAnim;
-        font-size: 2rem;
+    overflow-y: none;
+
+    #tutorial-content {
+
+        overflow-y: auto;
+        overflow-x: hidden;
+        text-align: center;
+
+        & > * {
+            border-radius: 12px;
+            margin: 10px auto;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
     }
 
-    .msg-1 {
-        .animated(
-                @animationDurationTime: @msg-1-lasts;
-                @animationDelayTime: @msg-1-start;
-                );
-    }
+    // animations!
 
-    .msg-2 {
-        .animated(
-                @animationDurationTime: @msg-2-lasts;
-                @animationDelayTime: @msg-2-start;
-                );
-    }
+    // .msg-1, .msg-2, .msg-3,
+    // .msg-4, .msg-5, .msg-6 {
+    //     position: absolute;
+    //     top: 20px;
+    //     left: 50%;
+    //     transform: translateX(-50%);
+    //     .tutorialMessageAnim;
+    //     font-size: 2rem;
+    // }
 
-    .msg-3 {
-        .animated(
-                @animationDurationTime: @msg-3-lasts;
-                @animationDelayTime: @msg-3-start;
-                );
-    }
+    // .msg-1 {
+    //     .animated(
+    //             @animationDurationTime: @msg-1-lasts;
+    //             @animationDelayTime: @msg-1-start;
+    //             );
+    // }
 
-    .msg-4 {
-        .animated(
-                @animationDurationTime: @msg-4-lasts;
-                @animationDelayTime: @msg-4-start;
-                );
-    }
+    // .msg-2 {
+    //     .animated(
+    //             @animationDurationTime: @msg-2-lasts;
+    //             @animationDelayTime: @msg-2-start;
+    //             );
+    // }
 
-    .msg-5 {
-        .animated(
-                @animationDurationTime: @msg-5-lasts;
-                @animationDelayTime: @msg-5-start;
-                );
-    }
+    // .msg-3 {
+    //     .animated(
+    //             @animationDurationTime: @msg-3-lasts;
+    //             @animationDelayTime: @msg-3-start;
+    //             );
+    // }
 
-    .msg-6 {
-        .animated(
-                @animationDurationTime: @msg-6-lasts;
-                @animationDelayTime: @msg-6-start;
-                );
-    }
+    // .msg-4 {
+    //     .animated(
+    //             @animationDurationTime: @msg-4-lasts;
+    //             @animationDelayTime: @msg-4-start;
+    //             );
+    // }
 
-    .player-sphere {
-        border-radius : 50%;
-        height        : @sphere-radius * 2;
-        width         : @sphere-radius * 2;
+    // .msg-5 {
+    //     .animated(
+    //             @animationDurationTime: @msg-5-lasts;
+    //             @animationDelayTime: @msg-5-start;
+    //             );
+    // }
 
-        position: absolute;
-        left: ~"calc(50% - @{sphere-radius})";
-        top: 50%;
-        margin-top: -@sphere-radius;
-        margin-left: -@sphere-radius;
+    // .msg-6 {
+    //     .animated(
+    //             @animationDurationTime: @msg-6-lasts;
+    //             @animationDelayTime: @msg-6-start;
+    //             );
+    // }
 
-        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#00e2f7+0,00e2f7+100&0+0,0+0,0.65+54,1+69 */
-        background: -moz-radial-gradient(center, ellipse cover, rgba(0,226,247,0) 0%, rgba(0,226,247,0.65) 54%, rgba(0,226,247,1) 69%, rgba(0,226,247,1) 100%); /* FF3.6-15 */
-        background: -webkit-radial-gradient(center, ellipse cover, rgba(0,226,247,0) 0%,rgba(0,226,247,0.65) 54%,rgba(0,226,247,1) 69%,rgba(0,226,247,1) 100%); /* Chrome10-25,Safari5.1-6 */
-        background: radial-gradient(ellipse at center, rgba(0,226,247,0) 0%,rgba(0,226,247,0.65) 54%,rgba(0,226,247,1) 69%,rgba(0,226,247,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    // .player-sphere {
+    //     border-radius : 50%;
+    //     height        : @sphere-radius * 2;
+    //     width         : @sphere-radius * 2;
 
-        .animated(
-            @animationDurationTime: @sphere-flyin-lasts;
-            @animationDelayTime: @sphere-flyin-start );
-        .sphereAnim;
-    }
+    //     position: absolute;
+    //     left: ~"calc(50% - @{sphere-radius})";
+    //     top: 50%;
+    //     margin-top: -@sphere-radius;
+    //     margin-left: -@sphere-radius;
 
-    .player2-sphere {
-        border-radius : 50%;
-        height        : @sphere2-radius * 2;
-        width         : @sphere2-radius * 2;
+    //     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#00e2f7+0,00e2f7+100&0+0,0+0,0.65+54,1+69 */
+    //     background: -moz-radial-gradient(center, ellipse cover, rgba(0,226,247,0) 0%, rgba(0,226,247,0.65) 54%, rgba(0,226,247,1) 69%, rgba(0,226,247,1) 100%); /* FF3.6-15 */
+    //     background: -webkit-radial-gradient(center, ellipse cover, rgba(0,226,247,0) 0%,rgba(0,226,247,0.65) 54%,rgba(0,226,247,1) 69%,rgba(0,226,247,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    //     background: radial-gradient(ellipse at center, rgba(0,226,247,0) 0%,rgba(0,226,247,0.65) 54%,rgba(0,226,247,1) 69%,rgba(0,226,247,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 
-        position: absolute;
-        left: ~"calc(50% - @{sphere2-radius})";
-        top: 50%;
-        margin-top: -@sphere2-radius;
-        margin-left: -@sphere2-radius;
+    //     .animated(
+    //         @animationDurationTime: @sphere-flyin-lasts;
+    //         @animationDelayTime: @sphere-flyin-start );
+    //     .sphereAnim;
+    // }
 
-        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff00ff+0,ff00ff+100&0+0,0+0,0.65+54,1+69 */
-        background: -moz-radial-gradient(center, ellipse cover, rgba(255,0,255,0) 0%, rgba(255,0,255,0.65) 54%, rgba(255,0,255,1) 69%, rgba(255,0,255,1) 100%); /* FF3.6-15 */
-        background: -webkit-radial-gradient(center, ellipse cover, rgba(255,0,255,0) 0%,rgba(255,0,255,0.65) 54%,rgba(255,0,255,1) 69%,rgba(255,0,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
-        background: radial-gradient(ellipse at center, rgba(255,0,255,0) 0%,rgba(255,0,255,0.65) 54%,rgba(255,0,255,1) 69%,rgba(255,0,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    // .player2-sphere {
+    //     border-radius : 50%;
+    //     height        : @sphere2-radius * 2;
+    //     width         : @sphere2-radius * 2;
 
-        .animated(
-            @animationDurationTime: @sphere2-flyin-lasts;
-            @animationDelayTime: @sphere2-flyin-start );
-        .sphere2Anim;
-    }
+    //     position: absolute;
+    //     left: ~"calc(50% - @{sphere2-radius})";
+    //     top: 50%;
+    //     margin-top: -@sphere2-radius;
+    //     margin-left: -@sphere2-radius;
 
-    .food {
-        border-radius: 10%;
-        background-color: #ffd700;
-        height        : @food-radius * 2;
-        width         : @food-radius * 2;
+    //     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ff00ff+0,ff00ff+100&0+0,0+0,0.65+54,1+69 */
+    //     background: -moz-radial-gradient(center, ellipse cover, rgba(255,0,255,0) 0%, rgba(255,0,255,0.65) 54%, rgba(255,0,255,1) 69%, rgba(255,0,255,1) 100%); /* FF3.6-15 */
+    //     background: -webkit-radial-gradient(center, ellipse cover, rgba(255,0,255,0) 0%,rgba(255,0,255,0.65) 54%,rgba(255,0,255,1) 69%,rgba(255,0,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    //     background: radial-gradient(ellipse at center, rgba(255,0,255,0) 0%,rgba(255,0,255,0.65) 54%,rgba(255,0,255,1) 69%,rgba(255,0,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 
-        position: absolute;
-        left: ~"calc(50% + @{sphere-radius})";
-        top: 50%;
-        /* margin-top: -@food-radius; */
-        /* margin-left: -@food-radius; */
+    //     .animated(
+    //         @animationDurationTime: @sphere2-flyin-lasts;
+    //         @animationDelayTime: @sphere2-flyin-start );
+    //     .sphere2Anim;
+    // }
 
-        .animated(
-            @animationDurationTime: @food-lasts;
-            @animationDelayTime: @food-start );
-        .foodAnim;
-    }
+    // .food {
+    //     border-radius: 10%;
+    //     background-color: #ffd700;
+    //     height        : @food-radius * 2;
+    //     width         : @food-radius * 2;
+
+    //     position: absolute;
+    //     left: ~"calc(50% + @{sphere-radius})";
+    //     top: 50%;
+    //     /* margin-top: -@food-radius; */
+    //     /* margin-left: -@food-radius; */
+
+    //     .animated(
+    //         @animationDurationTime: @food-lasts;
+    //         @animationDelayTime: @food-start );
+    //     .foodAnim;
+    // }
 
 }
