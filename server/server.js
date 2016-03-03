@@ -190,18 +190,6 @@ io.on('connection', function (socket) {
         var new_r     = bufView[9];
         var new_t     = bufView[10];
 
-        // Pull out the food captures if there are any
-        var foodCapLength = bufView.length - config.BIN_PP_POSITIONS_LENGTH;
-        if (foodCapLength > 1 && (foodCapLength % 2 === 0)) { // prevent buffer overflow
-            // Iterate over food capture fi, radius pairs
-            for (var i = config.BIN_PP_POSITIONS_LENGTH; i < bufView.length; i += 2) {
-                var fi         = bufView[ i ];
-                var origRadius = bufView[ i + 1 ];
-
-                foodCapture(fi, sphere_id, origRadius);
-            }
-        }
-
         // Build the sphere object
         var oldestPosition = {position: {x: old_x, y: old_y, z: old_z}, radius: old_r, time: old_t};
         var latestPosition = {position: {x: new_x, y: new_y, z: new_z}, radius: new_r, time: new_t};
@@ -227,6 +215,18 @@ io.on('connection', function (socket) {
                 actor.recentPositions.shift();  // remove the oldest position
             }
 
+            // Pull out the food captures if there are any
+            var foodCapLength = bufView.length - config.BIN_PP_POSITIONS_LENGTH;
+            if (foodCapLength > 1 && (foodCapLength % 2 === 0)) { // prevent buffer overflow
+                // Iterate over food capture fi, radius pairs
+                for (var i = config.BIN_PP_POSITIONS_LENGTH; i < bufView.length; i += 2) {
+                    var fi         = bufView[ i ];
+                    var origRadius = bufView[ i + 1 ];
+
+                    foodCapture(fi, actor, origRadius);
+                }
+            }
+
             // validate the new scale
             if (Validators.playerSphereScale(actor) === Validators.ErrorCodes.PLAYER_SCALE_TO_BIG) {
                 // Adjust scale to what the server expects it to be, and mark it for update
@@ -246,10 +246,10 @@ io.on('connection', function (socket) {
         }
     });
 
-    var foodCapture = function iofoodCapture (fi, sphere_id, radius) {
-        var food_value = config.FOOD_GET_VALUE(radius);
+    var foodCapture = function iofoodCapture (fi, actor, origRadius) {
+        var food_value = config.FOOD_GET_VALUE(origRadius);
 
-        var err = Validators.foodCapture(model, fi, sphere_id, radius);
+        var err = Validators.foodCapture(model, fi, actor, origRadius);
 
         if (!err) {
             model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
@@ -267,12 +267,10 @@ io.on('connection', function (socket) {
             switch (err) {
                 case Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR:
                     // inform client of invalid capture, and make them shrink, mark infraction
-                    console.log("food capture adjustment: -", food_value);
-                    socket.emit('invalidFoodCapture', fi, food_value);
                     model.players[currentPlayer.id].infractions_food++;
                     break;
                 case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
-                    console.log("Recieved 'foodCapture' from player not in model!", sphere_id);
+                    console.log("Recieved 'foodCapture' from player not in model!", actor.id);
                     break;
             }
         }

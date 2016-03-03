@@ -275,15 +275,6 @@ function setupSocket(socket) {
         }
     });
 
-    socket.on('invalidFoodCapture', function invalidFoodCapture(fi, food_value) {
-        if (!gameStart) return;
-
-        console.log("invalidFoodCapture: ", fi, food_value, player.getPlayerId());
-
-        // shrink player
-        player.grow(-food_value);
-    });
-
     socket.on('speedingWarning', function speedingWarning() {
         if (!gameStart) return;
 

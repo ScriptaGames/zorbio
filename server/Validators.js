@@ -119,11 +119,8 @@ Validators.movement = function () {
 
 Validators.movementSampled = UTIL.nth( Validators.movement, config.MOVE_VALIDATION_SAMPLE_RATE );
 
-Validators.foodCapture = function (model, fi, sphere_id, radius) {
+Validators.foodCapture = function (model, fi, sphere, radius) {
     if (!config.ENABLE_VALIDATION) return 0;
-
-    // sphere info
-    var sphere = model.actors[sphere_id];
 
     // Make sure this actor is in the model
     if (!sphere) {
@@ -144,17 +141,17 @@ Validators.foodCapture = function (model, fi, sphere_id, radius) {
     if (config.DEBUG) {
         console.log("----------------");
         console.log("DEBUG: food capture: food_index, food_x, food_y, food_z", food_index, food_x, food_y, food_z);
-        console.log("DEBUG: food capture: sphere_id, sphere_x, sphere_y, sphere_z", sphere_id, sphere.position.x, sphere.position.y, sphere.position.z);
-        console.log("DEBUG: food capture: fi, sphere_id, radius, vdist, tolerance", fi, sphere_id, radius, vdist, tolerance);
+        console.log("DEBUG: food capture: sphere_id, sphere_x, sphere_y, sphere_z", sphere.id, sphere.position.x, sphere.position.y, sphere.position.z);
+        console.log("DEBUG: food capture: fi, sphere_id, radius, vdist, tolerance", fi, sphere.id, radius, vdist, tolerance);
         console.log("----------------");
     }
 
     // Make sure the sphere is in range of the food being captured
     if (vdist > tolerance) {
         console.log("----------------");
-        console.log("INVALID: food capture: fi, sphere_id, radius, vdist, tolerance", fi, sphere_id, radius, vdist, tolerance);
+        console.log("INVALID: food capture: fi, sphere_id, radius, vdist, tolerance", fi, sphere.id, radius, vdist, tolerance);
         console.log("DEBUG: food capture: food_index, food_x, food_y, food_z", food_index, food_x, food_y, food_z);
-        console.log("DEBUG: food capture: sphere_id, sphere_x, sphere_y, sphere_z", sphere_id, sphere.position.x, sphere.position.y, sphere.position.z);
+        console.log("DEBUG: food capture: sphere_id, sphere_x, sphere_y, sphere_z", sphere.id, sphere.position.x, sphere.position.y, sphere.position.z);
         console.log("----------------");
         return Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR;
     }
