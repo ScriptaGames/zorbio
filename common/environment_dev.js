@@ -5,6 +5,7 @@ var ZOR = ZOR || {};
 ZOR.Env = {
     PORT              : 3000,
     BALANCER          : "LOCAL",
+    ORIGIN            : "http://localhost:3000",
     CHECK_VERSION     : false,
     REQUIRE_ALPHA_KEY : false,
 };
