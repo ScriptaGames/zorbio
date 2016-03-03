@@ -89,7 +89,7 @@ config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
 ////////////////////////////////////////////////////////////////////////
 
 config.FOOD_DENSITY                = 26;    // How much food there is, total food = this number cubed
-config.FOOD_VALUE                  = 0.5;   // amount to increase sphere by when food is consumed
+config.FOOD_VALUE                  = 0.6;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
 config.FOOD_CAPTURE_ASSIST         = 1.0;     // this number is added to player's radius for food capturing
@@ -98,7 +98,7 @@ config.FOOD_COLORING_SINE_SEGMENTS = 8;     // with sine-cycle coloring, how man
 config.FOOD_GET_VALUE              = function FoodGetValue( r ) {
     // give food value diminishing returns to prevent runaway growth
     // https://www.desmos.com/calculator/uubp5kvnyo
-    return (config.FOOD_VALUE / (r - 0.75));
+    return (config.FOOD_VALUE / (r - 0.9));
 };
 
 ////////////////////////////////////////////////////////////////////////
