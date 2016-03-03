@@ -101,7 +101,7 @@ io.on('connection', function (socket) {
 
     // Handle blank name
     if (UTIL.isBlank(name)) {
-        name = socket.handshake.query.name = "Player " + player_id;
+        name = socket.handshake.query.name = "Player_" + player_id;
     }
 
     var currentPlayer;
