@@ -87,7 +87,18 @@ var FoodView = function ZORFoodView() {
 
     this.update = function ZORFoodViewUpdate() {
         // Decrement each food value
-        _.map( this.respawning, decfood );
+
+        var c = this.respawning; // c = collection
+        var i = c.length;        // i = index
+        var v;                   // v = value
+
+        while( --i ) {
+            v = c[i];
+            if ( v <= config.FOOD_RESPAWN_ANIM_DURATION ) {
+                c[i] = Math.max( 0, v - Math.round( ZOR.LagScale.get() ) );
+            }
+        }
+
         this.mesh.geometry.attributes.respawning.needsUpdate = true;
     };
 
