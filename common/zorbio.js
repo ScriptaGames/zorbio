@@ -31,14 +31,7 @@ ZOR.Model = function ZORModel(worldSize, foodDensity) {
  *  Initializes food for a new ZOR.Model
  */
 ZOR.Model.prototype.initFood = function ZORInitFood() {
-    var halfSize = this.worldSize.y / 2;
-    var blockSize = this.worldSize.y / this.foodDensity;
-
-    var ints = 3; // 6 for XYZ
-    var offset = 0;
-
     this.foodCount = Math.pow(this.foodDensity - 1, 3);
-    this.food = new Int32Array(this.foodCount * 3);
 
     /**
      * Tracks which food particles are currently respawning, on the server only!
@@ -53,21 +46,8 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
      */
     this.food_respawn_ready_queue = [];
 
-    for (var i = 1; i < this.foodDensity; ++i) {
-        for (var j = 1; j < this.foodDensity; ++j) {
-            for (var k = 1; k < this.foodDensity; ++k) {
-                // set food position
-                var x = halfSize - ( i * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
-                var y = halfSize - ( j * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
-                var z = halfSize - ( k * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
-                this.food[ offset ]     = x;
-                this.food[ offset + 1 ] = y;
-                this.food[ offset + 2 ] = z;
-
-                offset += ints;
-            }
-        }
-    }
+    var foodMap = UTIL.getFoodMap( config.FOOD_MAP_TYPE );
+    this.food = foodMap( this.foodCount, this.foodDensity );
 };
 
 ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {

@@ -324,6 +324,73 @@ var foodCrayons = {
 };
 
 /**
+ * Get a food map function of a given type.  A food mapper function accepts a
+ * food position array (typed array, [X,Y,Z,X,Y,Z,...]), populate it with food
+ * positions.
+ *
+ * Food map functions mutate the food position array.
+ *
+ * @param {String} type the type of food map function
+ */
+
+UTIL.getFoodMap = function getFoodMap( type ) {
+    return foodMaps[type];
+};
+
+var foodMaps = {
+    random: function foodMapRandom(count, density) {
+        var halfSize  = config.WORLD_SIZE / 2;
+        var blockSize = config.WORLD_SIZE / density;
+        var ints      = 3; // 6 for XYZ
+        var offset    = 0;
+        var positions = new Int32Array(count * 3);
+
+        for (var i = 1; i < density; ++i) {
+            for (var j = 1; j < density; ++j) {
+                for (var k = 1; k < density; ++k) {
+                    // set food position
+                    var x = halfSize - ( i * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
+                    var y = halfSize - ( j * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
+                    var z = halfSize - ( k * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
+                    positions[ offset ]     = x;
+                    positions[ offset + 1 ] = y;
+                    positions[ offset + 2 ] = z;
+
+                    offset += ints;
+                }
+            }
+        }
+
+        return positions;
+    },
+    grid: function foodMapGrid(count, density) {
+        var halfSize  = config.WORLD_SIZE / 2;
+        var blockSize = config.WORLD_SIZE / density;
+        var ints      = 3; // 6 for XYZ
+        var offset    = 0;
+        var positions = new Int32Array(count * 3);
+
+        for (var i = 1; i < density; ++i) {
+            for (var j = 1; j < density; ++j) {
+                for (var k = 1; k < density; ++k) {
+                    // set food position
+                    var x = halfSize - ( i * blockSize );
+                    var y = halfSize - ( j * blockSize );
+                    var z = halfSize - ( k * blockSize );
+                    positions[ offset ]     = x;
+                    positions[ offset + 1 ] = y;
+                    positions[ offset + 2 ] = z;
+
+                    offset += ints;
+                }
+            }
+        }
+
+        return positions;
+    },
+};
+
+/**
  * Wrap your function such that it will be executed every N times it's called.
  * This is useful in a long-running loop such as the main loop in a game, where
  * you want to execute certain functions every 10 frames, or similar, but don't
