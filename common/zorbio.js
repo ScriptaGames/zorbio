@@ -38,13 +38,13 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
     var offset = 0;
 
     this.foodCount = Math.pow(this.foodDensity - 1, 3);
-    this.food = [];
+    this.food = new Uint32Array(this.foodCount);
 
     /**
      * Tracks which food particles are currently respawning, on the server only!
      * @type {Int32Array}
      */
-    this.food_respawning = new Int32Array(this.foodCount);
+    this.food_respawning = new Uint32Array(this.foodCount);
     this.food_respawning_indexes = [];
 
     /**
