@@ -99,9 +99,12 @@ io.on('connection', function (socket) {
     var color = socket.handshake.query.color;
     var key = socket.handshake.query.key;
 
-    // Handle blank name
+    // Sanitize player name
     if (UTIL.isBlank(name)) {
         name = socket.handshake.query.name = "Player_" + player_id;
+    }
+    else if (name.length > config.MAX_PLAYER_NAME_LENGTH) {
+        name = name.substr(0, config.MAX_PLAYER_NAME_LENGTH);
     }
 
     var currentPlayer;

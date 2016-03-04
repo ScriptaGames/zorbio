@@ -116,6 +116,7 @@ config.INFRACTION_TOLERANCE_SPEED     = 7;      // how many speed infractions a 
 config.INFRACTION_TOLERANCE_SCALE     = 1;      // how many scale infractions a player can have before they are kicked
 config.MOVE_VALIDATION_SAMPLE_RATE    = 5;      // How often to sample, 1 would be ever time, 10 would be every 10th check
 config.LOADING_WAIT_DURATION          = 10000;  // How many milliseconds to wait before starting to track movement validation
+config.MAX_PLAYER_NAME_LENGTH         = 20;     // How many characters can be in the player name
 
 ////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //
