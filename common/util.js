@@ -243,18 +243,6 @@ UTIL.safePlayerPosition = function UTILsafePlayerPosition() {
     return new THREE.Vector3( x, y, z );
 };
 
-/**
- * Given a food coloring name, returns a function for generating that food
- * coloring style.
- *
- * @param {String} name the
- * @example UTIL.foodColoring('random');
- * @example UTIL.foodColoring('rgbcube');
- */
-UTIL.getFoodCrayon = function UTILfoodColoring( type ) {
-    return coloringMethods[type];
-};
-
 UTIL.trimPosition = function UTILTrimPosition(position, trim) {
     return {
         x: +position.x.toFixed(trim),
@@ -275,7 +263,19 @@ UTIL.sortedObjectPush = function UTILSortedObjectPush( array, value, iteratee ) 
     array.splice( _.sortedIndexBy(array, value, iteratee) , 0, value );
 };
 
-var coloringMethods = {
+/**
+ * Given a food coloring name, returns a function for generating that food
+ * coloring style.
+ *
+ * @param {String} name the
+ * @example UTIL.foodColoring('random');
+ * @example UTIL.foodColoring('rgbcube');
+ */
+UTIL.getFoodCrayon = function UTILfoodColoring( type ) {
+    return foodCrayons[type];
+};
+
+var foodCrayons = {
 
     random: function foodColoringRandom() {
         return {
