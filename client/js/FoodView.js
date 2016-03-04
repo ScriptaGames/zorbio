@@ -91,11 +91,14 @@ var FoodView = function ZORFoodView() {
         var c = this.respawning; // c = collection
         var i = c.length;        // i = index
         var v;                   // v = value
+        var duration = config.FOOD_RESPAWN_ANIM_DURATION;
+        var lsGet = ZOR.LagScale.get;
 
         while( --i ) {
             v = c[i];
-            if ( v <= config.FOOD_RESPAWN_ANIM_DURATION ) {
-                c[i] = Math.max( 0, v - Math.round( ZOR.LagScale.get() ) );
+
+            if ( v <= duration ) {
+                c[i] = Math.max( 0, v - Math.round( lsGet() ) );
             }
         }
 
