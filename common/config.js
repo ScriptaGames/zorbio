@@ -84,8 +84,19 @@ config.STEERING_METHODS      = Object.freeze({ // enum-ish
     },
 });
 config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
+
 config.Y_AXIS_MULT = 1;
 config.X_AXIS_MULT = 1;
+
+config.DRAIN = {
+    MAX_DISTANCE: 50, // distance at which draining starts
+    AMOUNT: function DrainAmount( radius ) {
+        var n = 0.01;  // see https://www.desmos.com/calculator/b4uijma9a6
+        var o = 0.2;   // see https://www.desmos.com/calculator/b4uijma9a6
+        var p = 1.6;   // see https://www.desmos.com/calculator/b4uijma9a6
+        return p / ( n * radius * radius + o );
+    },
+};
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
