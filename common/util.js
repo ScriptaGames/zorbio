@@ -313,6 +313,58 @@ var foodCrayons = {
         };
     },
 
+    'octant': function foodColoringOctant( x, y, z ) {
+        var r, g, b;
+
+        // based on: https://en.wikipedia.org/wiki/Octant_(solid_geometry)
+        if (x >= 0 && y >= 0 && z >= 0) {
+            r = 1;
+            g = 0;
+            b = 0;
+        }
+        else if (x < 0 && y >= 0 && z >= 0) {
+            r = 0;
+            g = 1;
+            b = 0;
+        }
+        else if (x < 0 && y < 0 && z >= 0) {
+            r = 0;
+            g = 0;
+            b = 1;
+        }
+        else if (x >= 0 && y < 0 && z >= 0) {
+            r = 1;
+            g = 1;
+            b = 0;
+        }
+        else if (x >= 0 && y >= 0 && z < 0) {
+            r = 0;
+            g = 1;
+            b = 1;
+        }
+        else if (x < 0 && y >= 0 && z < 0) {
+            r = 1;
+            g = 1;
+            b = 1;
+        }
+        else if (x < 0 && y < 0 && z < 0) {
+            r = 1;
+            g = 0;
+            b = 1;
+        }
+        else if (x >= 0 && y < 0 && z < 0) {
+            r = 0.5;
+            g = 0;
+            b = 0.1;
+        }
+
+        return {
+            r: r,
+            g: g,
+            b: b
+        };
+    },
+
     'sine-cycle': function foodColoringRgbCube( x, y, z ) {
         return {
             r: Math.sin( x / ( config.WORLD_SIZE / config.FOOD_COLORING_SINE_SEGMENTS ) ) / 2 + 1/2,
