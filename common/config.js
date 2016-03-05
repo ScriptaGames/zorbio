@@ -72,7 +72,7 @@ config.AUTO_RUN_ENABLED      = true;
 config.STEERING_METHODS      = Object.freeze({ // enum-ish
     MOUSE_DRAG: {
         NAME: 'DRAG',
-        SPEED : 4.0,
+        SPEED : 0.2,
     },
     MOUSE_FOLLOW: {
         // https://www.desmos.com/calculator/wszojiyufd

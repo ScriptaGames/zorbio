@@ -342,7 +342,7 @@
 
         // Set to false to disable rotating
         this.enableRotate = true;
-        this.rotateSpeed = 0.5;
+        this.rotateSpeed = config.STEERING.SPEED;
 
         // Set to false to disable panning
         this.enablePan = true;
