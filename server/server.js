@@ -26,6 +26,12 @@ var serverRestartMsg = '';
 
 app.use(express.static(__dirname + '/../' + (process.argv[2] || 'client')));
 
+// set the allowed origin to prevent other domains from hosting a working
+// version of our game client.  with CORS enabled, http://zor.bio is the only
+// origin allowed to connect to the websocket server.  or http://localhost:3000
+// for development :)
+io.set('origins', config.ORIGIN);
+
 // Basic Auth
 var auth = function (req, res, next) {
     var user = basicAuth(req);

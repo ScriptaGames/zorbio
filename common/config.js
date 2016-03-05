@@ -39,6 +39,7 @@ config.CHECK_VERSION            = true;   // check for latest version of the gam
 config.CHECK_VERSION_INTERVAL   = 30000;  // how often to check for new version
 config.LEADERS_LENGTH           = 10;     // How many players to include in the leaders array
 config.BIN_PP_POSITIONS_LENGTH  = 11;
+config.ORIGIN                   = 'http://zor.bio'; // the origin that's allowed to connect to websocket server
 
 config.BALANCERS = Object.freeze({
     LOCAL: 'http://localhost',

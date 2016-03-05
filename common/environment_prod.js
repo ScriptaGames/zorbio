@@ -5,6 +5,7 @@ var ZOR = ZOR || {};
 ZOR.Env = {
     PORT              : 80,
     BALANCER          : "NA",
+    ORIGIN            : "http://zor.bio",
     CHECK_VERSION     : true,
     REQUIRE_ALPHA_KEY : false,
 };
