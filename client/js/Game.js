@@ -128,6 +128,8 @@ window.addEventListener('load', function ZORLoadHandler() {
         }
     });
 
+
+    config.Y_AXIS_MULT = localStorage.flip_y ? -1 : 1;
     ZOR.UI.on( ZOR.UI.ACTIONS.TOGGLE_Y_AXIS, function ZORToggleYAxis(e) {
         if ( e.node.checked ) {
             config.Y_AXIS_MULT = -1;
@@ -137,6 +139,7 @@ window.addEventListener('load', function ZORLoadHandler() {
             config.Y_AXIS_MULT = 1;
             ZOR.UI.data.flip_y = false;
         }
+        localStorage.flip_y = ZOR.UI.data.flip_y;
     });
 
     ZOR.UI.on( ZOR.UI.ACTIONS.PAGE_RELOAD, location.reload.bind(location) );
