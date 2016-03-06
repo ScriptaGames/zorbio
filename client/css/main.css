@@ -548,10 +548,13 @@ button {
 a {
   font-size: 1em;
   color: #f7f7f7;
-  cursor: pointer;
 }
 a:hover {
   color: #0b7bf4;
+}
+button,
+a {
+  cursor: pointer;
 }
 #render-canvas {
   width: 100%;
@@ -753,4 +756,12 @@ button:hover::before {
   opacity: 0.1;
   background: none;
   margin: 8px;
+  cursor: pointer;
+  -webkit-transition: opacity 0.1s ease-out;
+  -moz-transition: opacity 0.1s ease-out;
+  -o-transition: opacity 0.1s ease-out;
+  transition: opacity 0.1s ease-out;
+}
+#gear-btn:hover {
+  opacity: 0.4;
 }
