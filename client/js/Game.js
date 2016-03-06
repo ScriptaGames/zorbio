@@ -105,8 +105,16 @@ window.addEventListener('load', function ZORLoadHandler() {
         ZOR.UI.state( ZOR.UI.STATES.TUTORIAL_SCREEN );
     });
 
+    ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_CONFIG, function ZORShowConfig() {
+        ZOR.UI.state( ZOR.UI.STATES.CONFIG );
+    });
+
     ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_LOGIN, function ZORShowLogin() {
         ZOR.UI.state( ZOR.UI.STATES.LOGIN_SCREEN );
+    });
+
+    ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_PREVIOUS, function ZORShowPrevious() {
+        ZOR.UI.state( ZOR.UI.data.prev_state );
     });
 
     ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
@@ -117,6 +125,17 @@ window.addEventListener('load', function ZORLoadHandler() {
         } else {
             ZOR.UI.engine.set( 'login_error_msg', 'Nick name must be alphanumeric characters only!' );
 
+        }
+    });
+
+    ZOR.UI.on( ZOR.UI.ACTIONS.TOGGLE_Y_AXIS, function ZORToggleYAxis(e) {
+        if ( e.node.checked ) {
+            config.Y_AXIS_MULT = -1;
+            ZOR.UI.data.flip_y = true;
+        }
+        else {
+            config.Y_AXIS_MULT = 1;
+            ZOR.UI.data.flip_y = false;
         }
     });
 

@@ -744,3 +744,13 @@ button:hover::before {
   color: #404040;
   text-decoration: underline;
 }
+#gear-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0;
+  width: 5vw;
+  opacity: 0.1;
+  background: none;
+  margin: 8px;
+}

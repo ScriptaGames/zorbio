@@ -15,6 +15,7 @@ ZOR.UI = function ZORUI() {
         INITIAL            : 'login-screen',
         LOGIN_SCREEN       : 'login-screen',
         PLAYING            : 'playing',
+        CONFIG             : 'config',
         RESPAWN_SCREEN     : 'respawn-screen',
         KICKED_SCREEN      : 'kicked-screen',
         GAME_INIT_ERROR    : 'game-init-error',
@@ -35,6 +36,9 @@ ZOR.UI = function ZORUI() {
         SHOW_CREDITS          : 'show-credits',
         SHOW_LOGIN            : 'show-login',
         SHOW_TUTORIAL         : 'show-tutorial',
+        SHOW_CONFIG           : 'show-config',
+        SHOW_PREVIOUS         : 'show-previous',
+        TOGGLE_Y_AXIS         : 'toggle-y-axis',
     };
 
     /**
@@ -43,6 +47,7 @@ ZOR.UI = function ZORUI() {
 
     var uidata = {
         state            : STATES.INITIAL,
+        prev_state       : STATES.INITIAL,
         STATES           : STATES,
         ACTIONS          : ACTIONS,
         COLORS           : ZOR.PlayerView.COLORS,
@@ -58,6 +63,9 @@ ZOR.UI = function ZORUI() {
      */
 
     var REQUIRED_FEATURES = [ 'json', 'websockets', 'webgl', 'flexbox' ];
+
+    // the previous state
+    var previous = STATES.INITIAL;
 
     /**
      * The Ractive template engine.  Data + Templates = HTML
@@ -96,8 +104,12 @@ ZOR.UI = function ZORUI() {
      */
 
     function state( newstate ) {
+        console.log('entering state ' + newstate);
+        if (newstate !== uidata.prev_state) {
+            uidata.prev_state = uidata.state;
+        }
         if (typeof newstate !== 'undefined' && valid_state( newstate ) ) {
-            console.log('entering state ' + newstate);
+            // console.log('entering state ' + newstate);
             uidata.state = newstate;
             engine.update();
         }
