@@ -214,25 +214,8 @@ function createScene() {
         playerFogCenter.copy(player.view.mainSphere.position);
 
         // food
-        foodController = new FoodController(zorbioModel, player.view.mainSphere.position);
+        foodController = new FoodController(zorbioModel, player.view.mainSphere.position, scene);
         foodController.drawFood(scene);
-
-        // create octree
-        octree = new THREE.Octree( {
-            // when undeferred = true, objects are inserted immediately
-            // instead of being deferred until next octree.update() call
-            // this may decrease performance as it forces a matrix update
-            undeferred: true,
-            // set the max depth of tree
-            depthMax: Infinity,
-            // max number of objects before nodes split or merge
-            objectsThreshold: 8,
-            // percent between 0 and 1 that nodes will overlap each other
-            // helps insert objects that lie over more than one node
-            overlapPct: 0.15
-        } );
-
-        octree.add( foodController.view.mesh );
 
         // Hide currently respawning food
         foodController.hideFoodMultiple(zorbioModel.food_respawning_indexes);
@@ -294,11 +277,6 @@ function createScene() {
             foodController.update(player.view.mainSphere.position);
 
             playerFogCenter.copy(player.view.mainSphere.position);
-
-            // search octree from search mesh position with search radius
-            // optional third parameter: boolean, if should sort results by object when using faces in octree
-            // optional fourth parameter: vector3, direction of search when using ray (assumes radius is distance/far of ray)
-            var meshesSearch = octree.search( player.view.mainSphere.position, player.radius() * 2, true );
 
             foodController.checkFoodCaptures(player, captureFood);
 

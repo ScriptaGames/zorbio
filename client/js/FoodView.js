@@ -4,7 +4,7 @@
  */
 var FoodView = function ZORFoodView() {
 
-    this.drawFood = function ZORFoodViewDrawFood(scene, food, foodCount, fogCenterPosition) {
+    this.drawFood = function ZORFoodViewDrawFood(scene, food, foodCount, fogCenterPosition, octree) {
         this.translate = new Float32Array( foodCount * 3 );
         this.colors = new Float32Array( foodCount * 3 );
         this.respawning = new Float32Array( foodCount );
@@ -44,6 +44,16 @@ var FoodView = function ZORFoodView() {
             colors[ offset     ] = R;
             colors[ offset + 1 ] = G;
             colors[ offset + 2 ] = B;
+
+            // Add to octree for fast way to find food near player
+            var foodOctreeObj = new THREE.Object3D();
+            foodOctreeObj.position.set(X, Y, Z);
+            foodOctreeObj.boundRadius = 1.0;
+            foodOctreeObj.boundRadiusScale = 1.0;
+            foodOctreeObj.updateMatrixWorld();
+            foodOctreeObj.fi = i;  // Custom food index attribute
+
+            octree.add( foodOctreeObj );
 
             offset += 3;
         }

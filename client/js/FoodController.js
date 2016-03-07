@@ -4,7 +4,7 @@
  * @param fogCenterPosition
  * @constructor
  */
-var FoodController = function ZORFoodController(model, fogCenterPosition) {
+var FoodController = function ZORFoodController(model, fogCenterPosition, scene) {
 
     this.model = model;
     this.view = new FoodView();
@@ -13,8 +13,25 @@ var FoodController = function ZORFoodController(model, fogCenterPosition) {
 
     this.fogCenterPosition.copy(fogCenterPosition);
 
+
+    // create octree
+    this.octree = new THREE.Octree( {
+        // when undeferred = true, objects are inserted immediately
+        // instead of being deferred until next octree.update() call
+        // this may decrease performance as it forces a matrix update
+        undeferred: true,
+        // set the max depth of tree
+        depthMax: Infinity,
+        // max number of objects before nodes split or merge
+        objectsThreshold: 8,
+        // percent between 0 and 1 that nodes will overlap each other
+        // helps insert objects that lie over more than one node
+        overlapPct: 0.15,
+        //scene: scene
+    } );
+
     this.drawFood = function ZORFoodControllerDrawFood(scene) {
-        this.view.drawFood(scene, this.model.food, this.model.foodCount, this.fogCenterPosition);
+        this.view.drawFood(scene, this.model.food, this.model.foodCount, this.fogCenterPosition, this.octree);
     };
 
     /**
@@ -68,26 +85,28 @@ var FoodController = function ZORFoodController(model, fogCenterPosition) {
      * @param callback
      */
     this.checkFoodCaptures = function ZORFoodControllerCheckFoodCaptures(thePlayer, callback) {
+        //var start = performance.now();
 
-        var x, y, z, i, l;
+        var i, l;
         var dist = 0;
         var mainSphere = thePlayer.view.mainSphere;
         var sphere_radius = thePlayer.radius();
 
-        for ( i = 0, l = this.view.translate.length; i < l; i += 3 ) {
-            if (this.aliveFood( i / 3 )) {
-                x = this.view.translate[ i     ];
-                y = this.view.translate[ i + 1 ];
-                z = this.view.translate[ i + 2 ];
-                this.vdist.set(x, y, z);
+        var foodList = this.octree.search(mainSphere.position, sphere_radius * 10);
 
-                dist = this.vdist.distanceTo(mainSphere.position);
+        for ( i = 0, l = foodList.length; i < l; i++ ) {
+            var food = foodList[i].object;
+            if (this.aliveFood( food.fi )) {
+
+                dist = food.position.distanceTo( mainSphere.position );
                 if (dist <= (sphere_radius + config.FOOD_CAPTURE_ASSIST)) {
-                    var fi = i / 3;
-                    callback( fi );
+                    callback( food.fi );
                     _.sample(ZOR.Sounds.food_capture).play();
                 }
             }
         }
+
+        //var end = performance.now();
+        //console.log("duration: ", end - start);
     }
 };
