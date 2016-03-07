@@ -129,8 +129,8 @@ window.addEventListener('load', function ZORLoadHandler() {
     });
 
 
-    config.X_AXIS_MULT = JSON.parse(localStorage.flip_x) ? -1 : 1;
-    config.Y_AXIS_MULT = JSON.parse(localStorage.flip_y) ? -1 : 1;
+    config.X_AXIS_MULT = JSON.parse(localStorage.flip_x || "false") ? -1 : 1;
+    config.Y_AXIS_MULT = JSON.parse(localStorage.flip_y || "false") ? -1 : 1;
     ZOR.UI.on( ZOR.UI.ACTIONS.TOGGLE_Y_AXIS, axisToggler('y'));
     ZOR.UI.on( ZOR.UI.ACTIONS.TOGGLE_X_AXIS, axisToggler('x'));
 
