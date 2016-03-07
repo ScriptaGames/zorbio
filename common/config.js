@@ -89,11 +89,12 @@ config.Y_AXIS_MULT = 1;
 config.X_AXIS_MULT = 1;
 
 config.DRAIN = {
-    MAX_DISTANCE: 50, // distance at which draining starts
+    MAX_DISTANCE: 100, // distance at which draining starts
     AMOUNT: function DrainAmount( radius ) {
-        var n = 0.01;  // see https://www.desmos.com/calculator/b4uijma9a6
-        var o = 0.2;   // see https://www.desmos.com/calculator/b4uijma9a6
-        var p = 1.6;   // see https://www.desmos.com/calculator/b4uijma9a6
+        // see https://www.desmos.com/calculator/b4uijma9a6
+        var n = 0.01;
+        var o = 0.2;
+        var p = 1.6;
         return p / ( n * radius * radius + o );
     },
 };
