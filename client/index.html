@@ -28,8 +28,14 @@
         <script id="config-template" type="text/ractive">
             <div id="config">
                 <h1>Settings</h1>
-                <input type="checkbox" {{ flip_y ? 'checked' : '' }} on-click="{{ ACTIONS.TOGGLE_Y_AXIS }}" id="flip-y-axis">
-                <label for="flip-y-axis">Flip Y axis</label>
+                <div>
+                    <input type="checkbox" {{ flip_y ? 'checked' : '' }} on-click="{{ ACTIONS.TOGGLE_Y_AXIS }}" id="flip-y-axis">
+                    <label for="flip-y-axis">Flip Y axis</label>
+                </div>
+                <div>
+                    <input type="checkbox" {{ flip_x ? 'checked' : '' }} on-click="{{ ACTIONS.TOGGLE_X_AXIS }}" id="flip-x-axis">
+                    <label for="flip-x-axis">Flip X axis</label>
+                </div>
                 <button on-click="{{ ACTIONS.SHOW_PREVIOUS }}">Back</button>
             </div>
         </script>

@@ -39,6 +39,7 @@ ZOR.UI = function ZORUI() {
         SHOW_CONFIG           : 'show-config',
         SHOW_PREVIOUS         : 'show-previous',
         TOGGLE_Y_AXIS         : 'toggle-y-axis',
+        TOGGLE_X_AXIS         : 'toggle-x-axis',
     };
 
     /**
@@ -55,6 +56,8 @@ ZOR.UI = function ZORUI() {
         AUTHORS          : ['Michael Clayton', 'Jared Sprague'],
         leaders          : [],
         is_mobile        : isMobile.any,
+        flip_x           : JSON.parse(localStorage.flip_x || "false"),
+        flip_y           : JSON.parse(localStorage.flip_y || "false"),
     };
 
     /**

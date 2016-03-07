@@ -95,13 +95,13 @@
 
         this.rotateLeft = function ( angle ) {
 
-            thetaDelta -= angle;
+            thetaDelta -= angle * config.X_AXIS_MULT;
 
         };
 
         this.rotateUp = function ( angle ) {
 
-            phiDelta -= angle;
+            phiDelta -= angle * config.Y_AXIS_MULT;
 
         };
 

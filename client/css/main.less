@@ -46,10 +46,12 @@ input, textarea, select, button {
 a {
     font-size: 1em;
     color: @primary-color;
-    cursor: pointer;
     &:hover {
         color: @accent-color;
     }
+}
+button, a {
+    cursor: pointer;
 }
 
 #render-canvas {
@@ -249,9 +251,9 @@ button {
             margin    : 3px;
             font-size : @font-size-base * 0.6;
         }
-        &.mobile {
+        &.mobile div {
             margin-bottom : 2px;
-            font-size     : @font-size-base * 0.4;
+            font-size : @font-size-base * 0.35;
         }
     }
 }
@@ -282,12 +284,17 @@ button {
 }
 
 #gear-btn {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0;
-    width: 40px;
-    opacity: 0.1;
-    background: none;
-    margin: 8px;
+    position   : absolute;
+    top        : 0;
+    right      : 0;
+    padding    : 0;
+    width      : 40px;
+    opacity    : 0.1;
+    background : none;
+    margin     : 8px;
+    cursor     : pointer;
+    .transition(opacity, 0.1s);
+    &:hover {
+        opacity: 0.4;
+    }
 }

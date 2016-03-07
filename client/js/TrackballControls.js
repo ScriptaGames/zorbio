@@ -121,8 +121,8 @@ THREE.TrackballControls = function ( object, domElement ) {
         return function getMouseOnScreen( pageX, pageY ) {
 
             vector.set(
-                ( pageX - _this.screen.left ) / _this.screen.width,
-                Y_AXIS_MULT * ( pageY - _this.screen.top ) / _this.screen.height
+                config.X_AXIS_MULT * ( pageX - _this.screen.left ) / _this.screen.width,
+                config.Y_AXIS_MULT * ( pageY - _this.screen.top ) / _this.screen.height
             );
 
             return vector;
@@ -138,7 +138,7 @@ THREE.TrackballControls = function ( object, domElement ) {
         return function getMouseOnCircle( pageX, pageY ) {
 
             vector.set(
-                ( ( pageX - _this.screen.width * 0.5 - _this.screen.left ) / ( _this.screen.width * 0.5 ) ),
+                config.X_AXIS_MULT * ( ( pageX - _this.screen.width * 0.5 - _this.screen.left ) / ( _this.screen.width * 0.5 ) ),
                 config.Y_AXIS_MULT * ( ( _this.screen.height + 2 * ( _this.screen.top - pageY ) ) / _this.screen.width ) // screen.width intentional
             );
 

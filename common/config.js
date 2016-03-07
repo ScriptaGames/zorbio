@@ -84,6 +84,7 @@ config.STEERING_METHODS      = Object.freeze({ // enum-ish
 });
 config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
 config.Y_AXIS_MULT = 1;
+config.X_AXIS_MULT = 1;
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
