@@ -92,7 +92,7 @@ var FoodController = function ZORFoodController(model, fogCenterPosition, scene)
         var mainSphere = thePlayer.view.mainSphere;
         var sphere_radius = thePlayer.radius();
 
-        var foodList = this.octree.search(mainSphere.position, sphere_radius * 10);
+        var foodList = this.octree.search(mainSphere.position, sphere_radius + 25);
 
         for ( i = 0, l = foodList.length; i < l; i++ ) {
             var food = foodList[i].object;
