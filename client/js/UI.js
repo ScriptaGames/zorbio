@@ -56,8 +56,8 @@ ZOR.UI = function ZORUI() {
         AUTHORS          : ['Michael Clayton', 'Jared Sprague'],
         leaders          : [],
         is_mobile        : isMobile.any,
-        flip_x           : JSON.parse(localStorage.flip_x),
-        flip_y           : JSON.parse(localStorage.flip_y),
+        flip_x           : JSON.parse(localStorage.flip_x || "false"),
+        flip_y           : JSON.parse(localStorage.flip_y || "false"),
     };
 
     /**
