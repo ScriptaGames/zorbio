@@ -25,6 +25,8 @@ var gameStart = false;
 var disconnected = false;
 var foodController;
 
+var drainView;
+
 // Model that represents the game state shared with server
 var zorbioModel;
 
@@ -283,6 +285,8 @@ function createScene() {
             foodController.checkFoodCaptures(player, captureFood);
 
             checkPlayerCaptures();
+
+            // drainView.update(players);
 
             camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
         }
