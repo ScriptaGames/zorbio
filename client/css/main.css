@@ -720,10 +720,10 @@ button:hover::before {
   margin: 3px;
   font-size: 18px;
 }
-#leaderboard-playing ul li.mobile,
-#leaderboard-playing #leaders.mobile {
+#leaderboard-playing ul li.mobile div,
+#leaderboard-playing #leaders.mobile div {
   margin-bottom: 2px;
-  font-size: 12px;
+  font-size: 10.5px;
 }
 #server-message {
   position: absolute;
