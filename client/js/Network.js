@@ -4,7 +4,8 @@
 
 var socket;
 
-var heartBeatStart;
+var zorPingStart;
+var zorPingDuration = 0;
 
 // handles to setInterval methods so we can clear them later
 var interval_id_heartbeat;
@@ -26,6 +27,10 @@ function sendRespawn(isFirstSpawn) {
 }
 
 function sendPlayerSpherePosition() {
+    var nowTime = Date.now();
+    var gap = nowTime - player.pp_send_last_time;
+    player.pp_send_last_time = nowTime;
+
     // Make sure model is synced with view
     player.refreshSphereModel();
 
@@ -42,6 +47,7 @@ function sendPlayerSpherePosition() {
     var bufferView = new Float32Array(config.BIN_PP_POSITIONS_LENGTH + (player.food_capture_queue.length * 2));
     var index = 0;
     bufferView[index++] = sphereModel.id;            // Actor ID
+    bufferView[index++] = gap;                       // Gap since last update
     bufferView[index++] = oldestPosition.position.x; // Old position X
     bufferView[index++] = oldestPosition.position.y; // Old position Y
     bufferView[index++] = oldestPosition.position.z; // Old position Z
@@ -85,17 +91,11 @@ function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
     }
 }
 
-function sendMessage() {
-    heartBeatStart = performance.now();
-    var bufArr = new ArrayBuffer(4);
-    var bufView = new Uint8Array(bufArr);
-    bufView[0]=6;
-    bufView[1]=7;
-    bufView[2]=8;
-    bufView[3]=9;
+function sendPing() {
+    zorPingStart = Date.now();
 
     // send binary message to server
-    socket.emit('serverMsg', bufArr);
+    socket.emit('zorServerPing', {lastPing: zorPingDuration, fps: ZOR.LagScale.get_fps()});
 }
 
 function handleNetworkTermination() {
@@ -104,7 +104,7 @@ function handleNetworkTermination() {
 
 function setIntervalMethods() {
     // start sending heartbeat
-    interval_id_heartbeat = window.setInterval(sendMessage, config.HEARTBEAT_PULSE_INTERVAL);
+    interval_id_heartbeat = window.setInterval(sendPing, config.HEARTBEAT_PULSE_INTERVAL);
 }
 
 function clearIntervalMethods() {
@@ -320,10 +320,8 @@ function setupSocket(socket) {
     //    console.log('Ping: ' + number + 'ms');
     //});
 
-    socket.on('clientMsg', function (bufArr) {
-        var duration = performance.now() - heartBeatStart;
-        console.log('Ping: ' + duration + 'ms');
-        //var bufView = new Uint8Array(bufArr);
-        //console.log("Data: ", bufView[0], bufView[1], bufView[2], bufView[3])
+    socket.on('zorServerPong', function (msg) {
+        zorPingDuration = Date.now() - zorPingStart;
+        console.log('Ping: ' + zorPingDuration + 'ms');
     });
 }

@@ -127,6 +127,7 @@ io.on('connection', function (socket) {
 
         // Create the Player
         currentPlayer = new Zorbio.Player(player_id, name, color, type, position);
+        currentPlayer.handshake = socket.handshake;
 
         socket.emit('welcome', currentPlayer, isFirstSpawn);
 
@@ -177,6 +178,10 @@ io.on('connection', function (socket) {
     socket.on('pp', function (buffer) {
         if (currentPlayer) currentPlayer.lastHeartbeat = Date.now();
 
+        var nowTime = Date.now();
+        var receive_gap = nowTime - currentPlayer.pp_receive_last_time;
+        currentPlayer.pp_receive_last_time = nowTime;
+
         // Read binary data
         var bufArr  = new ArrayBuffer(buffer.length);
         var bufView = new Float32Array(bufArr);
@@ -187,17 +192,43 @@ io.on('connection', function (socket) {
         }
 
         // Pull out the data
-        var sphere_id = bufView[0];
-        var old_x     = bufView[1];
-        var old_y     = bufView[2];
-        var old_z     = bufView[3];
-        var old_r     = bufView[4];
-        var old_t     = bufView[5];
-        var new_x     = bufView[6];
-        var new_y     = bufView[7];
-        var new_z     = bufView[8];
-        var new_r     = bufView[9];
-        var new_t     = bufView[10];
+        var index     = 0;
+        var sphere_id = bufView[index++];
+        var gap       = bufView[index++];
+        var old_x     = bufView[index++];
+        var old_y     = bufView[index++];
+        var old_z     = bufView[index++];
+        var old_r     = bufView[index++];
+        var old_t     = bufView[index++];
+        var new_x     = bufView[index++];
+        var new_y     = bufView[index++];
+        var new_z     = bufView[index++];
+        var new_r     = bufView[index++];
+        var new_t     = bufView[index];
+
+        // Save the recent gaps between position updates sent and received
+        if (gap > 0) {
+            UTIL.pushShift(currentPlayer.pp_sent_recent_gaps, gap, config.RECENT_CLIENT_DATA_LENGTH);
+            currentPlayer.pp_send_gap_avg = UTIL.getAvg(currentPlayer.pp_sent_recent_gaps);
+            if (+currentPlayer.pp_send_gap_max >= 0) {
+                currentPlayer.pp_send_gap_max = Math.max(+currentPlayer.pp_send_gap_max, gap);
+            }
+
+            if (gap > 200) {
+                currentPlayer.pp_send_gap_long_count++;
+            }
+        }
+        if (receive_gap > 0) {
+            UTIL.pushShift(currentPlayer.pp_received_recent_gaps, receive_gap, config.RECENT_CLIENT_DATA_LENGTH);
+            currentPlayer.pp_receive_gap_avg = UTIL.getAvg(currentPlayer.pp_received_recent_gaps);
+            if (+currentPlayer.pp_receive_gap_max >= 0) {
+                currentPlayer.pp_receive_gap_max = Math.max(+currentPlayer.pp_receive_gap_max, receive_gap);
+            }
+
+            if (receive_gap > 200) {
+                currentPlayer.pp_receive_gap_long_count++;
+            }
+        }
 
         // Build the sphere object
         var oldestPosition = {position: {x: old_x, y: old_y, z: old_z}, radius: old_r, time: old_t};
@@ -321,20 +352,18 @@ io.on('connection', function (socket) {
         capturePlayer(attackingPlayerId, targetPlayerId);
     });
 
-    socket.on('serverMsg', function (bufArr) {
+    socket.on('zorServerPing', function (data) {
         currentPlayer.lastHeartbeat = Date.now();
 
-        var ba = new ArrayBuffer(4);
-        var bv = new Uint8Array(ba);
-        bv[0]=10;
-        bv[1]=11;
-        bv[2]=12;
-        bv[3]=13;
+        // save recent pings and get average
+        UTIL.pushShift(currentPlayer.recent_pings, data.lastPing, config.RECENT_CLIENT_DATA_LENGTH);
+        currentPlayer.avg_ping = UTIL.getAvg(currentPlayer.recent_pings);
 
-        //var bufView = new Uint8Array(bufArr);
-        //console.log("heartbeat Data: ", bufView[0], bufView[1], bufView[2], bufView[3]);
+        // save recent fps and get average
+        UTIL.pushShift(currentPlayer.recent_fps, data.fps, config.RECENT_CLIENT_DATA_LENGTH);
+        currentPlayer.avg_fps = UTIL.getAvg(currentPlayer.recent_fps);
 
-        socket.emit("clientMsg", ba);
+        socket.emit("zorServerPong", "zor_pong");
     });
 
     socket.on('error', function (err) {

@@ -174,6 +174,25 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.infractions_pcap = 0;
     this.infractions_speed = 0;
     this.infractions_scale = 0;
+
+    // Client info
+    this.handshake = undefined;
+    this.recent_pings = [];
+    this.recent_fps = [];
+    this.avg_ping = 0;
+    this.avg_fps = 0;
+
+    this.pp_send_last_time = Date.now();
+    this.pp_sent_recent_gaps = [];
+    this.pp_send_gap_avg = 0;
+    this.pp_send_gap_max = 0;
+    this.pp_send_gap_long_count = 0;
+
+    this.pp_receive_last_time = Date.now();
+    this.pp_received_recent_gaps = [];
+    this.pp_receive_gap_avg = 0;
+    this.pp_receive_gap_max = 0;
+    this.pp_receive_gap_long_count = 0;
 };
 
 

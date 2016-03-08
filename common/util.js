@@ -474,5 +474,31 @@ UTIL.isBlank = function isBlank(str) {
     return (!str || /^\s*$/.test(str));
 };
 
+/**
+ * Given an array if ints return the average
+ * @param arr
+ * @returns {number}
+ */
+UTIL.getAvg = function UTILGetAvg(arr) {
+    var total = 0;
+    for(var i = 0, l = arr.length; i < l; i++) {
+        total += arr[i];
+    }
+    return total / arr.length;
+};
+
+/**
+ * pushes an element onto the front of an array and shifts the oldest element out based on max_length
+ * @param arr
+ * @param value
+ * @param max_length
+ */
+UTIL.pushShift = function UTILPushShift(arr, value, max_length) {
+    arr.push(value);
+    if (arr.length > max_length) {
+        arr.shift();  // remove oldest element
+    }
+};
+
 // if we're in nodejs, export the root UTIL object
 if (NODEJS) module.exports = UTIL;

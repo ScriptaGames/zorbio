@@ -31,15 +31,16 @@ config.MAX_PLAYERS              = 50;
 config.HEARTBEAT_ENABLE         = true;
 config.HEARTBEAT_TIMEOUT        = 300000; // how long before a client is considered disconnected
 config.HEARTBEAT_CHECK_INTERVAL = 1000;   // server heartbeat test interval
-config.HEARTBEAT_PULSE_INTERVAL = 3000;   // client heartbeat pulse
+config.HEARTBEAT_PULSE_INTERVAL = 5000;   // client heartbeat pulse
 config.SERVER_TICK_INTERVAL     = 200;    // General server updates in milliseconds
 config.ACTOR_UPDATE_INTERVAL    = 50;     // How often actors update their position in milliseconds
 config.PENDING_PLAYER_CAPTURE_TTL = 3000; // how long pending player capture lives before it expires in milliseconds
 config.CHECK_VERSION            = true;   // check for latest version of the game through the zapi
 config.CHECK_VERSION_INTERVAL   = 30000;  // how often to check for new version
 config.LEADERS_LENGTH           = 10;     // How many players to include in the leaders array
-config.BIN_PP_POSITIONS_LENGTH  = 11;
+config.BIN_PP_POSITIONS_LENGTH  = 12;
 config.ORIGIN                   = 'http://zor.bio'; // the origin that's allowed to connect to websocket server
+config.RECENT_CLIENT_DATA_LENGTH = 100;   // how many recent data points to keep from the client like pings
 
 config.BALANCERS = Object.freeze({
     LOCAL: 'http://localhost',
