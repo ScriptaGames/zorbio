@@ -95,12 +95,13 @@ var FoodController = function ZORFoodController(model, fogCenterPosition, scene)
         var foodList = this.octree.search(mainSphere.position, sphere_radius + 25);
 
         for ( i = 0, l = foodList.length; i < l; i++ ) {
-            var food = foodList[i].object;
-            if (this.aliveFood( food.fi )) {
+            var octreeObj = foodList[i];
+            var fi = foodList[i].object.fi;
+            if (this.aliveFood( fi )) {
 
-                dist = food.position.distanceTo( mainSphere.position );
+                dist = octreeObj.position.distanceTo( mainSphere.position );
                 if (dist <= (sphere_radius + config.FOOD_CAPTURE_ASSIST)) {
-                    callback( food.fi );
+                    callback( fi );
                     _.sample(ZOR.Sounds.food_capture).play();
                 }
             }

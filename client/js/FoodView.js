@@ -45,15 +45,9 @@ var FoodView = function ZORFoodView() {
             colors[ offset + 1 ] = G;
             colors[ offset + 2 ] = B;
 
-            // Add to octree for fast way to find food near player
-            var foodOctreeObj = new THREE.Object3D();
-            foodOctreeObj.position.set(X, Y, Z);
-            foodOctreeObj.boundRadius = 1.0;
-            foodOctreeObj.boundRadiusScale = 1.0;
-            foodOctreeObj.updateMatrixWorld();
-            foodOctreeObj.fi = i;  // Custom food index attribute
-
-            octree.add( foodOctreeObj );
+            // Add this food object to the Octree
+            var foodObj = {x: X, y: Y, z: Z, radius: 1, fi: i};
+            octree.add( foodObj );
 
             offset += 3;
         }
