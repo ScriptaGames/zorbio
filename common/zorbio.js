@@ -193,6 +193,12 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.pp_receive_gap_avg = 0;
     this.pp_receive_gap_max = 0;
     this.pp_receive_gap_long_count = 0;
+
+    this.au_receive_last_time = Date.now();
+    this.au_received_recent_gaps = [];
+    this.au_receive_gap_avg = 0;
+    this.au_receive_gap_max = 0;
+    this.au_receive_gap_long_count = 0;
 };
 
 

@@ -6,6 +6,7 @@ var socket;
 
 var zorPingStart;
 var zorPingDuration = 0;
+var actorUpdateGap = 0;
 
 // handles to setInterval methods so we can clear them later
 var interval_id_heartbeat;
@@ -47,7 +48,8 @@ function sendPlayerSpherePosition() {
     var bufferView = new Float32Array(config.BIN_PP_POSITIONS_LENGTH + (player.food_capture_queue.length * 2));
     var index = 0;
     bufferView[index++] = sphereModel.id;            // Actor ID
-    bufferView[index++] = gap;                       // Gap since last update
+    bufferView[index++] = gap;                       // Gap since last pp update
+    bufferView[index++] = actorUpdateGap;            // Gap since last au update
     bufferView[index++] = oldestPosition.position.x; // Old position X
     bufferView[index++] = oldestPosition.position.y; // Old position Y
     bufferView[index++] = oldestPosition.position.z; // Old position Z
@@ -174,6 +176,11 @@ function setupSocket(socket) {
         if (!gameStart) {
             return; // don't start updating player positions in the client until their game has started
         }
+
+        // Record gap since last actor update was received
+        var nowTime = Date.now();
+        actorUpdateGap = nowTime - this.au_receive_last_time;
+        this.au_receive_last_time = nowTime;
 
         var actorsArray = new Float32Array(buf);
 

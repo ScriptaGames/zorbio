@@ -195,6 +195,7 @@ io.on('connection', function (socket) {
         var index     = 0;
         var sphere_id = bufView[index++];
         var gap       = bufView[index++];
+        var auGap     = bufView[index++];
         var old_x     = bufView[index++];
         var old_y     = bufView[index++];
         var old_z     = bufView[index++];
@@ -227,6 +228,17 @@ io.on('connection', function (socket) {
 
             if (receive_gap > 200) {
                 currentPlayer.pp_receive_gap_long_count++;
+            }
+        }
+        if (auGap > 0) {
+            UTIL.pushShift(currentPlayer.au_received_recent_gaps, auGap, config.RECENT_CLIENT_DATA_LENGTH);
+            currentPlayer.au_receive_gap_avg = UTIL.getAvg(currentPlayer.au_received_recent_gaps);
+            if (+currentPlayer.au_receive_gap_max >= 0) {
+                currentPlayer.au_receive_gap_max = Math.max(+currentPlayer.au_receive_gap_max, auGap);
+            }
+
+            if (auGap > 200) {
+                currentPlayer.au_receive_gap_long_count++;
             }
         }
 
