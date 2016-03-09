@@ -113,7 +113,11 @@
             <div id="start-menu">
                 <h1>ZOR.BIO</h1>
                 <h2>( Alpha )</h2>
+                <p>Thanks everyone for participating in our public Alpha preview!</p>
+                <p>We are temporarily closing public alpha testing while we implment more features.</p>
+                <p>If you would like an Alpha Key just an email to admin@scripta.co</p>
                 <input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" autofocus placeholder="Player name" value="{{ player_name }}"/>
+                <input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" placeholder="Alpha key" value="{{ alpha_key }}"/>
                 {{ #if login_error_msg }}
                 <b class="error-text">Nick name must be alphanumeric characters only!</b>
                 {{ /if }}
