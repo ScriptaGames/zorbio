@@ -56,6 +56,7 @@ app.all("/api/*", auth);
 app.get('/api/players/count', function (req, res) {
     var playerIds = Object.getOwnPropertyNames(model.players);
     var count = typeof playerIds.length !== 'undefined' ? playerIds.length : 0;
+    res.setHeader('content-type', 'application/json');
     res.send( "{\"count\": " + count + "}" );
 });
 
@@ -63,6 +64,7 @@ app.get('/api/players/count', function (req, res) {
  * API to return all the player objects on this server
  */
 app.get('/api/players', function (req, res) {
+    res.setHeader('content-type', 'application/json');
     res.send( JSON.stringify(model.players) );
 });
 
@@ -70,6 +72,7 @@ app.get('/api/players', function (req, res) {
  * API to return all the actor objects on this server
  */
 app.get('/api/actors', function (req, res) {
+    res.setHeader('content-type', 'application/json');
     res.send( JSON.stringify(model.actors) );
 });
 
@@ -83,6 +86,7 @@ app.get('/api/food', function (req, res) {
     foodModel.food_respawning_indexes = model.food_respawning_indexes;
     foodModel.food_respawn_ready_queue = model.food_respawn_ready_queue;
 
+    res.setHeader('content-type', 'application/json');
     res.send( JSON.stringify(foodModel) );
 });
 
@@ -92,6 +96,7 @@ app.get('/api/food', function (req, res) {
 app.get('/api/sockets/count', function (req, res) {
     var socketIds = Object.getOwnPropertyNames(sockets);
     var count = typeof socketIds.length !== 'undefined' ? socketIds.length : 0;
+    res.setHeader('content-type', 'application/json');
     res.send( "{\"count\": " + count + "}" );
 });
 
@@ -179,8 +184,8 @@ io.on('connection', function (socket) {
         if (currentPlayer) currentPlayer.lastHeartbeat = Date.now();
 
         var nowTime = Date.now();
-        var receive_gap = nowTime - currentPlayer.pp_receive_last_time;
-        currentPlayer.pp_receive_last_time = nowTime;
+        var receive_gap = nowTime - currentPlayer.pp_receive_metric.last_time;
+        currentPlayer.pp_receive_metric.last_time = nowTime;
 
         // Read binary data
         var bufArr  = new ArrayBuffer(buffer.length);
@@ -195,7 +200,8 @@ io.on('connection', function (socket) {
         var index     = 0;
         var sphere_id = bufView[index++];
         var gap       = bufView[index++];
-        var auGap     = bufView[index++];
+        var au_gap    = bufView[index++];
+        var ba        = bufView[index++];
         var old_x     = bufView[index++];
         var old_y     = bufView[index++];
         var old_z     = bufView[index++];
@@ -207,40 +213,11 @@ io.on('connection', function (socket) {
         var new_r     = bufView[index++];
         var new_t     = bufView[index];
 
-        // Save the recent gaps between position updates sent and received
-        if (gap > 0) {
-            UTIL.pushShift(currentPlayer.pp_sent_recent_gaps, gap, config.RECENT_CLIENT_DATA_LENGTH);
-            currentPlayer.pp_send_gap_avg = UTIL.getAvg(currentPlayer.pp_sent_recent_gaps);
-            if (+currentPlayer.pp_send_gap_max >= 0) {
-                currentPlayer.pp_send_gap_max = Math.max(+currentPlayer.pp_send_gap_max, gap);
-            }
-
-            if (gap > 200) {
-                currentPlayer.pp_send_gap_long_count++;
-            }
-        }
-        if (receive_gap > 0) {
-            UTIL.pushShift(currentPlayer.pp_received_recent_gaps, receive_gap, config.RECENT_CLIENT_DATA_LENGTH);
-            currentPlayer.pp_receive_gap_avg = UTIL.getAvg(currentPlayer.pp_received_recent_gaps);
-            if (+currentPlayer.pp_receive_gap_max >= 0) {
-                currentPlayer.pp_receive_gap_max = Math.max(+currentPlayer.pp_receive_gap_max, receive_gap);
-            }
-
-            if (receive_gap > 200) {
-                currentPlayer.pp_receive_gap_long_count++;
-            }
-        }
-        if (auGap > 0) {
-            UTIL.pushShift(currentPlayer.au_received_recent_gaps, auGap, config.RECENT_CLIENT_DATA_LENGTH);
-            currentPlayer.au_receive_gap_avg = UTIL.getAvg(currentPlayer.au_received_recent_gaps);
-            if (+currentPlayer.au_receive_gap_max >= 0) {
-                currentPlayer.au_receive_gap_max = Math.max(+currentPlayer.au_receive_gap_max, auGap);
-            }
-
-            if (auGap > 200) {
-                currentPlayer.au_receive_gap_long_count++;
-            }
-        }
+        // Save the client metrics
+        currentPlayer.pp_send_metric.add(gap);
+        currentPlayer.pp_receive_metric.add(receive_gap);
+        currentPlayer.au_receive_metric.add(au_gap);
+        currentPlayer.buffered_amount_metric.add(ba);
 
         // Build the sphere object
         var oldestPosition = {position: {x: old_x, y: old_y, z: old_z}, radius: old_r, time: old_t};
@@ -367,13 +344,9 @@ io.on('connection', function (socket) {
     socket.on('zorServerPing', function (data) {
         currentPlayer.lastHeartbeat = Date.now();
 
-        // save recent pings and get average
-        UTIL.pushShift(currentPlayer.recent_pings, data.lastPing, config.RECENT_CLIENT_DATA_LENGTH);
-        currentPlayer.avg_ping = UTIL.getAvg(currentPlayer.recent_pings);
-
-        // save recent fps and get average
-        UTIL.pushShift(currentPlayer.recent_fps, data.fps, config.RECENT_CLIENT_DATA_LENGTH);
-        currentPlayer.avg_fps = UTIL.getAvg(currentPlayer.recent_fps);
+        // save recent pings and fps
+        currentPlayer.ping_metric.add(data.lastPing);
+        currentPlayer.fps_metric.add(data.fps);
 
         socket.emit("zorServerPong", "zor_pong");
     });

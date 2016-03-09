@@ -29,8 +29,10 @@ function sendRespawn(isFirstSpawn) {
 
 function sendPlayerSpherePosition() {
     var nowTime = Date.now();
-    var gap = nowTime - player.pp_send_last_time;
-    player.pp_send_last_time = nowTime;
+    var gap = nowTime - player.model.pp_send_metric.last_time;
+    player.model.pp_send_metric.last_time = nowTime;
+
+    var bufferedAmount = socket.io.engine.transport.ws.bufferedAmount;
 
     // Make sure model is synced with view
     player.refreshSphereModel();
@@ -50,6 +52,7 @@ function sendPlayerSpherePosition() {
     bufferView[index++] = sphereModel.id;            // Actor ID
     bufferView[index++] = gap;                       // Gap since last pp update
     bufferView[index++] = actorUpdateGap;            // Gap since last au update
+    bufferView[index++] = bufferedAmount;            // Amount of bytes currently buffered to send in the ws
     bufferView[index++] = oldestPosition.position.x; // Old position X
     bufferView[index++] = oldestPosition.position.y; // Old position Y
     bufferView[index++] = oldestPosition.position.z; // Old position Z
@@ -179,8 +182,8 @@ function setupSocket(socket) {
 
         // Record gap since last actor update was received
         var nowTime = Date.now();
-        actorUpdateGap = nowTime - this.au_receive_last_time;
-        this.au_receive_last_time = nowTime;
+        actorUpdateGap = nowTime - player.model.au_receive_metric.last_time;
+        player.model.au_receive_metric.last_time = nowTime;
 
         var actorsArray = new Float32Array(buf);
 

@@ -5,6 +5,7 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 if (NODEJS) var THREE = require('three');
 if (NODEJS) var UTIL = require('./util.js');
 if (NODEJS) var config = require('./config.js');
+if (NODEJS) var _ = require('lodash');
 
 var ZOR = ZOR || {};
 
@@ -175,30 +176,46 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.infractions_speed = 0;
     this.infractions_scale = 0;
 
-    // Client info
+    // Client Metrics
     this.handshake = undefined;
-    this.recent_pings = [];
-    this.recent_fps = [];
-    this.avg_ping = 0;
-    this.avg_fps = 0;
+    this.ping_metric = new ZOR.PlayerMetric(100);
+    this.fps_metric = new ZOR.PlayerMetric(20, true);
+    this.pp_send_metric = new ZOR.PlayerMetric(200);
+    this.pp_receive_metric = new ZOR.PlayerMetric(200);
+    this.au_receive_metric = new ZOR.PlayerMetric(200);
+    this.buffered_amount_metric = new ZOR.PlayerMetric(320);
+};
 
-    this.pp_send_last_time = Date.now();
-    this.pp_sent_recent_gaps = [];
-    this.pp_send_gap_avg = 0;
-    this.pp_send_gap_max = 0;
-    this.pp_send_gap_long_count = 0;
+ZOR.PlayerMetric = function ZORPlayerMetric(threshold, reverse_threshold) {
+    this.threshold = threshold;
+    this.reverse_threshold = reverse_threshold || false;
+    this.last_time = Date.now();
+    this.series = [];
+    this.mean = 0;
+    this.max = 0;
+    this.min = 0;
+    this.threshold_exceeded_count = 0;
+};
 
-    this.pp_receive_last_time = Date.now();
-    this.pp_received_recent_gaps = [];
-    this.pp_receive_gap_avg = 0;
-    this.pp_receive_gap_max = 0;
-    this.pp_receive_gap_long_count = 0;
+ZOR.PlayerMetric.prototype.add = function ZORPlayerMetricAdd(value) {
+    value = +value; // make sure it's an int
 
-    this.au_receive_last_time = Date.now();
-    this.au_received_recent_gaps = [];
-    this.au_receive_gap_avg = 0;
-    this.au_receive_gap_max = 0;
-    this.au_receive_gap_long_count = 0;
+    UTIL.pushShift(this.series, value, config.RECENT_CLIENT_DATA_LENGTH);
+
+    this.mean = _.mean(this.series);
+    this.max = _.max(this.series);
+    this.min = _.min(this.series);
+
+    if (this.reverse_threshold) {
+        if (value < this.threshold) {
+            this.threshold_exceeded_count++;
+        }
+    }
+    else {
+        if (value > this.threshold) {
+            this.threshold_exceeded_count++;
+        }
+    }
 };
 
 

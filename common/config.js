@@ -38,7 +38,7 @@ config.PENDING_PLAYER_CAPTURE_TTL = 3000; // how long pending player capture liv
 config.CHECK_VERSION            = true;   // check for latest version of the game through the zapi
 config.CHECK_VERSION_INTERVAL   = 30000;  // how often to check for new version
 config.LEADERS_LENGTH           = 10;     // How many players to include in the leaders array
-config.BIN_PP_POSITIONS_LENGTH  = 13;
+config.BIN_PP_POSITIONS_LENGTH  = 14;
 config.ORIGIN                   = 'http://zor.bio'; // the origin that's allowed to connect to websocket server
 config.RECENT_CLIENT_DATA_LENGTH = 100;   // how many recent data points to keep from the client like pings
 
