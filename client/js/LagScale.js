@@ -16,9 +16,10 @@ ZOR.LagScale = function ZORLagScale() {
         if (config.LAG_SCALE_ENABLE) {
             var new_time = get_time();
             var time_diff = new_time - time;
+            var new_fps = 1 / (time_diff / 1000);
             time = new_time;
             scale = time_diff / IDEAL_FRAME_MS;
-            fps = 1 / (time_diff / 1000);
+            fps = 0.2 * new_fps + 0.8 * fps; // running average of fps
         }
     }
 
