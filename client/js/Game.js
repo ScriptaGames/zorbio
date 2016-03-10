@@ -68,6 +68,8 @@ function startGame(type) {
         ZOR.Game.fullscreen();
     }
 
+    ZOR.Sounds.music.background.play();
+
     playerType = type;
 
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );

@@ -27,6 +27,14 @@ ZOR.Sounds = (function ZORSounds() {
                 urls: ['../sfx/58711__arioke__kalimba-lam08-a3-tip-soft.wav'],
             }),
         },
+        music: {
+            "background": new Howl({
+                urls: ['../music/starfish-oblivion.mp3'],
+                autoplay: false,
+                loop: true,
+                volume: 0.45,
+            }),
+        },
 
     };
 
