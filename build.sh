@@ -26,6 +26,7 @@ mkdir -p dist > /dev/null
 cp -r client/textures dist/
 cp -r client/sfx dist/
 cp -r client/images dist/
+cp -r client/music dist/
 cp client/favicon.ico dist/
 node node_modules/html-inline/bin/cmd.js -i client/index.html > dist/index-inlined.html
 node node_modules/html-minifier/cli.js dist/index-inlined.html --minify-js --collapse-whitespace --remove-comments  --remove-attribute-quotes --remove-script-type-attributes --remove-style-link-type-attributes > dist/index.html
