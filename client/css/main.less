@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Orbitron");
 
 @import (inline) url("reset.css");
-@import url("tutorial");
 
 // fonts
 
@@ -215,11 +214,7 @@ button {
         height                   : 30px;
         border-radius            : 50%;
         background               : lighten(@accent-color, 10%);
-        -webkit-transform-origin : 150% 50%;
         transform-origin         : 150% 50%;
-        // -webkit-transform     : scale3d(1, 2, 1);
-        // transform             : scale3d(1, 2, 1);
-        -webkit-transition       : -webkit-transform 0.4s, opacity 0.4s;
         transition               : transform 0.4s, opacity 0.4s;
     }
     & > span {
@@ -227,7 +222,6 @@ button {
         padding-left   : 0.75em;
     }
     &:hover::before {
-        -webkit-transform : scale3d(9, 9, 1);
         transform         : scale3d(9, 9, 1);
     }
 }
@@ -293,7 +287,7 @@ button {
     background : none;
     margin     : 8px;
     cursor     : pointer;
-    .transition(opacity, 0.1s);
+    transition : opacity ease-in-out 0.1s;
     &:hover {
         opacity: 0.4;
     }
