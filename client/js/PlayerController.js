@@ -111,9 +111,9 @@ ZOR.PlayerController.prototype.radius = function ZORPlayerControllerRadius() {
 };
 
 ZOR.PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(scale) {
-    // set the scale on both the model and the view
+    // set the scale on model and update the view
     this.model.sphere.scale = scale;
-    // this.view.setScale(scale);
+    this.view.update(scale);
 };
 
 ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls, lag_scale) {
