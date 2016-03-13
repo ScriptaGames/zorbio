@@ -278,9 +278,9 @@ function createScene() {
 
             player.update(scene, camera, camera_controls, ZOR.LagScale.get());
 
-            foodController.update(player.view.mainSphere.position);
+            foodController.update(player.model.sphere.position);
 
-            playerFogCenter.copy(player.view.mainSphere.position);
+            playerFogCenter.copy(player.model.sphere.position);
 
             foodController.checkFoodCaptures(player, captureFood);
 
