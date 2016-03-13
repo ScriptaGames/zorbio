@@ -537,7 +537,7 @@ function handleServerTick(serverTickData) {
 }
 
 function handleSuccessfulPlayerCapture(targetPlayer) {
-    player.grow( config.PLAYER_CAPTURE_VALUE( targetPlayer.radius() ), 40 );
+    player.grow( config.PLAYER_CAPTURE_VALUE( targetPlayer.radius() ) );
 }
 
 function handlePlayerKick(msg) {
