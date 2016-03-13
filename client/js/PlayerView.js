@@ -41,7 +41,7 @@ ZOR.PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
     this.mainSphere = new THREE.Mesh( this.geometry, this.material );
     this.mainSphere.position.copy(actor.position);
 
-    this.setScale(0);
+    this.setScale(actor.scale);
 
     scene.add( this.mainSphere );
 };
@@ -59,7 +59,6 @@ ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera, sc
 
 ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position, scene, camera, renderer) {
     this.mainSphere.position.lerp(position, config.PLAYER_MOVE_LERP_WEIGHT);
-    this.update(scene, camera, renderer);
 };
 
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {

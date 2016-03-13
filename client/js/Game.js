@@ -418,7 +418,6 @@ function updateActors() {
                     // update players sphere position
                     otherPlayer.updatePosition(actor.position, scene, camera, ZOR.Game.renderer);
                     otherPlayer.setScale(actor.scale);
-                    console.log(`other player is at ${actor.position.x} ${actor.position.y} ${actor.position.z}`);
                 }
             }
         }
