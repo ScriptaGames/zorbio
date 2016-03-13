@@ -15,6 +15,7 @@ var THREE = require('three');
 var Zorbio = require('../common/zorbio.js');
 var Validators = require('./Validators.js');
 var UTIL = require('../common/util.js');
+var Drain = require('../common/Drain.js');
 
 var model = new Zorbio.Model(config.WORLD_SIZE, config.FOOD_DENSITY);
 
@@ -235,7 +236,7 @@ io.on('connection', function (socket) {
 
         if (!err) {
             // update the players position in the model
-            actor.position = latestPosition.position;
+            actor.position.set( latestPosition.position.x, latestPosition.position.y, latestPosition.position.z);
             actor.scale = sphere.scale;
 
             // Recent positions
@@ -373,29 +374,51 @@ function sendActorUpdates() {
     var actorIds = Object.getOwnPropertyNames(model.actors);
     if (actorIds.length === 0) return;  // nothing to do if there's no actors
 
-    var actorsArray = new Float32Array(actorIds.length * 6);
+    const NUM_PLAYERS = actorIds.length;
+
+    const ACTOR_PARTS = 6;
+    const ACTORS_ARRAY_LENGTH = ACTOR_PARTS * 32;
+
+    // for each player, save the id's of each player they are draining.  the
+    // space for those id's is one byte per other player.  for example, if
+    // MAX_PLAYERS is 50, drain array size will be 49 bytes.
+    const DRAIN_ARRAY_LENGTH = config.MAX_PLAYERS - 1;
+
+    const PLAYER_ARRAY_LENGTH = UTIL.fourPad( ACTORS_ARRAY_LENGTH + DRAIN_ARRAY_LENGTH );
+
+    var buffer = new ArrayBuffer(PLAYER_ARRAY_LENGTH * NUM_PLAYERS);
+
+    var actorsArray;
+    var drainArray;
+
+    var drainers = Drain.findAll( model.players );
+    console.log(JSON.stringify(drainers, null, 4));
 
     // make the payload as small as possible, send only what's needed on the client
     var offset = 0;
-    for (var i = 0, l = actorIds.length; i < l; i++) {
+    var i = NUM_PLAYERS;
+    while( i-- ) {
         var id = +actorIds[i];  // make sure id is a number
         var actor = model.actors[id];
         var position = actor.position;
 
-        actorsArray[ offset ]     = id;
-        actorsArray[ offset + 1 ] = position.x;
-        actorsArray[ offset + 2 ] = position.y;
-        actorsArray[ offset + 3 ] = position.z;
-        actorsArray[ offset + 4 ] = actor.scale;
-        actorsArray[ offset + 5 ] = actor.serverAdjust;
+        actorsArray = new Float32Array(buffer, offset, ACTOR_PARTS);
+        drainArray  = new Uint8Array(buffer, offset + ACTORS_ARRAY_LENGTH, DRAIN_ARRAY_LENGTH);
+
+        actorsArray[0] = id;
+        actorsArray[1] = position.x;
+        actorsArray[2] = position.y;
+        actorsArray[3] = position.z;
+        actorsArray[4] = actor.scale;
+        actorsArray[5] = actor.serverAdjust;
 
         actor.serverAdjust = 0;
 
-        offset += 6;
+        offset += PLAYER_ARRAY_LENGTH;
     }
 
     // Send au "actors updates"
-    io.emit('au', actorsArray.buffer);
+    io.emit('au', buffer);
 }
 
 function checkHeartbeats() {

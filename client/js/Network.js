@@ -185,19 +185,31 @@ function setupSocket(socket) {
         actorUpdateGap = nowTime - player.model.au_receive_metric.last_time;
         player.model.au_receive_metric.last_time = nowTime;
 
-        var actorsArray = new Float32Array(buf);
+        var actorArray;
+        var drainArray;
+
+        var actor_parts = 6;
+        var drain_bytes = config.MAX_PLAYERS - 1;
+        var actor_bytes = 32 * actor_parts;
+        var player_bytes = UTIL.fourPad( actor_bytes + drain_bytes ); // bytes per player
+        var player_count = buf.byteLength / player_bytes; // number of player frames in this update
 
         // sync the actors positions from the server model to the client model
-        for (var i = 0, l = actorsArray.length; i < l; i += 6) {
-            var id = +actorsArray[ i ];
+        var i = player_count;
+        while ( i-- ) {
+
+            actorArray = new Float32Array(buf, i * player_bytes, actor_parts);
+            drainArray = new Uint8Array(buf, i * player_bytes + actor_bytes, drain_bytes);
+
+            var id = +actorArray[ 0 ];
             var actor = zorbioModel.actors[id];
 
             if (actor) {
-                var x = actorsArray[ i + 1 ];
-                var y = actorsArray[ i + 2 ];
-                var z = actorsArray[ i + 3 ];
-                var s = actorsArray[ i + 4 ];
-                var serverAdjust = actorsArray[ i + 5 ];
+                var x = actorArray[ 1 ];
+                var y = actorArray[ 2 ];
+                var z = actorArray[ 3 ];
+                var s = actorArray[ 4 ];
+                var serverAdjust = actorArray[ 5 ];
 
                 actor.position.copy({x: x, y: y, z: z});
                 actor.scale = s;

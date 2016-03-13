@@ -251,6 +251,17 @@ UTIL.trimPosition = function UTILTrimPosition(position, trim) {
     };
 };
 
+/**
+ * Given a number n, increase n until it's a multiple of four.  For example,
+ * `fourPad(9)` would return 12 and `fourPad(20)` would return 20.
+ *
+ * @param {Number} n a number
+ * @returns {Number} the nearest multiple of four that is greater than n
+ */
+UTIL.fourPad = function UTILFourPad(n) {
+    return n + ( 4 - n % 4 );
+}
+
 UTIL.trimFloat = function UTILTrimFloat(num, trim) {
     return +num.toFixed(trim);
 };

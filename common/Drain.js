@@ -18,31 +18,47 @@ ZOR.Drain = {};
  */
 ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
     var players_array = _.values( players );
-    var drainers = [];
-    var player1;
-    var player2;
+    var drain = {};
+    var p1;
+    var p2;
     var distance;
+    var drain_ids;
 
     var l = players_array.length;
-    var i = l;
     var j = 0;
 
-    while ( --i ) {
-        j = i;
-        while ( --j ) {
-            player1 = players_array[i];
-            player2 = players_array[j];
-            distance = player1.getPosition().distanceTo( player2.getPosition() );
+    // init empty arrays for each player, they will hold the id's of players
+    // they are draining
+    var i = l;
+    while ( i-- ) drain[ players_array[i].id ] = [];
+
+    i = l;
+    while ( i-- ) {
+        j = i + 1;
+
+        // let's see if this player is draining anyone!
+        p1 = players_array[i];
+
+        while ( j-- ) {
+
+            if (i === j) continue; // don't compare player to itself
+
+            // find the distance between these two players
+            p2 = players_array[j];
+            distance = p1.sphere.position.distanceTo( p2.sphere.position );
+
+            // if p1 is close enough and small enough, save the p2's id
             if ( distance <= config.DRAIN.MAX_DISTANCE ) {
-                drainers.push({
-                    p1: player1,
-                    p2: player2,
-                });
+                if ( p1.sphere.scale < p2.sphere.scale ) {
+                    drain[ p1.id ].push( p2.id ); }
+                else if ( p2.sphere.scale < p1.sphere.scale ) {
+                    drain[ p2.id ].push( p1.id ); }
             }
+
         }
     }
 
-    return drainers;
+    return drain;
 };
 
 /**
