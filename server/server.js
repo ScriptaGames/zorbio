@@ -392,7 +392,6 @@ function sendActorUpdates() {
     var drainArray;
 
     var drainers = Drain.findAll( model.players );
-    console.log(JSON.stringify(drainers, null, 4));
 
     // make the payload as small as possible, send only what's needed on the client
     var offset = 0;

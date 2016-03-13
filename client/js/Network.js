@@ -211,7 +211,7 @@ function setupSocket(socket) {
                 var s = actorArray[ 4 ];
                 var serverAdjust = actorArray[ 5 ];
 
-                actor.position.copy({x: x, y: y, z: z});
+                actor.position.set(x, y, z);
                 actor.scale = s;
                 actor.serverAdjust = serverAdjust;
             }
