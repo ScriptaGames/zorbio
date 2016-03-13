@@ -95,7 +95,7 @@ config.DRAIN = {
         var n = 0.01;
         var o = 0.2;
         var p = 1.6;
-        return p / ( n * radius * radius + o );
+        return p / ( (n * (radius * radius)) + o );
     },
 };
 
