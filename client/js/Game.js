@@ -278,6 +278,8 @@ function createScene() {
 
             player.update(scene, camera, camera_controls, ZOR.LagScale.get());
 
+            updateOtherPlayerViews();
+
             foodController.update(player.model.sphere.position);
 
             playerFogCenter.copy(player.model.sphere.position);
@@ -300,6 +302,19 @@ function createScene() {
 
         ZOR.Game.renderer.render( scene, camera );
 
+    }
+}
+
+function updateOtherPlayerViews() {
+    _.each(players, updateOtherPlayerView);
+}
+function updateOtherPlayerView(otherPlayer) {
+    // skip local player, their view is already updated through their
+    // PlayerController update.  however remote players don't seem to have
+    // their PlayerControllers updated, so we must update their views manually
+    // here.
+    if (otherPlayer !== player) {
+        otherPlayer.view.update( otherPlayer.model.sphere.scale );
     }
 }
 

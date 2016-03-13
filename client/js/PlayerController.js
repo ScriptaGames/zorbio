@@ -12,7 +12,6 @@ ZOR.PlayerController = function ZORPlayerController(model, main_sphere, scene) {
     this.model = new ZOR.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
         model.sphere.scale, model.sphere.velocity);
     this.isDead = false;
-
     /**
      * Player velocity
      * @type {THREE.Vector3}
@@ -122,13 +121,13 @@ ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene
         this.moveForward(camera); // always move forward
     }
     this.applyVelocity(lag_scale, camera_controls);
-    this.view.update(scene, camera, this.radius());
+    this.view.update(this.model.sphere.scale);
 
     // check if we need to animate anything
-    // if (this._animated_grow_frames > 0) {
-    //     this.view.grow(this._animated_grow_amount);
-    //     this._animated_grow_frames--;
-    // }
+    if (this._animated_grow_frames > 0) {
+        this.view.grow(this._animated_grow_amount);
+        this._animated_grow_frames--;
+    }
 };
 
 ZOR.PlayerController.prototype.applyVelocity = function ZORPlayerControllerApplyVelocity(lag_scale, camera_controls) {

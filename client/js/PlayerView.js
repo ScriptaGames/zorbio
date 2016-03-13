@@ -53,7 +53,7 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
     this.adjustCamera();
 };
 
-ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera, scale) {
+ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
 };
 
