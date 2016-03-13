@@ -70,8 +70,6 @@ ZOR.PlayerController.prototype.removeView = function ZORPlayerControllerRemoveVi
 
 ZOR.PlayerController.prototype.grow = function ZORPlayerControllerGrow(amount) {
     this.model.sphere.scale += amount;
-    // this.view.grow(amount);
-    this.refreshSphereModel();
 };
 
 /**
@@ -91,9 +89,6 @@ ZOR.PlayerController.prototype.refreshSphereModel = function ZORPlayerController
 
     // sync position
     this.model.sphere.position.copy(this.view.mainSphere.position);
-
-    // sync scale
-    // this.model.sphere.scale = this.view.mainSphere.scale.x;
 };
 
 ZOR.PlayerController.prototype.updatePosition = function ZORPlayerControllerUpdatePosition(position, scene, camera, renderer) {
