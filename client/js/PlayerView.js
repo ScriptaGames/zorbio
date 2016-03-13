@@ -41,7 +41,7 @@ ZOR.PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
     this.mainSphere = new THREE.Mesh( this.geometry, this.material );
     this.mainSphere.position.copy(actor.position);
 
-    this.setScale(actor.scale);
+    this.setScale(0);
 
     scene.add( this.mainSphere );
 };
@@ -53,7 +53,8 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
     this.adjustCamera();
 };
 
-ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera) {
+ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scene, camera, scale) {
+    this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
 };
 
 ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position, scene, camera, renderer) {

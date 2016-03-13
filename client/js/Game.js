@@ -418,11 +418,8 @@ function updateActors() {
                     // update players sphere position
                     otherPlayer.updatePosition(actor.position, scene, camera, ZOR.Game.renderer);
                     otherPlayer.setScale(actor.scale);
+                    console.log(`other player is at ${actor.position.x} ${actor.position.y} ${actor.position.z}`);
                 }
-            }
-            else {
-                // Adjust self from server
-                player.setScale(actor.scale);
             }
         }
     }
@@ -543,7 +540,7 @@ function handleServerTick(serverTickData) {
 }
 
 function handleSuccessfulPlayerCapture(targetPlayer) {
-    player.animatedGrow( config.PLAYER_CAPTURE_VALUE( targetPlayer.radius() ), 40 );
+    player.grow( config.PLAYER_CAPTURE_VALUE( targetPlayer.radius() ), 40 );
 }
 
 function handlePlayerKick(msg) {

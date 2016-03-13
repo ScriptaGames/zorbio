@@ -136,6 +136,7 @@ ZOR.PlayerSphere.prototype.growExpected = function ZORPlayerSphereGrowExpected(a
     if (this.expectedScale > config.MAX_PLAYER_RADIUS) {
         this.expectedScale = config.MAX_PLAYER_RADIUS;
     }
+    this.scale = this.expectedScale;
 };
 
 /**
