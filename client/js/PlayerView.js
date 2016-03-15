@@ -50,7 +50,6 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
     this.mainSphere.scale.addScalar( amount );
     this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
     this.mainSphere.geometry.computeBoundingSphere(); // compute the new bounding sphere after resizing
-    this.adjustCamera();
 };
 
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
@@ -75,9 +74,8 @@ ZOR.PlayerView.prototype.setCameraControls = function ZORPlayerViewSetCameraCont
     this.camera_controls = camera_controls;
 };
 
-ZOR.PlayerView.prototype.adjustCamera = function ZORPlayerViewAdjustCamera() {
-    var radius = this.mainSphere.scale.x;
-    this.camera_controls.minDistance = radius / Math.tan( Math.PI * camera.fov / 360 ) + 100;
+ZOR.PlayerView.prototype.adjustCamera = function ZORPlayerViewAdjustCamera(scale) {
+    this.camera_controls.minDistance = scale / Math.tan( Math.PI * camera.fov / 360 ) + 100;
     this.camera_controls.maxDistance = this.camera_controls.minDistance;
 };
 

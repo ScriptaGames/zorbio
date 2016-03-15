@@ -34,6 +34,7 @@ ZOR.PlayerController.prototype.queueFoodCapture = function ZORPlayerControllerQu
 
     // instant grow
     this.grow(value);
+    this.view.adjustCamera(this.radius());
 
     // queue food capture to send to server on next position update
     this.food_capture_queue.push({fi: fi, radius: origRadius});

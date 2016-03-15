@@ -344,7 +344,7 @@ function initCameraAndPlayer() {
     camera.position.copy( player.model.sphere.position.clone().multiplyScalar(1.2) );
 
     player.setCameraControls( camera_controls );
-    player.view.adjustCamera();
+    player.view.adjustCamera(player.radius());
 }
 
 function drawPlayers() {
