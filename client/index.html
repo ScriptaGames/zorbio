@@ -241,6 +241,8 @@
 
                 if ( FOG_ENABLED != 0.0 ) {
                     fogp = 1.0 - sDist / FOG_FAR;
+                    // also, drop any foods beyond frustum
+                    if ( sDist > FOG_FAR ) discard;
                 }
 
                 if ( ALPHA_ENABLED != 0.0 ) {
@@ -361,6 +363,7 @@
                 if ( vRespawning > FOOD_RESPAWN_ANIM_DURATION ) discard;
 
                 if ( FOG_ENABLED != 0.0 ) {
+                    // if fog is enabled, fade out
                     fogp = 1.0 - sDist / FOG_FAR;
                 }
 
