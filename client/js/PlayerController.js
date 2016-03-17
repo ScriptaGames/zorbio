@@ -92,6 +92,11 @@ ZOR.PlayerController.prototype.refreshSphereModel = function ZORPlayerController
     this.model.sphere.position.copy(this.view.mainSphere.position);
 };
 
+ZOR.PlayerController.prototype.updateScale = function ZORPlayerControllerUpdatePosition(scale) {
+    this.setScale(scale);
+    this.view.update(scale);
+};
+
 ZOR.PlayerController.prototype.updatePosition = function ZORPlayerControllerUpdatePosition(position, scene, camera, renderer) {
     this.model.sphere.position.copy(position);
     this.view.updatePosition(position, scene, camera, renderer);
@@ -107,17 +112,16 @@ ZOR.PlayerController.prototype.radius = function ZORPlayerControllerRadius() {
 };
 
 ZOR.PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(scale) {
-    // set the scale on model and update the view
+    // set the scale on model
     this.model.sphere.scale = scale;
-    this.view.update(scale);
 };
 
-ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls, lag_scale) {
+ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls, scale, lag_scale) {
     if (config.AUTO_RUN_ENABLED) {
         this.moveForward(camera); // always move forward
     }
     this.applyVelocity(lag_scale, camera_controls);
-    this.view.update(this.model.sphere.scale);
+    this.updateScale(scale);
 
     // check if we need to animate anything
     if (this._animated_grow_frames > 0) {

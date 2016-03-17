@@ -370,6 +370,36 @@ io.on('connection', function (socket) {
     });
 });
 
+function updateActorDrains() {
+    // update drains
+
+    var drainers = Drain.findAll( model.players );
+    var drainer_ids = Object.getOwnPropertyNames(drainers);
+    var drainees;
+    var drainee;
+    var drainee_id;
+    var drainer_id;
+
+    var i = drainer_ids.length;
+    var j;
+    while ( i-- ) {
+        drainer_id = drainer_ids[i];
+        drainees = drainers[drainer_id];
+        j = drainees.length;
+        while ( j-- ) {
+            drainee_id = drainees[j];
+
+            drainer = model.actors[drainer_id];
+            drainee = model.actors[drainee_id];
+
+            // log_sometimes(`${drainer_id} is draining ${drainee_id}`);
+
+            drainer.growExpected(0.01);
+            drainee.growExpected(-0.01);
+        }
+    }
+}
+
 function sendActorUpdates() {
     var actorIds = Object.getOwnPropertyNames(model.actors);
     if (actorIds.length === 0) return;  // nothing to do if there's no actors
@@ -393,10 +423,8 @@ function sendActorUpdates() {
     var id;
     var actor;
     var position;
-    var drainees;
-    var drainee;
 
-    var drainers = Drain.findAll( model.players );
+    updateActorDrains();
 
     // make the payload as small as possible, send only what's needed on the client
     var offset = 0;
@@ -408,19 +436,6 @@ function sendActorUpdates() {
 
         actorsArray = new Float32Array(buffer, offset, ACTOR_PARTS);
         drainArray  = new Uint8Array(buffer, offset + ACTORS_ARRAY_LENGTH, DRAIN_ARRAY_LENGTH);
-
-        // update drains
-
-        drainees = drainers[id];
-
-        var j = 0;
-        while ( j < DRAIN_ARRAY_LENGTH ) {
-            drainee = drainees[j];
-            if (drainee) {
-                drainArray[j] = drainee;
-            }
-            j++;
-        }
 
         // update actor data
 
