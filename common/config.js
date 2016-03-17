@@ -83,13 +83,13 @@ config.STEERING_METHODS      = Object.freeze({ // enum-ish
         SPEED : 0.3,  // higher makes camera rotate faster
     },
 });
-config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
+config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
 
 config.Y_AXIS_MULT = 1;
 config.X_AXIS_MULT = 1;
 
 config.DRAIN = {
-    MAX_DISTANCE: 100, // distance at which draining starts
+    MAX_DISTANCE: 300, // distance at which draining starts
     AMOUNT: function DrainAmount( radius ) {
         // see https://www.desmos.com/calculator/b4uijma9a6
         var n = 0.01;

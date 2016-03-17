@@ -390,6 +390,11 @@ function sendActorUpdates() {
 
     var actorsArray;
     var drainArray;
+    var id;
+    var actor;
+    var position;
+    var drainees;
+    var drainee;
 
     var drainers = Drain.findAll( model.players );
 
@@ -397,12 +402,27 @@ function sendActorUpdates() {
     var offset = 0;
     var i = NUM_PLAYERS;
     while( i-- ) {
-        var id = +actorIds[i];  // make sure id is a number
-        var actor = model.actors[id];
-        var position = actor.position;
+        id = +actorIds[i];  // make sure id is a number
+        actor = model.actors[id];
+        position = actor.position;
 
         actorsArray = new Float32Array(buffer, offset, ACTOR_PARTS);
         drainArray  = new Uint8Array(buffer, offset + ACTORS_ARRAY_LENGTH, DRAIN_ARRAY_LENGTH);
+
+        // update drains
+
+        drainees = drainers[id];
+
+        var j = 0;
+        while ( j < DRAIN_ARRAY_LENGTH ) {
+            drainee = drainees[j];
+            if (drainee) {
+                drainArray[j] = drainee;
+            }
+            j++;
+        }
+
+        // update actor data
 
         actorsArray[0] = id;
         actorsArray[1] = position.x;
