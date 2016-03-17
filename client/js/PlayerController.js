@@ -116,12 +116,11 @@ ZOR.PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(s
     this.model.sphere.scale = scale;
 };
 
-ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls, scale, lag_scale) {
+ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls, lag_scale) {
     if (config.AUTO_RUN_ENABLED) {
         this.moveForward(camera); // always move forward
     }
     this.applyVelocity(lag_scale, camera_controls);
-    this.updateScale(scale);
 
     // check if we need to animate anything
     if (this._animated_grow_frames > 0) {

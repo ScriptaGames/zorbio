@@ -276,7 +276,7 @@ function createScene() {
 
             ZOR.LagScale.update();
 
-            player.update(scene, camera, camera_controls, zorbioModel.actors[player.getPlayerId()].scale, ZOR.LagScale.get());
+            player.update(scene, camera, camera_controls, ZOR.LagScale.get());
 
             foodController.update(player.model.sphere.position);
 
@@ -417,6 +417,10 @@ function updateActors() {
                     otherPlayer.updatePosition(actor.position, scene, camera, ZOR.Game.renderer);
                     otherPlayer.updateScale(actor.scale);
                 }
+            }
+            else {
+                // update main player
+                player.updateScale(actor.scale);
             }
         }
     }
