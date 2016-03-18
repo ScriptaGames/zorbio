@@ -90,14 +90,19 @@ config.X_AXIS_MULT = 1;
 
 config.DRAIN = {
     MAX_DISTANCE: 300, // distance at which draining starts
-    AMOUNT: function DrainAmount( radius ) {
+    AMOUNT: function DrainAmount( distance ) {
         // see https://www.desmos.com/calculator/b4uijma9a6
         var n = 0.01;
         var o = 0.2;
         var p = 1.6;
-        return p / ( (n * (radius * radius)) + o );
+        return p / ( (n * (distance * distance)) + o );
     },
 };
+// to drain someone you must be THIS much smaller than them.  the number is
+// equal to the minimum amount of size that can be drained (drain amount at max
+// distance).  this prevents drain from repeatedly swapping size back and forth
+// between two similarly sized players.
+config.DRAIN.SIZE_LIMIT = config.DRAIN.AMOUNT(config.DRAIN.MAX_DISTANCE),
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //

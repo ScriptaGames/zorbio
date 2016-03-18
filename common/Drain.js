@@ -21,6 +21,8 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
     var drain = {};
     var p1;
     var p2;
+    var p1_scale;
+    var p2_scale;
     var distance;
     var drain_ids;
 
@@ -47,12 +49,16 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
             p2 = players_array[j];
             distance = p1.sphere.position.distanceTo( p2.sphere.position );
 
-            // if p1 is close enough and small enough, save the p2's id
+            // if a player is close enough and small enough, save the p2's id
             if ( distance <= config.DRAIN.MAX_DISTANCE ) {
-                if ( p1.sphere.scale < p2.sphere.scale ) {
-                    drain[ p1.id ].push( p2.id ); }
-                else if ( p2.sphere.scale < p1.sphere.scale ) {
-                    drain[ p2.id ].push( p1.id ); }
+
+                p1_scale = p1.sphere.scale;
+                p2_scale = p2.sphere.scale;
+
+                if ( p1_scale - p2_scale < -config.DRAIN.SIZE_LIMIT  ) {
+                    drain[ p1.id ].push( p2.id ); } // p1 drains p2
+                else if ( p2_scale - p1_scale < -config.DRAIN.SIZE_LIMIT ) {
+                    drain[ p2.id ].push( p1.id ); } // p2 drains p1
             }
 
         }
