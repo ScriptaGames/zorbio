@@ -6,6 +6,7 @@ var io = require('socket.io')(http);
 var config = require('../common/config.js');
 var pjson = require('../package.json');
 var request = require('request');
+var gameloop = require('node-gameloop');
 
 // Load ThreeJS, so we have access to the same vector and matrix functions the
 // client uses
@@ -647,16 +648,16 @@ function versionCheck() {
     })
 }
 
-setInterval(sendActorUpdates, config.ACTOR_UPDATE_INTERVAL);
-setInterval(serverTick, config.SERVER_TICK_INTERVAL);
+gameloop.setGameLoop(sendActorUpdates, config.ACTOR_UPDATE_INTERVAL);
+gameloop.setGameLoop(serverTick, config.SERVER_TICK_INTERVAL);
 
 if (config.CHECK_VERSION) {
-    setInterval(versionCheck, config.CHECK_VERSION_INTERVAL);
+    gameloop.setGameLoop(versionCheck, config.CHECK_VERSION_INTERVAL);
 }
 
-//TODO: merge this into server tick, this doesn't need a separate setInterval
+//TODO: merge this into server tick, this doesn't need a separate loop
 if (config.HEARTBEAT_ENABLE) {
-    setInterval(checkHeartbeats, config.HEARTBEAT_CHECK_INTERVAL);
+    gameloop.setGameLoop(checkHeartbeats, config.HEARTBEAT_CHECK_INTERVAL);
 }
 
 var port = config.PORT;
