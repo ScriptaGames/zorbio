@@ -67,32 +67,5 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
     return drain;
 };
 
-/**
- * Find all players within drain distance of a given player.
- *
- * @param {Object} players the object containing all players
- * @param {Object} player the player in question
- * @return {Array} an array of players within drain distance of the given player
- */
-ZOR.Drain.find = function ZORDrainFind( players, player ) {
-    var drainers = [];
-    var distance;
-    var player2;
-
-    var playerIds = Object.getOwnPropertyNames(players);
-    for (var i = 0, l = playerIds.length; i < l; i++) {
-        var id = +playerIds[i];  // make sure id is a number
-        player2 = players[id];
-
-        if (player === player2) continue; // don't compare player to itself!
-        distance = player.getPosition().distanceTo(player2.getPosition());
-        if (distance <= config.DRAIN.MAX_DISTANCE) {
-            drainers.push(player2);
-        }
-    }
-
-    return drainers;
-};
-
 // if we're in nodejs, export the root ZOR object
 if (NODEJS) module.exports = ZOR.Drain;

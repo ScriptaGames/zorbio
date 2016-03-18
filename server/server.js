@@ -7,6 +7,7 @@ var config = require('../common/config.js');
 var pjson = require('../package.json');
 var request = require('request');
 var gameloop = require('node-gameloop');
+var _ = require('lodash');
 
 // Load ThreeJS, so we have access to the same vector and matrix functions the
 // client uses
@@ -238,7 +239,6 @@ io.on('connection', function (socket) {
         if (!err) {
             // update the players position in the model
             actor.position.set( latestPosition.position.x, latestPosition.position.y, latestPosition.position.z);
-            actor.scale = sphere.scale;
 
             // Recent positions
             actor.recentPositions.push({position: actor.position, radius: actor.scale, time: latestPosition.time});
@@ -254,7 +254,7 @@ io.on('connection', function (socket) {
                     var fi         = bufView[ i ];
                     var origRadius = bufView[ i + 1 ];
 
-                    foodCapture(fi, actor, origRadius);
+                    foodCapture(currentPlayer, fi, actor, origRadius);
                 }
             }
 
@@ -277,7 +277,7 @@ io.on('connection', function (socket) {
         }
     });
 
-    var foodCapture = function iofoodCapture (fi, actor, origRadius) {
+    var foodCapture = function iofoodCapture (player, fi, actor, origRadius) {
         var food_value = config.FOOD_GET_VALUE(origRadius);
 
         var err = Validators.foodCapture(model, fi, actor, origRadius);
@@ -286,10 +286,11 @@ io.on('connection', function (socket) {
             model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
 
             // Increment the players food captures
-            currentPlayer.foodCaptures++;
+            player.foodCaptures++;
 
             // grow player on the server to track growth validation
-            currentPlayer.sphere.growExpected( food_value );
+            player.sphere.growExpected( food_value );
+            console.log(`actor ${actor.scale} player.sphere ${player.sphere.scale}`);
 
             // notify clients of food capture so they can update their food view
             // TODO: queue this into the actorUpdate message from the server
@@ -298,7 +299,7 @@ io.on('connection', function (socket) {
             switch (err) {
                 case Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR:
                     // inform client of invalid capture, and make them shrink, mark infraction
-                    model.players[currentPlayer.id].infractions_food++;
+                    model.players[player.id].infractions_food++;
                     break;
                 case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
                     console.log("Recieved 'foodCapture' from player not in model!", actor.id);
@@ -306,42 +307,6 @@ io.on('connection', function (socket) {
             }
         }
     };
-
-    socket.on('playerCapture', function (attackingPlayerId, targetPlayerId, sendingSphere) {
-        console.log("received playerCapture: ", attackingPlayerId, targetPlayerId, sendingSphere.id);
-
-        var err = Validators.playerCapture(attackingPlayerId, targetPlayerId, model, sendingSphere);
-        if (err === 0) {
-            if (!Zorbio.pendingPlayerCaptures[targetPlayerId]) {
-                console.log("Valid Player capture: ", attackingPlayerId, targetPlayerId);
-                sockets[attackingPlayerId].emit('processingPlayerCapture', targetPlayerId);
-                Zorbio.pendingPlayerCaptures[targetPlayerId] = config.PENDING_PLAYER_CAPTURE_TTL;
-            }
-        } else {
-            switch (err) {
-                case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
-                    // let the attacking player know this capture was invalid
-                    console.log("Validators.playerCapture: targetPlayerId not in model: ", targetPlayerId);
-                    sockets[attackingPlayerId].emit('invalidCaptureTargetNotInModel', attackingPlayerId, targetPlayerId);
-                    if (socket[targetPlayerId]) {
-                        // if the target is still connected, let them know they aren't being captured
-                        sockets[attackingPlayerId].emit('invalidCaptureTargetNotInModel', attackingPlayerId, targetPlayerId);
-                    }
-                    break;
-                case Validators.ErrorCodes.PLAYER_CAPTURE_TO_FAR:
-                    // the player who is connected to this socket is probably cheating
-                    console.log("Invalid player capture distance to far", attackingPlayerId, targetPlayerId, currentPlayer.id);
-                    socket.emit("invalidCaptureTargetToFar", attackingPlayerId, targetPlayerId);
-                    model.players[currentPlayer.id].infractions_pcap++;
-                    break;
-            }
-        }
-    });
-
-    socket.on('continuePlayerCapture', function (attackingPlayerId, targetPlayerId) {
-        console.log("received continuePlayerCapture: ", attackingPlayerId, targetPlayerId);
-        capturePlayer(attackingPlayerId, targetPlayerId);
-    });
 
     socket.on('zorServerPing', function (data) {
         currentPlayer.lastHeartbeat = Date.now();
@@ -498,9 +463,6 @@ function capturePlayer(attackingPlayerId, targetPlayerId) {
     // Inform other clients that target player died
     io.emit("playerDied", attackingPlayerId, targetPlayerId);
 
-    // processing is done so clear processing state for target player
-    delete Zorbio.pendingPlayerCaptures[targetPlayerId];
-
     removePlayerFromModel(targetPlayerId);
 }
 
@@ -547,7 +509,7 @@ function updateFoodRespawns() {
 
     for (var i = 0, l = model.food_respawning.length; i < l; ++i) {
         if (model.food_respawning[i] > 0) {
-            model.food_respawning[i] = Math.max(  model.food_respawning[i] - config.SERVER_TICK_INTERVAL, 0 );
+            model.food_respawning[i] = Math.max(  model.food_respawning[i] - config.TICK_SLOW_INTERVAL, 0 );
 
             if (model.food_respawning[i] === 0) {
                 // queue up food respawn to send to clients
@@ -615,16 +577,73 @@ function playersChecks() {
     model.leaders.reverse();  // reverse for descending order
 }
 
+function checkPlayerCaptures( players ) {
+    var players_array = _.values( players );
+    var p1;
+    var p2;
+    var p1_scale;
+    var p2_scale;
+    var distance;
+
+    var l = players_array.length;
+    var j = 0;
+
+    // init empty arrays for each player, they will hold the id's of players
+    // they are draining
+    var i = l;
+
+    i = l;
+    while ( i-- ) {
+        j = i + 1;
+
+        p1 = players_array[i];
+
+        while ( j-- ) {
+
+            if (i === j) continue; // don't compare player to itself
+
+            // find the distance between these two players
+            p2 = players_array[j];
+            distance = p1.sphere.position.distanceTo( p2.sphere.position );
+
+            p1_scale = p1.sphere.scale;
+            p2_scale = p2.sphere.scale;
+
+            // if distance is less than radius of p1 and p1 larger than p2, p1 captures p2
+            // if distance is less than radius of p2 and p2 larger than p1, p2 captures p1
+
+            if ( distance < p1_scale && p1_scale > p2_scale ) {
+                console.log(`${p1.id} captured ${p2.id}`);
+                capturePlayer( p1.id, p2.id );
+            }
+            else if ( distance < p2_scale && p2_scale > p1_scale ) {
+                console.log(`${p2.id} captured ${p1.id}`);
+                capturePlayer( p2.id, p1.id );
+            }
+
+        }
+    }
+}
+
 /**
- * Main server loop for general updates to the client that don't have to be real-time, e.g. food respawns
+ * Main server loop for general updates to the client that should be as fast as
+ * possible, eg movement and player capture.
  */
-function serverTick() {
+function serverTickFast() {
+    checkPlayerCaptures( model.players );
+    // check for food captures
+    sendActorUpdates();
+}
+
+/**
+ * Main server loop for general updates to the client that don't have to be
+ * real-time, e.g. food respawns
+ */
+function serverTickSlow() {
+    checkHeartbeats();
     updateFoodRespawns();
     playersChecks();
     sendServerTickData();
-
-    // expire pending player captures
-    Zorbio.expirePendingPlayerCaptures();
 }
 
 function versionCheck() {
@@ -648,16 +667,11 @@ function versionCheck() {
     })
 }
 
-gameloop.setGameLoop(sendActorUpdates, config.ACTOR_UPDATE_INTERVAL);
-gameloop.setGameLoop(serverTick, config.SERVER_TICK_INTERVAL);
+gameloop.setGameLoop(serverTickFast, config.TICK_FAST_INTERVAL);
+gameloop.setGameLoop(serverTickSlow, config.TICK_SLOW_INTERVAL);
 
 if (config.CHECK_VERSION) {
     gameloop.setGameLoop(versionCheck, config.CHECK_VERSION_INTERVAL);
-}
-
-//TODO: merge this into server tick, this doesn't need a separate loop
-if (config.HEARTBEAT_ENABLE) {
-    gameloop.setGameLoop(checkHeartbeats, config.HEARTBEAT_CHECK_INTERVAL);
 }
 
 var port = config.PORT;

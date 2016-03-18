@@ -29,15 +29,8 @@ ZOR.PlayerController = function ZORPlayerController(model, main_sphere, scene) {
 };
 
 ZOR.PlayerController.prototype.queueFoodCapture = function ZORPlayerControllerQueueFoodCapture(fi) {
-    var origRadius = this.radius();
-    var value = config.FOOD_GET_VALUE(origRadius);
-
-    // instant grow
-    this.grow(value);
-    this.view.adjustCamera(this.radius());
-
     // queue food capture to send to server on next position update
-    this.food_capture_queue.push({fi: fi, radius: origRadius});
+    this.food_capture_queue.push({fi: fi, radius: this.radius()});
 };
 
 ZOR.PlayerController.prototype.getPlayerId = function ZORPlayerControllerGetPlayerId() {
@@ -121,6 +114,7 @@ ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene
         this.moveForward(camera); // always move forward
     }
     this.applyVelocity(lag_scale, camera_controls);
+    this.view.adjustCamera(this.radius());
 
     // check if we need to animate anything
     if (this._animated_grow_frames > 0) {

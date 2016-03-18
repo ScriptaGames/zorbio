@@ -278,13 +278,11 @@ function createScene() {
 
             player.update(scene, camera, camera_controls, ZOR.LagScale.get());
 
-            foodController.update(player.model.sphere.position);
-
             playerFogCenter.copy(player.model.sphere.position);
 
-            foodController.checkFoodCaptures(player, captureFood);
+            foodController.update(player.model.sphere.position);
 
-            checkPlayerCaptures();
+            foodController.checkFoodCaptures(player, captureFood);
 
             // drainView.update(players);
 
@@ -358,44 +356,6 @@ function drawPlayers() {
             // Only draw other players
             if (id !== player.getPlayerId()) {
                 players[id] = new ZOR.PlayerController(playerModel, player.model.sphere, scene);
-            }
-        }
-    }
-}
-
-function checkPlayerCaptures() {
-    if (player.beingCaptured) {
-        return;
-    }
-
-    var attackingPlayer = undefined;
-    var targetPlayer = undefined;
-
-    // Iterate over players
-    var playerIds = Object.getOwnPropertyNames(players);
-    for (var i = 0, l = playerIds.length; i < l; i++) {
-        var playerId = +playerIds[i];  // make sure id is a number
-        var otherPlayer = players[playerId];
-
-        if ((otherPlayer.getPlayerId() !== player.getPlayerId()) && (otherPlayer.radius() !== player.radius())) {
-
-            if (otherPlayer.radius() < player.radius()) {
-                targetPlayer = otherPlayer;
-                attackingPlayer = player;
-            }
-            else {
-                targetPlayer = player;
-                attackingPlayer = otherPlayer;
-            }
-
-            var targetPlayerPosition = targetPlayer.getPosition();
-            var dist = targetPlayerPosition.distanceTo( attackingPlayer.getPosition() );
-
-            if (dist < attackingPlayer.radius()) {
-                console.log('player capture detected!');
-                console.log('player.radius(): ', player.radius());
-                console.log('otherPlayer.radius(): ', otherPlayer.radius());
-                sendPlayerCapture( attackingPlayer.getPlayerId(), targetPlayer.getPlayerId() );
             }
         }
     }
