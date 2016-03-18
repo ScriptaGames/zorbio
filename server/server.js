@@ -290,7 +290,6 @@ io.on('connection', function (socket) {
 
             // grow player on the server to track growth validation
             player.sphere.growExpected( food_value );
-            console.log(`actor ${actor.scale} player.sphere ${player.sphere.scale}`);
 
             // notify clients of food capture so they can update their food view
             // TODO: queue this into the actorUpdate message from the server
