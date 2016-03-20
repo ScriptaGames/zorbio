@@ -152,8 +152,6 @@ function setupSocket(socket) {
 
         setIntervalMethods();
 
-        document.getElementById('render-canvas').focus();
-
         console.log('Game finished setting up');
     });
 

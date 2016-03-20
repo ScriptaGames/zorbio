@@ -5,7 +5,7 @@ ZOR.Game = {};
 
 // Scene and canvas
 var scene;
-var canvas = document.getElementById('render-canvas');
+var canvas;
 var octree;
 
 // Camera
@@ -123,7 +123,6 @@ window.addEventListener('load', function ZORLoadHandler() {
     });
 
     ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
-
         // check if the nick is valid
         if (UTIL.validNick(ZOR.UI.engine.get('player_name'))) {
             startGame(ZOR.PlayerTypes.PLAYER);
@@ -203,6 +202,7 @@ function createScene() {
 
     function init() {
 
+        canvas = document.getElementById('render-canvas');
         scene = new THREE.Scene();
         // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
         if (config.FOG_ENABLED) {
@@ -213,9 +213,6 @@ function createScene() {
         ZOR.Game.renderer.setClearColor( config.FOG_COLOR );
         ZOR.Game.renderer.setPixelRatio( window.devicePixelRatio );
         ZOR.Game.renderer.setSize( window.innerWidth, window.innerHeight );
-
-
-
 
         initCameraAndPlayer();
 
