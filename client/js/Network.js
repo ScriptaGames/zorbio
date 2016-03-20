@@ -212,6 +212,7 @@ function setupSocket(socket) {
                 actor.position.set(x, y, z);
                 actor.scale = s;
                 actor.serverAdjust = serverAdjust;
+                actor.drains = drainArray;
             }
         }
     });

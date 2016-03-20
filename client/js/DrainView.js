@@ -10,39 +10,79 @@ var ZOR = ZOR || {};
 
 ZOR.DrainView = function ZORDrainView(scene) {
 
-    var material = new THREE.LineBasicMaterial({
-        color: 0x0000ff
-    });
+    this.scene = scene;
 
-    var geometry = new THREE.Geometry();
+    this.geos = [];
 
-    this.lines = new THREE.Line( geometry, material );
-    this.geos = this.lines.geometry.vertices;
-
-    scene.add( this.lines );
 };
 
-ZOR.DrainView.prototype.update = function ZORDrainViewUpdate(scene, players) {
-    this.geos.splice(); // empty out the array and re-add updated positions
+ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( scene, players_obj ) {
 
-    var drainers = ZOR.Drain.findAll( players );
-    var i = drainers.length;
-    var drainage;
-    var p1;
-    var p2;
+    var players_arr = Object.values( players_obj );
+    var ai = players_arr.length;
+    var di;
+    var did;
+    var obj;
+    var dist;
+    var drainer;
+    var drainee;
 
-    while ( --i ) {
-        drainage = drainers[i];
-        p1 = drainage.p1;
-        p2 = drainage.p2;
-        this.geos.push(
-                p1.getPosition(),
-                p2.getPosition()
-                );
+    this.clear();
+
+    while ( ai-- ) {
+        drainer = players_arr[ai];
+        if (drainer.drains) {
+            di = drainer.drains.length;
+            while ( di-- ) {
+                did = drainer.drains[di];
+                if (did) {
+                    drainee = players_obj[ did ];
+                    obj = this.createCylinder( drainer, drainee );
+                    this.geos.push(obj);
+                    scene.add(obj);
+                }
+            }
+        }
     }
 };
 
-ZOR.DrainView.prototype.remove = function ZORDrainViewRemove(scene) {
-    scene.remove(this.lines);
+/**
+ * Remove all drain objects from the scene.
+ */
+ZOR.DrainView.prototype.clear = function ZORDrainViewClear() {
+    var i = this.geos.length;
+    var obj;
+    while ( i-- ) {
+        obj = this.geos[i];
+        this.scene.remove(obj); // remove from scene
+    }
+    this.geos = []; // clear out geos array
+    // that should take care of removing ALL references to the lines
 };
 
+ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(drainer, drainee) {
+
+    var drainer_pos = drainer.view.mainSphere.position;
+    var drainee_pos = drainee.view.mainSphere.position;
+    var drainer_scale = drainer.view.mainSphere.scale.x;
+    var drainee_scale = drainee.view.mainSphere.scale.x;
+
+    var dist = drainer_pos.distanceTo( drainee_pos );
+
+    // base cylinder's opacity on how large the drain is (percentage of
+    // theoretical maximum drain)
+    var opacity = 1 - dist / config.DRAIN_MAX_DISTANCE;
+
+    var geometry = new THREE.CylinderGeometry( drainer_scale, drainee_scale, dist, 32, 1, true );
+    geometry.rotateX(Math.PI/2); // rotate geo so its ends point 'up'
+
+    var material = new THREE.MeshDepthMaterial( { transparent: true, opacity: opacity/2 } );
+    var cylinder = new THREE.Mesh( geometry, material );
+
+    // position and angle the cylinder correctly
+    cylinder.position.copy( drainer_pos.clone().add( drainee_pos).divideScalar(2) );
+    cylinder.lookAt( drainer_pos );
+
+    cylinder.renderOrder = 10;
+    return cylinder;
+};

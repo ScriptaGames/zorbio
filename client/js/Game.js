@@ -253,6 +253,10 @@ function createScene() {
         var light = new THREE.AmbientLight( 0x222222 );
         scene.add( light );
 
+        // drain view
+
+        drainView = new ZOR.DrainView(scene);
+
         window.addEventListener( 'resize', onWindowResize, false );
     }
 
@@ -285,7 +289,7 @@ function createScene() {
 
             foodController.checkFoodCaptures(player, captureFood);
 
-            // drainView.update(players);
+            drainView.update(scene, players);
 
             camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
         }
@@ -378,10 +382,12 @@ function updateActors() {
                     otherPlayer.updatePosition(actor.position, scene, camera, ZOR.Game.renderer);
                     otherPlayer.updateScale(actor.scale);
                 }
+                otherPlayer.drains = actor.drains;
             }
             else {
                 // update main player
                 player.updateScale(actor.scale);
+                player.drains = actor.drains;
             }
         }
     }
