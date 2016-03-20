@@ -178,6 +178,10 @@ window.addEventListener('load', function ZORLoadHandler() {
         config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
     }
 
+    if (config.AUTO_PLAY) {
+       ZOR.UI.engine.fire( ZOR.UI.ACTIONS.PLAYER_LOGIN );
+    }
+
 });
 
 function respawnPlayer() {
