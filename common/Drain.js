@@ -57,7 +57,7 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
 
                 if ( p1_scale < p2_scale ) {
                     drain[ p1.id ].push( { id: p2.id, dist: distance } ); } // p1 drains p2
-                else if ( p2_scale > p1_scale ) {
+                else if ( p2_scale < p1_scale ) {
                     drain[ p2.id ].push( { id: p1.id, dist: distance } ); } // p2 drains p1
             }
         }
