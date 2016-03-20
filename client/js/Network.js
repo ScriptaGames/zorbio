@@ -104,7 +104,7 @@ function sendPing() {
 }
 
 function handleNetworkTermination() {
-    location.reload();
+    setTimeout(location.reload.bind(location), 500);
 }
 
 function setIntervalMethods() {
