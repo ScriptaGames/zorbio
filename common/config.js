@@ -14,6 +14,7 @@ if (NODEJS) {
 var config = {};
 
 config.DEBUG = false;
+config.AUTO_PLAY = false;
 config.REQUIRE_ALPHA_KEY = false;
 
 ////////////////////////////////////////////////////////////////////////
