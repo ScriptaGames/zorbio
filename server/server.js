@@ -335,10 +335,9 @@ io.on('connection', function (socket) {
     });
 });
 
-function updateActorDrains( model ) {
+function updateActorDrains( model, drainers ) {
     // update drains
 
-    var drainers = Drain.findAll( model.players );
     var drainer_ids = Object.getOwnPropertyNames(drainers);
     var drainees;
     var drainee;
@@ -398,8 +397,11 @@ function sendActorUpdates() {
     var id;
     var actor;
     var position;
+    var di;  // drain index
+    var did; // drain id
 
-    updateActorDrains(model);
+    var drainers = Drain.findAll( model.players );
+    updateActorDrains( model, drainers );
 
     // make the payload as small as possible, send only what's needed on the client
     var offset = 0;
@@ -422,6 +424,14 @@ function sendActorUpdates() {
         actorsArray[5] = actor.serverAdjust;
 
         actor.serverAdjust = 0;
+
+        // update active drains
+
+        di = drainArray.length;
+        while ( di-- ) {
+            did = drainers[id][di];
+            drainArray[di] = (did && did.id) || 0;
+        }
 
         offset += PLAYER_ARRAY_LENGTH;
     }
