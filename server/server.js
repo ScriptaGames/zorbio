@@ -335,7 +335,7 @@ io.on('connection', function (socket) {
     });
 });
 
-function updateActorDrains() {
+function updateActorDrains( model ) {
     // update drains
 
     var drainers = Drain.findAll( model.players );
@@ -399,7 +399,7 @@ function sendActorUpdates() {
     var actor;
     var position;
 
-    updateActorDrains();
+    updateActorDrains(model);
 
     // make the payload as small as possible, send only what's needed on the client
     var offset = 0;
