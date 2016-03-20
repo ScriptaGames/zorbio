@@ -344,21 +344,33 @@ function updateActorDrains() {
     var drainee;
     var drainee_id;
     var drainer_id;
+    var drain_amount;
 
     var i = drainer_ids.length;
     var j;
+
     while ( i-- ) {
         drainer_id = drainer_ids[i];
         drainees = drainers[drainer_id];
         j = drainees.length;
         while ( j-- ) {
-            drainee_id = drainees[j];
+            drainee_id = drainees[j].id;
 
             drainer = model.actors[drainer_id];
             drainee = model.actors[drainee_id];
 
-            drainer.growExpected(0.01);
-            drainee.growExpected(-0.01);
+            drain_amount = Drain.amount( drainees[j].dist );
+
+            drainer.growExpected( +drain_amount );
+            drainee.growExpected( -drain_amount );
+
+            // if the drain caused the drainer to get bigger than the drainer,
+            // correct so that they're the same size.  drain shouldn't be able
+            // to make a player larger than another because it leads to
+            // infinite back and forth draining.
+            if (drainer.scale > drainee.scale) {
+                drainer.scale = drainee.scale = ( drainer.scale + drainee.scale ) / 2;
+            }
         }
     }
 }
