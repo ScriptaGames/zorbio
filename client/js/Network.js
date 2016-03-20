@@ -208,7 +208,6 @@ function setupSocket(socket) {
                 var z = actorArray[ 3 ];
                 var s = actorArray[ 4 ];
                 var serverAdjust = actorArray[ 5 ];
-                // console.log(`moving actor to ${x} ${y} ${z}`);
 
                 actor.position.set(x, y, z);
                 actor.scale = s;

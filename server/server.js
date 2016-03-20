@@ -357,8 +357,6 @@ function updateActorDrains() {
             drainer = model.actors[drainer_id];
             drainee = model.actors[drainee_id];
 
-            // log_sometimes(`${drainer_id} is draining ${drainee_id}`);
-
             drainer.growExpected(0.01);
             drainee.growExpected(-0.01);
         }
@@ -612,11 +610,9 @@ function checkPlayerCaptures( players ) {
             // if distance is less than radius of p2 and p2 larger than p1, p2 captures p1
 
             if ( distance < p1_scale && p1_scale > p2_scale ) {
-                console.log(`${p1.id} captured ${p2.id}`);
                 capturePlayer( p1.id, p2.id );
             }
             else if ( distance < p2_scale && p2_scale > p1_scale ) {
-                console.log(`${p2.id} captured ${p1.id}`);
                 capturePlayer( p2.id, p1.id );
             }
 
