@@ -6,7 +6,7 @@
   "main": "server/server.js",
   "scripts": {
     "test": "karma start",
-    "start": "node server/server.js",
+    "start": "./node_modules/.bin/supervisor --watch server,common,package.json server/server.js",
     "start-prod": "node server/server.js dist",
     "css": "lessc client/css/main.less client/css/main.css && node_modules/postcss-cli/bin/postcss --use autoprefixer -r client/css/main.css",
     "build": "bash build.sh",
@@ -33,6 +33,7 @@
     "karma-jasmine": "^0.3.6",
     "karma-super-dots-reporter": "^0.1.0",
     "postcss-cli": "~2.5.1",
-    "autoprefixer": "~6.3.3"
+    "autoprefixer": "~6.3.3",
+    "supervisor": "~0.9.1"
   }
 }
