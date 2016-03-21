@@ -58,7 +58,7 @@ var FoodView = function ZORFoodView() {
 
         this.material = new THREE.RawShaderMaterial( {
             uniforms: {
-                map: { type: "t", value: THREE.ImageUtils.loadTexture( "textures/soft-square.png" ) },
+                map: { type: "t", value: new THREE.TextureLoader().load( "textures/soft-square.png" ) },
                 mainSpherePos              : { type : "v3", value : fogCenterPosition },
                 FOG_FAR                    : { type : "f",  value : config.FOG_FAR },
                 FOG_ENABLED                : { type : "f",  value : ~~config.FOG_ENABLED },

@@ -232,7 +232,7 @@ function createScene() {
         var materialArray = [];
         var wall_texture;
         for (var i = 0; i < 6; i++) {
-            wall_texture = THREE.ImageUtils.loadTexture( 'textures/skybox_grid_black.png' );
+            wall_texture = new THREE.TextureLoader().load( 'textures/skybox_grid_black.png' );
             wall_texture.wrapS = wall_texture.wrapT = THREE.MirroredRepeatWrapping;
             wall_texture.repeat.set(config.WALL_GRID_SEGMENTS, config.WALL_GRID_SEGMENTS);
             materialArray.push(new THREE.MeshBasicMaterial( { map: wall_texture }));
