@@ -18,7 +18,7 @@ ZOR.DrainView = function ZORDrainView(scene) {
 
 ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( scene, players_obj ) {
 
-    var players_arr = Object.values( players_obj );
+    var players_arr = _.values( players_obj );
     var ai = players_arr.length;
     var di;
     var did;
