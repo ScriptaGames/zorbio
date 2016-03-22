@@ -214,6 +214,43 @@
 
         </script>
 
+        <script id="drain-vertex-shader" type="x-shader/x-vertex">
+            varying vec2 vUv;
+            void main()
+            {
+                vUv = uv;
+
+                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0 );
+                gl_Position = projectionMatrix * mvPosition;
+            }
+        </script>
+
+        <script id="drain-frag-shader" type="x-shader/x-fragment">
+            #define MAX_OPACITY 0.05
+
+            uniform float time;
+            uniform float power;
+            varying vec2 vUv;
+
+            float fade(float x) {
+                float hh = 0.5;
+                float n = x - 0.5;
+                return 1.0 - n*n/hh/hh;
+            }
+
+            void main(void) {
+
+                vec3 color = vec3((4.0*sin(vUv.y * 54.0 - time * 14.0) + 1.0) / 2.0);
+
+                // fade out near the ends of the cylinder according to equation:
+                // https://www.desmos.com/calculator/uergngo1w6
+                float alpha = MAX_OPACITY * power * fade(vUv.y);
+
+                //main beam
+                gl_FragColor = vec4(vec3(color), alpha);
+            }
+        </script>
+
         <script id="food-geo-frag-shader" type="x-shader/x-fragment">
             precision highp float;
 

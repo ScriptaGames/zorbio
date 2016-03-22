@@ -12,6 +12,9 @@ ZOR.DrainView = function ZORDrainView(scene) {
 
     this.scene = scene;
 
+    this.clock = new THREE.Clock();
+    this.time = 0.1;
+
     this.geos = [];
 
 };
@@ -28,6 +31,8 @@ ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( scene, players_obj
     var drainee;
 
     this.clear();
+
+    this.time += this.clock.getDelta();
 
     while ( ai-- ) {
         drainer = players_arr[ai];
@@ -76,7 +81,22 @@ ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(dra
     var geometry = new THREE.CylinderGeometry( drainer_scale, drainee_scale, dist, 32, 1, true );
     geometry.rotateX(Math.PI/2); // rotate geo so its ends point 'up'
 
-    var material = new THREE.MeshDepthMaterial( { transparent: true, opacity: opacity/2 } );
+    var material = new THREE.ShaderMaterial({
+        uniforms: {
+            time: { type: "f", value: this.time },
+            power: { type: "f", value: opacity },
+        },
+        vertexShader   : document.getElementById( 'drain-vertex-shader' ).textContent,
+        fragmentShader : document.getElementById( 'drain-frag-shader' ).textContent,
+        side           : THREE.DoubleSide,
+        transparent    : true,
+        opacity        : 0.8,
+        depthFunc      : THREE.LessDepth,
+        depthTest      : false,
+        depthWrite     : true,
+        blending       : THREE.AdditiveBlending,
+        alphaTest      : 1.0,
+    });
     var cylinder = new THREE.Mesh( geometry, material );
 
     // position and angle the cylinder correctly
