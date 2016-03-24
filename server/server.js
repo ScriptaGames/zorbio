@@ -4,6 +4,8 @@ var http            = require('http');
 var express         = require('express');
 var WebSocketServer = require('ws').Server;
 var AppServer       = require('./AppServer.js');
+var config          = require('../common/config.js');
+var packageJson     = require('../package.json');
 
 // Patch console.x methods in order to add timestamp information
 require("console-stamp")(console, {pattern: "mm/dd/yyyy HH:MM:ss.l"});
@@ -26,7 +28,7 @@ var MainServer = function () {
      */
     self.setupVariables = function () {
         //  Set the environment variables we need.
-        self.port = process.env.PORT || 3000;
+        self.port = process.env.PORT || config.PORT;
     };
 
 
@@ -85,7 +87,13 @@ var MainServer = function () {
         self.httpServer = http.Server(self.app);
 
         // Set up WebSocket Server
+        //TODO: Figure out how to set up allowed ORIGINS
         self.wss = new WebSocketServer({server: self.httpServer});
+        self.wss.broadcast = function broadcast(data) {
+            self.wss.clients.forEach(function each(client) {
+                client.send(data);
+            });
+        };
 
         // The app server contains all the logic and state of the WebSocket app
         self.appServer = new AppServer(self.wss);
@@ -120,7 +128,7 @@ var MainServer = function () {
     self.start = function () {
         //  Start the app on the specific interface (and port).
         self.httpServer.listen(self.port, function () {
-            console.log('Node server started on localhost:%d ...', self.port);
+            console.log("Zorbio v" + packageJson.version + "-" + packageJson.build + " is listening on http://localhost:" + self.port);
         });
     };
 };
