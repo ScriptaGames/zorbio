@@ -2,7 +2,7 @@
  * Client network related functions
  */
 
-var socket;
+var ws;
 
 var zorPingStart;
 var zorPingDuration = 0;
@@ -14,14 +14,25 @@ var interval_id_heartbeat;
 function connectToServer(playerType, playerName, color) {
     var key;
 
-    if (!socket) {
-        //TODO: make which balancer they use configurable on the client
+    if (!ws) {
         key = ZOR.UI.engine.get('alpha_key');
-        socket = io(config.BALANCER + ':' + config.PORT, {query: 'type=' + playerType + '&name=' + playerName + '&color=' + color + '&key=' + key});
-        setupSocket(socket);
+
+        var uri = new URI(config.BALANCER + ':' + config.PORT);
+        uri.addQuery('type', playerType);
+        uri.addQuery('name', playerName);
+        uri.addQuery('color', color);
+        uri.addQuery('key', key);
+
+        ws = new WebSocket( uri.toString() );
+
+        ws.onopen = function () {
+            console.log("WebSocket connection established and ready.");
+        };
+
+        //setupSocket(socket);
     }
 
-    sendRespawn(true);
+    //sendRespawn(true);
 }
 
 //function sendRespawn(isFirstSpawn) {

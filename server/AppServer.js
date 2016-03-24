@@ -39,6 +39,8 @@ var AppServer = function (wss) {
         // parse query string
         var queryString = URL.parse(ws.upgradeReq.url, true).query;
 
+        console.log("URL:", ws.upgradeReq.url);
+
         // Handle new connection
         var player_id = Zorbio.IdGenerator.get_next_id();
         var type  = queryString.type;
@@ -56,7 +58,7 @@ var AppServer = function (wss) {
 
         var currentPlayer;
 
-        console.log("Name:", name);
+        console.log("player_id, type, name, color, key", player_id, type, name, color, key);
 
         self.wss.broadcast(JSON.stringify("Client joined"));
 

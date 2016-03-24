@@ -44,10 +44,10 @@ config.ORIGIN                   = 'http://zor.bio'; // the origin that's allowed
 config.RECENT_CLIENT_DATA_LENGTH = 100;   // how many recent data points to keep from the client like pings
 
 config.BALANCERS = Object.freeze({
-    LOCAL: 'http://localhost',
-    NA:    'http://na.zor.bio',
-    EU:    'http://eu.zor.bio',
-    APAC:  'http://apac.zor.bio'
+    LOCAL: 'ws://localhost',
+    NA:    'ws://na.zor.bio',
+    EU:    'ws://eu.zor.bio',
+    APAC:  'ws://apac.zor.bio'
 });
 config.BALANCER = 'NA';
 
