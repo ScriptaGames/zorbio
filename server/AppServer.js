@@ -1,6 +1,19 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
-var URL = require('url');
+// Load ThreeJS, so we have access to the same vector and matrix functions the
+// client uses
+global.self = {}; // threejs expects there to be a global named 'self'... for some reason..
+var THREE = require('three');
+
+var URL        = require('url');
+var config     = require('../common/config.js');
+var request    = require('request');
+var gameloop   = require('node-gameloop');
+var _          = require('lodash');
+var Zorbio     = require('../common/zorbio.js');
+var Validators = require('./Validators.js');
+var UTIL       = require('../common/util.js');
+var Drain      = require('../common/Drain.js');
 
 /**
  * This module contains all of the app logic and state,
@@ -12,28 +25,36 @@ var AppServer = function (wss) {
     var self = this;
 
     self.wss = wss;
-    self.wss.broadcast = function broadcast(data) {
-        self.wss.clients.forEach(function each(client) {
-            client.send(data);
-        });
-    };
 
-    // Example state
-    var updateCount = 0;
+    // Game state
+    self.model = new Zorbio.Model(config.WORLD_SIZE, config.FOOD_DENSITY);
+    self.sockets = {};
+    self.serverRestartMsg = '';
 
-    setInterval(function() {
-        // send to all clients
-        self.wss.broadcast(JSON.stringify(++updateCount));
-    }, 100);
 
     self.wss.on('connection', function (ws) {
 
-        console.log('Client connected');
+        console.log('Client connected headers:', JSON.stringify(ws.upgradeReq.headers));
 
         // parse query string
         var queryString = URL.parse(ws.upgradeReq.url, true).query;
 
-        var name = queryString.name;
+        // Handle new connection
+        var player_id = Zorbio.IdGenerator.get_next_id();
+        var type  = queryString.type;
+        var name  = queryString.name;
+        var color = queryString.color;
+        var key   = queryString.key;
+
+        // Sanitize player name
+        if (UTIL.isBlank(name)) {
+            name = "Player_" + player_id;
+        }
+        else if (name.length > config.MAX_PLAYER_NAME_LENGTH) {
+            name = name.substr(0, config.MAX_PLAYER_NAME_LENGTH);
+        }
+
+        var currentPlayer;
 
         console.log("Name:", name);
 
