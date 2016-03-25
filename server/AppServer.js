@@ -38,8 +38,9 @@ var AppServer = function (wss) {
 
 
     self.wss.on('connection', function (ws) {
+        var headers = ws.upgradeReq.headers;
 
-        console.log('Client connected headers:', JSON.stringify(ws.upgradeReq.headers), ws.upgradeReq.url);
+        console.log('Client connection headers:', JSON.stringify(headers));
 
         // parse query string
         var queryString = URL.parse(ws.upgradeReq.url, true).query;
@@ -67,7 +68,7 @@ var AppServer = function (wss) {
 
         ws.on('message', function (msg, flags) {
             if (flags.binary) {
-                var ab = toArrayBuffer(msg);
+                var ab = UTIL.toArrayBuffer(msg);
                 var arr = new Int32Array(ab);
                 console.log(arr[0]);
             }
@@ -76,9 +77,12 @@ var AppServer = function (wss) {
 
                 var message = JSON.parse(msg);
 
-                switch (message.key) {
+                switch (message.op) {
                     case 'respawn':
                         handle_msg_respawn(message);
+                        break;
+                    case 'player_ready':
+                        handle_msg_player_ready(message);
                         break;
                 }
             }
@@ -101,19 +105,50 @@ var AppServer = function (wss) {
 
             // Create the Player
             currentPlayer = new Zorbio.Player(player_id, name, color, type, position);
+            currentPlayer.headers = headers;
 
-            ws.send(JSON.stringify({key: 'welcome', currentPlayer: currentPlayer, isFirstSpawn: msg.isFirstSpawn}));
+            ws.send(JSON.stringify({op: 'welcome', currentPlayer: currentPlayer, isFirstSpawn: msg.isFirstSpawn}));
 
             console.log('User ' + currentPlayer.id + ' spawning into the game');
         }
 
-        function toArrayBuffer(buffer) {
-            var ab = new ArrayBuffer(buffer.length);
-            var view = new Uint8Array(ab);
-            for (var i = 0; i < buffer.length; ++i) {
-                view[i] = buffer[i];
+        function handle_msg_player_ready (msg) {
+            console.log('Player ' + currentPlayer.id + ' client ready');
+
+            if (Validators.is_profane(currentPlayer.name)) {
+                console.error('Kicking for profane name:', currentPlayer.name, JSON.stringify(headers));
+                ws.send(JSON.stringify({op: 'kick', reason: 'Invalid username'}));
+                ws.close(config.CLOSE_NO_RESTART, "close but don't reload client page");
             }
-            return ab;
+            else if (!Validators.validAlphaKey(key)) {
+                console.error('ALPHA KEY INVALID');
+                ws.send(JSON.stringify({op: 'kick', reason: 'Invalid alpha key'}));
+                ws.close();
+            }
+            else {
+                self.sockets[currentPlayer.id] = ws;
+                currentPlayer.lastHeartbeat = Date.now();
+                currentPlayer.spawnTime = Date.now();
+
+                if (self.model.players[currentPlayer.id]) {
+                    // if current player is already in the players remove them
+                    delete self.model.players[currentPlayer.id];
+                }
+
+                // Add the player to the players object
+                self.model.players[currentPlayer.id] = currentPlayer;
+
+                self.model.addActor(currentPlayer.sphere);
+
+                // Notify other clients that player has joined
+                self.wss.broadcast(JSON.stringify({op: 'playerJoin', player: currentPlayer}));
+
+                // Pass any data to the for final setup
+                ws.send(JSON.stringify({op: 'game_setup', model: self.model, isFirstSpawn: msg.isFirstSpawn}));
+
+                console.log('Player ' + currentPlayer.id + ' joined game!');
+                console.log('Total players: ' + Object.getOwnPropertyNames(self.model.players).length);
+            }
         }
     });
 
@@ -128,11 +163,11 @@ var AppServer = function (wss) {
 
         // notify player
         if (self.sockets[playerId]) {
-            self.sockets[playerId].send(JSON.stringify({key: 'kick', reason: reason}));
+            self.sockets[playerId].send(JSON.stringify({op: 'kick', reason: reason}));
         }
 
         // notify other clients
-        self.wss.broadcast(JSON.stringify({key: 'removePlayer', playerId: playerId}));
+        self.wss.broadcast(JSON.stringify({op: 'removePlayer', playerId: playerId}));
 
         self.removePlayerFromModel(playerId);
     };

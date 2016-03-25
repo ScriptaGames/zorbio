@@ -38,7 +38,7 @@ function connectToServer(playerType, playerName, color) {
 
 function setupSocket(ws) {
     ws.onclose = function wsClose (e) {
-        if (e.code < 4000) { // code 4001 we don't restart
+        if (e.code != config.CLOSE_NO_RESTART) {
             handleNetworkTermination();
         }
         disconnected = true;
@@ -49,9 +49,12 @@ function setupSocket(ws) {
         if (typeof msg.data === "string") {
             var message = JSON.parse(msg.data);
 
-            switch (message.key) {
+            switch (message.op) {
                 case 'welcome':
                     handle_msg_welcome(message);
+                    break;
+                case 'game_setup':
+                    handle_msg_game_setup(message);
                     break;
             }
         }
@@ -67,7 +70,11 @@ function setupSocket(ws) {
         player = new ZOR.PlayerController(playerModel, playerModel.sphere);
         ZOR.UI.engine.set('player', player.model);
 
-        ws.send(JSON.stringify({key: 'gotit', isFirstSpawn: isFirstSpawn}));
+        ws.send(JSON.stringify({op: 'player_ready', isFirstSpawn: isFirstSpawn}));
+    }
+
+    function handle_msg_game_setup(msg) {
+        console.log('received game_setup message');
     }
 }
 
@@ -77,7 +84,7 @@ function handleNetworkTermination() {
 
 function sendRespawn(isFirstSpawn) {
     gameStart = false;
-    ws.send(JSON.stringify({key: 'respawn', isFirstSpawn: isFirstSpawn}));
+    ws.send(JSON.stringify({op: 'respawn', isFirstSpawn: isFirstSpawn}));
 }
 
 //
