@@ -72,6 +72,9 @@ function setupSocket(ws) {
                 case 'player_died':
                     handle_msg_player_died(message);
                     break;
+                case 'food_captured':
+                    handle_msg_food_captured(message);
+                    break;
             }
         }
         else {
@@ -225,6 +228,11 @@ function setupSocket(ws) {
             removePlayerFromGame(targetPlayerId);
         }
     }
+
+    function handle_msg_food_captured(msg) {
+        if (!gameStart) return;
+        foodController.hideFood( msg.fi );
+    }
 }
 
 function handleNetworkTermination() {
@@ -308,13 +316,6 @@ function clearIntervalMethods() {
 
 //
 //function setupSocket(socket) {
-//    // TODO: queue this into the actorUpdate message from the server
-//    socket.on('foodCaptureComplete', function foodCaptureComplete(fi) {
-//        if (!gameStart) return;
-//
-//        foodController.hideFood( fi );
-//    });
-//
 //    socket.on('kick', function kick(msg) {
 //        console.log('Server said: ', msg);
 //        setDeadState();
