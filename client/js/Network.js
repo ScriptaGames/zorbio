@@ -44,6 +44,31 @@ function setupSocket(ws) {
         disconnected = true;
         console.log('Connection closed:', e.code, e.reason);
     };
+
+    ws.onmessage = function wsMessage (msg, flags) {
+        if (typeof msg.data === "string") {
+            var message = JSON.parse(msg.data);
+
+            switch (message.key) {
+                case 'welcome':
+                    handle_msg_welcome(message);
+                    break;
+            }
+        }
+        else {
+            // handle binary message
+        }
+    };
+
+    function handle_msg_welcome(msg) {
+        var playerModel = msg.currentPlayer;
+        var isFirstSpawn = msg.isFirstSpawn;
+
+        player = new ZOR.PlayerController(playerModel, playerModel.sphere);
+        ZOR.UI.engine.set('player', player.model);
+
+        ws.send(JSON.stringify({key: 'gotit', isFirstSpawn: isFirstSpawn}));
+    }
 }
 
 function handleNetworkTermination() {
