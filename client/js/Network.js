@@ -63,6 +63,15 @@ function setupSocket(ws) {
                 case 'zor_pong':
                     handle_msg_zor_pong();
                     break;
+                case 'captured_player':
+                    handle_msg_captured_player(message);
+                    break;
+                case 'you_died':
+                    handle_msg_you_died(message);
+                    break;
+                case 'player_died':
+                    handle_msg_player_died(message);
+                    break;
             }
         }
         else {
@@ -177,6 +186,45 @@ function setupSocket(ws) {
             }
         }
     }
+
+    function handle_msg_captured_player(msg) {
+        if (!gameStart) return;
+
+        var targetPlayerId = msg.targetPlayerId;
+
+        console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
+        var targetPlayer = players[targetPlayerId];
+        handleSuccessfulPlayerCapture(targetPlayer);
+        removePlayerFromGame(targetPlayerId);
+    }
+
+    function handle_msg_you_died(msg) {
+        if (!gameStart) return;
+
+        var targetPlayer = msg.targetPlayer;
+        var attackingPlayerId = msg.attackingPlayerId;
+        var timeAlive = Math.floor((targetPlayer.deathTime - targetPlayer.spawnTime) / 1000);
+
+        console.log("YOU DIED! You were alive for " + timeAlive + " seconds. Killed by: ", attackingPlayerId);
+        setDeadState();
+
+        ZOR.UI.engine.set('attacker', zorbioModel.players[attackingPlayerId]);
+        ZOR.UI.engine.set('player', targetPlayer);
+        ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
+    }
+
+    function handle_msg_player_died(msg) {
+        if (!gameStart) return;
+
+        var attackingPlayerId = msg.attackingPlayerId;
+        var targetPlayerId = msg.targetPlayerId;
+
+        if (attackingPlayerId !== player.getPlayerId()) {
+            // someone else killed another player, lets remove it
+            console.log("Player died:  ", targetPlayerId);
+            removePlayerFromGame(targetPlayerId);
+        }
+    }
 }
 
 function handleNetworkTermination() {
@@ -254,58 +302,12 @@ function sendPlayerUpdate() {
 var throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.ACTOR_UPDATE_INTERVAL);
 
 
-//function clearIntervalMethods() {
-//    window.clearInterval(interval_id_heartbeat);
-//}
+function clearIntervalMethods() {
+    window.clearInterval(interval_id_heartbeat);
+}
+
 //
 //function setupSocket(socket) {
-//
-//
-//    socket.on('au', function actorUpdates(buf) {
-//
-//        if (!gameStart) {
-//            return; // don't start updating player positions in the client until their game has started
-//        }
-//
-//        // Record gap since last actor update was received
-//        var nowTime = Date.now();
-//        actorUpdateGap = nowTime - player.model.au_receive_metric.last_time;
-//        player.model.au_receive_metric.last_time = nowTime;
-//
-//        var actorArray;
-//        var drainArray;
-//
-//        var actor_parts = 6;
-//        var drain_bytes = config.MAX_PLAYERS - 1;
-//        var actor_bytes = 32 * actor_parts;
-//        var player_bytes = UTIL.fourPad( actor_bytes + drain_bytes ); // bytes per player
-//        var player_count = buf.byteLength / player_bytes; // number of player frames in this update
-//
-//        // sync the actors positions from the server model to the client model
-//        var i = player_count;
-//        while ( i-- ) {
-//
-//            actorArray = new Float32Array(buf, i * player_bytes, actor_parts);
-//            drainArray = new Uint8Array(buf, i * player_bytes + actor_bytes, drain_bytes);
-//
-//            var id = +actorArray[ 0 ];
-//            var actor = zorbioModel.actors[id];
-//
-//            if (actor) {
-//                var x = actorArray[ 1 ];
-//                var y = actorArray[ 2 ];
-//                var z = actorArray[ 3 ];
-//                var s = actorArray[ 4 ];
-//                var serverAdjust = actorArray[ 5 ];
-//
-//                actor.position.set(x, y, z);
-//                actor.scale = s;
-//                actor.serverAdjust = serverAdjust;
-//                actor.drains = drainArray;
-//            }
-//        }
-//    });
-//
 //    // TODO: queue this into the actorUpdate message from the server
 //    socket.on('foodCaptureComplete', function foodCaptureComplete(fi) {
 //        if (!gameStart) return;
@@ -343,41 +345,6 @@ var throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.ACTOR_UPDATE
 //        if (!gameStart) return;
 //
 //        console.log("WARNING! You are speeding!");
-//    });
-//
-//    socket.on('successfulCapture', function successfulCapture(targetPlayerId) {
-//        if (!gameStart) return;
-//
-//        console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
-//        var targetPlayer = players[targetPlayerId];
-//        handleSuccessfulPlayerCapture(targetPlayer);
-//        removePlayerFromGame(targetPlayerId);
-//        if (ZOR.pendingPlayerCaptures[targetPlayerId]) {
-//            delete ZOR.pendingPlayerCaptures[targetPlayerId];
-//        }
-//    });
-//
-//    socket.on('youDied', function youDied(attackingPlayerId, targetPlayer) {
-//        if (!gameStart) return;
-//
-//        var timeAlive = Math.floor((targetPlayer.deathTime - targetPlayer.spawnTime) / 1000);
-//
-//        console.log("YOU DIED! You were alive for " + timeAlive + " seconds. Killed by: ", attackingPlayerId);
-//        setDeadState();
-//
-//        ZOR.UI.engine.set('attacker', zorbioModel.players[attackingPlayerId]);
-//        ZOR.UI.engine.set('player', targetPlayer);
-//        ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
-//    });
-//
-//    socket.on('playerDied', function playerDied(attackingPlayerId, targetPlayerId) {
-//        if (!gameStart) return;
-//
-//        if (attackingPlayerId !== player.getPlayerId()) {
-//            // someone else killed another player, lets remove it
-//            console.log("Player died:  ", targetPlayerId);
-//            removePlayerFromGame(targetPlayerId);
-//        }
 //    });
 //
 //}
