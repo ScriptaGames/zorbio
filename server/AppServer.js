@@ -37,7 +37,7 @@ var AppServer = function (wss) {
     self.serverRestartMsg = '';
 
 
-    self.wss.on('connection', function (ws) {
+    self.wss.on('connection', function wssConnection(ws) {
         var headers = ws.upgradeReq.headers;
 
         console.log('Client connection headers:', JSON.stringify(headers));
@@ -66,11 +66,10 @@ var AppServer = function (wss) {
 
         self.wss.broadcast(JSON.stringify("Client joined"));
 
-        ws.on('message', function (msg, flags) {
+        ws.on('message', function wsMessage(msg, flags) {
             if (flags.binary) {
-                var ab = UTIL.toArrayBuffer(msg);
-                var arr = new Int32Array(ab);
-                console.log(arr[0]);
+                // Route binary message
+                handle_msg_player_update(msg)
             }
             else {
                 console.log(msg);
@@ -94,12 +93,12 @@ var AppServer = function (wss) {
             }
         });
 
-        ws.on('close', function () {
+        ws.on('close', function wsClose() {
             self.wss.broadcast(JSON.stringify("Client left"));
             console.log('Client connection closed');
         });
 
-        function handle_msg_respawn (msg) {
+        function handle_msg_respawn(msg) {
             var position = UTIL.safePlayerPosition();
 
             if (currentPlayer && self.isPlayerInGame(currentPlayer.id)) {
@@ -118,7 +117,7 @@ var AppServer = function (wss) {
             console.log('User ' + currentPlayer.id + ' spawning into the game');
         }
 
-        function handle_msg_player_ready (msg) {
+        function handle_msg_player_ready(msg) {
             console.log('Player ' + currentPlayer.id + ' client ready');
 
             if (Validators.is_profane(currentPlayer.name)) {
@@ -160,7 +159,7 @@ var AppServer = function (wss) {
             console.log('Total players: ' + Object.getOwnPropertyNames(self.model.players).length);
         }
 
-        function handle_msg_zor_ping (msg) {
+        function handle_msg_zor_ping(msg) {
             currentPlayer.lastHeartbeat = Date.now();
 
             // save recent pings and fps
@@ -169,7 +168,132 @@ var AppServer = function (wss) {
 
             ws.send(JSON.stringify({op: "zor_pong"}));
         }
+
+        function handle_msg_player_update(buffer) {
+            if (currentPlayer) currentPlayer.lastHeartbeat = Date.now();
+
+            var nowTime = Date.now();
+            var receive_gap = nowTime - currentPlayer.pp_receive_metric.last_time;
+            currentPlayer.pp_receive_metric.last_time = nowTime;
+
+            // Read binary data
+            var bufArr  = new ArrayBuffer(buffer.length);
+            var bufView = new Float32Array(bufArr);
+            var viewIndex = 0;
+            for (var bufferIndex = 0, l = buffer.length; bufferIndex < l; bufferIndex = bufferIndex + 4)            {
+                bufView[viewIndex] = buffer.readFloatLE(bufferIndex);
+                viewIndex++;
+            }
+
+            // Pull out the data
+            var index     = 0;
+            var sphere_id = bufView[index++];
+            var gap       = bufView[index++];
+            var au_gap    = bufView[index++];
+            var ba        = bufView[index++];
+            var old_x     = bufView[index++];
+            var old_y     = bufView[index++];
+            var old_z     = bufView[index++];
+            var old_r     = bufView[index++];
+            var old_t     = bufView[index++];
+            var new_x     = bufView[index++];
+            var new_y     = bufView[index++];
+            var new_z     = bufView[index++];
+            var new_r     = bufView[index++];
+            var new_t     = bufView[index];
+
+            // Save the client metrics
+            currentPlayer.pp_send_metric.add(gap);
+            currentPlayer.pp_receive_metric.add(receive_gap);
+            currentPlayer.au_receive_metric.add(au_gap);
+            currentPlayer.buffered_amount_metric.add(ba);
+
+            // Build the sphere object
+            var oldestPosition = {position: {x: old_x, y: old_y, z: old_z}, radius: old_r, time: old_t};
+            var latestPosition = {position: {x: new_x, y: new_y, z: new_z}, radius: new_r, time: new_t};
+            var sphere = {id: sphere_id, oldestPosition: oldestPosition, latestPosition: latestPosition, "scale": new_r};
+
+            // Fixes bug #145 the client may send one last position update before they are removed from the game
+            var err;
+            var actor = self.model.actors[sphere.id];
+            if (!actor) {
+                err = Validators.ErrorCodes.PLAYER_NOT_IN_MODEL;
+            } else {
+                err = Validators.movementSampled(sphere, actor, self.model);
+            }
+
+            if (!err) {
+                // update the players position in the model
+                actor.position.set( latestPosition.position.x, latestPosition.position.y, latestPosition.position.z);
+
+                // Recent positions
+                actor.recentPositions.push({position: actor.position, radius: actor.scale, time: latestPosition.time});
+                if (actor.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {
+                    actor.recentPositions.shift();  // remove the oldest position
+                }
+
+                // Pull out the food captures if there are any
+                var foodCapLength = bufView.length - config.BIN_PP_POSITIONS_LENGTH;
+                if (foodCapLength > 1 && (foodCapLength % 2 === 0)) { // prevent buffer overflow
+                    // Iterate over food capture fi, radius pairs
+                    for (var i = config.BIN_PP_POSITIONS_LENGTH; i < bufView.length; i += 2) {
+                        var fi         = bufView[ i ];
+                        var origRadius = bufView[ i + 1 ];
+
+                        self.foodCapture(currentPlayer, fi, actor, origRadius);
+                    }
+                }
+
+                // validate the new scale
+                if (Validators.playerSphereScale(actor) === Validators.ErrorCodes.PLAYER_SCALE_TO_BIG) {
+                    // Adjust scale to what the server expects it to be, and mark it for update
+                    actor.scale = actor.expectedScale;
+                    actor.serverAdjust = 1;
+                }
+            } else {
+                switch (err) {
+                    case Validators.ErrorCodes.SPEED_TO_FAST:
+                        ws.send(JSON.stringify({op: 'speeding_warning'}));
+                        self.model.players[currentPlayer.id].infractions_speed++;
+                        break;
+                    case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
+                        console.log("Recieved 'player_update' from player not in model!", sphere.id);
+                        break;
+                }
+            }
+        }
     });
+
+    self.foodCapture = function appFoodCapture (player, fi, actor, origRadius) {
+        //TODO: Refactor this to use the current radius of the player on the server not what is sent from the client
+        var food_value = config.FOOD_GET_VALUE(origRadius);
+
+        var err = Validators.foodCapture(self.model, fi, actor, origRadius);
+
+        if (!err) {
+            self.model.food_respawning[fi] = config.FOOD_RESPAWN_TIME;
+
+            // Increment the players food captures
+            player.foodCaptures++;
+
+            // grow player on the server to track growth validation
+            player.sphere.growExpected( food_value );
+
+            // notify clients of food capture so they can update their food view
+            // TODO: queue this into the actorUpdate message from the server
+            self.wss.broadcast(JSON.stringify({op: 'food_captured', fi: fi}));
+        } else {
+            switch (err) {
+                case Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR:
+                    // inform client of invalid capture, and make them shrink, mark infraction
+                    self.model.players[player.id].infractions_food++;
+                    break;
+                case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
+                    console.log("Recieved 'foodCapture' from player not in model!", actor.id);
+                    break;
+            }
+        }
+    };
 
     //TODO: test
     self.isPlayerInGame = function appIsPlayerInGame(player_id) {
