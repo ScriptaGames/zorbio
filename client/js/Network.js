@@ -56,6 +56,9 @@ function setupSocket(ws) {
                 case 'game_setup':
                     handle_msg_game_setup(message);
                     break;
+                case 'player_join':
+                    handle_msg_player_join(message);
+                    break;
                 case 'zor_pong':
                     handle_msg_zor_pong();
                     break;
@@ -103,7 +106,26 @@ function setupSocket(ws) {
 
         setIntervalMethods();
 
+        ws.send(JSON.stringify({op: "player_in_game"}));
         console.log('Game finished setting up');
+    }
+
+    function handle_msg_player_join(message) {
+        if (!gameStart) return;
+        var newPlayer = message.player;
+
+        //Add new player if it's not the current player
+        if (newPlayer.id !== player.getPlayerId()) {
+            players[newPlayer.id] = new ZOR.PlayerController(newPlayer, player.model.sphere, scene);
+
+            //Keep model in sync with the server
+            zorbioModel.players[newPlayer.id] = newPlayer;
+            zorbioModel.actors[newPlayer.sphere.id] = newPlayer.sphere;
+            var position = newPlayer.sphere.position;
+            zorbioModel.actors[newPlayer.sphere.id].position = new THREE.Vector3(position.x, position.y, position.z);
+        }
+
+        console.log('Player ' + newPlayer.name + ' joined!');
     }
 
     function handle_msg_zor_pong() {
@@ -194,22 +216,6 @@ function setIntervalMethods() {
 //
 //function setupSocket(socket) {
 //
-//    socket.on('playerJoin', function playerJoin(newPlayer) {
-//        if (!gameStart) return;
-//
-//        //Add new player if it's not the current player
-//        if (newPlayer.id !== player.getPlayerId()) {
-//            players[newPlayer.id] = new ZOR.PlayerController(newPlayer, player.model.sphere, scene);
-//
-//            //Keep model in sync with the server
-//            zorbioModel.players[newPlayer.id] = newPlayer;
-//            zorbioModel.actors[newPlayer.sphere.id] = newPlayer.sphere;
-//            var position = newPlayer.sphere.position;
-//            zorbioModel.actors[newPlayer.sphere.id].position = new THREE.Vector3(position.x, position.y, position.z);
-//        }
-//
-//        console.log('Player ' + newPlayer.name + ' joined!');
-//    });
 //
 //    socket.on('au', function actorUpdates(buf) {
 //
