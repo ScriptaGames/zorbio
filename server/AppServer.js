@@ -34,12 +34,10 @@ var AppServer = function (wss) {
 
     self.wss.on('connection', function (ws) {
 
-        console.log('Client connected headers:', JSON.stringify(ws.upgradeReq.headers));
+        console.log('Client connected headers:', JSON.stringify(ws.upgradeReq.headers), ws.upgradeReq.url);
 
         // parse query string
         var queryString = URL.parse(ws.upgradeReq.url, true).query;
-
-        console.log("URL:", ws.upgradeReq.url);
 
         // Handle new connection
         var player_id = Zorbio.IdGenerator.get_next_id();

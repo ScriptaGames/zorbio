@@ -145,10 +145,9 @@ io.on('connection', function (socket) {
     socket.on('gotit', function (player, isFirstSpawn) {
         console.log('Player ' + player.id + ' connecting');
 
-        //TODO: move profanity filter to client side
         if (Validators.is_profane(player.name)) {
             socket.emit('kick', 'Invalid username');
-            socket.disconnect({ restart: false });
+            socket.disconnect({ restart: false }); // TODO: IN WebSocket this custom close code should be 4001
         }
         else if (!Validators.validAlphaKey(key)) {
             console.log('ALPHA KEY INVALID');

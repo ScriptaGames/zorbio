@@ -25,14 +25,28 @@ function connectToServer(playerType, playerName, color) {
 
         ws = new WebSocket( uri.toString() );
 
-        ws.onopen = function () {
-            console.log("WebSocket connection established and ready.");
-        };
-
-        //setupSocket(socket);
+        setupSocket(ws);
     }
 
     //sendRespawn(true);
+}
+
+function setupSocket(ws) {
+    ws.onopen = function wsOpen () {
+        console.log("WebSocket connection established and ready.");
+    };
+
+    ws.onclose = function wsClose (e) {
+        if (e.code < 4000) { // code 4001 we don't restart
+            handleNetworkTermination();
+        }
+        disconnected = true;
+        console.log('Connection closed:', e.code, e.reason);
+    };
+}
+
+function handleNetworkTermination() {
+    setTimeout(location.reload.bind(location), 500);
 }
 
 //function sendRespawn(isFirstSpawn) {
@@ -116,9 +130,7 @@ function connectToServer(playerType, playerName, color) {
 //    socket.emit('zorServerPing', {lastPing: zorPingDuration, fps: ZOR.LagScale.get_fps()});
 //}
 //
-//function handleNetworkTermination() {
-//    setTimeout(location.reload.bind(location), 500);
-//}
+
 //
 //function setIntervalMethods() {
 //    // start sending heartbeat
