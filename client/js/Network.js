@@ -78,6 +78,12 @@ function setupSocket(ws) {
                 case 'server_tick_slow':
                     handle_msg_server_tick_slow(message);
                     break;
+                case 'kick':
+                    handle_msg_kick(message);
+                    break;
+                case 'remove_player':
+                    handle_msg_remove_player(message);
+                    break;
             }
         }
         else {
@@ -241,6 +247,18 @@ function setupSocket(ws) {
         if (!gameStart) return;
         handleServerTick(msg.serverTickData);
     }
+
+    function handle_msg_kick(msg) {
+        console.log('Server said: ', msg.reason);
+        setDeadState();
+        handlePlayerKick(msg.reason);
+    }
+
+    function handle_msg_remove_player(msg) {
+        if (!gameStart) return;
+        console.log("received remove_player", msg.playerId);
+        removePlayerFromGame(msg.playerId);
+    }
 }
 
 function handleNetworkTermination() {
@@ -324,31 +342,6 @@ function clearIntervalMethods() {
 
 //
 //function setupSocket(socket) {
-//    socket.on('kick', function kick(msg) {
-//        console.log('Server said: ', msg);
-//        setDeadState();
-//        handlePlayerKick(msg);
-//    });
-//
-//    socket.on('removePlayer', function playerKicked(playerId) {
-//        if (!gameStart) return;
-//
-//        removePlayerFromGame(playerId);
-//    });
-//
-//    // Handle error
-//    socket.on('connect_failed', function connect_failed() {
-//        handleNetworkTermination();
-//        disconnected = true;
-//        console.log('WebSocket Connection failed');
-//    });
-//
-//    socket.on('serverTick', function serverTick(serverTickData) {
-//        if (!gameStart) return;
-//
-//        handleServerTick(serverTickData);
-//    });
-//
 //
 //    socket.on('speedingWarning', function speedingWarning() {
 //        if (!gameStart) return;

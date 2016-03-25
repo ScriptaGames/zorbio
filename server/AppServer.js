@@ -9,6 +9,7 @@ var Zorbio     = require('../common/zorbio.js');
 var Validators = require('./Validators.js');
 var UTIL       = require('../common/util.js');
 var Drain      = require('../common/Drain.js');
+var WebSocket  = require('ws');
 
 /**
  * This module contains all of the app logic and state,
@@ -22,7 +23,9 @@ var AppServer = function (wss) {
     self.wss = wss;
     self.wss.broadcast = function broadcast(data) {
         self.wss.clients.forEach(function each(client) {
-            client.send(data);
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(data);
+            }
         });
     };
 
@@ -89,8 +92,7 @@ var AppServer = function (wss) {
         });
 
         ws.on('close', function wsClose() {
-            self.wss.broadcast(JSON.stringify("Client left"));
-            console.log('Client connection closed');
+            handle_close();
         });
 
         function handle_msg_respawn(msg) {
@@ -256,6 +258,16 @@ var AppServer = function (wss) {
                         break;
                 }
             }
+        }
+
+        function handle_close() {
+            console.log('Client connection closed');
+
+            // notify other clients to remove this player
+            self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: player_id}));
+
+            self.removePlayerFromModel(player_id);
+            self.removePlayerSocket(player_id);
         }
     });
 
@@ -482,7 +494,7 @@ var AppServer = function (wss) {
         }
 
         // notify other clients
-        self.wss.broadcast(JSON.stringify({op: 'removePlayer', playerId: playerId}));
+        self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: playerId}));
 
         self.removePlayerFromModel(playerId);
     };
@@ -497,6 +509,31 @@ var AppServer = function (wss) {
         }
         if (self.model.actors[actorId]) {
             delete self.model.actors[actorId];
+        }
+    };
+
+    self.removePlayerSocket = function appRemovePlayerSocket(playerId) {
+        if (self.sockets[playerId]) {
+            if (self.sockets[playerId].readyState === WebSocket.OPEN) {
+                self.sockets[playerId].close();
+            }
+            delete self.sockets[playerId];
+        }
+    };
+
+    self.checkHeartbeats = function appCheckHeartbeats() {
+        var time = Date.now();
+
+        var playerIds = Object.getOwnPropertyNames(self.model.players);
+        for (var i = 0, l = playerIds.length; i < l; i++) {
+            var id = +playerIds[i];  // make sure id is a number
+            var player = self.model.players[id];
+            if (player && player.lastHeartbeat) {
+                if ((time - player.lastHeartbeat) > config.HEARTBEAT_TIMEOUT) {
+                    var msg = "You were kicked because last heartbeat was over " + (config.HEARTBEAT_TIMEOUT / 1000) + " seconds ago.";
+                    self.kickPlayer(id, msg);
+                }
+            }
         }
     };
 
@@ -545,7 +582,7 @@ var AppServer = function (wss) {
      * real-time, e.g. food respawns
      */
     self.serverTickSlow = function appServerTickSlow() {
-        //checkHeartbeats();
+        self.checkHeartbeats();
         self.updateFoodRespawns();
         //playersChecks();
         self.sendServerTickData();
