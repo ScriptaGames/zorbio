@@ -21,7 +21,7 @@ var Drain      = require('../common/Drain.js');
  * @constructor
  */
 var AppServer = function (wss) {
-    //  Scope.
+    //  Scope
     var self = this;
 
     self.wss = wss;

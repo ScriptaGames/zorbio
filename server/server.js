@@ -15,7 +15,7 @@ require("console-stamp")(console, {pattern: "mm/dd/yyyy HH:MM:ss.l"});
  */
 var MainServer = function () {
 
-    //  Scope.
+    //  Scope
     var self = this;
 
 
