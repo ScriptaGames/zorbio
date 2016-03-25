@@ -72,6 +72,8 @@ var AppServer = function (wss) {
                 console.log(arr[0]);
             }
             else {
+                console.log(msg);
+
                 var message = JSON.parse(msg);
 
                 switch (message.key) {
