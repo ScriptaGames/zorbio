@@ -264,6 +264,112 @@ var AppServer = function (wss) {
         }
     });
 
+    self.updateActorDrains = function appUpdateActorDrains( model, drainers ) {
+        // update drains
+
+        var drainer_ids = Object.getOwnPropertyNames(drainers);
+        var drainees;
+        var drainer;
+        var drainee;
+        var drainee_id;
+        var drainer_id;
+        var drain_amount;
+
+        var i = drainer_ids.length;
+        var j;
+
+        while ( i-- ) {
+            drainer_id = drainer_ids[i];
+            drainees = drainers[drainer_id];
+            j = drainees.length;
+            while ( j-- ) {
+                drainee_id = drainees[j].id;
+
+                drainer = model.actors[drainer_id];
+                drainee = model.actors[drainee_id];
+
+                drain_amount = Drain.amount( drainees[j].dist );
+
+                drainer.growExpected( +drain_amount );
+                drainee.growExpected( -drain_amount );
+
+                // if the drain caused the drainer to get bigger than the drainer,
+                // correct so that they're the same size.  drain shouldn't be able
+                // to make a player larger than another because it leads to
+                // infinite back and forth draining.
+                if (drainer.scale > drainee.scale) {
+                    drainer.scale = drainee.scale = ( drainer.scale + drainee.scale ) / 2;
+                }
+            }
+        }
+    };
+
+    self.sendActorUpdates = function appSendActorUpdates() {
+        var actorIds = Object.getOwnPropertyNames(self.model.actors);
+        if (actorIds.length === 0) return;  // nothing to do if there's no actors
+
+        const NUM_PLAYERS = actorIds.length;
+
+        const ACTOR_PARTS = 6;
+        const ACTORS_ARRAY_LENGTH = ACTOR_PARTS * 32;
+
+        // for each player, save the id's of each player they are draining.  the
+        // space for those id's is one byte per other player.  for example, if
+        // MAX_PLAYERS is 50, drain array size will be 49 bytes.
+        const DRAIN_ARRAY_LENGTH = config.MAX_PLAYERS - 1;
+
+        const PLAYER_ARRAY_LENGTH = UTIL.fourPad( ACTORS_ARRAY_LENGTH + DRAIN_ARRAY_LENGTH );
+
+        var buffer = new ArrayBuffer(PLAYER_ARRAY_LENGTH * NUM_PLAYERS);
+
+        var actorsArray;
+        var drainArray;
+        var id;
+        var actor;
+        var position;
+        var di;  // drain index
+        var did; // drain id
+
+        var drainers = Drain.findAll( self.model.players );
+        self.updateActorDrains( self.model, drainers );
+
+        // make the payload as small as possible, send only what's needed on the client
+        var offset = 0;
+        var i = actorIds.length;
+        while( i-- ) {
+            id = +actorIds[i];  // make sure id is a number
+            actor = self.model.actors[id];
+            position = actor.position;
+
+            actorsArray = new Float32Array(buffer, offset, ACTOR_PARTS);
+            drainArray  = new Uint8Array(buffer, offset + ACTORS_ARRAY_LENGTH, DRAIN_ARRAY_LENGTH);
+
+            // update actor data
+
+            actorsArray[0] = id;
+            actorsArray[1] = position.x;
+            actorsArray[2] = position.y;
+            actorsArray[3] = position.z;
+            actorsArray[4] = actor.scale;
+            actorsArray[5] = actor.serverAdjust;
+
+            actor.serverAdjust = 0;
+
+            // update active drains
+
+            di = drainArray.length;
+            while ( di-- ) {
+                did = drainers[id][di];
+                drainArray[di] = (did && did.id) || 0;
+            }
+
+            offset += PLAYER_ARRAY_LENGTH;
+        }
+
+        // Send actors updates to all clients
+        self.wss.broadcast(buffer, {binary: true, mask: true});
+    };
+
     self.foodCapture = function appFoodCapture (player, fi, actor, origRadius) {
         //TODO: Refactor this to use the current radius of the player on the server not what is sent from the client
         var food_value = config.FOOD_GET_VALUE(origRadius);
@@ -326,7 +432,31 @@ var AppServer = function (wss) {
         if (self.model.actors[actorId]) {
             delete self.model.actors[actorId];
         }
-    }
+    };
+
+    /**
+     * Main server loop for general updates to the client that should be as fast as
+     * possible, eg movement and player capture.
+     */
+    self.serverTickFast = function appServerTickFast() {
+        //checkPlayerCaptures( model.players );
+        self.sendActorUpdates();
+    };
+
+    /**
+     * Main server loop for general updates to the client that don't have to be
+     * real-time, e.g. food respawns
+     */
+    self.serverTickSlow = function appServerTickSlow() {
+        //checkHeartbeats();
+        //updateFoodRespawns();
+        //playersChecks();
+        //sendServerTickData();
+    };
+
+    // Start game loops
+    gameloop.setGameLoop(self.serverTickFast, config.TICK_FAST_INTERVAL);
+    gameloop.setGameLoop(self.serverTickSlow, config.TICK_SLOW_INTERVAL);
 };
 
 if (NODEJS) module.exports = AppServer;
