@@ -75,6 +75,9 @@ function setupSocket(ws) {
                 case 'food_captured':
                     handle_msg_food_captured(message);
                     break;
+                case 'server_tick_slow':
+                    handle_msg_server_tick_slow(message);
+                    break;
             }
         }
         else {
@@ -232,6 +235,11 @@ function setupSocket(ws) {
     function handle_msg_food_captured(msg) {
         if (!gameStart) return;
         foodController.hideFood( msg.fi );
+    }
+
+    function handle_msg_server_tick_slow(msg) {
+        if (!gameStart) return;
+        handleServerTick(msg.serverTickData);
     }
 }
 

@@ -500,6 +500,37 @@ var AppServer = function (wss) {
         }
     };
 
+    self.updateFoodRespawns = function appUpdateFoodRespawns() {
+        // keep a current reference of which food indexes are respawning
+        self.model.food_respawning_indexes = [];
+
+        for (var i = 0, l = self.model.food_respawning.length; i < l; ++i) {
+            if (self.model.food_respawning[i] > 0) {
+                self.model.food_respawning[i] = Math.max(  self.model.food_respawning[i] - config.TICK_SLOW_INTERVAL, 0 );
+
+                if (self.model.food_respawning[i] === 0) {
+                    // queue up food respawn to send to clients
+                    self.model.food_respawn_ready_queue.push(i);
+                } else {
+                    self.model.food_respawning_indexes.push(i);
+                }
+            }
+        }
+    };
+
+    /**
+     * Send any updates to client per server tick
+     */
+    self.sendServerTickData = function appSendServerTickData() {
+        var serverTickData = {
+            "fr": self.model.food_respawn_ready_queue,
+            "sm": self.serverRestartMsg,
+            "leaders": self.model.leaders
+        };
+        self.wss.broadcast(JSON.stringify({op: 'server_tick_slow', serverTickData: serverTickData}));
+        self.model.food_respawn_ready_queue = [];
+    };
+
     /**
      * Main server loop for general updates to the client that should be as fast as
      * possible, eg movement and player capture.
@@ -515,9 +546,9 @@ var AppServer = function (wss) {
      */
     self.serverTickSlow = function appServerTickSlow() {
         //checkHeartbeats();
-        //updateFoodRespawns();
+        self.updateFoodRespawns();
         //playersChecks();
-        //sendServerTickData();
+        self.sendServerTickData();
     };
 
     // Start game loops
