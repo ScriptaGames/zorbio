@@ -56,6 +56,9 @@ function setupSocket(ws) {
                 case 'game_setup':
                     handle_msg_game_setup(message);
                     break;
+                case 'zor_pong':
+                    handle_msg_zor_pong();
+                    break;
             }
         }
         else {
@@ -101,6 +104,11 @@ function setupSocket(ws) {
         setIntervalMethods();
 
         console.log('Game finished setting up');
+    }
+
+    function handle_msg_zor_pong() {
+        zorPingDuration = Date.now() - zorPingStart;
+        console.log('Ping: ' + zorPingDuration + 'ms');
     }
 }
 
