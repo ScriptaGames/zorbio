@@ -24,6 +24,7 @@ function connectToServer(playerType, playerName, color) {
         uri.addQuery('key', key);
 
         ws = new WebSocket( uri.toString() );
+        ws.binaryType = 'arraybuffer';
 
         ws.onopen = function wsOpen () {
             console.log("WebSocket connection established and ready.");
@@ -66,6 +67,7 @@ function setupSocket(ws) {
         }
         else {
             // handle binary message
+            handle_msg_actor_updates(msg.data);
         }
     };
 
@@ -131,6 +133,49 @@ function setupSocket(ws) {
     function handle_msg_zor_pong() {
         zorPingDuration = Date.now() - zorPingStart;
         console.log('Ping: ' + zorPingDuration + 'ms');
+    }
+
+    function handle_msg_actor_updates(arrayBuffer) {
+        if (!gameStart) {
+            return; // don't start updating player positions in the client until their game has started
+        }
+
+        // Record gap since last actor update was received
+        var nowTime = Date.now();
+        actorUpdateGap = nowTime - player.model.au_receive_metric.last_time;
+        player.model.au_receive_metric.last_time = nowTime;
+
+        var actorArray;
+        var drainArray;
+
+        var actor_parts = 6;
+        var drain_bytes = config.MAX_PLAYERS - 1;
+        var actor_bytes = 32 * actor_parts;
+        var player_bytes = UTIL.fourPad( actor_bytes + drain_bytes ); // bytes per player
+
+        // sync the actors positions from the server model to the client model
+        var i = arrayBuffer.byteLength / player_bytes; // number of player frames in this update;
+        while ( i-- ) {
+
+            actorArray = new Float32Array(arrayBuffer, i * player_bytes, actor_parts);
+            drainArray = new Uint8Array(arrayBuffer, i * player_bytes + actor_bytes, drain_bytes);
+
+            var id = +actorArray[ 0 ];
+            var actor = zorbioModel.actors[id];
+
+            if (actor) {
+                var x = actorArray[ 1 ];
+                var y = actorArray[ 2 ];
+                var z = actorArray[ 3 ];
+                var s = actorArray[ 4 ];
+                var serverAdjust = actorArray[ 5 ];
+
+                actor.position.set(x, y, z);
+                actor.scale = s;
+                actor.serverAdjust = serverAdjust;
+                actor.drains = drainArray;
+            }
+        }
     }
 }
 
