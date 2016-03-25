@@ -187,78 +187,12 @@ function setIntervalMethods() {
 //
 //var throttledSendPlayerSpherePosition = _.throttle(sendPlayerSpherePosition, config.ACTOR_UPDATE_INTERVAL);
 //
-//function sendPlayerCapture(attackingPlayerId, targetPlayerId) {
-//    console.log("sendPlayerCapture: ", attackingPlayerId, targetPlayerId);
-//
-//    if (!ZOR.pendingPlayerCaptures[targetPlayerId]) {
-//
-//        if (targetPlayerId === player.getPlayerId()) {
-//            player.beingCaptured = true;
-//        } else {
-//            ZOR.pendingPlayerCaptures[targetPlayerId] = config.PENDING_PLAYER_CAPTURE_TTL;  // stop sending dupe player captures
-//        }
-//
-//        console.log("socket.emit playerCapture: ", attackingPlayerId, targetPlayerId);
-//        socket.emit('playerCapture', attackingPlayerId, targetPlayerId, player.model.sphere);
-//    }
-//}
-//
-//function sendPing() {
-//    zorPingStart = Date.now();
-//
-//    // send binary message to server
-//    socket.emit('zorServerPing', {lastPing: zorPingDuration, fps: ZOR.LagScale.get_fps()});
-//}
-//
-
-//
-//function setIntervalMethods() {
-//    // start sending heartbeat
-//    interval_id_heartbeat = window.setInterval(sendPing, config.HEARTBEAT_PULSE_INTERVAL);
-//}
 //
 //function clearIntervalMethods() {
 //    window.clearInterval(interval_id_heartbeat);
 //}
 //
 //function setupSocket(socket) {
-//    // Handle connection
-//    socket.on('welcome', function welcome(playerModel, isFirstSpawn) {
-//        player = new ZOR.PlayerController(playerModel, playerModel.sphere);
-//        ZOR.UI.engine.set('player', player.model);
-//
-//        socket.emit('gotit', player.model, isFirstSpawn);
-//    });
-//
-//    socket.on('gameSetup', function gameSetup(model, isFirstSpawn) {
-//        players[player.getPlayerId()] = player;
-//
-//        zorbioModel = model;
-//
-//        // iterate over actors and create THREE objects that don't serialize over websockets
-//        var actorIds = Object.getOwnPropertyNames(zorbioModel.actors);
-//        for (var i = 0, l = actorIds.length; i < l; i++) {
-//            var actorId = +actorIds[i];  // make sure id is a number
-//            var actor = zorbioModel.actors[actorId];
-//            var position = actor.position;
-//            actor.position = new THREE.Vector3(position.x, position.y, position.z);
-//        }
-//
-//        if (isFirstSpawn) {
-//            // create the scene
-//            createScene();
-//        } else {
-//            // re-add player to scene and reset camera
-//            initCameraAndPlayer();
-//        }
-//
-//        gameStart = true;
-//        console.log('Game is started: ' + gameStart);
-//
-//        setIntervalMethods();
-//
-//        console.log('Game finished setting up');
-//    });
 //
 //    socket.on('playerJoin', function playerJoin(newPlayer) {
 //        if (!gameStart) return;
@@ -341,18 +275,6 @@ function setIntervalMethods() {
 //        removePlayerFromGame(playerId);
 //    });
 //
-//    socket.on('connect', function connect() {
-//        console.log("Successfully connected to WebSocket");
-//    });
-//
-//    socket.on('disconnect', function disconnect(data) {
-//        if (data.restart || data === 'transport close') {
-//            handleNetworkTermination();
-//        }
-//        disconnected = true;
-//        console.log('You were disconnected');
-//    });
-//
 //    // Handle error
 //    socket.on('connect_failed', function connect_failed() {
 //        handleNetworkTermination();
@@ -366,40 +288,6 @@ function setIntervalMethods() {
 //        handleServerTick(serverTickData);
 //    });
 //
-//    socket.on('processingPlayerCapture', function processingPlayerCapture(targetPlayerId) {
-//        if (!gameStart) return;
-//
-//        console.log("processingPlayerCapture: ", targetPlayerId);
-//        ZOR.pendingPlayerCaptures[targetPlayerId] = config.PENDING_PLAYER_CAPTURE_TTL;  // stop sending dupe player captures
-//        socket.emit('continuePlayerCapture', player.getPlayerId(), targetPlayerId);
-//    });
-//
-//    socket.on('invalidCaptureTargetNotInModel', function invalidCaptureTargetNotInModel(attackingPlayerId, targetPlayerId) {
-//        if (!gameStart) return;
-//
-//        console.log("invalidCaptureTargetNotInModel: ", attackingPlayerId, targetPlayerId);
-//
-//        // clean up
-//        var playerId = player.getPlayerId();
-//        if (attackingPlayerId === playerId) {
-//            if (ZOR.pendingPlayerCaptures[targetPlayerId]) {
-//                delete ZOR.pendingPlayerCaptures[targetPlayerId];
-//            }
-//        } else if (targetPlayerId === playerId) {
-//            player.beingCaptured = false;
-//        }
-//
-//        // safe method to call if they are already removed just to make sure we stay in sync with server
-//        removePlayerFromGame(targetPlayerId);
-//    });
-//
-//    socket.on("invalidCaptureTargetToFar", function invalidCaptureTargetToFar(attackingPlayerId, targetPlayerId) {
-//        console.log("invalidCaptureTargetToFar");
-//
-//        if (ZOR.pendingPlayerCaptures[targetPlayerId]) {
-//            delete ZOR.pendingPlayerCaptures[targetPlayerId];
-//        }
-//    });
 //
 //    socket.on('speedingWarning', function speedingWarning() {
 //        if (!gameStart) return;
@@ -442,12 +330,4 @@ function setIntervalMethods() {
 //        }
 //    });
 //
-//    //socket.on('pong', function pong(number) {
-//    //    console.log('Ping: ' + number + 'ms');
-//    //});
-//
-//    socket.on('zorServerPong', function (msg) {
-//        zorPingDuration = Date.now() - zorPingStart;
-//        console.log('Ping: ' + zorPingDuration + 'ms');
-//    });
 //}
