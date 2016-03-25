@@ -84,6 +84,9 @@ var AppServer = function (wss) {
                     case 'player_ready':
                         handle_msg_player_ready(message);
                         break;
+                    case 'zor_ping':
+                        handle_msg_zor_ping(message);
+                        break;
                 }
             }
         });
@@ -149,6 +152,16 @@ var AppServer = function (wss) {
                 console.log('Player ' + currentPlayer.id + ' joined game!');
                 console.log('Total players: ' + Object.getOwnPropertyNames(self.model.players).length);
             }
+        }
+
+        function handle_msg_zor_ping (msg) {
+            currentPlayer.lastHeartbeat = Date.now();
+
+            // save recent pings and fps
+            currentPlayer.ping_metric.add(msg.lastPing);
+            currentPlayer.fps_metric.add(msg.fps);
+
+            ws.send(JSON.stringify({op: "zor_pong"}));
         }
     });
 

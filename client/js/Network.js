@@ -117,7 +117,7 @@ function sendPing() {
     zorPingStart = Date.now();
 
     // Send ping to track latency, client heartbeat, and fps
-    ws.send(JSON.stringify({op: 'zorServerPing', lastPing: zorPingDuration, fps: ZOR.LagScale.get_fps()}));
+    ws.send(JSON.stringify({op: 'zor_ping', lastPing: zorPingDuration, fps: ZOR.LagScale.get_fps()}));
 }
 
 function setIntervalMethods() {
