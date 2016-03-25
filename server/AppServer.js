@@ -25,6 +25,11 @@ var AppServer = function (wss) {
     var self = this;
 
     self.wss = wss;
+    self.wss.broadcast = function broadcast(data) {
+        self.wss.clients.forEach(function each(client) {
+            client.send(data);
+        });
+    };
 
     // Game state
     self.model = new Zorbio.Model(config.WORLD_SIZE, config.FOOD_DENSITY);
@@ -67,7 +72,13 @@ var AppServer = function (wss) {
                 console.log(arr[0]);
             }
             else {
-                console.log(msg);
+                var message = JSON.parse(msg);
+
+                switch (message.key) {
+                    case 'respawn':
+                        handle_msg_respawn(message);
+                        break;
+                }
             }
         });
 
@@ -75,6 +86,24 @@ var AppServer = function (wss) {
             self.wss.broadcast(JSON.stringify("Client left"));
             console.log('Client connection closed');
         });
+
+        function handle_msg_respawn (msg) {
+            var position = UTIL.safePlayerPosition();
+
+            if (currentPlayer && self.isPlayerInGame(currentPlayer.id)) {
+                // make sure this player isn't already connected and playing
+                console.log("Respawn error: Player is already in game");
+                self.kickPlayer(currentPlayer.id, "Forced respawn.");
+                return;
+            }
+
+            // Create the Player
+            currentPlayer = new Zorbio.Player(player_id, name, color, type, position);
+
+            ws.send(JSON.stringify({key: 'welcome', currentPlayer: currentPlayer, isFirstSpawn: msg.isFirstSpawn}));
+
+            console.log('User ' + currentPlayer.id + ' spawning into the game');
+        }
 
         function toArrayBuffer(buffer) {
             var ab = new ArrayBuffer(buffer.length);
@@ -85,6 +114,39 @@ var AppServer = function (wss) {
             return ab;
         }
     });
+
+    //TODO: test
+    self.isPlayerInGame = function appIsPlayerInGame(player_id) {
+        return (self.model.players[player_id] && self.sockets[player_id]);
+    };
+
+    //TODO: test
+    self.kickPlayer = function appKickPlayer(playerId, reason) {
+        console.log('kicking player: ', playerId, reason);
+
+        // notify player
+        if (self.sockets[playerId]) {
+            self.sockets[playerId].send(JSON.stringify({key: 'kick', reason: reason}));
+        }
+
+        // notify other clients
+        self.wss.broadcast(JSON.stringify({key: 'removePlayer', playerId: playerId}));
+
+        self.removePlayerFromModel(playerId);
+    };
+
+    //TODO: test
+    self.removePlayerFromModel = function appRemovePlayerFromModel(playerId) {
+        var actorId = 0;
+        if (self.model.players[playerId]) {
+            // remove player from model
+            actorId = self.model.players[playerId].sphere.id;
+            delete self.model.players[playerId];
+        }
+        if (self.model.actors[actorId]) {
+            delete self.model.actors[actorId];
+        }
+    }
 };
 
 if (NODEJS) module.exports = AppServer;

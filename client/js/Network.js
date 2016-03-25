@@ -25,17 +25,18 @@ function connectToServer(playerType, playerName, color) {
 
         ws = new WebSocket( uri.toString() );
 
-        setupSocket(ws);
+        ws.onopen = function wsOpen () {
+            console.log("WebSocket connection established and ready.");
+            setupSocket( ws );
+            sendRespawn(true);
+        };
     }
-
-    //sendRespawn(true);
+    else if (ws.readyState === WebSocket.OPEN) {
+        sendRespawn(true);
+    }
 }
 
 function setupSocket(ws) {
-    ws.onopen = function wsOpen () {
-        console.log("WebSocket connection established and ready.");
-    };
-
     ws.onclose = function wsClose (e) {
         if (e.code < 4000) { // code 4001 we don't restart
             handleNetworkTermination();
@@ -49,10 +50,11 @@ function handleNetworkTermination() {
     setTimeout(location.reload.bind(location), 500);
 }
 
-//function sendRespawn(isFirstSpawn) {
-//    gameStart = false;
-//    socket.emit('respawn', isFirstSpawn);
-//}
+function sendRespawn(isFirstSpawn) {
+    gameStart = false;
+    ws.send(JSON.stringify({key: 'respawn', isFirstSpawn: isFirstSpawn}));
+}
+
 //
 //function sendPlayerSpherePosition() {
 //    var nowTime = Date.now();

@@ -89,11 +89,6 @@ var MainServer = function () {
         // Set up WebSocket Server
         //TODO: Figure out how to set up allowed ORIGINS
         self.wss = new WebSocketServer({server: self.httpServer});
-        self.wss.broadcast = function broadcast(data) {
-            self.wss.clients.forEach(function each(client) {
-                client.send(data);
-            });
-        };
 
         // The app server contains all the logic and state of the WebSocket app
         self.appServer = new AppServer(self.wss);
