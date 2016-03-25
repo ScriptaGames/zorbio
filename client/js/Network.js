@@ -45,7 +45,7 @@ function setupSocket(ws) {
         console.log('Connection closed:', e.code, e.reason);
     };
 
-    ws.onmessage = function wsMessage (msg, flags) {
+    ws.onmessage = function wsMessage (msg) {
         if (typeof msg.data === "string") {
             var message = JSON.parse(msg.data);
 
@@ -74,7 +74,33 @@ function setupSocket(ws) {
     }
 
     function handle_msg_game_setup(msg) {
-        console.log('received game_setup message');
+        players[player.getPlayerId()] = player;
+
+        zorbioModel = msg.model;
+
+        // iterate over actors and create THREE objects that don't serialize over websockets
+        var actorIds = Object.getOwnPropertyNames(zorbioModel.actors);
+        for (var i = 0, l = actorIds.length; i < l; i++) {
+            var actorId = +actorIds[i];  // make sure id is a number
+            var actor = zorbioModel.actors[actorId];
+            var position = actor.position;
+            actor.position = new THREE.Vector3(position.x, position.y, position.z);
+        }
+
+        if (msg.isFirstSpawn) {
+            // create the scene
+            createScene();
+        } else {
+            // re-add player to scene and reset camera
+            initCameraAndPlayer();
+        }
+
+        gameStart = true;
+        console.log('Game is started: ' + gameStart);
+
+        setIntervalMethods();
+
+        console.log('Game finished setting up');
     }
 }
 
@@ -85,6 +111,18 @@ function handleNetworkTermination() {
 function sendRespawn(isFirstSpawn) {
     gameStart = false;
     ws.send(JSON.stringify({op: 'respawn', isFirstSpawn: isFirstSpawn}));
+}
+
+function sendPing() {
+    zorPingStart = Date.now();
+
+    // Send ping to track latency, client heartbeat, and fps
+    ws.send(JSON.stringify({op: 'zorServerPing', lastPing: zorPingDuration, fps: ZOR.LagScale.get_fps()}));
+}
+
+function setIntervalMethods() {
+    // start sending heartbeat
+    interval_id_heartbeat = window.setInterval(sendPing, config.HEARTBEAT_PULSE_INTERVAL);
 }
 
 //

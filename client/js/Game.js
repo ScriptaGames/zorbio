@@ -273,7 +273,7 @@ function createScene() {
         updateActors();
 
         if (gameStart && !player.isDead) {
-            throttledSendPlayerSpherePosition();
+            //throttledSendPlayerSpherePosition();
 
             player.resetVelocity();
 
@@ -287,7 +287,7 @@ function createScene() {
 
             foodController.update(player.model.sphere.position);
 
-            foodController.checkFoodCaptures(player, captureFood);
+            //foodController.checkFoodCaptures(player, captureFood);
 
             drainView.update(scene, players);
 
