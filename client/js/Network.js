@@ -155,61 +155,60 @@ function setIntervalMethods() {
     interval_id_heartbeat = window.setInterval(sendPing, config.HEARTBEAT_PULSE_INTERVAL);
 }
 
-//
-//function sendPlayerSpherePosition() {
-//    var nowTime = Date.now();
-//    var gap = nowTime - player.model.pp_send_metric.last_time;
-//    player.model.pp_send_metric.last_time = nowTime;
-//
-//    var bufferedAmount = socket.io.engine.transport.ws.bufferedAmount;
-//
-//    // Make sure model is synced with view
-//    player.refreshSphereModel();
-//
-//    var sphereModel = player.model.sphere;
-//
-//    if (sphereModel.recentPositions.length < 2) {
-//        player.addRecentPosition();  // make sure we always have at least 2 recent positions
-//    }
-//
-//    // for now we only need to send the oldest position and the most recent position
-//    var oldestPosition = sphereModel.recentPositions[0];
-//    var latestPosition = sphereModel.recentPositions[sphereModel.recentPositions.length - 1];
-//
-//    var bufferView = new Float32Array(config.BIN_PP_POSITIONS_LENGTH + (player.food_capture_queue.length * 2));
-//    var index = 0;
-//    bufferView[index++] = sphereModel.id;            // Actor ID
-//    bufferView[index++] = gap;                       // Gap since last pp update
-//    bufferView[index++] = actorUpdateGap;            // Gap since last au update
-//    bufferView[index++] = bufferedAmount;            // Amount of bytes currently buffered to send in the ws
-//    bufferView[index++] = oldestPosition.position.x; // Old position X
-//    bufferView[index++] = oldestPosition.position.y; // Old position Y
-//    bufferView[index++] = oldestPosition.position.z; // Old position Z
-//    bufferView[index++] = oldestPosition.radius;     // Old radius
-//    bufferView[index++] = oldestPosition.time;       // Old time
-//    bufferView[index++] = latestPosition.position.x; // New position X
-//    bufferView[index++] = latestPosition.position.y; // New position Y
-//    bufferView[index++] = latestPosition.position.z; // New position Z
-//    bufferView[index++] = latestPosition.radius;     // New radius
-//    bufferView[index++] = latestPosition.time;       // New time
-//
-//    // Now add any queued food captures
-//    for(var i = 0, l = player.food_capture_queue.length; i < l; i++) {
-//        var food_cap = player.food_capture_queue[i];
-//        bufferView[index++] = food_cap.fi;
-//        bufferView[index++] = food_cap.radius;
-//    }
-//
-//    // clear food queue
-//    player.food_capture_queue = [];
-//
-//    // pp "Player Position"
-//    socket.emit('pp', bufferView.buffer);
-//}
-//
-//var throttledSendPlayerSpherePosition = _.throttle(sendPlayerSpherePosition, config.ACTOR_UPDATE_INTERVAL);
-//
-//
+function sendPlayerUpdate() {
+    var nowTime = Date.now();
+    var gap = nowTime - player.model.pp_send_metric.last_time;
+    player.model.pp_send_metric.last_time = nowTime;
+
+    var bufferedAmount = ws.bufferedAmount;
+
+    // Make sure model is synced with view
+    player.refreshSphereModel();
+
+    var sphereModel = player.model.sphere;
+
+    if (sphereModel.recentPositions.length < 2) {
+        player.addRecentPosition();  // make sure we always have at least 2 recent positions
+    }
+
+    // for now we only need to send the oldest position and the most recent position
+    var oldestPosition = sphereModel.recentPositions[0];
+    var latestPosition = sphereModel.recentPositions[sphereModel.recentPositions.length - 1];
+
+    var bufferView = new Float32Array(config.BIN_PP_POSITIONS_LENGTH + (player.food_capture_queue.length * 2));
+    var index = 0;
+    bufferView[index++] = sphereModel.id;            // Actor ID
+    bufferView[index++] = gap;                       // Gap since last pp update
+    bufferView[index++] = actorUpdateGap;            // Gap since last au update
+    bufferView[index++] = bufferedAmount;            // Amount of bytes currently buffered to send in the ws
+    bufferView[index++] = oldestPosition.position.x; // Old position X
+    bufferView[index++] = oldestPosition.position.y; // Old position Y
+    bufferView[index++] = oldestPosition.position.z; // Old position Z
+    bufferView[index++] = oldestPosition.radius;     // Old radius
+    bufferView[index++] = oldestPosition.time;       // Old time
+    bufferView[index++] = latestPosition.position.x; // New position X
+    bufferView[index++] = latestPosition.position.y; // New position Y
+    bufferView[index++] = latestPosition.position.z; // New position Z
+    bufferView[index++] = latestPosition.radius;     // New radius
+    bufferView[index++] = latestPosition.time;       // New time
+
+    // Now add any queued food captures
+    for(var i = 0, l = player.food_capture_queue.length; i < l; i++) {
+        var food_cap = player.food_capture_queue[i];
+        bufferView[index++] = food_cap.fi;
+        bufferView[index++] = food_cap.radius;  //TODO: no need to send radius anymore since all scale is handled on the server
+    }
+
+    // clear food queue
+    player.food_capture_queue = [];
+
+    // Send player update data
+    ws.send(bufferView.buffer, {binary: true, mask: true});
+}
+
+var throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.ACTOR_UPDATE_INTERVAL);
+
+
 //function clearIntervalMethods() {
 //    window.clearInterval(interval_id_heartbeat);
 //}
