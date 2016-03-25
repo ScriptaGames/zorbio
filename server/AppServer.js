@@ -1,10 +1,5 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
-// Load ThreeJS, so we have access to the same vector and matrix functions the
-// client uses
-global.self = {}; // threejs expects there to be a global named 'self'... for some reason..
-var THREE = require('three');
-
 var URL        = require('url');
 var config     = require('../common/config.js');
 var request    = require('request');
@@ -401,6 +396,77 @@ var AppServer = function (wss) {
         }
     };
 
+    self.checkPlayerCaptures = function appCheckPlayerCaptures()  {
+        var players_array = _.values( self.model.players );
+        var p1;
+        var p2;
+        var p1_scale;
+        var p2_scale;
+        var distance;
+
+        var j = 0;
+        var i = players_array.length;
+
+        while ( i-- ) {
+            j = i + 1;
+
+            p1 = players_array[i];
+
+            while ( j-- ) {
+
+                if (i === j) continue; // don't compare player to itself
+
+                // find the distance between these two players
+                p2 = players_array[j];
+                distance = p1.sphere.position.distanceTo( p2.sphere.position );
+
+                p1_scale = p1.sphere.scale;
+                p2_scale = p2.sphere.scale;
+
+                // if distance is less than radius of p1 and p1 larger than p2, p1 captures p2
+                // if distance is less than radius of p2 and p2 larger than p1, p2 captures p1
+
+                if ( distance < p1_scale && p1_scale > p2_scale ) {
+                    self.capturePlayer( p1.id, p2.id );
+                }
+                else if ( distance < p2_scale && p2_scale > p1_scale ) {
+                    self.capturePlayer( p2.id, p1.id );
+                }
+
+            }
+        }
+    };
+
+    self.capturePlayer = function appCapturePlayer(attackingPlayerId, targetPlayerId) {
+        console.log("Capture player: ", attackingPlayerId, targetPlayerId);
+
+        var attackingPlayer = self.model.players[attackingPlayerId];
+        var targetPlayer = self.model.players[targetPlayerId];
+
+        // Increment player captures for the attacking player
+        attackingPlayer.playerCaptures++;
+
+        // grow the attacking player the expected amount
+        var attackingSphere = attackingPlayer.sphere;
+        var targetSphere = targetPlayer.sphere;
+        attackingSphere.growExpected( config.PLAYER_CAPTURE_VALUE( targetSphere.radius() ) );
+
+        // Inform the attacking player that they captured target player
+        self.sockets[attackingPlayerId].send(JSON.stringify({op: 'captured_player', targetPlayerId: targetPlayerId}));
+
+        // Inform the target player that they died
+        targetPlayer.deathTime = Date.now();
+        targetPlayer.score = config.PLAYER_GET_SCORE( targetPlayer.sphere.scale );
+        var msgObj = {op: 'you_died', attackingPlayerId: attackingPlayerId, targetPlayer: targetPlayer};
+        self.sockets[targetPlayerId].send(JSON.stringify(msgObj));
+
+        // Inform other clients that target player died
+        msgObj = {op: "player_died", attackingPlayerId: attackingPlayerId, targetPlayerId: targetPlayerId};
+        self.wss.broadcast(JSON.stringify(msgObj));
+
+        self.removePlayerFromModel(targetPlayerId);
+    };
+
     //TODO: test
     self.isPlayerInGame = function appIsPlayerInGame(player_id) {
         return (self.model.players[player_id] && self.sockets[player_id]);
@@ -439,7 +505,7 @@ var AppServer = function (wss) {
      * possible, eg movement and player capture.
      */
     self.serverTickFast = function appServerTickFast() {
-        //checkPlayerCaptures( model.players );
+        self.checkPlayerCaptures();
         self.sendActorUpdates();
     };
 
