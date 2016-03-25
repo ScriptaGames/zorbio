@@ -42,6 +42,7 @@ config.LEADERS_LENGTH           = 10;     // How many players to include in the 
 config.BIN_PP_POSITIONS_LENGTH  = 14;
 config.ORIGIN                   = 'http://zor.bio'; // the origin that's allowed to connect to websocket server
 config.RECENT_CLIENT_DATA_LENGTH = 100;   // how many recent data points to keep from the client like pings
+config.CLOSE_NO_RESTART         = 4000;    // 4000-4999 application reserved close code in WebSocket spec
 
 config.BALANCERS = Object.freeze({
     LOCAL: 'ws://localhost',
