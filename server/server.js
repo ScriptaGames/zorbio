@@ -73,7 +73,18 @@ var MainServer = function () {
         self.httpServer = http.Server(self.app);
 
         // Set up WebSocket Server
-        self.wss = new WebSocketServer({server: self.httpServer});
+        var options = {
+            server: self.httpServer
+        };
+        options.verifyClient = function wssVerifyClient(info, callback) {
+            if (info.origin === config.ORIGIN) {
+                callback(true);
+                return true;
+            }
+            callback(false);
+            return false;
+        };
+        self.wss = new WebSocketServer(options);
 
         // Set up express static content root
         self.app.use(express.static(__dirname + '/../' + (process.argv[2] || 'client')));

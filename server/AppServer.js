@@ -259,7 +259,7 @@ var AppServer = function (wss, app) {
         }
 
         function handle_close() {
-            console.log('Client connection closed');
+            console.log('Player connection closed for player_id:', player_id);
 
             // notify other clients to remove this player
             self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: player_id}));
@@ -477,12 +477,10 @@ var AppServer = function (wss, app) {
         self.removePlayerFromModel(targetPlayerId);
     };
 
-    //TODO: test
     self.isPlayerInGame = function appIsPlayerInGame(player_id) {
         return (self.model.players[player_id] && self.sockets[player_id]);
     };
 
-    //TODO: test
     self.kickPlayer = function appKickPlayer(playerId, reason) {
         console.log('kicking player: ', playerId, reason);
 
@@ -497,7 +495,6 @@ var AppServer = function (wss, app) {
         self.removePlayerFromModel(playerId);
     };
 
-    //TODO: test
     self.removePlayerFromModel = function appRemovePlayerFromModel(playerId) {
         var actorId = 0;
         if (self.model.players[playerId]) {
@@ -669,12 +666,14 @@ var AppServer = function (wss, app) {
     // Basic Auth
     self.basicAuth = function appBasicAuth (req, res, next) {
         var user = basicAuth(req);
+        //noinspection JSUnresolvedVariable
         if (!user || !user.name || !user.pass) {
             res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
             res.sendStatus(401);
             return;
         }
 
+        //noinspection JSUnresolvedVariable
         if (user.name === 'zoruser' && user.pass === 'Z0r-b!0') {
             next();
         } else {
