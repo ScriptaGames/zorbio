@@ -181,7 +181,7 @@ var AppServer = function (wss, app) {
             var bufArr  = new ArrayBuffer(buffer.length);
             var bufView = new Float32Array(bufArr);
             var viewIndex = 0;
-            for (var bufferIndex = 0, l = buffer.length; bufferIndex < l; bufferIndex = bufferIndex + 4)            {
+            for (var bufferIndex = 0, l = buffer.length; bufferIndex < l; bufferIndex = bufferIndex + 4) {
                 bufView[viewIndex] = buffer.readFloatLE(bufferIndex);
                 viewIndex++;
             }
