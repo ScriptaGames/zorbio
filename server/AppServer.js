@@ -2,6 +2,7 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 
 var URL        = require('url');
 var config     = require('../common/config.js');
+var pjson      = require('../package.json');
 var request    = require('request');
 var gameloop   = require('node-gameloop');
 var _          = require('lodash');
@@ -631,9 +632,36 @@ var AppServer = function (wss) {
         self.sendServerTickData();
     };
 
+    self.versionCheck = function appVersionCheck() {
+        console.log("Checking version..");
+
+        var options = {
+            url: 'https://zoruser:wk-4<a<9ASW!J{ae@mcp.zor.bio/zapi/version',
+            agentOptions: {
+                rejectUnauthorized: false
+            }
+        };
+
+        request(options, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                var res = JSON.parse(body);
+
+                if (pjson.version !== res.version || pjson.build !== res.build) {
+                    console.log("version out of date, old version:", pjson.version, pjson.build);
+                    console.log("version out of date, new version:", res.version, res.build);
+                    self.serverRestartMsg = "Server restart imminent!";
+                }
+            }
+        })
+    };
+
     // Start game loops
     gameloop.setGameLoop(self.serverTickFast, config.TICK_FAST_INTERVAL);
     gameloop.setGameLoop(self.serverTickSlow, config.TICK_SLOW_INTERVAL);
+
+    if (config.CHECK_VERSION) {
+        gameloop.setGameLoop(self.versionCheck, config.CHECK_VERSION_INTERVAL);
+    }
 };
 
 if (NODEJS) module.exports = AppServer;
