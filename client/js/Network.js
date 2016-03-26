@@ -128,12 +128,10 @@ function setupSocket(ws) {
         }
 
         gameStart = true;
-        console.log('Game is started: ' + gameStart);
 
         setIntervalMethods();
 
-        ws.send(JSON.stringify({op: "player_in_game"}));
-        console.log('Game finished setting up');
+        console.log('Game started!');
     }
 
     function handle_msg_player_join(message) {
