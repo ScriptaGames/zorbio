@@ -1,7 +1,6 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
 var URL        = require('url');
-var basicAuth  = require('basic-auth');
 var config     = require('../common/config.js');
 var pjson      = require('../package.json');
 var request    = require('request');
@@ -9,6 +8,7 @@ var gameloop   = require('node-gameloop');
 var _          = require('lodash');
 var Zorbio     = require('../common/zorbio.js');
 var Validators = require('./Validators.js');
+var ZorApi     = require('./ZorApi.js');
 var UTIL       = require('../common/util.js');
 var Drain      = require('../common/Drain.js');
 var WebSocket  = require('ws');
@@ -39,6 +39,8 @@ var AppServer = function (wss, app) {
     self.sockets = {};
     self.serverRestartMsg = '';
 
+    // Api
+    self.api = new ZorApi(self.app, self.model, self.sockets);
 
     self.wss.on('connection', function wssConnection(ws) {
         var headers = ws.upgradeReq.headers;
@@ -656,83 +658,6 @@ var AppServer = function (wss, app) {
     if (config.CHECK_VERSION) {
         gameloop.setGameLoop(self.versionCheck, config.CHECK_VERSION_INTERVAL);
     }
-
-
-
-    ///////////////////////////////////////////////////////////////////
-    // API
-    ///////////////////////////////////////////////////////////////////
-
-    // Basic Auth
-    self.basicAuth = function appBasicAuth (req, res, next) {
-        var user = basicAuth(req);
-        //noinspection JSUnresolvedVariable
-        if (!user || !user.name || !user.pass) {
-            res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
-            res.sendStatus(401);
-            return;
-        }
-
-        //noinspection JSUnresolvedVariable
-        if (user.name === 'zoruser' && user.pass === 'Z0r-b!0') {
-            next();
-        } else {
-            res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
-            res.sendStatus(401);
-        }
-    };
-    self.app.all("/api/*", self.basicAuth);
-
-    /**
-     * API to return the current count of players on this server
-     */
-    self.app.get('/api/players/count', function (req, res) {
-        var playerIds = Object.getOwnPropertyNames(self.model.players);
-        var count = typeof playerIds.length !== 'undefined' ? playerIds.length : 0;
-        res.setHeader('content-type', 'application/json');
-        res.send( "{\"count\": " + count + "}" );
-    });
-
-    /**
-     * API to return all the player objects on this server
-     */
-    self.app.get('/api/players', function (req, res) {
-        res.setHeader('content-type', 'application/json');
-        res.send( JSON.stringify(self.model.players) );
-    });
-
-    /**
-     * API to return all the actor objects on this server
-     */
-    self.app.get('/api/actors', function (req, res) {
-        res.setHeader('content-type', 'application/json');
-        res.send( JSON.stringify(self.model.actors) );
-    });
-
-    /**
-     * API to return all the actor objects on this server
-     */
-    self.app.get('/api/food', function (req, res) {
-        var foodModel = {};
-        foodModel.foodDensity = self.model.foodDensity;
-        foodModel.foodCount = self.model.foodCount;
-        foodModel.food_respawning_indexes = self.model.food_respawning_indexes;
-        foodModel.food_respawn_ready_queue = self.model.food_respawn_ready_queue;
-
-        res.setHeader('content-type', 'application/json');
-        res.send( JSON.stringify(foodModel) );
-    });
-
-    /**
-     * API to number of socket connections
-     */
-    self.app.get('/api/sockets/count', function (req, res) {
-        var socketIds = Object.getOwnPropertyNames(self.sockets);
-        var count = typeof socketIds.length !== 'undefined' ? socketIds.length : 0;
-        res.setHeader('content-type', 'application/json');
-        res.send( "{\"count\": " + count + "}" );
-    });
-
 };
 
 if (NODEJS) module.exports = AppServer;
