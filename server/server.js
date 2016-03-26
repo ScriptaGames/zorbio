@@ -65,43 +65,21 @@ var MainServer = function () {
     /*  ================================================================  */
 
     /**
-     *  Create the routing table entries + handlers for the application.
-     */
-    self.createRoutes = function () {
-        self.routes = {};
-
-        self.routes['/api/example'] = function (req, res) {
-            res.setHeader('Content-Type', 'application/json');
-            res.send("{}");
-        };
-    };
-
-
-    /**
      *  Initialize the server (express) and create the routes and register
      *  the handlers.
      */
     self.initializeServer = function () {
-        self.createRoutes();
         self.app = express();
         self.httpServer = http.Server(self.app);
 
         // Set up WebSocket Server
-        //TODO: Figure out how to set up allowed ORIGINS
         self.wss = new WebSocketServer({server: self.httpServer});
-
-        // The app server contains all the logic and state of the WebSocket app
-        self.appServer = new AppServer(self.wss);
 
         // Set up express static content root
         self.app.use(express.static(__dirname + '/../' + (process.argv[2] || 'client')));
 
-        //  Add handlers for the app (from the routes).
-        for (var r in self.routes) {
-            if (self.routes.hasOwnProperty(r)) {
-                self.app.get(r, self.routes[r]);
-            }
-        }
+        // The app server contains all the logic and state of the WebSocket app
+        self.appServer = new AppServer(self.wss, self.app);
     };
 
 

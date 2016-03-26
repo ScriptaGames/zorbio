@@ -341,7 +341,7 @@ function sendPlayerUpdate() {
     ws.send(bufferView.buffer, {binary: true, mask: true});
 }
 
-var throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.ACTOR_UPDATE_INTERVAL);
+var throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
 
 
 function clearIntervalMethods() {
