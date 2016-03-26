@@ -71,8 +71,6 @@ var AppServer = function (wss) {
                 handle_msg_player_update(msg)
             }
             else {
-                console.log(msg);
-
                 var message = JSON.parse(msg);
 
                 switch (message.op) {
@@ -590,7 +588,7 @@ var AppServer = function (wss) {
             var leader = {
                 name: player.name,
                 score: score,
-                color: player.sphere.color,
+                color: player.sphere.color
             };
             UTIL.sortedObjectPush(self.model.leaders, leader, 'score');
         }
