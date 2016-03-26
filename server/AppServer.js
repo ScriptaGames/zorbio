@@ -72,7 +72,7 @@ var AppServer = function (wss, app) {
         ws.on('message', function wsMessage(msg, flags) {
             if (flags.binary) {
                 // Route binary message
-                handle_msg_player_update(msg)
+                handle_msg_player_update(msg);
             }
             else {
                 var message = JSON.parse(msg);
@@ -83,9 +83,6 @@ var AppServer = function (wss, app) {
                         break;
                     case 'player_ready':
                         handle_msg_player_ready(message);
-                        break;
-                    case 'player_in_game':
-                        handle_msg_player_in_game();
                         break;
                     case 'zor_ping':
                         handle_msg_zor_ping(message);
@@ -148,15 +145,13 @@ var AppServer = function (wss, app) {
                 // Pass any data to the for final setup
                 ws.send(JSON.stringify({op: 'game_setup', model: self.model, isFirstSpawn: msg.isFirstSpawn}));
 
-                console.log('Player loading game');
-            }
-        }
+                // Notify other clients that player has joined
+                var msgObj = JSON.stringify({op: 'player_join', player: currentPlayer});
+                setTimeout(self.wss.broadcast, 2000, msgObj);  // give player time to load the game
 
-        function handle_msg_player_in_game() {
-            // Notify other clients that player has joined
-            self.wss.broadcast(JSON.stringify({op: 'player_join', player: currentPlayer}));
-            console.log('Player ' + currentPlayer.id + ' joined game!');
-            console.log('Total players: ' + Object.getOwnPropertyNames(self.model.players).length);
+                console.log('Player ' + currentPlayer.id + ' joined game!');
+                console.log('Total players: ' + Object.getOwnPropertyNames(self.model.players).length);
+            }
         }
 
         function handle_msg_zor_ping(msg) {
