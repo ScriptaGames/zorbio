@@ -21,7 +21,7 @@ config.REQUIRE_ALPHA_KEY = false;
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE       = 400;
+config.WORLD_SIZE       = 1600;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
 
 ////////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
 config.PLAYER_GET_SCORE      = function PlayerGetScore( radius ) {
     return Math.floor(radius * 10);
 };
-config.AUTO_RUN_ENABLED      = false;
+config.AUTO_RUN_ENABLED      = true;
 config.STEERING_METHODS      = Object.freeze({ // enum-ish
     MOUSE_DRAG: {
         NAME: 'DRAG',
@@ -85,7 +85,7 @@ config.STEERING_METHODS      = Object.freeze({ // enum-ish
         SPEED : 0.3,  // higher makes camera rotate faster
     },
 });
-config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
+config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
 
 config.Y_AXIS_MULT = 1;
 config.X_AXIS_MULT = 1;
@@ -96,7 +96,7 @@ config.DRAIN_MAX_DISTANCE = 300; // distance at which draining starts
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 4;    // How much food there is, total food = this number cubed
+config.FOOD_DENSITY                = 25;    // How much food there is, total food = this number cubed
 config.FOOD_VALUE                  = 20;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
