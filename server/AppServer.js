@@ -97,6 +97,10 @@ var AppServer = function (wss, app) {
             handle_close();
         });
 
+        ws.on('error', function(e) {
+            console.error("WebSocket error occured for player_id", player_id, e);
+        });
+
         function handle_msg_respawn(msg) {
             var position = UTIL.safePlayerPosition();
 

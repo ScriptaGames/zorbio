@@ -38,14 +38,6 @@ function connectToServer(playerType, playerName, color) {
 }
 
 function setupSocket(ws) {
-    ws.onclose = function wsClose (e) {
-        if (e.code != config.CLOSE_NO_RESTART) {
-            handleNetworkTermination();
-        }
-        disconnected = true;
-        console.log('Connection closed:', e.code, e.reason);
-    };
-
     ws.onmessage = function wsMessage (msg) {
         if (typeof msg.data === "string") {
             var message = JSON.parse(msg.data);
@@ -92,6 +84,18 @@ function setupSocket(ws) {
         else {
             // handle binary message
             handle_msg_actor_updates(msg.data);
+        }
+
+        ws.onclose = function wsClose (e) {
+            if (e.code != config.CLOSE_NO_RESTART) {
+                handleNetworkTermination();
+            }
+            disconnected = true;
+            console.log('Connection closed:', e.code, e.reason);
+        };
+
+        ws.onerror = function wsError(e) {
+            console.error("Websocket error occured", e);
         }
     };
 
