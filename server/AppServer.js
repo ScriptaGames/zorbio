@@ -556,6 +556,49 @@ var AppServer = function (wss) {
     };
 
     /**
+     * Any player checks that need to be done during serverTick, put here.
+     */
+    self.playersChecks = function appPlayersChecks() {
+        self.model.leaders = [];
+
+        // Iterate over all players and perform checks
+        var playerIds = Object.getOwnPropertyNames(self.model.players);
+        for (var i = 0, l = playerIds.length; i < l; i++) {
+            var id = +playerIds[i];  // make sure id is a number
+            var player = self.model.players[id];
+
+            // Check for infractions
+            if (player.infractions_food > config.INFRACTION_TOLERANCE_FOOD) {
+                console.log("INFRACTION: Player reached food infraction tolerance:", id, player.infractions_food, config.INFRACTION_TOLERANCE_FOOD);
+                player.infractions_food = 0;
+            }
+            else if (player.infractions_pcap > config.INFRACTION_TOLERANCE_PCAP) {
+                console.log("INFRACTION: Player reached player capture infraction tolerance:", id, player.infractions_pcap, config.INFRACTION_TOLERANCE_PCAP);
+                player.infractions_pcap = 0;
+            }
+            else if (player.infractions_speed > config.INFRACTION_TOLERANCE_SPEED) {
+                self.kickPlayer(id, "You were removed because you had too many speed infractions.");
+            }
+            else if (player.infractions_scale > config.INFRACTION_TOLERANCE_SCALE) {
+                console.log("INFRACTION: Player reached scale infraction tolerance:", id, player.infractions_scale, config.INFRACTION_TOLERANCE_SCALE);
+                player.infractions_scale = 0;
+            }
+
+            // Add players to leaders array in sorted order by score
+            var score = config.PLAYER_GET_SCORE( player.sphere.radius() );
+            var leader = {
+                name: player.name,
+                score: score,
+                color: player.sphere.color,
+            };
+            UTIL.sortedObjectPush(self.model.leaders, leader, 'score');
+        }
+
+        // Prepare leaders array
+        self.model.leaders.reverse();  // reverse for descending order
+    };
+
+    /**
      * Send any updates to client per server tick
      */
     self.sendServerTickData = function appSendServerTickData() {
@@ -584,7 +627,7 @@ var AppServer = function (wss) {
     self.serverTickSlow = function appServerTickSlow() {
         self.checkHeartbeats();
         self.updateFoodRespawns();
-        //playersChecks();
+        self.playersChecks();
         self.sendServerTickData();
     };
 
