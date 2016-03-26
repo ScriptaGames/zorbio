@@ -97,7 +97,7 @@ config.DRAIN_MAX_DISTANCE = 300; // distance at which draining starts
 ////////////////////////////////////////////////////////////////////////
 
 config.FOOD_DENSITY                = 25;    // How much food there is, total food = this number cubed
-config.FOOD_VALUE                  = 20;   // amount to increase sphere by when food is consumed
+config.FOOD_VALUE                  = 0.6;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
 config.FOOD_CAPTURE_ASSIST         = 1.0;     // this number is added to player's radius for food capturing
