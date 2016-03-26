@@ -84,6 +84,9 @@ function setupSocket(ws) {
                 case 'remove_player':
                     handle_msg_remove_player(message);
                     break;
+                case 'speeding_warning':
+                    handle_msg_speeding_warning();
+                    break;
             }
         }
         else {
@@ -259,6 +262,11 @@ function setupSocket(ws) {
         console.log("received remove_player", msg.playerId);
         removePlayerFromGame(msg.playerId);
     }
+
+    function handle_msg_speeding_warning() {
+        if (!gameStart) return;
+        console.log("WARNING! You are speeding!");
+    }
 }
 
 function handleNetworkTermination() {
@@ -339,14 +347,3 @@ var throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.ACTOR_UPDATE
 function clearIntervalMethods() {
     window.clearInterval(interval_id_heartbeat);
 }
-
-//
-//function setupSocket(socket) {
-//
-//    socket.on('speedingWarning', function speedingWarning() {
-//        if (!gameStart) return;
-//
-//        console.log("WARNING! You are speeding!");
-//    });
-//
-//}
