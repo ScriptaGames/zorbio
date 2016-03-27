@@ -633,8 +633,6 @@ var AppServer = function (wss, app) {
     };
 
     self.versionCheck = function appVersionCheck() {
-        console.log("Checking version..");
-
         var options = {
             url: 'https://zoruser:wk-4<a<9ASW!J{ae@mcp.zor.bio/zapi/version',
             agentOptions: {
