@@ -24,6 +24,7 @@ ZOR.PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
             "c"           : { type : "f",  value : 1.41803 },
             "p"           : { type : "f",  value : 2.71828 },
             color         : { type : "c",  value : new THREE.Color(this.playerColor) },
+            colorHSL      : { type : "v3",  value : new THREE.Color(this.playerColor).getHSL() },
             spherePos     : { type : "v3", value : actor.position },
             mainSpherePos : { type : "v3", value : playerFogCenter },
             FOG_FAR       : { type : "f",  value : config.FOG_FAR },

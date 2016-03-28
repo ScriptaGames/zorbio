@@ -458,14 +458,16 @@
             uniform float FOG_ENABLED;
             uniform float FOG_FAR;
 
-            varying float intensity;
+            varying float vIntensity;
             varying float sDist;
+            varying vec3 vNormal;
+            varying vec3 vNormel;
 
             void main() {
                 vec3 viewVector = cameraPosition - spherePos;
                 vec3 vNormal = normalize( normalMatrix * normal );
                 vec3 vNormel = normalize( normalMatrix * viewVector );
-                intensity = pow( c - dot(vNormal, vNormel), p );
+                vIntensity = pow( c - dot(vNormal, vNormel), p );
 
                 vec4 mMainSpherePos = modelViewMatrix * vec4( mainSpherePos, 1.0 );
                 vec4 mSpherePos = modelViewMatrix * vec4( spherePos, 1.0 );
@@ -477,24 +479,72 @@
         </script>
 
         <script type="x-shader/x-fragment" id="sphere-fragment-shader">
+            #define PI 3.141592653589
             uniform vec3 color;
+            uniform vec3 colorHSL;
             uniform float FOG_ENABLED;
             uniform float FOG_FAR;
 
-            varying float intensity;
+            varying float vIntensity;
             varying float sDist;
+            varying vec3 vNormal;
+            varying vec3 vNormel;
+
+            float hue2rgb(float f1, float f2, float hue) {
+                if (hue < 0.0)
+                    hue += 1.0;
+                else if (hue > 1.0)
+                    hue -= 1.0;
+                float res;
+                if ((6.0 * hue) < 1.0)
+                    res = f1 + (f2 - f1) * 6.0 * hue;
+                else if ((2.0 * hue) < 1.0)
+                    res = f2;
+                else if ((3.0 * hue) < 2.0)
+                    res = f1 + (f2 - f1) * ((2.0 / 3.0) - hue) * 6.0;
+                else
+                    res = f1;
+                return res;
+            }
+
+            vec3 hsl2rgb(vec3 hsl) {
+                vec3 rgb;
+
+                if (hsl.y == 0.0) {
+                    rgb = vec3(hsl.z); // Luminance
+                } else {
+                    float f2;
+
+                    if (hsl.z < 0.5)
+                        f2 = hsl.z * (1.0 + hsl.y);
+                    else
+                        f2 = hsl.z + hsl.y - hsl.y * hsl.z;
+
+                    float f1 = 2.0 * hsl.z - f2;
+
+                    rgb.r = hue2rgb(f1, f2, hsl.x + (1.0/3.0));
+                    rgb.g = hue2rgb(f1, f2, hsl.x);
+                    rgb.b = hue2rgb(f1, f2, hsl.x - (1.0/3.0));
+                }
+                return rgb;
+            }
+
+            vec3 hsl2rgb(float h, float s, float l) {
+                return hsl2rgb(vec3(h, s, l));
+            }
 
             void main() {
 
                 float fogp = 1.0;
+                vec3 mColor = hsl2rgb( vIntensity / PI, 1.0, 0.7) * color;
 
                 if ( FOG_ENABLED != 0.0 ) {
                     fogp = 1.0 - sDist / FOG_FAR;
                 }
 
-                float strength = intensity * fogp; // min( fogp, intensity );
+                float strength = vIntensity * fogp; // min( fogp, vIntensity );
 
-                gl_FragColor = vec4( color, strength );
+                gl_FragColor = vec4( mColor, strength );
             }
         </script>
 
