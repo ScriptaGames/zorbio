@@ -87,21 +87,22 @@ ZOR.PlayerView.prototype.adjustCamera = function ZORPlayerViewAdjustCamera(scale
 };
 
 ZOR.PlayerView.COLORS = [
-    '#00ffff', // cyan
-    '#0000cd', // mediumblue
-    '#1e90ff', // dodgerblue
-    '#00ff7f', // springgreen
-    '#00ff00', // lime
-    '#228b22', // forestgreen
-    '#4169e1', // royalblue
-    '#9932cc', // darkorchid
-    '#4b0082', // indigo
-    '#ff00ff', // magenta
-    '#ff6347', // tomato
-    '#ff0000', // red
-    '#800000', // maroon
-    '#ff4500', // orangered
-    '#ff8c00', // darkorange
-    '#ffd700', // gold
-    '#ffff00' // yellow
+    '#00ffff',
+    '#0050FF',
+    '#1e90ff',
+    '#00ff7f',
+    '#00ff00',
+    '#00D600',
+    '#297BFF',
+    '#BF3EFF',
+    '#C000FF',
+    '#ff00ff',
+    '#FF6800',
+    '#FF2B00',
+    '#FF517E',
+    '#FF7340',
+    '#ff8c00',
+    '#ffd700',
+    '#ffff00',
+    '#C0FFEE', // COFFEE
 ];
