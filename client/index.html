@@ -226,11 +226,11 @@
         </script>
 
         <script id="drain-frag-shader" type="x-shader/x-fragment">
-            #define MAX_OPACITY 0.20
+            #define MAX_OPACITY 0.30
 
             uniform float time;
             uniform float power;
-            uniform float length;
+            uniform float len;
             uniform vec3 erColor;
             uniform vec3 eeColor;
             varying vec2 vUv;
@@ -245,7 +245,7 @@
 
             void main(void) {
 
-                vec3 color = vec3((4.0*sin(vUv.y * 54.0 - time * 14.0) + 1.0) / 2.0);
+                vec3 color = vec3((sin(10.0 * vUv.y - time*8.0) + 0.5) / 2.0);
 
                 color *= mix(erColor, eeColor, 1.0 - vUv.y);
 

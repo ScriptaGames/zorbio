@@ -87,7 +87,7 @@ ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(dra
             power: { type: "f", value: opacity },
             erColor: { type: "c", value: drainer.view.material.uniforms.color.value },
             eeColor: { type: "c", value: drainee.view.material.uniforms.color.value },
-            length: { type: "f", value: dist },
+            len: { type: "f", value: dist },
         },
         vertexShader   : document.getElementById( 'drain-vertex-shader' ).textContent,
         fragmentShader : document.getElementById( 'drain-frag-shader' ).textContent,
