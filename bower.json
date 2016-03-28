@@ -27,6 +27,7 @@
     "ractive": "~0.7.3",
     "howler.js": "^1.1.29",
     "animate.less": "*",
-    "uri.js": "^1.17.1"
+    "uri.js": "^1.17.1",
+    "socket.io": "git@github.com:socketio/socket.io-client.git#1.4.5"
   }
 }
