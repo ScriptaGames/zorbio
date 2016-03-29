@@ -57,9 +57,17 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
             if ( distance <= config.DRAIN_MAX_DISTANCE ) {
 
                 if ( p1_scale < p2_scale ) {
-                    drain[ p1.id ].push( { id: p2.id, dist: distance } ); } // p1 drains p2
+                    // if new drain is better than old drain, it wins
+                    if (!drain[ p1.id ][0] || distance < drain[ p1.id ][0].dist) {
+                        drain[ p1.id ][0] = { id: p2.id, dist: distance }; // p1 drains p2
+                    }
+                }
                 else if ( p2_scale < p1_scale ) {
-                    drain[ p2.id ].push( { id: p1.id, dist: distance } ); } // p2 drains p1
+                    // if new drain is better than old drain, it wins
+                    if (!drain[ p2.id ][0] || distance < drain[ p2.id ][0].dist) {
+                        drain[ p2.id ][0] = { id: p1.id, dist: distance }; // p2 drains p1
+                    }
+                }
             }
         }
     }
