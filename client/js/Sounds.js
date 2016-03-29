@@ -33,6 +33,7 @@ ZOR.Sounds = (function ZORSounds() {
                 autoplay: false,
                 loop: true,
                 volume: 0.45,
+                buffer: true, // don't wait for entire file to download
             }),
         },
 
