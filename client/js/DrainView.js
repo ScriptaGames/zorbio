@@ -51,8 +51,10 @@ ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( scene, players_obj
                 if (did) {
                     drainee = players_obj[ did ];
                     obj = this.createCylinder( drainer, drainee );
-                    this.geos.push(obj);
-                    scene.add(obj);
+                    if (obj) {
+                        this.geos.push(obj);
+                        scene.add(obj);
+                    }
                 }
             }
         }
@@ -80,13 +82,20 @@ ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(dra
     var drainer_scale = drainer.view.mainSphere.scale.x;
     var drainee_scale = drainee.view.mainSphere.scale.x;
 
+    if (typeof drainer_pos === 'undefined') return;
+    if (typeof drainee_pos === 'undefined') return;
+    if (typeof drainer_scale === 'undefined') return;
+    if (typeof drainee_scale === 'undefined') return;
+
     var dist = drainer_pos.distanceTo( drainee_pos ) - drainer_scale - drainee_scale;
+
+    if (dist < 0) return;
 
     // base cylinder's opacity on how large the drain is (percentage of
     // theoretical maximum drain)
     var opacity = 1 - dist / config.DRAIN_MAX_DISTANCE;
 
-    var geometry = new THREE.CylinderGeometry( drainer_scale, drainee_scale, dist, 16, 12, true );
+    var geometry = new THREE.CylinderGeometry( drainer_scale/2, drainee_scale/2, dist, 16, 12, true );
     geometry.rotateX(Math.PI/2); // rotate geo so its ends point 'up'
 
     var material = new THREE.ShaderMaterial({
