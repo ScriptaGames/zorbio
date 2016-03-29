@@ -40,7 +40,7 @@ To perform a production build:
 
 To build and upload the built RPM to the prod yum repo:
 
-    npm run buld-upload
+    npm run build-upload
 
 Note: The above command requires you have installed your ssh pub key on mcp.zor.bio
 
