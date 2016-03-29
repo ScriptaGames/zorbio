@@ -80,7 +80,7 @@ ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(dra
     var drainer_scale = drainer.view.mainSphere.scale.x;
     var drainee_scale = drainee.view.mainSphere.scale.x;
 
-    var dist = drainer_pos.distanceTo( drainee_pos );
+    var dist = drainer_pos.distanceTo( drainee_pos ) - drainer_scale - drainee_scale;
 
     // base cylinder's opacity on how large the drain is (percentage of
     // theoretical maximum drain)
@@ -129,7 +129,11 @@ ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(dra
     cylinder.morphTargetInfluences[ 0 ] = 0.4;
 
     // position and angle the cylinder correctly
-    cylinder.position.copy( drainer_pos.clone().add( drainee_pos).divideScalar(2) );
+    // cylinder.position.copy( drainer_pos.clone().add( drainee_pos).divideScalar(2) );
+    var drainer_edge_pos = drainee_pos.clone().sub( drainer_pos ).normalize().multiplyScalar( -drainee_scale ).add( drainer_pos );
+    var drainee_edge_pos = drainer_pos.clone().sub( drainee_pos ).normalize().multiplyScalar( -drainer_scale ).add( drainee_pos );
+    cylinder.position.copy( drainer_edge_pos.add( drainee_edge_pos ).divideScalar(2) );
+
     cylinder.lookAt( drainer_pos );
 
     cylinder.renderOrder = 10;
