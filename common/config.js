@@ -91,6 +91,7 @@ config.Y_AXIS_MULT = 1;
 config.X_AXIS_MULT = 1;
 
 config.DRAIN_MAX_DISTANCE = 300; // distance at which draining starts
+config.DRAIN_PINCH_STRENGTH = 0.4;
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //
