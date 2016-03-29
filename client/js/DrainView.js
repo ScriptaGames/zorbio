@@ -19,6 +19,14 @@ ZOR.DrainView = function ZORDrainView(scene) {
 
 };
 
+ZOR.DrainView.prototype.pinch = function pinch(x, h) {
+    return Math.max(
+        0,
+        1 - Math.pow(x - h/2, 2) / Math.pow(h/2, 2)
+    );
+};
+
+
 ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( scene, players_obj ) {
 
     var players_arr = _.values( players_obj );
@@ -78,7 +86,7 @@ ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(dra
     // theoretical maximum drain)
     var opacity = 1 - dist / config.DRAIN_MAX_DISTANCE;
 
-    var geometry = new THREE.CylinderGeometry( drainer_scale, drainee_scale, dist, 32, 1, true );
+    var geometry = new THREE.CylinderGeometry( drainer_scale, drainee_scale, dist, 16, 12, true );
     geometry.rotateX(Math.PI/2); // rotate geo so its ends point 'up'
 
     var material = new THREE.ShaderMaterial({
@@ -99,8 +107,26 @@ ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(dra
         depthWrite     : true,
         blending       : THREE.AdditiveBlending,
         alphaTest      : 1.0,
+        morphTargets   : true,
     });
+
+    var pinchVertices = [];
+    for ( var i = 0; i < geometry.vertices.length; i ++ ) {
+
+        pinchVertices[i] = geometry.vertices[ i ].clone();
+
+        pinchVertices[i].x *= -this.pinch(pinchVertices[i].z + dist/2, dist);
+        pinchVertices[i].y *= -this.pinch(pinchVertices[i].z + dist/2, dist);
+
+    }
+
+    geometry.morphTargets.push( { name: "pinch", vertices: pinchVertices } );
+
+
     var cylinder = new THREE.Mesh( geometry, material );
+
+    // strength of pinch effect
+    cylinder.morphTargetInfluences[ 0 ] = 0.4;
 
     // position and angle the cylinder correctly
     cylinder.position.copy( drainer_pos.clone().add( drainee_pos).divideScalar(2) );
