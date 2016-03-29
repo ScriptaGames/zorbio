@@ -31,7 +31,13 @@ ZOR.PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
         },
         vertexShader:   document.getElementById( 'sphere-vertex-shader'   ).textContent,
         fragmentShader: document.getElementById( 'sphere-fragment-shader' ).textContent,
-        transparent: true
+        transparent: true,
+
+        // this allows spheres to clip each other nicely, BUT it makes spheres appear on top of the cube boundary. :/
+        // depthFunc      : THREE.LessDepth,
+        // depthTest      : false,
+        // depthWrite     : true,
+        // blending       : THREE.AdditiveBlending,
     } );
 
     if (config.FOOD_ALPHA_ENABLED) {
