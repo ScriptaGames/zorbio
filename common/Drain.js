@@ -47,13 +47,14 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
 
             // find the distance between these two players
             p2 = players_array[j];
-            distance = p1.sphere.position.distanceTo( p2.sphere.position );
+
+            p1_scale = p1.sphere.scale;
+            p2_scale = p2.sphere.scale;
+
+            distance = p1.sphere.position.distanceTo( p2.sphere.position ) - p1_scale - p2_scale;
 
             // if a player is close enough and small enough, save the p2's id
             if ( distance <= config.DRAIN_MAX_DISTANCE ) {
-
-                p1_scale = p1.sphere.scale;
-                p2_scale = p2.sphere.scale;
 
                 if ( p1_scale < p2_scale ) {
                     drain[ p1.id ].push( { id: p2.id, dist: distance } ); } // p1 drains p2
@@ -75,8 +76,8 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
 ZOR.Drain.amount = function ZORDrainAmount( distance ) {
     // adjust n, o. and p to balance the drain amount.
     // see https://www.desmos.com/calculator/b4uijma9a6
-    var n = 0.01;
-    var o = 0.2;
+    var n = 0.007;
+    var o = 3.0;
     var p = 0.05;
     return p / ( (n * (distance * distance)) + o );
 };
