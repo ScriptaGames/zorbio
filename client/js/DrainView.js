@@ -15,7 +15,7 @@ ZOR.DrainView = function ZORDrainView(scene) {
     this.clock = new THREE.Clock();
     this.time = 0.1;
 
-    this.geos = [];
+    this.meshes = [];
 
 };
 
@@ -52,7 +52,7 @@ ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( scene, players_obj
                     drainee = players_obj[ did ];
                     obj = this.createCylinder( drainer, drainee );
                     if (obj) {
-                        this.geos.push(obj);
+                        this.meshes.push(obj);
                         scene.add(obj);
                     }
                 }
@@ -65,13 +65,15 @@ ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( scene, players_obj
  * Remove all drain objects from the scene.
  */
 ZOR.DrainView.prototype.clear = function ZORDrainViewClear() {
-    var i = this.geos.length;
+    var i = this.meshes.length;
     var obj;
     while ( i-- ) {
-        obj = this.geos[i];
+        obj = this.meshes[i];
         this.scene.remove(obj); // remove from scene
+        obj.geometry.dispose();
+        obj.material.dispose();
     }
-    this.geos = []; // clear out geos array
+    this.meshes = []; // clear out meshes array
     // that should take care of removing ALL references to the lines
 };
 
