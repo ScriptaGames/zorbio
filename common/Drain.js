@@ -83,7 +83,7 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
  */
 ZOR.Drain.amount = function ZORDrainAmount( distance ) {
     // adjust n, o. and p to balance the drain amount.
-    // see https://www.desmos.com/calculator/b4uijma9a6
+    // see https://www.desmos.com/calculator/wmiuaymrtu
     var n = 0.007;
     var o = 3.0;
     var p = 0.05;
