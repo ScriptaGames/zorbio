@@ -15,14 +15,14 @@
   "author": "Scripta Games, Inc.",
   "dependencies": {
     "basic-auth": "1.0.3",
+    "console-stamp": "^0.2.0",
     "express": "^4.13.3",
     "lodash": "~4.0.0",
     "node-gameloop": "^0.1.0",
     "profanity-censor": "~1.0.4",
     "request": "2.69.0",
-    "three": "^0.73.0",
-    "ws": "^1.0.1",
-    "console-stamp": "^0.2.0"
+    "three": "^0.75.0",
+    "ws": "^1.0.1"
   },
   "devDependencies": {
     "html-inline": "https://github.com/mwcz/html-inline/archive/node-0.10-compat.tar.gz",
