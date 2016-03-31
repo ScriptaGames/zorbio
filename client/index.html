@@ -142,7 +142,7 @@
         <script id="death-template" type="text/ractive">
             <div id="death-screen">
                 <h2>YOU WERE EATEN!</h2>
-                <p>by: {{ attacker.name }}</p>
+                <p>by: {{ attacker.name }} {{ attacker.score }}</p>
                 <button on-click="{{ ACTIONS.PLAYER_RESPAWN }}" id="respawn-button"><span>Respawn</span></button>
                 <p>Nice run!  Your stats that time were:</p>
                 {{ > stats }}

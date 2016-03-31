@@ -586,7 +586,7 @@ var AppServer = function (wss, app) {
             }
 
             // Add players to leaders array in sorted order by score
-            var score = config.PLAYER_GET_SCORE( player.sphere.radius() );
+            var score = player.getScore();
             var leader = {
                 name: player.name,
                 score: score,

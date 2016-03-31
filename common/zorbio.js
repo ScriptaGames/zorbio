@@ -186,6 +186,9 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.au_receive_metric = new ZOR.PlayerMetric(200);
     this.buffered_amount_metric = new ZOR.PlayerMetric(320);
 };
+ZOR.Player.prototype.getScore = function ZORPlayerGetScore() {
+    return config.PLAYER_GET_SCORE (this.sphere.scale);
+};
 
 ZOR.PlayerMetric = function ZORPlayerMetric(threshold, reverse_threshold) {
     this.threshold = threshold;
