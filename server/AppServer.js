@@ -89,6 +89,9 @@ var AppServer = function (wss, app) {
                     case 'zor_ping':
                         handle_msg_zor_ping(message);
                         break;
+                    case 'speed_boost_req':
+                        handle_msg_speed_boost_req();
+                        break;
                 }
             }
         });
@@ -272,6 +275,15 @@ var AppServer = function (wss, app) {
 
             self.removePlayerFromModel(player_id);
             self.removePlayerSocket(player_id);
+        }
+
+        function handle_msg_speed_boost_req() {
+            // if valid
+                // adjust for speed validation
+                // make player model changes i.e. scale, set cooldown timer
+                // send success
+                ws.send(JSON.stringify({op: "speed_boost_res", is_valid: true}));
+            // else send failed reason
         }
     });
 

@@ -469,16 +469,19 @@ function handleKeysDown() {
 }
 
 function keyDown( key ) {
-    if ( key === 'w' ) {
+    if ( key === 'w' && !config.AUTO_RUN_ENABLED) {
         player.moveForward(camera);
     }
     else if ( key === 's' ) {
+        //TODO: refactor this to player.stop() based on autorun value
         player.moveBackward(camera);
     }
 }
 
 function keyJustPressed(key) {
-    //console.log('key ' + key + ' just pressed');
+    if ( key === 'w' && config.AUTO_RUN_ENABLED) {
+        sendRequestSpeedBoost();
+    }
 }
 
 function keyReleased(key) {
