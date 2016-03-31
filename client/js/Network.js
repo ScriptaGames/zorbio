@@ -79,6 +79,9 @@ function setupSocket(ws) {
                 case 'speeding_warning':
                     handle_msg_speeding_warning();
                     break;
+                case 'speed_boost_res':
+                    handle_msg_speed_boost_res(message);
+                    break;
             }
         }
         else {
@@ -272,6 +275,10 @@ function setupSocket(ws) {
         if (!gameStart) return;
         console.log("WARNING! You are speeding!");
     }
+
+    function handle_msg_speed_boost_res(msg) {
+        console.log("speed boost is valid:", msg.is_valid);
+    }
 }
 
 function handleNetworkTermination() {
@@ -345,6 +352,10 @@ function sendPlayerUpdate() {
 
     // Send player update data
     ws.send(bufferView.buffer, {binary: true, mask: true});
+}
+
+function sendRequestSpeedBoost() {
+    ws.send(JSON.stringify({op: "speed_boost_req"}));
 }
 
 var throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
