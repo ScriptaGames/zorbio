@@ -206,7 +206,7 @@ ZOR.PlayerMetric.prototype.add = function ZORPlayerMetricAdd(value) {
 
     UTIL.pushShift(this.series, value, config.RECENT_CLIENT_DATA_LENGTH);
 
-    this.mean = _.mean(this.series);
+    this.mean = Math.round(_.mean(this.series));
     this.max = _.max(this.series);
     this.min = _.min(this.series);
 
