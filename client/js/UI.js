@@ -141,7 +141,9 @@ ZOR.UI = function ZORUI() {
 
         _.assign(uidata.MISSING_FEATURES, missing_feature_names);
 
-        console.log('Missing browser feature(s) found: ' + JSON.stringify(missing_feature_names));
+        if (missing_feature_names.length) {
+            console.log('Missing browser feature(s) found: ' + JSON.stringify(missing_feature_names));
+        }
 
         if (missing_feature_names.length) {
             state( STATES.GAME_INIT_ERROR );
