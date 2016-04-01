@@ -32,7 +32,7 @@ ZOR.Sounds = (function ZORSounds() {
                 urls: ['../music/starfish-oblivion.mp3'],
                 autoplay: false,
                 loop: true,
-                volume: 0.45,
+                volume: config.VOLUME_MUSIC_INITIAL,
                 buffer: true, // don't wait for entire file to download
             }),
         },

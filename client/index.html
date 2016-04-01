@@ -36,6 +36,14 @@
                     <input type="checkbox" {{ flip_x ? 'checked' : '' }} on-click="{{ ACTIONS.TOGGLE_X_AXIS }}" id="flip-x-axis">
                     <label for="flip-x-axis">Flip X axis</label>
                 </div>
+                <div>
+                    <input id="music-volume" type="range" on-change="volume-music" min="0" max="1" step="0.01" value="{{ volume.music }}">
+                    <label for="music-volume">Music volume</label>
+                </div>
+                <div>
+                    <input id="sfx-volume" type="range" on-change="volume-sfx" min="0" max="1" step="0.01" value="{{ volume.sfx }}">
+                    <label for="sfx-volume">SFX volume</LABEL>
+                </div>
                 <button on-click="{{ ACTIONS.SHOW_PREVIOUS }}">Back</button>
             </div>
         </script>

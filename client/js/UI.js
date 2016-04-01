@@ -40,6 +40,8 @@ ZOR.UI = function ZORUI() {
         SHOW_PREVIOUS         : 'show-previous',
         TOGGLE_Y_AXIS         : 'toggle-y-axis',
         TOGGLE_X_AXIS         : 'toggle-x-axis',
+        VOLUME_MUSIC          : 'volume-music',
+        VOLUME_SFX            : 'volume-sfx',
     };
 
     /**
@@ -58,6 +60,10 @@ ZOR.UI = function ZORUI() {
         is_mobile        : isMobile.any,
         flip_x           : JSON.parse(localStorage.flip_x || "false"),
         flip_y           : JSON.parse(localStorage.flip_y || "false"),
+        volume           : {
+            music : config.VOLUME_MUSIC_INITIAL,
+            sfx   : config.VOLUME_SFX_INITIAL,
+        },
     };
 
     /**

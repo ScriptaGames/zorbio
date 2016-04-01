@@ -73,6 +73,11 @@ input {
     border     : none;
     outline    : none;
 
+    &[type=range] {
+        // no padding for range inputs
+        padding: 0;
+    }
+
     &:focus {
         background: lighten(@primary-color, 10%);
     }

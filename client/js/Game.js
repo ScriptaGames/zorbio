@@ -102,6 +102,21 @@ window.addEventListener('load', function ZORLoadHandler() {
         ZOR.UI.engine.set('player_name', localStorage.player_name)
     }
 
+    // volume change handlers
+
+    ZOR.UI.on( ZOR.UI.ACTIONS.VOLUME_MUSIC, function ZORVolumeMusic() {
+        ZOR.Sounds.music.background.volume( this.get('volume.music') );
+    });
+
+    ZOR.UI.on( ZOR.UI.ACTIONS.VOLUME_SFX, function ZORVolumeSfx() {
+        _.each(
+            ZOR.Sounds.food_capture,
+            _.partial( _.invoke, _, 'volume', this.get('volume.sfx') )
+        );
+    });
+
+    // show/hide UI panels
+
     ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_CREDITS, function ZORShowCredits() {
         ZOR.UI.state( ZOR.UI.STATES.CREDITS_SCREEN );
     });

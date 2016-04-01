@@ -101,6 +101,9 @@ input {
   border: none;
   outline: none;
 }
+input[type=range] {
+  padding: 0;
+}
 input:focus {
   background: #ffffff;
 }
