@@ -49,7 +49,7 @@ ZOR.UI = function ZORUI() {
      */
 
     var uidata = {
-        state            : STATES.INITIAL,
+        state            : '',
         prev_state       : STATES.INITIAL,
         STATES           : STATES,
         ACTIONS          : ACTIONS,
