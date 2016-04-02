@@ -105,14 +105,18 @@ window.addEventListener('load', function ZORLoadHandler() {
     // volume change handlers
 
     ZOR.UI.on( ZOR.UI.ACTIONS.VOLUME_MUSIC, function ZORVolumeMusic() {
-        ZOR.Sounds.music.background.volume( this.get('volume.music') );
+        var vol = this.get('volume.music');
+        ZOR.Sounds.music.background.volume( vol );
+        localStorage.volume_music = vol;
     });
 
     ZOR.UI.on( ZOR.UI.ACTIONS.VOLUME_SFX, function ZORVolumeSfx() {
+        var vol = this.get('volume.sfx');
         _.each(
             ZOR.Sounds.food_capture,
-            _.partial( _.invoke, _, 'volume', this.get('volume.sfx') )
+            _.partial( _.invoke, _, 'volume', vol )
         );
+        localStorage.volume_sfx = vol;
     });
 
     // show/hide UI panels
