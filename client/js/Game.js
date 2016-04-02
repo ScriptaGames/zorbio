@@ -118,10 +118,13 @@ function createScene() {
             scene.fog = new THREE.Fog( config.FOG_COLOR, config.FOG_NEAR, config.FOG_FAR );
         }
 
-        ZOR.Game.renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvas });
+        ZOR.Game.renderer = new THREE.WebGLRenderer({ antialias: false, canvas: canvas });
         ZOR.Game.renderer.setClearColor( config.FOG_COLOR );
         ZOR.Game.renderer.setPixelRatio( window.devicePixelRatio );
         ZOR.Game.renderer.setSize( window.innerWidth, window.innerHeight );
+        ZOR.Game.renderer.autoClear = false;
+
+        //
 
         initCameraAndPlayer();
 
@@ -166,6 +169,31 @@ function createScene() {
 
         drainView = new ZOR.DrainView(scene);
 
+        // fullscreen effects (bloom, antialiasing, etc)
+
+        ZOR.Game.ScreenEffects = {};
+
+        ZOR.Game.ScreenEffects.renderModel = new THREE.RenderPass( scene, camera );
+        ZOR.Game.ScreenEffects.effectBloom = new THREE.BloomPass( 0.8 );
+        ZOR.Game.ScreenEffects.effectCopy  = new THREE.ShaderPass( THREE.CopyShader );
+        ZOR.Game.ScreenEffects.effectFXAA  = new THREE.ShaderPass( THREE.FXAAShader );
+
+        var FXAAwidth = window.innerWidth || 2;
+        var FXAAheight = window.innerHeight || 2;
+
+        ZOR.Game.ScreenEffects.effectFXAA.uniforms[ 'resolution' ].value.set( 1 / FXAAwidth, 1 / FXAAheight );
+
+        ZOR.Game.ScreenEffects.effectCopy.renderToScreen = true;
+
+        ZOR.Game.composer = new THREE.EffectComposer( ZOR.Game.renderer );
+
+        ZOR.Game.composer.addPass( ZOR.Game.ScreenEffects.renderModel );
+        // ZOR.Game.composer.addPass( ZOR.Game.ScreenEffects.effectFXAA );
+        ZOR.Game.composer.addPass( ZOR.Game.ScreenEffects.effectBloom );
+        ZOR.Game.composer.addPass( ZOR.Game.ScreenEffects.effectCopy );
+
+        //
+
         window.addEventListener( 'resize', onWindowResize, false );
     }
 
@@ -174,6 +202,9 @@ function createScene() {
         camera.updateProjectionMatrix();
 
         ZOR.Game.renderer.setSize( window.innerWidth, window.innerHeight );
+
+        ZOR.Game.ScreenEffects.effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight );
+        ZOR.Game.composer.reset();
     }
 
     function animate() {
@@ -210,7 +241,9 @@ function createScene() {
 
     function render() {
 
-        ZOR.Game.renderer.render( scene, camera );
+        // ZOR.Game.renderer.render( scene, camera );
+        ZOR.Game.renderer.clear();
+        ZOR.Game.composer.render();
 
     }
 }
