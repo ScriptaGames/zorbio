@@ -75,7 +75,7 @@ a {
   color: #f7f7f7;
 }
 a:hover {
-  color: #0b7bf4;
+  color: #0B7BF4;
 }
 button,
 a {
@@ -117,7 +117,7 @@ input:focus {
   margin-top: 0;
 }
 .error-text {
-  color: #0b7bf4;
+  color: #0B7BF4;
   font-size: 21px;
   text-align: center;
 }
@@ -209,7 +209,7 @@ button:focus {
 button {
   -moz-osx-font-smoothing: grayscale;
   -webkit-backface-visibility: hidden;
-  background: #0b7bf4;
+  background: #0B7BF4;
   border: none;
   color: #f7f7f7;
   display: -webkit-box;
