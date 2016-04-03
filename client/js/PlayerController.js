@@ -50,7 +50,7 @@ ZOR.PlayerController.prototype.getPosition = function ZORPlayerControllerGetPosi
  * @returns {number}
  */
 ZOR.PlayerController.prototype.getSpeed = function ZORPlayerControllerGetSpeed() {
-    return config.PLAYER_GET_SPEED( this.radius() );
+    return this.model.getSpeed();
 };
 
 ZOR.PlayerController.prototype.initView = function ZORPlayerControllerInitView(main_sphere, scene) {
@@ -186,4 +186,8 @@ ZOR.PlayerController.prototype.moveBackward = function ZORPlayerControllerMoveBa
 
 ZOR.PlayerController.prototype.setCameraControls = function ZORPlayerControllerSetCameraControls(camera_controls) {
     this.view.setCameraControls(camera_controls);
+};
+
+ZOR.PlayerController.prototype.speedBoost = function ZORPlayerControllerSpeedBoost() {
+    this.model.speedBoost = 5;
 };

@@ -283,6 +283,7 @@ var AppServer = function (wss, app) {
                 // make player model changes i.e. scale, set cooldown timer
                 // send success
                 ws.send(JSON.stringify({op: "speed_boost_res", is_valid: true}));
+                currentPlayer.speedBoost = 5;
             // else send failed reason
         }
     });

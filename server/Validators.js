@@ -62,7 +62,7 @@ Validators.movement = function () {
             var vdist = point_a.distanceTo(point_b);
 
             // find out what current speed should be based on scale
-            var expectedSpeed = config.PLAYER_GET_SPEED(oldestPosition.radius);
+            var expectedSpeed = zPlayer.getSpeed();
             var maxToleratedSpeed = expectedSpeed + config.SPEED_EXTRA_TOLERANCE;
             var measuredSpeed = vdist / time;
             var actualSpeed = msPerFrame * measuredSpeed;

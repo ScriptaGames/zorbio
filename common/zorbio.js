@@ -165,6 +165,9 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.createdTime = this.lastHeartbeat = Date.now();
     this.sphere = new ZOR.PlayerSphere(this.id, color, position, scale, velocity);
 
+    // Speed boost variables
+    this.speedBoost = 1;
+
     // Stats
     this.foodCaptures = 0;
     this.playerCaptures = 0;
@@ -186,8 +189,17 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.au_receive_metric = new ZOR.PlayerMetric(200);
     this.buffered_amount_metric = new ZOR.PlayerMetric(320);
 };
+
 ZOR.Player.prototype.getScore = function ZORPlayerGetScore() {
-    return config.PLAYER_GET_SCORE (this.sphere.scale);
+    return config.PLAYER_GET_SCORE(this.sphere.scale);
+};
+
+/**
+ * Get's the players curent speed
+ * @returns {number}
+ */
+ZOR.Player.prototype.getSpeed = function ZORPlayerGetScore() {
+    return config.PLAYER_GET_SPEED(this.sphere.scale) * this.speedBoost;
 };
 
 ZOR.PlayerMetric = function ZORPlayerMetric(threshold, reverse_threshold) {
