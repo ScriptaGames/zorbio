@@ -278,6 +278,7 @@ function setupSocket(ws) {
 
     function handle_msg_speed_boost_res(msg) {
         console.log("speed boost is valid:", msg.is_valid);
+        player.speedBoost();
     }
 }
 
