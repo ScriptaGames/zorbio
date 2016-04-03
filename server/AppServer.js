@@ -278,13 +278,18 @@ var AppServer = function (wss, app) {
         }
 
         function handle_msg_speed_boost_req() {
-            // if valid
-                // adjust for speed validation
-                // make player model changes i.e. scale, set cooldown timer
+            console.log("Speed boost request received for player: ", currentPlayer.id);
+
+            // validate
+            var speedBoostAbility = currentPlayer.abilities['speed_boost'];
+            if (speedBoostAbility && speedBoostAbility.isReady(currentPlayer.sphere.scale)) {
+                console.log("Activating speed boost for player: ", currentPlayer.id);
+
+                speedBoostAbility.activate(currentPlayer);
+
                 // send success
                 ws.send(JSON.stringify({op: "speed_boost_res", is_valid: true}));
-                currentPlayer.speedBoost = 5;
-            // else send failed reason
+            }
         }
     });
 
@@ -325,6 +330,16 @@ var AppServer = function (wss, app) {
                     drainer.scale = drainee.scale = ( drainer.scale + drainee.scale ) / 2;
                 }
             }
+        }
+    };
+
+    self.playerUpdates = function appPlayerUpdates() {
+        // call update() on all the player model objects
+        var playerIds = Object.getOwnPropertyNames(self.model.players);
+        for (var i = 0, l = playerIds.length; i < l; i++) {
+            var id = +playerIds[i];  // make sure id is a number
+            var player = self.model.players[id];
+            player.update();
         }
     };
 
@@ -630,6 +645,7 @@ var AppServer = function (wss, app) {
      * possible, eg movement and player capture.
      */
     self.serverTickFast = function appServerTickFast() {
+        self.playerUpdates();
         self.checkPlayerCaptures();
         self.sendActorUpdates();
     };

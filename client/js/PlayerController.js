@@ -101,7 +101,7 @@ ZOR.PlayerController.prototype.updatePosition = function ZORPlayerControllerUpda
  */
 ZOR.PlayerController.prototype.radius = function ZORPlayerControllerRadius() {
     // calculate radius the same as the server
-    return this.model.sphere.radius();
+    return this.model.sphere.scale;
 };
 
 ZOR.PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(scale) {
@@ -110,6 +110,10 @@ ZOR.PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(s
 };
 
 ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls, lag_scale) {
+
+    // first update any player abilities
+    this.model.abilities['speed_boost'].update();
+
     if (config.AUTO_RUN_ENABLED) {
         this.moveForward(camera); // always move forward
     }
@@ -189,5 +193,5 @@ ZOR.PlayerController.prototype.setCameraControls = function ZORPlayerControllerS
 };
 
 ZOR.PlayerController.prototype.speedBoost = function ZORPlayerControllerSpeedBoost() {
-    this.model.speedBoost = 5;
+    this.model.abilities['speed_boost'].activate(this.model);
 };
