@@ -90,6 +90,15 @@ config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
 config.Y_AXIS_MULT = 1;
 config.X_AXIS_MULT = 1;
 
+////////////////////////////////////////////////////////////////////////
+//                           ABILITY SETTINGS                            //
+////////////////////////////////////////////////////////////////////////
+
+config.ABILITY_SPEED_BOOST_DURATION = 500;  // milliseconds that speed boost will last
+config.ABILITY_SPEED_BOOST_MIN_SCALE = 4;   // min scale be fore speed boost can be used
+config.ABILITY_SPEED_BOOST_SPEED = 10;      // constant speed
+config.ABILITY_SPEED_BOOST_PENALTY = 2;    // how much scale to remove
+
 config.DRAIN_MAX_DISTANCE = 300; // distance at which draining starts
 config.DRAIN_PINCH_STRENGTH = 0.4;
 

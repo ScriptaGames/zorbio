@@ -461,7 +461,9 @@ function keyDown( key ) {
 
 function keyJustPressed(key) {
     if ( key === 'w' && config.AUTO_RUN_ENABLED) {
-        sendRequestSpeedBoost();
+        if (player.model.abilities['speed_boost'].isReady(player.radius())) {
+            sendRequestSpeedBoost();
+        }
     }
 }
 
