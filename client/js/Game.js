@@ -113,7 +113,7 @@ window.addEventListener('load', function ZORLoadHandler() {
     ZOR.UI.on( ZOR.UI.ACTIONS.VOLUME_SFX, function ZORVolumeSfx() {
         var vol = this.get('volume.sfx');
         _.each(
-            ZOR.Sounds.food_capture,
+            ZOR.Sounds.sfx.food_capture,
             _.partial( _.invoke, _, 'volume', vol )
         );
         localStorage.volume_sfx = vol;

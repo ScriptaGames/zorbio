@@ -61,8 +61,8 @@ ZOR.UI = function ZORUI() {
         flip_x           : JSON.parse(localStorage.flip_x || "false"),
         flip_y           : JSON.parse(localStorage.flip_y || "false"),
         volume           : {
-            music : localStorage.volume_music || config.VOLUME_MUSIC_INITIAL,
-            sfx   : localStorage.volume_sfx || config.VOLUME_SFX_INITIAL,
+            music : config.VOLUME_MUSIC_INITIAL,
+            sfx   : config.VOLUME_SFX_INITIAL,
         },
     };
 

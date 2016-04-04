@@ -148,8 +148,10 @@ config.REQUIRED_WEBGL_EXTENSIONS = ['ANGLE_instanced_arrays'];
 //                           SOUND SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.VOLUME_MUSIC_INITIAL = 0.45;
-config.VOLUME_SFX_INITIAL = 1.0;
+if (!NODEJS) {
+    config.VOLUME_MUSIC_INITIAL = localStorage.volume_music || 0.45;
+    config.VOLUME_SFX_INITIAL   = localStorage.volume_sfx || 1.0;
+}
 
 ////////////////////////////////////////////////////////////////////////
 //                      BROWSER FEATURE SETTINGS                      //
