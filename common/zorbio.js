@@ -288,7 +288,7 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
     this.activate = function ZORSpeedBoostAbilityActivate(aPlayer) {
         this.active = true;
         this.start_time = Date.now();
-        aPlayer.sphere.scale -= config.ABILITY_SPEED_BOOST_PENALTY;
+        aPlayer.sphere.growExpected(config.ABILITY_SPEED_BOOST_PENALTY);
     };
 
     /**
