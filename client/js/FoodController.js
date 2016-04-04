@@ -102,7 +102,7 @@ var FoodController = function ZORFoodController(model, fogCenterPosition, scene)
                 dist = octreeObj.position.distanceTo( mainSphere.position );
                 if (dist <= (sphere_radius + config.FOOD_CAPTURE_ASSIST)) {
                     callback( fi );
-                    _.sample(ZOR.Sounds.food_capture).play();
+                    _.sample(ZOR.Sounds.sfx.food_capture).play();
                 }
             }
         }
