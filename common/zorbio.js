@@ -283,12 +283,17 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
 
     /**
      * Activate this ability
+     * @return {boolean}
      */
     this.activate = function ZORSpeedBoostAbilityActivate(aPlayer) {
+        if (!this.isReady(aPlayer.sphere.scale)) return false;
+
         this.the_player = aPlayer;
         this.active = true;
         this.start_time = Date.now();
         this.the_player.sphere.growExpected(config.ABILITY_SPEED_BOOST_PENALTY);
+
+        return true;
     };
 
     /**

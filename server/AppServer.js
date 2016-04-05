@@ -280,15 +280,13 @@ var AppServer = function (wss, app) {
         function handle_msg_speed_boost_req() {
             console.log("Speed boost request received for player: ", currentPlayer.id);
 
-            // validate
-            var speedBoostAbility = currentPlayer.abilities['speed_boost'];
-            if (speedBoostAbility && speedBoostAbility.isReady(currentPlayer.sphere.scale)) {
-                console.log("Activating speed boost for player: ", currentPlayer.id);
+            if (currentPlayer.abilities.speed_boost.activate(currentPlayer)) {
 
-                speedBoostAbility.activate(currentPlayer);
+                console.log("Speed boost activated for player: ", currentPlayer.id);
 
-                // send success
+                // Tell client to activate speed boost
                 ws.send(JSON.stringify({op: "speed_boost_res", is_valid: true}));
+
             }
         }
     });
