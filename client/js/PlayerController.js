@@ -193,5 +193,7 @@ ZOR.PlayerController.prototype.setCameraControls = function ZORPlayerControllerS
 };
 
 ZOR.PlayerController.prototype.speedBoost = function ZORPlayerControllerSpeedBoost() {
-    this.model.abilities['speed_boost'].activate(this.model);
+    this.model.abilities.speed_boost.activate(this.model);
+
+    //TODO: Activate visual speed boost embelishment to this.view here
 };
