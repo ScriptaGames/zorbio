@@ -316,7 +316,7 @@ function sendPlayerUpdate() {
 
     var sphereModel = player.model.sphere;
 
-    if (sphereModel.recentPositions.length < 2) {
+    while (sphereModel.recentPositions.length < 2) {
         player.addRecentPosition();  // make sure we always have at least 2 recent positions
     }
 

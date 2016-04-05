@@ -167,7 +167,7 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
 
     // Abilities
     this.abilities = {};
-    this.abilities['speed_boost'] = new ZOR.SpeedBoostAbility();
+    this.abilities.speed_boost = new ZOR.SpeedBoostAbility();
 
     // Stats
     this.foodCaptures = 0;
@@ -200,9 +200,8 @@ ZOR.Player.prototype.getScore = function ZORPlayerGetScore() {
  * @returns {number}
  */
 ZOR.Player.prototype.getSpeed = function ZORPlayerGetScore() {
-    var speedBoostAbility = this.abilities['speed_boost'];
-    if (speedBoostAbility && speedBoostAbility.isActive()) {
-        return speedBoostAbility.getBoostSpeed();
+    if (this.abilities.speed_boost.isActive()) {
+        return this.abilities.speed_boost.getBoostSpeed();
     }
 
     return config.PLAYER_GET_SPEED(this.sphere.scale);
@@ -286,9 +285,10 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
      * Activate this ability
      */
     this.activate = function ZORSpeedBoostAbilityActivate(aPlayer) {
+        this.the_player = aPlayer;
         this.active = true;
         this.start_time = Date.now();
-        aPlayer.sphere.growExpected(config.ABILITY_SPEED_BOOST_PENALTY);
+        this.the_player.sphere.growExpected(config.ABILITY_SPEED_BOOST_PENALTY);
     };
 
     /**
@@ -302,6 +302,9 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
 
         if (elapsedTime >= this.max_duration) {
             this.active = false;
+
+            // start validating again at the regular speed
+            this.the_player.sphere.recentPositions = [];
         }
     };
 
