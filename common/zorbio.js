@@ -291,7 +291,10 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
         this.the_player = aPlayer;
         this.active = true;
         this.start_time = Date.now();
-        this.the_player.sphere.growExpected(config.ABILITY_SPEED_BOOST_PENALTY);
+
+        // apply penalty
+        var currentScale = this.the_player.sphere.scale;
+        this.the_player.sphere.growExpected(-(Math.round(currentScale * config.ABILITY_SPEED_BOOST_PENALTY)));
 
         return true;
     };
