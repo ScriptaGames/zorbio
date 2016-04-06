@@ -159,6 +159,7 @@ ZOR.PlayerTypes = Object.freeze({
  * @constructor
  */
 ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity) {
+    var self = this;
     this.id = id;
     this.name = name;
     this.type = type;
@@ -168,6 +169,15 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     // Abilities
     this.abilities = {};
     this.abilities.speed_boost = new ZOR.SpeedBoostAbility();
+    this.abilities.speed_boost.onactivate = function () {
+        // apply penalty
+        var currentScale = self.sphere.scale;
+        self.sphere.growExpected(-(Math.round(currentScale * config.ABILITY_SPEED_BOOST_PENALTY)));
+    };
+    this.abilities.speed_boost.ondeactivate = function () {
+        // start validating again at the regular speed
+        self.sphere.recentPositions = [];
+    };
 
     // Stats
     this.foodCaptures = 0;
@@ -263,6 +273,8 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
     this.max_duration = config.ABILITY_SPEED_BOOST_DURATION;
     this.min_scale = config.ABILITY_SPEED_BOOST_MIN_SCALE;
     this.boost_speed = config.ABILITY_SPEED_BOOST_SPEED;
+    this.onactivate = undefined;
+    this.ondeactivate = undefined;
 
     /**
      * Returns true of this ability is ready to activate.
@@ -288,13 +300,12 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
     this.activate = function ZORSpeedBoostAbilityActivate(aPlayer) {
         if (!this.isReady(aPlayer.sphere.scale)) return false;
 
-        this.the_player = aPlayer;
         this.active = true;
         this.start_time = Date.now();
 
-        // apply penalty
-        var currentScale = this.the_player.sphere.scale;
-        this.the_player.sphere.growExpected(-(Math.round(currentScale * config.ABILITY_SPEED_BOOST_PENALTY)));
+        if (typeof this.onactivate === 'function') {
+            this.onactivate();
+        }
 
         return true;
     };
@@ -311,8 +322,9 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
         if (elapsedTime >= this.max_duration) {
             this.active = false;
 
-            // start validating again at the regular speed
-            this.the_player.sphere.recentPositions = [];
+            if (typeof this.ondeactivate === 'function') {
+                this.ondeactivate();
+            }
         }
     };
 
