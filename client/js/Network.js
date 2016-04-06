@@ -316,12 +316,15 @@ function sendPlayerUpdate() {
 
     var sphereModel = player.model.sphere;
 
-    while (sphereModel.recentPositions.length < 2) {
-        player.addRecentPosition();  // make sure we always have at least 2 recent positions
+    while (sphereModel.recentPositions.length < 4) {
+        player.addRecentPosition();  // make sure we always have at least 4 recent positions
     }
 
     // for now we only need to send the oldest position and the most recent position
     var oldestPosition = sphereModel.recentPositions[0];
+    var prevPosition3  = sphereModel.recentPositions[sphereModel.recentPositions.length - 4];
+    var prevPosition2  = sphereModel.recentPositions[sphereModel.recentPositions.length - 3];
+    var prevPosition1  = sphereModel.recentPositions[sphereModel.recentPositions.length - 2];
     var latestPosition = sphereModel.recentPositions[sphereModel.recentPositions.length - 1];
 
     var bufferView = new Float32Array(config.BIN_PP_POSITIONS_LENGTH + (player.food_capture_queue.length * 2));
@@ -330,11 +333,26 @@ function sendPlayerUpdate() {
     bufferView[index++] = gap;                       // Gap since last pp update
     bufferView[index++] = actorUpdateGap;            // Gap since last au update
     bufferView[index++] = bufferedAmount;            // Amount of bytes currently buffered to send in the ws
+
+    // oldest position
     bufferView[index++] = oldestPosition.position.x; // Old position X
     bufferView[index++] = oldestPosition.position.y; // Old position Y
     bufferView[index++] = oldestPosition.position.z; // Old position Z
     bufferView[index++] = oldestPosition.radius;     // Old radius
     bufferView[index++] = oldestPosition.time;       // Old time
+
+    // Previous positions
+    bufferView[index++] = prevPosition3.position.x;
+    bufferView[index++] = prevPosition3.position.y;
+    bufferView[index++] = prevPosition3.position.z;
+    bufferView[index++] = prevPosition2.position.x;
+    bufferView[index++] = prevPosition2.position.y;
+    bufferView[index++] = prevPosition2.position.z;
+    bufferView[index++] = prevPosition1.position.x;
+    bufferView[index++] = prevPosition1.position.y;
+    bufferView[index++] = prevPosition1.position.z;
+
+    // Latest position
     bufferView[index++] = latestPosition.position.x; // New position X
     bufferView[index++] = latestPosition.position.y; // New position Y
     bufferView[index++] = latestPosition.position.z; // New position Z
