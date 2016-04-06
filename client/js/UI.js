@@ -201,7 +201,7 @@ ZOR.UI = function ZORUI() {
      * Fetch Ractive templates and GLSL shaders, then init UI.
      */
     function fetch_then_init() {
-        var shaders = document.querySelectorAll('script[type^=x-shader]');
+        var shaders = document.querySelectorAll('script[data-src]');
 
         Promise.all( _.map(shaders, fetch_inject) ).then( init );
     }

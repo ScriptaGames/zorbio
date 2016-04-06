@@ -1,0 +1,18 @@
+<div id="game-init-error-screen">
+    <h1>WebGL fell over :(</h1>
+    {{ #if MISSING_FEATURES }}
+    <p class="error-text">These features are required to play Zorbio, but are not supported by your browser.</p>
+    <ul>
+        {{ #each MISSING_FEATURES:i }}
+        <li>{{ MISSING_FEATURES[i] }}</li>
+        {{ /each }}
+    </ul>
+    {{ else }}
+    <p>
+        This is very sad!  We don't recognize the WebGL error that just occurred.  Visit this
+        <a href="http://get.webgl.org/troubleshooting/">WebGL
+            troubleshooting guide</a> to recover!
+    </p>
+    {{ /if }}
+    <button on-click="{{ ACTIONS.PAGE_RELOAD }}" id="reload-button"><span>Reload</span></button>
+</div>
