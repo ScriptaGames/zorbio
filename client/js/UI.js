@@ -7,6 +7,15 @@ var ZOR = ZOR || {};
 
 ZOR.UI = function ZORUI() {
 
+    var engine; // the UI engine, currently Ractive
+
+    /**
+     * A list of the browser features that are required to run Zorbio.  The
+     * match the names provided by Modernizr.
+     */
+
+    var REQUIRED_FEATURES = [ 'json', 'websockets', 'webgl', 'flexbox' ];
+
     /**
      * An "enum" storing unique values for UI states.
      */
@@ -43,7 +52,6 @@ ZOR.UI = function ZORUI() {
         VOLUME_MUSIC          : 'volume-music',
         VOLUME_SFX            : 'volume-sfx',
     };
-
     /**
      * The data to pass into templates.
      */
@@ -66,12 +74,14 @@ ZOR.UI = function ZORUI() {
         },
     };
 
-    /**
-     * A list of the browser features that are required to run Zorbio.  The
-     * match the names provided by Modernizr.
-     */
-
-    var REQUIRED_FEATURES = [ 'json', 'websockets', 'webgl', 'flexbox' ];
+    // the public functions exposes by this module (may be modified during execution)
+    var api = {
+        STATES   : STATES,
+        ACTIONS  : ACTIONS,
+        data     : uidata,
+        state    : state,
+        on       : on,
+    };
 
     // the previous state
     var previous = STATES.INITIAL;
@@ -79,19 +89,6 @@ ZOR.UI = function ZORUI() {
     /**
      * The Ractive template engine.  Data + Templates = HTML
      */
-
-    Ractive.DEBUG = config.DEBUG;
-    var engine = new Ractive({
-        // The `el` option can be a node, an ID, or a CSS selector.
-        el: '#ui-overlay',
-
-        // We could pass in a string, but for the sake of convenience
-        // we're passing the ID of the <script> tag above.
-        template: '#ui-template',
-
-        // Here, we're passing in some initial data
-        data: uidata,
-    });
 
     function register_partial( el ) {
         var name = el.id.replace('-template', '');
@@ -169,24 +166,76 @@ ZOR.UI = function ZORUI() {
     }
 
     function init() {
+
+        Ractive.DEBUG = config.DEBUG;
+        engine = new Ractive({
+            // The `el` option can be a node, an ID, or a CSS selector.
+            el: '#ui-overlay',
+
+            // We could pass in a string, but for the sake of convenience
+            // we're passing the ID of the <script> tag above.
+            template: '#ui-template',
+
+            // Here, we're passing in some initial data
+            data: uidata,
+        });
+
+        api.engine = engine;
+        api.update = get_updater();
+
         validate_browser_features();
         _.each( document.querySelectorAll('script[type="text/ractive"]'), register_partial ); // register all ractive templates as partials
         state( STATES.INITIAL );
     }
 
-    init();
+    /**
+     * Automatically update UI every N frames.  The largest implication is how
+     * quickly the leaderboard is updated when new leaderboard data is received
+     * from the server.
+     */
+    function get_updater() {
+        return UTIL.nth( engine.update.bind(engine), 20 );
+    };
+
+    /**
+     * Fetch Ractive templates and GLSL shaders, then init UI.
+     */
+    function fetch_then_init() {
+        var shaders = document.querySelectorAll('script[type^=x-shader]');
+
+        Promise.all( _.map(shaders, fetch_inject) ).then( init );
+    }
+
+    /**
+     * Given a script element, fetch its `src` and inject the response into the element.
+     */
+    function fetch_inject(el) {
+        return fetch( el.dataset.src ).then( get_fetch_text ).then( mk_script_injector(el) );
+    }
+
+    /**
+     * From a `fetch` API response, get the text.
+     */
+    function get_fetch_text(response) {
+        return response.text();
+    }
+
+    /**
+     * Return a function which will inject text into an element.
+     */
+    function mk_script_injector(element) {
+        return function script_injector(text) {
+            element.innerHTML = text;
+        };
+    }
+
+    // fetch(x.src).then(function(s) { return s.text() }).then(function(shader) { x.innerHTML = shader })
+
+    fetch_then_init();
 
     // public properties of ZOR.UI
 
-    return {
-        STATES   : STATES,
-        ACTIONS  : ACTIONS,
-        data     : uidata,
-        engine   : engine,
-        state    : state,
-        on       : on,
-        update   : UTIL.nth( engine.update.bind(engine), 20 ), // automatically update UI every N frames, really only affects leaderboard
-    };
+    return api;
 
 }();
 
