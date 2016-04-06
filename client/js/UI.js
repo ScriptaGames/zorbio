@@ -186,6 +186,121 @@ ZOR.UI = function ZORUI() {
         validate_browser_features();
         _.each( document.querySelectorAll('script[type="text/ractive"]'), register_partial ); // register all ractive templates as partials
         state( STATES.INITIAL );
+
+        init_events();
+    }
+
+    /**
+     * Initialize all the UI event handlers.
+     */
+    function init_events() {
+        'use strict';
+
+        if (localStorage.alpha_key) {
+            ZOR.UI.engine.set('alpha_key', localStorage.alpha_key)
+        }
+        if (localStorage.player_name) {
+            ZOR.UI.engine.set('player_name', localStorage.player_name)
+        }
+
+        // volume change handlers
+
+        ZOR.UI.on( ZOR.UI.ACTIONS.VOLUME_MUSIC, function ZORVolumeMusic() {
+            var vol = this.get('volume.music');
+            ZOR.Sounds.music.background.volume( vol );
+            localStorage.volume_music = vol;
+        });
+
+        ZOR.UI.on( ZOR.UI.ACTIONS.VOLUME_SFX, function ZORVolumeSfx() {
+            var vol = this.get('volume.sfx');
+            _.each(
+                ZOR.Sounds.sfx.food_capture,
+                _.partial( _.invoke, _, 'volume', vol )
+            );
+            localStorage.volume_sfx = vol;
+        });
+
+        // show/hide UI panels
+
+        ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_CREDITS, function ZORShowCredits() {
+            ZOR.UI.state( ZOR.UI.STATES.CREDITS_SCREEN );
+        });
+
+        ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_TUTORIAL, function ZORShowTutorial() {
+            ZOR.UI.state( ZOR.UI.STATES.TUTORIAL_SCREEN );
+        });
+
+        ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_CONFIG, function ZORShowConfig() {
+            ZOR.UI.state( ZOR.UI.STATES.CONFIG );
+        });
+
+        ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_LOGIN, function ZORShowLogin() {
+            ZOR.UI.state( ZOR.UI.STATES.LOGIN_SCREEN );
+        });
+
+        ZOR.UI.on( ZOR.UI.ACTIONS.SHOW_PREVIOUS, function ZORShowPrevious() {
+            ZOR.UI.state( ZOR.UI.data.prev_state );
+        });
+
+        ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
+            // check if the nick is valid
+            if (UTIL.validNick(ZOR.UI.engine.get('player_name'))) {
+                startGame(ZOR.PlayerTypes.PLAYER);
+            } else {
+                ZOR.UI.engine.set( 'login_error_msg', 'Nick name must be alphanumeric characters only!' );
+
+            }
+        });
+
+
+        config.X_AXIS_MULT = JSON.parse(localStorage.flip_x || "false") ? -1 : 1;
+        config.Y_AXIS_MULT = JSON.parse(localStorage.flip_y || "false") ? -1 : 1;
+        ZOR.UI.on( ZOR.UI.ACTIONS.TOGGLE_Y_AXIS, axisToggler('y'));
+        ZOR.UI.on( ZOR.UI.ACTIONS.TOGGLE_X_AXIS, axisToggler('x'));
+
+        function axisToggler(axis) {
+            return function ZORToggleYAxis(e) {
+                var lsKey = 'flip_'+axis.toLowerCase();
+                var confKey = axis.toUpperCase()+'_AXIS_MULT';
+                if ( e.node.checked ) {
+                    config[confKey] = -1;
+                    ZOR.UI.data[lsKey] = true;
+                }
+                else {
+                    config[confKey] = 1;
+                    ZOR.UI.data[lsKey] = false;
+                }
+                localStorage[lsKey] = ZOR.UI.data[lsKey];
+            }
+        }
+
+        ZOR.UI.on( ZOR.UI.ACTIONS.PAGE_RELOAD, location.reload.bind(location) );
+
+        ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_RESPAWN, respawnPlayer );
+
+        ZOR.UI.on( ZOR.UI.ACTIONS.PLAYER_LOGIN_KEYPRESS, function ZORPlayerLoginKeypressHandler(e) {
+            var key = e.original.which || e.original.keyCode;
+            var KEY_ENTER = 13;
+
+            if (key === KEY_ENTER) {
+                if (UTIL.validNick(ZOR.UI.engine.get('player_name'))) {
+                    startGame(ZOR.PlayerTypes.PLAYER);
+                } else {
+                    ZOR.UI.engine.set( 'login_error_msg', 'Nick name must be alphanumeric characters only!' );
+                }
+            }
+        });
+
+        // init mobile
+        if (isMobile.any) {
+            // mobile must always use drag steering
+            config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
+        }
+
+        if (config.AUTO_PLAY) {
+            ZOR.UI.engine.fire( ZOR.UI.ACTIONS.PLAYER_LOGIN );
+        }
+
     }
 
     /**
@@ -202,7 +317,6 @@ ZOR.UI = function ZORUI() {
      */
     function fetch_then_init() {
         var shaders = document.querySelectorAll('script[data-src]');
-
         Promise.all( _.map(shaders, fetch_inject) ).then( init );
     }
 
@@ -229,11 +343,7 @@ ZOR.UI = function ZORUI() {
         };
     }
 
-    // fetch(x.src).then(function(s) { return s.text() }).then(function(shader) { x.innerHTML = shader })
-
     fetch_then_init();
-
-    // public properties of ZOR.UI
 
     return api;
 
