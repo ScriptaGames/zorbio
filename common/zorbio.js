@@ -85,6 +85,24 @@ ZOR.Actor = function ZORActor() {
     this.recentPositions = [];
 };
 
+ZOR.Actor.prototype.pushRecentPosition = function ZORActorPushRecentPosition(position) {
+    if (this.recentPositions.length === 0) {
+        this.recentPositions.push(position);
+    }
+    else {
+        var latestTime = this.recentPositions[this.recentPositions.length - 1].time;
+        var newTime = position.time;
+        if (newTime > latestTime) {
+            // only push on new positions to avoid duplicates
+            this.recentPositions.push(position);
+
+            while (this.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {
+                this.recentPositions.shift();  // remove the oldest position
+            }
+        }
+    }
+};
+
 /**
  * ZOR.PlayerSphere is a constructor for creating a player's sphere.
  */
