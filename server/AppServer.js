@@ -203,12 +203,18 @@ var AppServer = function (wss, app) {
             var prev_3_x  = bufView[index++];
             var prev_3_y  = bufView[index++];
             var prev_3_z  = bufView[index++];
+            var prev_3_r  = bufView[index++];
+            var prev_3_t  = bufView[index++];
             var prev_2_x  = bufView[index++];
             var prev_2_y  = bufView[index++];
             var prev_2_z  = bufView[index++];
+            var prev_2_r  = bufView[index++];
+            var prev_2_t  = bufView[index++];
             var prev_1_x  = bufView[index++];
             var prev_1_y  = bufView[index++];
             var prev_1_z  = bufView[index++];
+            var prev_1_r  = bufView[index++];
+            var prev_1_t  = bufView[index++];
             var new_x     = bufView[index++];
             var new_y     = bufView[index++];
             var new_z     = bufView[index++];
@@ -240,8 +246,12 @@ var AppServer = function (wss, app) {
                 actor.position.set( latestPosition.position.x, latestPosition.position.y, latestPosition.position.z);
 
                 // Recent positions
+                actor.recentPositions.push({position: new THREE.Vector3(prev_3_x, prev_3_y, prev_3_z), radius: prev_3_r, time: prev_3_t});
+                actor.recentPositions.push({position: new THREE.Vector3(prev_2_x, prev_2_y, prev_2_z), radius: prev_2_r, time: prev_2_t});
+                actor.recentPositions.push({position: new THREE.Vector3(prev_1_x, prev_1_y, prev_1_z), radius: prev_1_r, time: prev_1_t});
                 actor.recentPositions.push({position: actor.position, radius: actor.scale, time: latestPosition.time});
-                if (actor.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {
+
+                while (actor.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {
                     actor.recentPositions.shift();  // remove the oldest position
                 }
 
@@ -469,21 +479,33 @@ var AppServer = function (wss, app) {
 
                 // find the distance between these two players
                 p2 = players_array[j];
-                distance = p1.sphere.position.distanceTo( p2.sphere.position );
 
-                p1_scale = p1.sphere.scale;
-                p2_scale = p2.sphere.scale;
+                var p1_rp = p1.sphere.recentPositions;
+                var p2_rp = p2.sphere.recentPositions;
 
-                // if distance is less than radius of p1 and p1 larger than p2, p1 captures p2
-                // if distance is less than radius of p2 and p2 larger than p1, p2 captures p1
+                if (p1_rp.length < 4 || p2_rp.length < 4) continue; // give brand new players time to load positions
 
-                if ( distance < p1_scale && p1_scale > p2_scale ) {
-                    self.capturePlayer( p1.id, p2.id );
-                }
-                else if ( distance < p2_scale && p2_scale > p1_scale ) {
-                    self.capturePlayer( p2.id, p1.id );
-                }
+                for (var k = p1_rp.length - 4; k < p1_rp.length; k++) {
+                    for (var h = p2_rp.length - 4; h < p2_rp.length; h++) {
+                        var rp1 = p1_rp[k];
+                        var rp2 = p2_rp[h];
 
+                        distance = rp1.position.distanceTo( rp2.position );
+
+                        p1_scale = rp1.radius;
+                        p2_scale = rp2.radius;
+
+                        // if distance is less than radius of p1 and p1 larger than p2, p1 captures p2
+                        // if distance is less than radius of p2 and p2 larger than p1, p2 captures p1
+
+                        if ( distance < p1_scale && p1_scale > p2_scale ) {
+                            self.capturePlayer( p1.id, p2.id );
+                        }
+                        else if ( distance < p2_scale && p2_scale > p1_scale ) {
+                            self.capturePlayer( p2.id, p1.id );
+                        }
+                    }
+                 }
             }
         }
     };

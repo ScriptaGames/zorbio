@@ -21,7 +21,7 @@ config.REQUIRE_ALPHA_KEY = false;
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE       = 1600;
+config.WORLD_SIZE       = 400;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
 
 ////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@ config.PENDING_PLAYER_CAPTURE_TTL = 3000; // how long pending player capture liv
 config.CHECK_VERSION            = true;   // check for latest version of the game through the zapi
 config.CHECK_VERSION_INTERVAL   = 30000;  // how often to check for new version
 config.LEADERS_LENGTH           = 10;     // How many players to include in the leaders array
-config.BIN_PP_POSITIONS_LENGTH  = 23;
+config.BIN_PP_POSITIONS_LENGTH  = 29;
 config.ORIGIN                   = 'http://zor.bio'; // the origin that's allowed to connect to websocket server
 config.RECENT_CLIENT_DATA_LENGTH = 100;   // how many recent data points to keep from the client like pings
 config.CLOSE_NO_RESTART         = 4000;    // 4000-4999 application reserved close code in WebSocket spec
@@ -85,7 +85,7 @@ config.STEERING_METHODS      = Object.freeze({ // enum-ish
         SPEED : 0.3,  // higher makes camera rotate faster
     },
 });
-config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
+config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
 
 config.Y_AXIS_MULT = 1;
 config.X_AXIS_MULT = 1;
@@ -107,8 +107,8 @@ config.DRAIN_RADIO_FREQUENCY = 65; // how quickly the radio waves flow down the 
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 25;    // How much food there is, total food = this number cubed
-config.FOOD_VALUE                  = 0.6;   // amount to increase sphere by when food is consumed
+config.FOOD_DENSITY                = 5;    // How much food there is, total food = this number cubed
+config.FOOD_VALUE                  = 5;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
 config.FOOD_CAPTURE_ASSIST         = 1.0;     // this number is added to player's radius for food capturing

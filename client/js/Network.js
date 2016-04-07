@@ -345,12 +345,18 @@ function sendPlayerUpdate() {
     bufferView[index++] = prevPosition3.position.x;
     bufferView[index++] = prevPosition3.position.y;
     bufferView[index++] = prevPosition3.position.z;
+    bufferView[index++] = prevPosition3.radius;
+    bufferView[index++] = prevPosition3.time;
     bufferView[index++] = prevPosition2.position.x;
     bufferView[index++] = prevPosition2.position.y;
     bufferView[index++] = prevPosition2.position.z;
+    bufferView[index++] = prevPosition2.radius;
+    bufferView[index++] = prevPosition2.time;
     bufferView[index++] = prevPosition1.position.x;
     bufferView[index++] = prevPosition1.position.y;
     bufferView[index++] = prevPosition1.position.z;
+    bufferView[index++] = prevPosition1.radius;
+    bufferView[index++] = prevPosition1.time;
 
     // Latest position
     bufferView[index++] = latestPosition.position.x; // New position X
