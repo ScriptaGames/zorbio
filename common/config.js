@@ -91,7 +91,7 @@ config.Y_AXIS_MULT = 1;
 config.X_AXIS_MULT = 1;
 
 ////////////////////////////////////////////////////////////////////////
-//                           ABILITY SETTINGS                            //
+//                           ABILITY SETTINGS                         //
 ////////////////////////////////////////////////////////////////////////
 
 config.ABILITY_SPEED_BOOST_DURATION = 500;  // milliseconds that speed boost will last
