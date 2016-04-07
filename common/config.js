@@ -21,7 +21,7 @@ config.REQUIRE_ALPHA_KEY = false;
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE       = 400;
+config.WORLD_SIZE       = 1600;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
 
 ////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ config.STEERING_METHODS      = Object.freeze({ // enum-ish
         SPEED : 0.3,  // higher makes camera rotate faster
     },
 });
-config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
+config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
 
 config.Y_AXIS_MULT = 1;
 config.X_AXIS_MULT = 1;
@@ -107,8 +107,8 @@ config.DRAIN_RADIO_FREQUENCY = 65; // how quickly the radio waves flow down the 
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 5;    // How much food there is, total food = this number cubed
-config.FOOD_VALUE                  = 5;   // amount to increase sphere by when food is consumed
+config.FOOD_DENSITY                = 25;    // How much food there is, total food = this number cubed
+config.FOOD_VALUE                  = 0.6;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
 config.FOOD_CAPTURE_ASSIST         = 1.0;     // this number is added to player's radius for food capturing
