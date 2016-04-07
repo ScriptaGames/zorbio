@@ -99,8 +99,9 @@ config.ABILITY_SPEED_BOOST_MIN_SCALE = 4;   // min scale be fore speed boost can
 config.ABILITY_SPEED_BOOST_SPEED = 10;      // constant speed
 config.ABILITY_SPEED_BOOST_PENALTY = 0.25;  // Percent scale to remove
 
-config.DRAIN_MAX_DISTANCE = 300; // distance at which draining starts
-config.DRAIN_PINCH_STRENGTH = 0.4;
+config.DRAIN_MAX_DISTANCE    = 300; // distance at which draining starts
+config.DRAIN_PINCH_STRENGTH  = 0.4;
+config.DRAIN_RADIO_FREQUENCY = 65; // how quickly the radio waves flow down the drain beam, higher is slower
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //

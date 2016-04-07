@@ -12,7 +12,6 @@ ZOR.DrainView = function ZORDrainView(scene) {
 
     this.scene = scene;
 
-    this.clock = new THREE.Clock();
     this.time = 0.1;
 
     this.meshes = [];
@@ -40,7 +39,7 @@ ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( scene, players_obj
 
     this.clear();
 
-    this.time += this.clock.getDelta();
+    this.time += ZOR.LagScale.get() / config.DRAIN_RADIO_FREQUENCY;
 
     while ( ai-- ) {
         drainer = players_arr[ai];
