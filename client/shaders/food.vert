@@ -16,7 +16,7 @@ varying vec3 vColor;
 
 varying float vRespawning;
 varying float sDist;
-varying float vDist;
+/* varying float vDist; */
 varying float vGrowing;
 
 void main() {
@@ -30,7 +30,7 @@ void main() {
     vRespawning = respawning;
     vUv         = uv;
     vColor      = color;
-    vDist       = length( mvPosition.xyz ); // distance from camera
+    /* vDist       = length( mvPosition.xyz ); // distance from camera */
     sDist       = length( translate - mainSpherePos ); // distance from sphere to particle
     vGrowing    = growing;
 
