@@ -246,14 +246,10 @@ var AppServer = function (wss, app) {
                 actor.position.set( latestPosition.position.x, latestPosition.position.y, latestPosition.position.z);
 
                 // Recent positions
-                actor.recentPositions.push({position: new THREE.Vector3(prev_3_x, prev_3_y, prev_3_z), radius: prev_3_r, time: prev_3_t});
-                actor.recentPositions.push({position: new THREE.Vector3(prev_2_x, prev_2_y, prev_2_z), radius: prev_2_r, time: prev_2_t});
-                actor.recentPositions.push({position: new THREE.Vector3(prev_1_x, prev_1_y, prev_1_z), radius: prev_1_r, time: prev_1_t});
-                actor.recentPositions.push({position: actor.position, radius: actor.scale, time: latestPosition.time});
-
-                while (actor.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {
-                    actor.recentPositions.shift();  // remove the oldest position
-                }
+                actor.pushRecentPosition({position: new THREE.Vector3(prev_3_x, prev_3_y, prev_3_z), radius: prev_3_r, time: prev_3_t});
+                actor.pushRecentPosition({position: new THREE.Vector3(prev_2_x, prev_2_y, prev_2_z), radius: prev_2_r, time: prev_2_t});
+                actor.pushRecentPosition({position: new THREE.Vector3(prev_1_x, prev_1_y, prev_1_z), radius: prev_1_r, time: prev_1_t});
+                actor.pushRecentPosition({position: actor.position, radius: actor.scale, time: latestPosition.time});
 
                 // Pull out the food captures if there are any
                 var foodCapLength = bufView.length - config.BIN_PP_POSITIONS_LENGTH;
