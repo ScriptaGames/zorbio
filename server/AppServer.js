@@ -457,57 +457,79 @@ var AppServer = function (wss, app) {
         }
     };
 
-    self.checkPlayerCaptures = function appCheckPlayerCaptures()  {
-        var players_array = _.values( self.model.players );
+    /**
+     * Checks all players for captures
+     */
+    self.updatePlayerCaptures = function appUpdatePlayerCaptures() {
+        var players_array = _.values(self.model.players);
         var p1;
         var p2;
-        var p1_scale;
-        var p2_scale;
-        var distance;
 
         var j = 0;
         var i = players_array.length;
 
-        while ( i-- ) {
+        while (i--) {
             j = i + 1;
 
             p1 = players_array[i];
 
-            while ( j-- ) {
+            while (j--) {
 
                 if (i === j) continue; // don't compare player to itself
 
                 // find the distance between these two players
                 p2 = players_array[j];
 
-                var p1_rp = p1.sphere.recentPositions;
-                var p2_rp = p2.sphere.recentPositions;
-
-                if (p1_rp.length < 4 || p2_rp.length < 4) continue; // give brand new players time to load positions
-
-                for (var k = p1_rp.length - 4; k < p1_rp.length; k++) {
-                    for (var h = p2_rp.length - 4; h < p2_rp.length; h++) {
-                        var rp1 = p1_rp[k];
-                        var rp2 = p2_rp[h];
-
-                        distance = rp1.position.distanceTo( rp2.position );
-
-                        p1_scale = rp1.radius;
-                        p2_scale = rp2.radius;
-
-                        // if distance is less than radius of p1 and p1 larger than p2, p1 captures p2
-                        // if distance is less than radius of p2 and p2 larger than p1, p2 captures p1
-
-                        if ( distance < p1_scale && p1_scale > p2_scale ) {
-                            self.capturePlayer( p1.id, p2.id );
-                        }
-                        else if ( distance < p2_scale && p2_scale > p1_scale ) {
-                            self.capturePlayer( p2.id, p1.id );
-                        }
-                    }
-                 }
+                // see if a capture happened between these two players
+                var result = self.checkPlayerCapture(p1, p2);
+                if (result && result.targetPlayerId === p1.id) {
+                    // p1 got captured so move to the next player
+                    break;
+                }
             }
         }
+    };
+
+    /**
+     * Compares two players to see if a capture should occur and captues if true
+     * @param p1
+     * @param p2
+     * @returns {*} returns folse if no capture, other wise the ids of attacking and target players
+     */
+    self.checkPlayerCapture = function appCheckPlayerCapture(p1, p2) {
+        var p1_scale;
+        var p2_scale;
+        var distance;
+        var p1_rp = p1.sphere.recentPositions;
+        var p2_rp = p2.sphere.recentPositions;
+
+        if (p1_rp.length < 4 || p2_rp.length < 4) return; // give brand new players time to load positions
+
+        for (var i = p1_rp.length - 4; i < p1_rp.length; i++) {
+            for (var j = p2_rp.length - 4; j < p2_rp.length; j++) {
+                var rp1 = p1_rp[i];
+                var rp2 = p2_rp[j];
+
+                distance = rp1.position.distanceTo(rp2.position);
+
+                p1_scale = rp1.radius;
+                p2_scale = rp2.radius;
+
+                // if distance is less than radius of p1 and p1 larger than p2, p1 captures p2
+                // if distance is less than radius of p2 and p2 larger than p1, p2 captures p1
+
+                if (distance < (p1_scale + config.PLAYER_CAPTURE_EXTRA_TOLERANCE) && p1_scale > p2_scale) {
+                    self.capturePlayer(p1.id, p2.id);
+                    return {attackingPlayerId: p1.id, targetPlayerId: p2.id};
+                }
+                else if (distance < (p2_scale + config.PLAYER_CAPTURE_EXTRA_TOLERANCE) && p2_scale > p1_scale) {
+                    self.capturePlayer(p2.id, p1.id);
+                    return {attackingPlayerId: p2.id, targetPlayerId: p1.id};
+                }
+            }
+        }
+
+        return false;
     };
 
     self.capturePlayer = function appCapturePlayer(attackingPlayerId, targetPlayerId) {
@@ -675,7 +697,7 @@ var AppServer = function (wss, app) {
      */
     self.serverTickFast = function appServerTickFast() {
         self.playerUpdates();
-        self.checkPlayerCaptures();
+        self.updatePlayerCaptures();
         self.sendActorUpdates();
     };
 
