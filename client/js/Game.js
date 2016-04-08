@@ -194,14 +194,14 @@ function createScene() {
 
             playerFogCenter.copy(player.model.sphere.position);
 
-            foodController.update(player.model.sphere.position);
-
             foodController.checkFoodCaptures(player, captureFood);
 
             drainView.update(scene, players);
 
             camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
         }
+
+        foodController.update(player.model.sphere.position);
 
         ZOR.UI.update();
 
