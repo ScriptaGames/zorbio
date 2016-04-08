@@ -146,8 +146,8 @@ function setupSocket(ws) {
         var newPlayer = message.player;
 
         //Add new player if it's not the current player
-        if (newPlayer.id !== player.getPlayerId()) {
-            players[newPlayer.id] = new ZOR.PlayerController(newPlayer, player.model.sphere, scene);
+        if (newPlayer.id !== player.getPlayerId() && !players[newPlayer.id]) {
+            players[newPlayer.id] = new ZOR.PlayerController(newPlayer, newPlayer.sphere, scene);
 
             //Keep model in sync with the server
             zorbioModel.players[newPlayer.id] = newPlayer;
@@ -156,7 +156,7 @@ function setupSocket(ws) {
             zorbioModel.actors[newPlayer.sphere.id].position = new THREE.Vector3(position.x, position.y, position.z);
         }
 
-        console.log('Player ' + newPlayer.name + ' joined!');
+        console.log('Player joined: ', newPlayer.id, newPlayer.name);
     }
 
     function handle_msg_zor_pong() {
