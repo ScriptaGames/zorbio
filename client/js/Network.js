@@ -376,7 +376,7 @@ function sendPlayerUpdate() {
     player.food_capture_queue = [];
 
     // Send player update data
-    ws.send(bufferView.buffer, {binary: true, mask: true});
+    ws.send(bufferView.buffer);
 }
 
 function sendRequestSpeedBoost() {

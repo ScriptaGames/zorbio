@@ -71,12 +71,8 @@ var AppServer = function (wss, app) {
 
         self.wss.broadcast(JSON.stringify("Client joined"));
 
-        ws.on('message', function wsMessage(msg, flags) {
-            if (flags.binary) {
-                // Route binary message
-                handle_msg_player_update(msg);
-            }
-            else {
+        ws.on('message', function wsMessage(msg) {
+            if (typeof msg === "string") {
                 var message = JSON.parse(msg);
 
                 switch (message.op) {
@@ -93,6 +89,10 @@ var AppServer = function (wss, app) {
                         handle_msg_speed_boost_req();
                         break;
                 }
+            }
+            else {
+                // Route binary message
+                handle_msg_player_update(msg);
             }
         });
 
