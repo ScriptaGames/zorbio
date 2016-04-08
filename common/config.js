@@ -95,7 +95,7 @@ config.X_AXIS_MULT = 1;
 ////////////////////////////////////////////////////////////////////////
 
 config.ABILITY_SPEED_BOOST_DURATION = 500;  // milliseconds that speed boost will last
-config.ABILITY_SPEED_BOOST_MIN_SCALE = 4;   // min scale be fore speed boost can be used
+config.ABILITY_SPEED_BOOST_MIN_SCALE = 3;   // min scale be fore speed boost can be used
 config.ABILITY_SPEED_BOOST_SPEED = 10;      // constant speed
 config.ABILITY_SPEED_BOOST_PENALTY = 0.25;  // Percent scale to remove
 
