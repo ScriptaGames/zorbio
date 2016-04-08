@@ -306,11 +306,12 @@ var AppServer = function (wss, app) {
         }
     });
 
-    self.updateActorDrains = function appUpdateActorDrains( model, drainers ) {
+    self.updateActorDrains = function appUpdateActorDrains(drainers) {
         // update drains
 
         var drainer_ids = Object.getOwnPropertyNames(drainers);
         var drainees;
+        var drainer_player;
         var drainer;
         var drainee;
         var drainee_id;
@@ -327,13 +328,16 @@ var AppServer = function (wss, app) {
             while ( j-- ) {
                 drainee_id = drainees[j].id;
 
-                drainer = model.actors[drainer_id];
-                drainee = model.actors[drainee_id];
+                drainer_player = self.model.players[drainer_id];
+                drainer = drainer_player.sphere;
+                drainee = self.model.players[drainee_id].sphere;
 
                 drain_amount = Drain.amount( drainees[j].dist );
 
                 drainer.growExpected( +drain_amount );
                 drainee.growExpected( -drain_amount );
+
+                drainer_player.drainAmount += +drain_amount;  // save drain amount stat
 
                 // if the drain caused the drainer to get bigger than the drainer,
                 // correct so that they're the same size.  drain shouldn't be able
@@ -383,7 +387,7 @@ var AppServer = function (wss, app) {
         var did; // drain id
 
         var drainers = Drain.findAll( self.model.players );
-        self.updateActorDrains( self.model, drainers );
+        self.updateActorDrains( drainers );
 
         // make the payload as small as possible, send only what's needed on the client
         var offset = 0;

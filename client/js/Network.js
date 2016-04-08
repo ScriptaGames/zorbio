@@ -230,6 +230,7 @@ function setupSocket(ws) {
 
         var attackingPlayer = zorbioModel.players[attackingPlayerId];
         attackingPlayer.score = config.PLAYER_GET_SCORE(attackingPlayer.sphere.scale);
+        targetPlayer.drainAmount = config.PLAYER_GET_SCORE(targetPlayer.drainAmount);
 
         ZOR.UI.engine.set('attacker', attackingPlayer);
         ZOR.UI.engine.set('player', targetPlayer);

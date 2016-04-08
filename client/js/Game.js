@@ -417,8 +417,8 @@ function handleServerTick(serverTickData) {
     // Send server message to the UI (either real message, or undefined)
     ZOR.UI.engine.set('server_message', serverTickData.sm);
 
-    // expire pending player captures
-    ZOR.expirePendingPlayerCaptures();
+    // expire locks
+    ZOR.expireLocks();
 }
 
 function handleSuccessfulPlayerCapture(targetPlayer) {

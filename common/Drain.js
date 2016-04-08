@@ -24,7 +24,6 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
     var p1_scale;
     var p2_scale;
     var distance;
-    var drain_ids;
 
     var l = players_array.length;
     var j = 0;
