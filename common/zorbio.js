@@ -363,21 +363,21 @@ ZOR.SpeedBoostAbility.constructor = ZOR.SpeedBoostAbility;
 
 
 /**
- * pendingPlayerCaptures
- * This is in the model because it is code and state that is shared by the client and server
+ * lock
+ * Simple locking mechanisim
  */
-ZOR.pendingPlayerCaptures = {};
-ZOR.expirePendingPlayerCaptures = function ZORModelExpirePendingPlayerCaptures() {
-    var playerIds = Object.getOwnPropertyNames(ZOR.pendingPlayerCaptures);
-    for (var i = 0, l = playerIds.length; i < l; i++) {
-        var id = +playerIds[i];  // make sure id is a number
+ZOR.lock = {};
+ZOR.expireLocks = function ZORExpireLocks() {
+    var lockIds = Object.getOwnPropertyNames(ZOR.lock);
+    for (var i = 0, l = lockIds.length; i < l; i++) {
+        var id = lockIds[i];
 
-        if (ZOR.pendingPlayerCaptures[id] > 0) {
-            console.log("pending player capture expiring in: ", ZOR.pendingPlayerCaptures[id]);
-            ZOR.pendingPlayerCaptures[id] -= config.SERVER_TICK_INTERVAL;
+        if (ZOR.lock[id] > 0) {
+            console.log("Lock expiring in: ", id, ZOR.lock[id]);
+            ZOR.lock[id] -= config.TICK_SLOW_INTERVAL;
         } else {
-            console.log("pending player capture expired for id:", id);
-            delete ZOR.pendingPlayerCaptures[id];
+            console.log("lock expired:", id);
+            delete ZOR.lock[id];
         }
     }
 };

@@ -711,6 +711,7 @@ var AppServer = function (wss, app) {
         self.updateFoodRespawns();
         self.playersChecks();
         self.sendServerTickData();
+        Zorbio.expireLocks();
     };
 
     self.versionCheck = function appVersionCheck() {
