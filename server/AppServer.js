@@ -460,6 +460,7 @@ var AppServer = function (wss, app) {
         var players_array = _.values(self.model.players);
         var p1;
         var p2;
+        var distance;
 
         var j = 0;
         var i = players_array.length;
@@ -476,7 +477,11 @@ var AppServer = function (wss, app) {
                 // find the distance between these two players
                 p2 = players_array[j];
 
-                // see if a capture happened between these two players
+                // See if these players are close enough for capture checking
+                distance = p1.sphere.position.distanceTo(p2.sphere.position);
+                if (distance > p1.getCaptureRange() && distance > p2.getCaptureRange()) continue;  // players to far apart for capture checking
+
+                // Check if player capture should happen between these two players
                 var result = self.checkPlayerCapture(p1, p2);
                 if (result && result.targetPlayerId === p1.id) {
                     // p1 got captured so move to the next player

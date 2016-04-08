@@ -235,6 +235,14 @@ ZOR.Player.prototype.getSpeed = function ZORPlayerGetScore() {
     return config.PLAYER_GET_SPEED(this.sphere.scale);
 };
 
+/**
+ * The range at which you should start checking for captures
+ * @returns {number}
+ */
+ZOR.Player.prototype.getCaptureRange = function ZORPlayerCaptureRange() {
+    return (this.getSpeed() * 3) + (this.sphere.scale * 2) + 10;
+};
+
 ZOR.Player.prototype.update = function ZORPlayerUpdate() {
     // call update on all definied abilities
     var ability_names = Object.getOwnPropertyNames(this.abilities);
