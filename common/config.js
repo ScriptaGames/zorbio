@@ -161,6 +161,7 @@ config.REQUIRED_WEBGL_EXTENSIONS = ['ANGLE_instanced_arrays'];
 if (!NODEJS) {
     config.VOLUME_MUSIC_INITIAL = localStorage.volume_music || 0.45;
     config.VOLUME_SFX_INITIAL   = localStorage.volume_sfx || 1.0;
+    config.MUSIC_ENABLED        = false;
 }
 
 ////////////////////////////////////////////////////////////////////////

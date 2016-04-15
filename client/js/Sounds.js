@@ -2,7 +2,7 @@ var ZOR = ZOR || {};
 
 ZOR.Sounds = (function ZORSounds() {
 
-    return {
+    var sounds = {
 
         sfx: {
             food_capture: {
@@ -29,17 +29,21 @@ ZOR.Sounds = (function ZORSounds() {
                 }),
             },
         },
-        music: {
-            "background": new Howl({
-                urls: ['../music/starfish-oblivion.mp3'],
-                autoplay: false,
-                loop: true,
-                volume: config.VOLUME_MUSIC_INITIAL,
-                buffer: true, // don't wait for entire file to download
-            }),
-        },
+        music: {},
 
     };
+
+    if (config.MUSIC_ENABLED) {
+        sounds.music.background = new Howl({
+            urls: ['../music/starfish-oblivion.mp3'],
+            autoplay: false,
+            loop: true,
+            volume: config.VOLUME_MUSIC_INITIAL,
+            buffer: true, // don't wait for entire file to download
+        });
+    }
+
+    return sounds;
 
 })();
 

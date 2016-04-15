@@ -68,6 +68,7 @@ ZOR.UI = function ZORUI() {
         is_mobile        : isMobile.any,
         flip_x           : JSON.parse(localStorage.flip_x || "false"),
         flip_y           : JSON.parse(localStorage.flip_y || "false"),
+        music_enabled    : config.MUSIC_ENABLED,
         volume           : {
             music : config.VOLUME_MUSIC_INITIAL,
             sfx   : config.VOLUME_SFX_INITIAL,
@@ -239,7 +240,7 @@ ZOR.UI = function ZORUI() {
         });
 
         on( ACTIONS.SHOW_PREVIOUS, function ZORShowPrevious() {
-            state( data.prev_state );
+            state( uidata.prev_state );
         });
 
         on( ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {

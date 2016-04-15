@@ -70,7 +70,9 @@ function startGame(type) {
         ZOR.Game.fullscreen();
     }
 
-    ZOR.Sounds.music.background.play();
+    if (config.MUSIC_ENABLED) {
+        ZOR.Sounds.music.background.play();
+    }
 
     playerType = type;
 
