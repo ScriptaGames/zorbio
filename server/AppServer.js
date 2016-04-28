@@ -47,29 +47,31 @@ var AppServer = function (wss, app) {
 
         console.log('Client connection headers:', JSON.stringify(headers));
 
+        ws.send(JSON.stringify({op: 'init_game', model: self.model}));
+
         // parse query string
-        var queryString = URL.parse(ws.upgradeReq.url, true).query;
+        //var queryString = URL.parse(ws.upgradeReq.url, true).query;
 
         // Handle new connection
-        var player_id = Zorbio.IdGenerator.get_next_id();
-        var type  = queryString.type;
-        var name  = queryString.name;
-        var color = queryString.color;
-        var key   = queryString.key;
+        //var player_id = Zorbio.IdGenerator.get_next_id();
+        //var type  = queryString.type;
+        //var name  = queryString.name;
+        //var color = queryString.color;
+        //var key   = queryString.key;
 
         // Sanitize player name
-        if (UTIL.isBlank(name)) {
-            name = "Player_" + player_id;
-        }
-        else if (name.length > config.MAX_PLAYER_NAME_LENGTH) {
-            name = name.substr(0, config.MAX_PLAYER_NAME_LENGTH);
-        }
+        //if (UTIL.isBlank(name)) {
+        //    name = "Player_" + player_id;
+        //}
+        //else if (name.length > config.MAX_PLAYER_NAME_LENGTH) {
+        //    name = name.substr(0, config.MAX_PLAYER_NAME_LENGTH);
+        //}
 
         var currentPlayer;
-
-        console.log("player_id, type, name, color, key", player_id, type, name, color, key);
-
-        self.wss.broadcast(JSON.stringify("Client joined"));
+        //
+        //console.log("player_id, type, name, color, key", player_id, type, name, color, key);
+        //
+        //self.wss.broadcast(JSON.stringify("Client joined"));
 
         ws.on('message', function wsMessage(msg) {
             if (typeof msg === "string") {
