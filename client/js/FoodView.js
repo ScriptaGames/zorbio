@@ -5,7 +5,7 @@
 var FoodView = function ZORFoodView() {
 
     function createFoodGeometry() {
-        var geom = new THREE.BoxGeometry(10, 10, 10);
+        var geom = new THREE.BoxGeometry(2, 2, 2);
         return geom;
     }
 
@@ -13,11 +13,11 @@ var FoodView = function ZORFoodView() {
 
         var self = this;
 
-        this.geometry = createFoodGeometry();
+        var geometry = createFoodGeometry();
 
-        this.position   = new Float32Array( foodCount * this.geometry.faces.length * 3 * 3 );
-        this.colors     = new Float32Array( foodCount * this.geometry.faces.length * 3 * 3 );
-        this.normals    = new Float32Array( foodCount * this.geometry.faces.length * 3 * 3 );
+        this.position   = new Float32Array( foodCount * geometry.faces.length * 3 * 3 );
+        this.colors     = new Float32Array( foodCount * geometry.faces.length * 3 * 3 );
+        this.normals    = new Float32Array( foodCount * geometry.faces.length * 3 * 3 );
         this.respawning = new Float32Array( foodCount * 3 );
 
         console.log(`position array length ${this.position.length}`);
@@ -37,13 +37,15 @@ var FoodView = function ZORFoodView() {
         var offset = 0;
         for (var i = 0, l = foodCount; i < l; i++) {
 
+            geometry = createFoodGeometry();
+
             X = food[ offset     ];
             Y = food[ offset + 1 ];
             Z = food[ offset + 2 ];
 
-            this.geometry.translate( X / 100, Y / 100, Z / 100 );
+            geometry.translate( X, Y, Z );
 
-            console.log(`translated to ${X}, ${Y}, ${Z}`);
+            // console.log(`translated to ${X}, ${Y}, ${Z}`);
 
             // Add this food object to the Octree
             var foodObj = {x: X, y: Y, z: Z, radius: 1, fi: i};
@@ -66,18 +68,18 @@ var FoodView = function ZORFoodView() {
             // colors[ offset + 1 ] = G;
             // colors[ offset + 2 ] = B;
 
-            this.geometry.faces.forEach( function ( face, index ) {
-                var fi = i * self.geometry.faces.length;
+            geometry.faces.forEach( function ( face, index ) {
+                var fi = i * geometry.faces.length;
                 // console.log(`updating face ${fi} of food ${i}`);
-                self.position[ fi * 9 + 0 ] = self.geometry.vertices[ face.a ].x;
-                self.position[ fi * 9 + 1 ] = self.geometry.vertices[ face.a ].y;
-                self.position[ fi * 9 + 2 ] = self.geometry.vertices[ face.a ].z;
-                self.position[ fi * 9 + 3 ] = self.geometry.vertices[ face.b ].x;
-                self.position[ fi * 9 + 4 ] = self.geometry.vertices[ face.b ].y;
-                self.position[ fi * 9 + 5 ] = self.geometry.vertices[ face.b ].z;
-                self.position[ fi * 9 + 6 ] = self.geometry.vertices[ face.c ].x;
-                self.position[ fi * 9 + 7 ] = self.geometry.vertices[ face.c ].y;
-                self.position[ fi * 9 + 8 ] = self.geometry.vertices[ face.c ].z;
+                self.position[ fi * 9 + 0 ] = geometry.vertices[ face.a ].x;
+                self.position[ fi * 9 + 1 ] = geometry.vertices[ face.a ].y;
+                self.position[ fi * 9 + 2 ] = geometry.vertices[ face.a ].z;
+                self.position[ fi * 9 + 3 ] = geometry.vertices[ face.b ].x;
+                self.position[ fi * 9 + 4 ] = geometry.vertices[ face.b ].y;
+                self.position[ fi * 9 + 5 ] = geometry.vertices[ face.b ].z;
+                self.position[ fi * 9 + 6 ] = geometry.vertices[ face.c ].x;
+                self.position[ fi * 9 + 7 ] = geometry.vertices[ face.c ].y;
+                self.position[ fi * 9 + 8 ] = geometry.vertices[ face.c ].z;
 
                 self.normals[ fi * 9 + 0 ] = face.normal.x;
                 self.normals[ fi * 9 + 1 ] = face.normal.y;
@@ -127,7 +129,7 @@ var FoodView = function ZORFoodView() {
         //     // transparent: true,
         // } );
 
-        this.material = new THREE.MeshNormalMaterial({
+        this.material = new THREE.MeshBasicMaterial({
             side: THREE.DoubleSide,
         });
 
