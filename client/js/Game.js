@@ -82,16 +82,16 @@ function startGame(type) {
     localStorage.player_name = ZOR.UI.engine.get('player_name');
     localStorage.alpha_key = ZOR.UI.engine.get('alpha_key');
 
-    // Connect to the server
+    // Enter the game
     var colorCode = UTIL.getRandomIntInclusive(0, ZOR.PlayerView.COLORS.length - 1);
     var colorHex = ZOR.PlayerView.COLORS[colorCode];
     document.querySelector("meta[name=theme-color]").content = colorHex;
     console.log('Player color', colorHex);
-    connectToServer(
-        playerType,
-        ZOR.UI.engine.get('player_name'),
-        colorCode
-    );
+    //connectToServer(
+    //    playerType,
+    //    ZOR.UI.engine.get('player_name'),
+    //    colorCode
+    //);
 }
 
 function respawnPlayer() {
@@ -125,12 +125,19 @@ function createScene() {
         ZOR.Game.renderer.setPixelRatio( window.devicePixelRatio );
         ZOR.Game.renderer.setSize( window.innerWidth, window.innerHeight );
 
-        initCameraAndPlayer();
+        //initCameraAndPlayer();
+        camera = new THREE.PerspectiveCamera(
+            config.INITIAL_FOV,
+            window.innerWidth / window.innerHeight,
+            1,
+            config.WORLD_HYPOTENUSE + 100 // world hypot plus a little extra for camera distance
+        );
+        camera.position.set(0, 0, 0);
 
-        playerFogCenter.copy(player.view.mainSphere.position);
+        //playerFogCenter.copy(player.view.mainSphere.position);
 
         // food
-        foodController = new FoodController(zorbioModel, player.view.mainSphere.position, scene);
+        foodController = new FoodController(zorbioModel, camera.position, scene);
         foodController.drawFood(scene);
 
         // Hide currently respawning food
@@ -166,7 +173,7 @@ function createScene() {
 
         // drain view
 
-        drainView = new ZOR.DrainView(scene);
+        //drainView = new ZOR.DrainView(scene);
 
         window.addEventListener( 'resize', onWindowResize, false );
     }
@@ -180,6 +187,8 @@ function createScene() {
 
     function animate() {
         requestAnimationFrame(animate);
+
+        camera.rotation.y -= 0.001 * ZOR.LagScale.get();
 
         updateActors();
 
@@ -203,7 +212,7 @@ function createScene() {
             camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
         }
 
-        foodController.update(player.model.sphere.position);
+        foodController.update(camera.position);
 
         ZOR.UI.update();
 
@@ -311,6 +320,10 @@ function captureFood(fi) {
 
 window.addEventListener("keydown", handleKeydown);
 window.addEventListener("keyup", handleKeyup);
+
+window.onload = function homeOnload() {
+    connectToServer();
+};
 
 var KeysDown = {};
 var KeyCodes = {
