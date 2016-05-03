@@ -198,8 +198,6 @@ function createScene() {
 
             foodController.checkFoodCaptures(player, captureFood);
 
-            //drainView.update(scene, players);
-
             camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
         }
 
@@ -220,7 +218,7 @@ function createScene() {
 function initCameraAndPlayer() {
     // sphere
     // Create the player view and adds the player sphere to the scene
-    player.initView(player.model.sphere, scene);
+    player.initView(scene);
 
     // orbit camera
     camera = new THREE.PerspectiveCamera(
@@ -271,7 +269,7 @@ function drawPlayers() {
         if (playerModel.type === ZOR.PlayerTypes.PLAYER) {
             // Only draw other players
             if (id !== player.getPlayerId()) {
-                players[id] = new ZOR.PlayerController(playerModel, player.model.sphere, scene);
+                players[id] = new ZOR.PlayerController(playerModel, scene);
             }
         }
     }
@@ -289,18 +287,16 @@ function updateActors() {
             if (id !== player.getSphereId()) {
                 var otherPlayer = players[actor.playerId];
                 if (otherPlayer.view) {
-                    // update players sphere position
+                    // update actor
                     otherPlayer.updatePosition(actor.position, scene, camera, ZOR.Game.renderer);
                     otherPlayer.updateScale(actor.scale);
+                    otherPlayer.updateDrain(actor.drain_target_id);
                 }
-
-                //TODO: update player drain target id here like: otherPlayer.updateDrain(actor.drain_target_id)
             }
             else {
                 // update main player
                 player.updateScale(actor.scale);
-
-                //TODO: player.updateDrain(actor.drain_target_id)
+                player.updateDrain(actor.drain_target_id)
             }
         }
     }

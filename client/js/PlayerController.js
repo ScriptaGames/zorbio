@@ -8,7 +8,7 @@ var ZOR = ZOR || {};
  * @constructor
  *
  */
-ZOR.PlayerController = function ZORPlayerController(model, main_sphere, scene) {
+ZOR.PlayerController = function ZORPlayerController(model, scene) {
     this.model = new ZOR.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
         model.sphere.scale, model.sphere.velocity);
     this.isDead = false;
@@ -24,7 +24,7 @@ ZOR.PlayerController = function ZORPlayerController(model, main_sphere, scene) {
     this.food_capture_queue = [];
 
     if (scene) {
-        this.initView(main_sphere, scene);
+        this.initView(scene);
     }
 };
 
@@ -53,8 +53,8 @@ ZOR.PlayerController.prototype.getSpeed = function ZORPlayerControllerGetSpeed()
     return this.model.getSpeed();
 };
 
-ZOR.PlayerController.prototype.initView = function ZORPlayerControllerInitView(main_sphere, scene) {
-    this.view = new ZOR.PlayerView(this.model.sphere, main_sphere, scene);
+ZOR.PlayerController.prototype.initView = function ZORPlayerControllerInitView(scene) {
+    this.view = new ZOR.PlayerView(this.model.sphere, scene);
 };
 
 ZOR.PlayerController.prototype.removeView = function ZORPlayerControllerRemoveView(scene) {
@@ -85,9 +85,14 @@ ZOR.PlayerController.prototype.refreshSphereModel = function ZORPlayerController
     this.model.sphere.position.copy(this.view.mainSphere.position);
 };
 
-ZOR.PlayerController.prototype.updateScale = function ZORPlayerControllerUpdatePosition(scale) {
+ZOR.PlayerController.prototype.updateScale = function ZORPlayerControllerUpdateScale(scale) {
     this.setScale(scale);
     this.view.update(scale);
+};
+
+ZOR.PlayerController.prototype.updateDrain = function ZORPlayerControllerUpdateDrain(drain_target_id) {
+    this.model.sphere.drain_target_id = drain_target_id;
+    this.view.updateDrain(drain_target_id);
 };
 
 ZOR.PlayerController.prototype.updatePosition = function ZORPlayerControllerUpdatePosition(position, scene, camera, renderer) {

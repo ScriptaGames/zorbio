@@ -8,7 +8,7 @@ var ZOR = ZOR || {};
  * @param scene
  */
 
-ZOR.PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
+ZOR.PlayerView = function ZORPlayerView(actor, scene) {
     this.playerColor = ZOR.PlayerView.COLORS[actor.color];
 
     this.geometry = new THREE.SphereGeometry(
@@ -17,7 +17,7 @@ ZOR.PlayerView = function ZORPlayerView(actor, main_sphere, scene) {
         config.PLAYER_SPHERE_POLYCOUNT
     );
 
-    playerFogCenter.copy(main_sphere.position);
+    playerFogCenter.copy(actor.position);
     this.material = new THREE.ShaderMaterial( {
         uniforms:
         {
@@ -61,6 +61,10 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
+};
+
+ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {
+
 };
 
 ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position, scene, camera, renderer) {

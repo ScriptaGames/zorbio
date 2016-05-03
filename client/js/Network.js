@@ -106,7 +106,7 @@ function setupSocket(ws) {
         var playerModel = msg.currentPlayer;
         var isFirstSpawn = msg.isFirstSpawn;
 
-        player = new ZOR.PlayerController(playerModel, playerModel.sphere);
+        player = new ZOR.PlayerController(playerModel);
         ZOR.UI.engine.set('player', player.model);
 
         ws.send(JSON.stringify({op: 'player_ready', isFirstSpawn: isFirstSpawn}));
@@ -147,7 +147,7 @@ function setupSocket(ws) {
 
         //Add new player if it's not the current player
         if (newPlayer.id !== player.getPlayerId() && !players[newPlayer.id]) {
-            players[newPlayer.id] = new ZOR.PlayerController(newPlayer, newPlayer.sphere, scene);
+            players[newPlayer.id] = new ZOR.PlayerController(newPlayer, scene);
 
             //Keep model in sync with the server
             zorbioModel.players[newPlayer.id] = newPlayer;
