@@ -99,26 +99,27 @@ ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(dra
     var geometry = new THREE.CylinderGeometry( drainer_scale/2, drainee_scale/2, dist, 16, 12, true );
     geometry.rotateX(Math.PI/2); // rotate geo so its ends point 'up'
 
-    var material = new THREE.ShaderMaterial({
-        uniforms: {
-            time: { type: "f", value: this.time },
-            power: { type: "f", value: opacity },
-            erColor: { type: "c", value: drainer.view.material.uniforms.color.value },
-            eeColor: { type: "c", value: drainee.view.material.uniforms.color.value },
-            len: { type: "f", value: dist },
-        },
-        vertexShader   : document.getElementById( 'drain-vertex-shader' ).textContent,
-        fragmentShader : document.getElementById( 'drain-frag-shader' ).textContent,
-        side           : THREE.DoubleSide,
-        transparent    : true,
-        opacity        : 0.8,
-        depthFunc      : THREE.LessDepth,
-        depthTest      : false,
-        depthWrite     : true,
-        blending       : THREE.AdditiveBlending,
-        alphaTest      : 1.0,
-        morphTargets   : true,
-    });
+    var material = new THREE.MeshNormalMaterial({color: 0x7777ff});
+    //var material = new THREE.ShaderMaterial({
+    //    uniforms: {
+    //        time: { type: "f", value: this.time },
+    //        power: { type: "f", value: opacity },
+    //        erColor: { type: "c", value: drainer.view.material.uniforms.color.value },
+    //        eeColor: { type: "c", value: drainee.view.material.uniforms.color.value },
+    //        len: { type: "f", value: dist },
+    //    },
+    //    vertexShader   : document.getElementById( 'drain-vertex-shader' ).textContent,
+    //    fragmentShader : document.getElementById( 'drain-frag-shader' ).textContent,
+    //    side           : THREE.DoubleSide,
+    //    transparent    : true,
+    //    opacity        : 0.8,
+    //    depthFunc      : THREE.LessDepth,
+    //    depthTest      : false,
+    //    depthWrite     : true,
+    //    blending       : THREE.AdditiveBlending,
+    //    alphaTest      : 1.0,
+    //    morphTargets   : true,
+    //});
 
     var pinchVertices = [];
     for ( var i = 0; i < geometry.vertices.length; i ++ ) {
