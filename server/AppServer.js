@@ -262,13 +262,6 @@ var AppServer = function (wss, app) {
                         self.foodCapture(currentPlayer, fi, actor, origRadius);
                     }
                 }
-
-                // validate the new scale
-                if (Validators.playerSphereScale(actor) === Validators.ErrorCodes.PLAYER_SCALE_TO_BIG) {
-                    // Adjust scale to what the server expects it to be, and mark it for update
-                    actor.scale = actor.expectedScale;
-                    actor.serverAdjust = 1;
-                }
             } else {
                 switch (err) {
                     case Validators.ErrorCodes.SPEED_TO_FAST:
@@ -330,6 +323,7 @@ var AppServer = function (wss, app) {
 
                 drainer_player = self.model.players[drainer_id];
                 drainer = drainer_player.sphere;
+                drainer.drain_target_id = drainee_id;
                 drainee = self.model.players[drainee_id].sphere;
 
                 drain_amount = Drain.amount( drainees[j].dist );
@@ -364,66 +358,39 @@ var AppServer = function (wss, app) {
         var actorIds = Object.getOwnPropertyNames(self.model.actors);
         if (actorIds.length === 0) return;  // nothing to do if there's no actors
 
-        const NUM_PLAYERS = actorIds.length;
-
+        const NUM_ACTORS = actorIds.length;
         const ACTOR_PARTS = 6;
-        const ACTORS_ARRAY_LENGTH = ACTOR_PARTS * 32;
 
-        // for each player, save the id's of each player they are draining.  the
-        // space for those id's is one byte per other player.  for example, if
-        // MAX_PLAYERS is 50, drain array size will be 49 bytes.
-        const DRAIN_ARRAY_LENGTH = config.MAX_PLAYERS - 1;
+        var bufferView = new Float32Array(ACTOR_PARTS * NUM_ACTORS);
 
-        const PLAYER_ARRAY_LENGTH = UTIL.fourPad( ACTORS_ARRAY_LENGTH + DRAIN_ARRAY_LENGTH );
-
-        var buffer = new ArrayBuffer(PLAYER_ARRAY_LENGTH * NUM_PLAYERS);
-
-        var actorsArray;
-        var drainArray;
         var id;
         var actor;
         var position;
-        var di;  // drain index
-        var did; // drain id
 
         var drainers = Drain.findAll( self.model.players );
         self.updateActorDrains( drainers );
 
-        // make the payload as small as possible, send only what's needed on the client
+        // Iterate over all actors. Make the payload as small as possible, send only what's needed on the client
         var offset = 0;
-        var i = actorIds.length;
-        while( i-- ) {
+        for (var i = 0, l = NUM_ACTORS; i < l; ++i) {
             id = +actorIds[i];  // make sure id is a number
             actor = self.model.actors[id];
             position = actor.position;
 
-            actorsArray = new Float32Array(buffer, offset, ACTOR_PARTS);
-            drainArray  = new Uint8Array(buffer, offset + ACTORS_ARRAY_LENGTH, DRAIN_ARRAY_LENGTH);
-
             // update actor data
 
-            actorsArray[0] = id;
-            actorsArray[1] = position.x;
-            actorsArray[2] = position.y;
-            actorsArray[3] = position.z;
-            actorsArray[4] = actor.scale;
-            actorsArray[5] = actor.serverAdjust;
+            bufferView[ offset ] = id;
+            bufferView[ offset + 1 ] = position.x;
+            bufferView[ offset + 2 ] = position.y;
+            bufferView[ offset + 3 ] = position.z;
+            bufferView[ offset + 4 ] = actor.scale;
+            bufferView[ offset + 5 ] = actor.drain_target_id;
 
-            actor.serverAdjust = 0;
-
-            // update active drains
-
-            di = drainArray.length;
-            while ( di-- ) {
-                did = drainers[id][di];
-                drainArray[di] = (did && did.id) || 0;
-            }
-
-            offset += PLAYER_ARRAY_LENGTH;
+            offset += ACTOR_PARTS;
         }
 
         // Send actors updates to all clients
-        self.wss.broadcast(buffer, {binary: true, mask: true});
+        self.wss.broadcast(bufferView.buffer, {binary: true, mask: true});
     };
 
     self.foodCapture = function appFoodCapture (player, fi, actor, origRadius) {

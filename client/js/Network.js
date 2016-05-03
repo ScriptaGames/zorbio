@@ -174,35 +174,23 @@ function setupSocket(ws) {
         actorUpdateGap = nowTime - player.model.au_receive_metric.last_time;
         player.model.au_receive_metric.last_time = nowTime;
 
-        var actorArray;
-        var drainArray;
-
-        var actor_parts = 6;
-        var drain_bytes = config.MAX_PLAYERS - 1;
-        var actor_bytes = 32 * actor_parts;
-        var player_bytes = UTIL.fourPad( actor_bytes + drain_bytes ); // bytes per player
+        var actorsArray = new Float32Array(arrayBuffer);
 
         // sync the actors positions from the server model to the client model
-        var i = arrayBuffer.byteLength / player_bytes; // number of player frames in this update;
-        while ( i-- ) {
-
-            actorArray = new Float32Array(arrayBuffer, i * player_bytes, actor_parts);
-            drainArray = new Uint8Array(arrayBuffer, i * player_bytes + actor_bytes, drain_bytes);
-
-            var id = +actorArray[ 0 ];
+        for (var i = 0, l = actorsArray.length; i < l; i += 6) {
+            var id = +actorsArray[ i ];
             var actor = zorbioModel.actors[id];
 
             if (actor) {
-                var x = actorArray[ 1 ];
-                var y = actorArray[ 2 ];
-                var z = actorArray[ 3 ];
-                var s = actorArray[ 4 ];
-                var serverAdjust = actorArray[ 5 ];
+                var x = actorsArray[ i + 1 ];
+                var y = actorsArray[ i + 2 ];
+                var z = actorsArray[ i + 3 ];
+                var s = actorsArray[ i + 4 ];
+                var drain_target_id = actorsArray[ i + 5 ];
 
-                actor.position.set(x, y, z);
+                actor.position.copy({x: x, y: y, z: z});
                 actor.scale = s;
-                actor.serverAdjust = serverAdjust;
-                actor.drains = drainArray;
+                actor.drain_target_id = drain_target_id;
             }
         }
     }

@@ -124,13 +124,14 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
         this.expectedScale = config.INITIAL_PLAYER_RADIUS;
     }
 
-    this.serverAdjust = 0;
-
     if (velocity) {
         this.velocity = velocity;
     }
 
     this.color = color;
+
+    // Draining target actor ID
+    this.drain_target_id = 0;
 
     // maintain a reference to the player who owns this sphere
     this.playerId = playerId;

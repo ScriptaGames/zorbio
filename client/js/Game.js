@@ -198,7 +198,7 @@ function createScene() {
 
             foodController.checkFoodCaptures(player, captureFood);
 
-            drainView.update(scene, players);
+            //drainView.update(scene, players);
 
             camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
         }
@@ -293,12 +293,14 @@ function updateActors() {
                     otherPlayer.updatePosition(actor.position, scene, camera, ZOR.Game.renderer);
                     otherPlayer.updateScale(actor.scale);
                 }
-                otherPlayer.drains = actor.drains;
+
+                //TODO: update player drain target id here like: otherPlayer.updateDrain(actor.drain_target_id)
             }
             else {
                 // update main player
                 player.updateScale(actor.scale);
-                player.drains = actor.drains;
+
+                //TODO: player.updateDrain(actor.drain_target_id)
             }
         }
     }
