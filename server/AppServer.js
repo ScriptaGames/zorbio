@@ -302,38 +302,41 @@ var AppServer = function (wss, app) {
     self.updateActorDrains = function appUpdateActorDrains(drainers) {
         // update drains
 
-        var drainer_ids = Object.getOwnPropertyNames(drainers);
-        var drainees;
-        var drainer_player;
+        var player_ids = Object.getOwnPropertyNames(self.model.players);
         var drainer;
         var drainee;
+        var drain_target;
         var drainee_id;
-        var drainer_id;
+        var player_id;
+        var player;
         var drain_amount;
 
-        var i = drainer_ids.length;
-        var j;
+        var i = player_ids.length;
 
+        // iterate over players and set their drain targets
         while ( i-- ) {
-            drainer_id = drainer_ids[i];
-            drainees = drainers[drainer_id];
-            j = drainees.length;
-            while ( j-- ) {
-                drainee_id = drainees[j].id;
+            player_id = player_ids[i];
+            player = self.model.players[player_id];
+            drainer = player.sphere;
+            drainer.drain_target_id = 0;  // reset
 
-                drainer_player = self.model.players[drainer_id];
-                drainer = drainer_player.sphere;
+            drain_target = drainers[player_id][0];
+
+            if (drain_target && drain_target.id > 0) {
+
+                drainee_id = drain_target.id;
+
                 drainer.drain_target_id = drainee_id;
                 drainee = self.model.players[drainee_id].sphere;
 
-                drain_amount = Drain.amount( drainees[j].dist );
+                drain_amount = Drain.amount( drain_target.dist );
 
                 drainer.growExpected( +drain_amount );
                 drainee.growExpected( -drain_amount );
 
-                drainer_player.drainAmount += +drain_amount;  // save drain amount stat
+                player.drainAmount += +drain_amount;  // save drain amount stat
 
-                // if the drain caused the drainer to get bigger than the drainer,
+                // if the drain caused the drainer to get bigger than the drainee,
                 // correct so that they're the same size.  drain shouldn't be able
                 // to make a player larger than another because it leads to
                 // infinite back and forth draining.
