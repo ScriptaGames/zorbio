@@ -64,7 +64,7 @@ ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
 };
 
 ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {
-
+    //TODO: update the drain view here
 };
 
 ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position, scene, camera, renderer) {

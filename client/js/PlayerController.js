@@ -125,6 +125,9 @@ ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene
     this.applyVelocity(lag_scale, camera_controls);
     this.view.adjustCamera(this.radius());
 
+    // Update drain
+    this.view.updateDrain(this.model.sphere.drain_target_id);
+
     // check if we need to animate anything
     if (this._animated_grow_frames > 0) {
         this.view.grow(this._animated_grow_amount);
