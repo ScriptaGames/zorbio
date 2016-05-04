@@ -71,7 +71,7 @@ ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_t
 
 };
 
-ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position, scene, camera, renderer) {
+ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position) {
     this.mainSphere.position.lerp(position, config.PLAYER_MOVE_LERP_WEIGHT);
 };
 

@@ -95,9 +95,9 @@ ZOR.PlayerController.prototype.updateDrain = function ZORPlayerControllerUpdateD
     this.view.updateDrain(drain_target_id);
 };
 
-ZOR.PlayerController.prototype.updatePosition = function ZORPlayerControllerUpdatePosition(position, scene, camera, renderer) {
+ZOR.PlayerController.prototype.updatePosition = function ZORPlayerControllerUpdatePosition(position) {
     this.model.sphere.position.copy(position);
-    this.view.updatePosition(position, scene, camera, renderer);
+    this.view.updatePosition(position);
 };
 
 /**

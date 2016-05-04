@@ -288,7 +288,7 @@ function updateActors() {
                 var otherPlayer = players[actor.playerId];
                 if (otherPlayer.view) {
                     // update actor
-                    otherPlayer.updatePosition(actor.position, scene, camera, ZOR.Game.renderer);
+                    otherPlayer.updatePosition(actor.position);
                     otherPlayer.updateScale(actor.scale);
                     otherPlayer.updateDrain(actor.drain_target_id);
                 }
