@@ -296,7 +296,7 @@ function updateActors() {
             else {
                 // update main player
                 player.updateScale(actor.scale);
-                player.updateDrain(actor.drain_target_id)
+                player.updateDrain(actor.drain_target_id);
             }
         }
     }

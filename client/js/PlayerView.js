@@ -48,6 +48,8 @@ ZOR.PlayerView = function ZORPlayerView(actor, scene) {
     this.mainSphere = new THREE.Mesh( this.geometry, this.material );
     this.mainSphere.position.copy(actor.position);
 
+    //this.drainView = new DrainView();
+
     this.setScale(actor.scale);
 
     scene.add( this.mainSphere );
@@ -65,6 +67,8 @@ ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
 
 ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {
     //TODO: update the drain view here
+    //var drainee_player = ZOR.Game.players[drain_target_id];
+
 };
 
 ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position, scene, camera, renderer) {
