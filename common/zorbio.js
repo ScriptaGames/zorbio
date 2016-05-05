@@ -32,7 +32,7 @@ ZOR.Model = function ZORModel(worldSize, foodDensity) {
  *  Initializes food for a new ZOR.Model
  */
 ZOR.Model.prototype.initFood = function ZORInitFood() {
-    this.foodCount = Math.pow(this.foodDensity - 1, 3);
+    this.foodCount = Math.pow(this.foodDensity, 3);
 
     /**
      * Tracks which food particles are currently respawning, on the server only!

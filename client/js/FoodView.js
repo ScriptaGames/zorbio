@@ -11,8 +11,6 @@ var FoodView = function ZORFoodView() {
 
     this.drawFood = function ZORFoodViewDrawFood(scene, food, foodCount, fogCenterPosition, octree) {
 
-        var self = this;
-
         var geometry = createFoodGeometry();
 
         this.position   = new Float32Array( foodCount * geometry.faces.length * 3 * 3 );
@@ -21,21 +19,24 @@ var FoodView = function ZORFoodView() {
         this.respawning = new Float32Array( foodCount * 3 );
 
         console.log(`position array length ${this.position.length}`);
+        console.log(`faces per geo: ${geometry.faces.length}`);
+        console.log(`foodCount ${foodCount}`);
 
         this.buffer_geometry = new THREE.BufferGeometry();
 
         var foodCrayon = UTIL.getFoodCrayon( config.FOOD_COLORING_TYPE );
 
-        var position = this.position;
-        var colors = this.colors;
+        var position   = this.position;
+        var colors     = this.colors;
         var respawning = this.respawning;
+        var normals    = this.normals;
 
         // copy food position and food color values from the food array
         // into the typed arrays for the particle system
 
         var X, Y, Z, R, G, B;
         var offset = 0;
-        for (var i = 0, l = foodCount; i < l; i++) {
+        for (var i = 0; i < foodCount; ++i) {
 
             geometry = createFoodGeometry();
 
@@ -44,8 +45,6 @@ var FoodView = function ZORFoodView() {
             Z = food[ offset + 2 ];
 
             geometry.translate( X, Y, Z );
-
-            // console.log(`translated to ${X}, ${Y}, ${Z}`);
 
             // Add this food object to the Octree
             var foodObj = {x: X, y: Y, z: Z, radius: 1, fi: i};
@@ -56,59 +55,51 @@ var FoodView = function ZORFoodView() {
             G = color.g;
             B = color.b;
 
-            respawning[ i ] = 0;
+            // console.log(`cube ${i}`);
 
-            //
+            for (var f = 0; f < position.length; ++f) {
+                var face = geometry.faces[];
 
-            // position[ offset     ] = X;
-            // position[ offset + 1 ] = Y;
-            // position[ offset + 2 ] = Z;
+                colors[f+0] = R; colors[f+1] = G; colors[f+2] = B;
+                colors[f+3] = R; colors[f+4] = G; colors[f+5] = B;
+                colors[f+6] = R; colors[f+7] = G; colors[f+8] = B;
+            }
 
-            // colors[ offset     ] = R;
-            // colors[ offset + 1 ] = G;
-            // colors[ offset + 2 ] = B;
+            // for (var f = 0; f < geometry.faces.length; ++f) {
+            //     var face = geometry.faces[f];
+            //     var fi = i * geometry.faces.length + f;
 
-            geometry.faces.forEach( function ( face, index ) {
-                var fi = i * geometry.faces.length;
-                // console.log(`updating face ${fi} of food ${i}`);
-                self.position[ fi * 9 + 0 ] = geometry.vertices[ face.a ].x;
-                self.position[ fi * 9 + 1 ] = geometry.vertices[ face.a ].y;
-                self.position[ fi * 9 + 2 ] = geometry.vertices[ face.a ].z;
-                self.position[ fi * 9 + 3 ] = geometry.vertices[ face.b ].x;
-                self.position[ fi * 9 + 4 ] = geometry.vertices[ face.b ].y;
-                self.position[ fi * 9 + 5 ] = geometry.vertices[ face.b ].z;
-                self.position[ fi * 9 + 6 ] = geometry.vertices[ face.c ].x;
-                self.position[ fi * 9 + 7 ] = geometry.vertices[ face.c ].y;
-                self.position[ fi * 9 + 8 ] = geometry.vertices[ face.c ].z;
+            //     console.log(fi);
 
-                self.normals[ fi * 9 + 0 ] = face.normal.x;
-                self.normals[ fi * 9 + 1 ] = face.normal.y;
-                self.normals[ fi * 9 + 2 ] = face.normal.z;
-                self.normals[ fi * 9 + 3 ] = face.normal.x;
-                self.normals[ fi * 9 + 4 ] = face.normal.y;
-                self.normals[ fi * 9 + 5 ] = face.normal.z;
-                self.normals[ fi * 9 + 6 ] = face.normal.x;
-                self.normals[ fi * 9 + 7 ] = face.normal.y;
-                self.normals[ fi * 9 + 8 ] = face.normal.z;
+            //     // vertex 1
+            //     position[ fi + 0 ] = geometry.vertices[ face.a ].x;
+            //     position[ fi + 1 ] = geometry.vertices[ face.a ].y;
+            //     position[ fi + 2 ] = geometry.vertices[ face.a ].z;
+            //     // vertex 2
+            //     position[ fi + 3 ] = geometry.vertices[ face.b ].x;
+            //     position[ fi + 4 ] = geometry.vertices[ face.b ].y;
+            //     position[ fi + 5 ] = geometry.vertices[ face.b ].z;
+            //     // vertex 3
+            //     position[ fi + 6 ] = geometry.vertices[ face.c ].x;
+            //     position[ fi + 7 ] = geometry.vertices[ face.c ].y;
+            //     position[ fi + 8 ] = geometry.vertices[ face.c ].z;
 
-                self.colors[ fi * 9 + 0 ] = R;
-                self.colors[ fi * 9 + 1 ] = G;
-                self.colors[ fi * 9 + 2 ] = B;
-                self.colors[ fi * 9 + 3 ] = R;
-                self.colors[ fi * 9 + 4 ] = G;
-                self.colors[ fi * 9 + 5 ] = B;
-                self.colors[ fi * 9 + 6 ] = R;
-                self.colors[ fi * 9 + 7 ] = G;
-                self.colors[ fi * 9 + 8 ] = B;
-            });
+            //     normals[ fi + 0 ] = face.normal.x; normals[ fi + 1 ] = face.normal.y; normals[ fi + 2 ] = face.normal.z;
+            //     normals[ fi + 3 ] = face.normal.x; normals[ fi + 4 ] = face.normal.y; normals[ fi + 5 ] = face.normal.z;
+            //     normals[ fi + 6 ] = face.normal.x; normals[ fi + 7 ] = face.normal.y; normals[ fi + 8 ] = face.normal.z;
+
+            //     colors[ fi + 0 ] = R; colors[ fi + 1 ] = G; colors[ fi + 2 ] = B;
+            //     colors[ fi + 3 ] = R; colors[ fi + 4 ] = G; colors[ fi + 5 ] = B;
+            //     colors[ fi + 6 ] = R; colors[ fi + 7 ] = G; colors[ fi + 8 ] = B;
+            // }
 
             offset += 3;
         }
 
-        this.buffer_geometry.addAttribute( 'position', new THREE.BufferAttribute( this.position, 3 ) );
-        this.buffer_geometry.addAttribute( 'normal', new THREE.BufferAttribute( this.normals, 3 ) );
-        this.buffer_geometry.addAttribute( 'color', new THREE.BufferAttribute( this.colors, 3 ) );
-        this.buffer_geometry.addAttribute( 'respawning', new THREE.BufferAttribute( this.respawning, 1 ) );
+        this.buffer_geometry.addAttribute( 'position', new THREE.BufferAttribute( position, 3 ) );
+        this.buffer_geometry.addAttribute( 'normal', new THREE.BufferAttribute( normals, 3 ) );
+        this.buffer_geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
+        this.buffer_geometry.addAttribute( 'respawning', new THREE.BufferAttribute( respawning, 1 ) );
 
         this.buffer_geometry.computeBoundingBox();
 
@@ -129,8 +120,8 @@ var FoodView = function ZORFoodView() {
         //     // transparent: true,
         // } );
 
-        this.material = new THREE.MeshBasicMaterial({
-            side: THREE.DoubleSide,
+        this.material = new THREE.MeshNormalMaterial({
+            // side: THREE.DoubleSide,
         });
 
         this.mesh = new THREE.Mesh( this.buffer_geometry, this.material );

@@ -161,7 +161,7 @@ function setupSocket(ws) {
 
     function handle_msg_zor_pong() {
         zorPingDuration = Date.now() - zorPingStart;
-        console.log('Ping: ' + zorPingDuration + 'ms');
+        // console.log('Ping: ' + zorPingDuration + 'ms');
     }
 
     function handle_msg_actor_updates(arrayBuffer) {
