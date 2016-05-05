@@ -79,25 +79,22 @@ function startGame(type) {
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
 
     // save player name and alpha key in storage
-    localStorage.player_name = ZOR.UI.engine.get('player_name');
-    localStorage.alpha_key = ZOR.UI.engine.get('alpha_key');
+    var playerName = localStorage.player_name = ZOR.UI.engine.get('player_name');
+    var key        = localStorage.alpha_key   = ZOR.UI.engine.get('alpha_key');
 
     // Enter the game
     var colorCode = UTIL.getRandomIntInclusive(0, ZOR.PlayerView.COLORS.length - 1);
     var colorHex = ZOR.PlayerView.COLORS[colorCode];
     document.querySelector("meta[name=theme-color]").content = colorHex;
     console.log('Player color', colorHex);
-    //connectToServer(
-    //    playerType,
-    //    ZOR.UI.engine.get('player_name'),
-    //    colorCode
-    //);
+
+    sendEnterGame(playerType, playerName, colorCode, key);
 }
 
 function respawnPlayer() {
     console.log("Respawning player: ", player.getPlayerId());
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
-    sendRespawn(false);
+    sendRespawn();
 }
 
 function createScene() {
@@ -125,7 +122,7 @@ function createScene() {
         ZOR.Game.renderer.setPixelRatio( window.devicePixelRatio );
         ZOR.Game.renderer.setSize( window.innerWidth, window.innerHeight );
 
-        //initCameraAndPlayer();
+        // Initial login screen camera
         camera = new THREE.PerspectiveCamera(
             config.INITIAL_FOV,
             window.innerWidth / window.innerHeight,
@@ -133,8 +130,6 @@ function createScene() {
             config.WORLD_HYPOTENUSE + 100 // world hypot plus a little extra for camera distance
         );
         camera.position.set(0, 0, 0);
-
-        //playerFogCenter.copy(player.view.mainSphere.position);
 
         // food
         foodController = new FoodController(zorbioModel, camera.position, scene);
@@ -188,7 +183,9 @@ function createScene() {
     function animate() {
         requestAnimationFrame(animate);
 
-        camera.rotation.y -= 0.001 * ZOR.LagScale.get();
+        if (ZOR.UI.state() === ZOR.UI.STATES.LOGIN_SCREEN) {
+            camera.rotation.y -= 0.001 * ZOR.LagScale.get();
+        }
 
         updateActors();
 
@@ -207,7 +204,7 @@ function createScene() {
 
             foodController.checkFoodCaptures(player, captureFood);
 
-            drainView.update(scene, players);
+            //drainView.update(scene, players);
 
             camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
         }
@@ -268,6 +265,8 @@ function initCameraAndPlayer() {
 
     player.setCameraControls( camera_controls );
     player.view.adjustCamera(player.radius());
+
+    playerFogCenter.copy(player.view.mainSphere.position);
 }
 
 function drawPlayers() {
@@ -279,8 +278,8 @@ function drawPlayers() {
         var playerModel = playerModels[id];
         if (playerModel.type === ZOR.PlayerTypes.PLAYER) {
             // Only draw other players
-            if (id !== player.getPlayerId()) {
-                players[id] = new ZOR.PlayerController(playerModel, player.model.sphere, scene);
+            if (!player || (id !== player.getPlayerId())) {
+                players[id] = new ZOR.PlayerController(playerModel, playerModel.sphere, scene);
             }
         }
     }
@@ -295,7 +294,7 @@ function updateActors() {
         var id = +actorIds[i];  // make sure id is a number
         var actor = actors[id];
         if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
-            if (id !== player.getSphereId()) {
+            if (!player || (id !== player.getSphereId())) {
                 var otherPlayer = players[actor.playerId];
                 if (otherPlayer.view) {
                     // update players sphere position

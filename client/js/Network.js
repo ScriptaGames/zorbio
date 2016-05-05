@@ -23,18 +23,9 @@ function connectToServer() {
     };
 }
 
-function enterGame(playerType, playerName, color) {
-    var key;
-
-    if (!ws) {
-        //uri.addQuery('type', playerType);
-        //uri.addQuery('name', playerName);
-        //uri.addQuery('color', color);
-        //uri.addQuery('key', key);
-        key = ZOR.UI.engine.get('alpha_key');
-    }
-    else if (ws.readyState === WebSocket.OPEN) {
-        //sendRespawn(true);
+function sendEnterGame(playerType, playerName, color, key) {
+    if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({op: 'enter_game', type: playerType, name: playerName, color: color, key: key}));
     }
 }
 
@@ -89,7 +80,6 @@ function setupSocket(ws) {
             }
         }
         else {
-            console.log("handle binary message");
             // handle binary message
             handle_msg_actor_updates(msg.data);
         }
@@ -126,12 +116,11 @@ function setupSocket(ws) {
 
     function handle_msg_welcome(msg) {
         var playerModel = msg.currentPlayer;
-        var isFirstSpawn = msg.isFirstSpawn;
 
         player = new ZOR.PlayerController(playerModel, playerModel.sphere);
         ZOR.UI.engine.set('player', player.model);
 
-        ws.send(JSON.stringify({op: 'player_ready', isFirstSpawn: isFirstSpawn}));
+        ws.send(JSON.stringify({op: 'player_ready'}));
     }
 
     function handle_msg_game_setup(msg) {
@@ -148,13 +137,8 @@ function setupSocket(ws) {
             actor.position = new THREE.Vector3(position.x, position.y, position.z);
         }
 
-        if (msg.isFirstSpawn) {
-            // create the scene
-            createScene();
-        } else {
-            // re-add player to scene and reset camera
-            initCameraAndPlayer();
-        }
+        // add player to scene and reset camera
+        initCameraAndPlayer();
 
         gameStart = true;
 
@@ -164,11 +148,14 @@ function setupSocket(ws) {
     }
 
     function handle_msg_player_join(message) {
-        if (!gameStart) return;
         var newPlayer = message.player;
 
-        //Add new player if it's not the current player
-        if (newPlayer.id !== player.getPlayerId() && !players[newPlayer.id]) {
+        if (player && (newPlayer.id === player.getPlayerId())) {
+            return; // ignore own join message
+        }
+
+        //Add new player if it's already added
+        if (!players[newPlayer.id]) {
             players[newPlayer.id] = new ZOR.PlayerController(newPlayer, newPlayer.sphere, scene);
 
             //Keep model in sync with the server
@@ -187,14 +174,13 @@ function setupSocket(ws) {
     }
 
     function handle_msg_actor_updates(arrayBuffer) {
-        if (!gameStart) {
-            return; // don't start updating player positions in the client until their game has started
-        }
 
-        // Record gap since last actor update was received
-        var nowTime = Date.now();
-        actorUpdateGap = nowTime - player.model.au_receive_metric.last_time;
-        player.model.au_receive_metric.last_time = nowTime;
+        if (player) {
+            // Record gap since last actor update was received
+            var nowTime = Date.now();
+            actorUpdateGap = nowTime - player.model.au_receive_metric.last_time;
+            player.model.au_receive_metric.last_time = nowTime;
+        }
 
         var actorArray;
         var drainArray;
@@ -309,9 +295,9 @@ function handleNetworkTermination() {
     setTimeout(location.reload.bind(location), 500);
 }
 
-function sendRespawn(isFirstSpawn) {
+function sendRespawn() {
     gameStart = false;
-    ws.send(JSON.stringify({op: 'respawn', isFirstSpawn: isFirstSpawn}));
+    ws.send(JSON.stringify({op: 'respawn'}));
 }
 
 function sendPing() {
