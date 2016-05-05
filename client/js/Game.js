@@ -187,9 +187,13 @@ function createScene() {
             camera.rotation.y -= 0.001 * ZOR.LagScale.get();
         }
 
+        var fogCenter;
+
         updateActors();
 
         if (gameStart && !player.isDead) {
+            fogCenter = player.view.mainSphere.position;
+
             throttledSendPlayerUpdate();
 
             player.resetVelocity();
@@ -200,16 +204,21 @@ function createScene() {
 
             player.update(scene, camera, camera_controls, ZOR.LagScale.get());
 
-            playerFogCenter.copy(player.model.sphere.position);
-
             foodController.checkFoodCaptures(player, captureFood);
 
             //drainView.update(scene, players);
 
             camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
         }
+        else if (ZOR.UI.state() === ZOR.UI.STATES.LOGIN_SCREEN) {
+            fogCenter = camera.position;
+        }
+        else if (player && player.isDead) {
+            fogCenter = player.view.mainSphere.position;
+        }
 
-        foodController.update(camera.position);
+        playerFogCenter.copy(fogCenter);
+        foodController.update(fogCenter);
 
         ZOR.UI.update();
 
