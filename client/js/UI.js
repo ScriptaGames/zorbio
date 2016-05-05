@@ -111,12 +111,11 @@ ZOR.UI = function ZORUI() {
      */
 
     function state( newstate ) {
-        console.log('entering state ' + newstate);
         if (newstate !== uidata.prev_state) {
             uidata.prev_state = uidata.state;
         }
         if (typeof newstate !== 'undefined' && valid_state( newstate ) ) {
-            // console.log('entering state ' + newstate);
+            console.log('entering state ' + newstate);
             uidata.state = newstate;
             engine.update();
         }

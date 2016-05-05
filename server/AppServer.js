@@ -49,37 +49,24 @@ var AppServer = function (wss, app) {
 
         ws.send(JSON.stringify({op: 'init_game', model: self.model}));
 
-        // parse query string
-        //var queryString = URL.parse(ws.upgradeReq.url, true).query;
-
-        // Handle new connection
-        //var player_id = Zorbio.IdGenerator.get_next_id();
-        //var type  = queryString.type;
-        //var name  = queryString.name;
-        //var color = queryString.color;
-        //var key   = queryString.key;
-
-        // Sanitize player name
-        //if (UTIL.isBlank(name)) {
-        //    name = "Player_" + player_id;
-        //}
-        //else if (name.length > config.MAX_PLAYER_NAME_LENGTH) {
-        //    name = name.substr(0, config.MAX_PLAYER_NAME_LENGTH);
-        //}
-
+        // Player properties
         var currentPlayer;
-        //
-        //console.log("player_id, type, name, color, key", player_id, type, name, color, key);
-        //
-        //self.wss.broadcast(JSON.stringify("Client joined"));
+        var player_id;
+        var type;
+        var name;
+        var color;
+        var key;
 
         ws.on('message', function wsMessage(msg) {
             if (typeof msg === "string") {
                 var message = JSON.parse(msg);
 
                 switch (message.op) {
+                    case 'enter_game':
+                        handle_enter_game(message);
+                        break;
                     case 'respawn':
-                        handle_msg_respawn(message);
+                        handle_msg_respawn();
                         break;
                     case 'player_ready':
                         handle_msg_player_ready(message);
@@ -106,7 +93,28 @@ var AppServer = function (wss, app) {
             console.error("WebSocket error occured for player_id", player_id, e);
         });
 
-        function handle_msg_respawn(msg) {
+        function handle_enter_game(msg) {
+            player_id = Zorbio.IdGenerator.get_next_id();
+            type  = msg.type;
+            name  = msg.name;
+            color = msg.color;
+            key   = msg.key;
+
+            // Sanitize player name
+            if (UTIL.isBlank(name)) {
+                name = "Player_" + player_id;
+            }
+            else if (name.length > config.MAX_PLAYER_NAME_LENGTH) {
+                name = name.substr(0, config.MAX_PLAYER_NAME_LENGTH);
+            }
+
+            console.log("Player enter request: ", player_id, type, name, color, key);
+
+            // spawn the player
+            handle_msg_respawn();
+        }
+
+        function handle_msg_respawn() {
             var position = UTIL.safePlayerPosition();
 
             if (currentPlayer && self.isPlayerInGame(currentPlayer.id)) {
@@ -120,7 +128,7 @@ var AppServer = function (wss, app) {
             currentPlayer = new Zorbio.Player(player_id, name, color, type, position);
             currentPlayer.headers = headers;
 
-            ws.send(JSON.stringify({op: 'welcome', currentPlayer: currentPlayer, isFirstSpawn: msg.isFirstSpawn}));
+            ws.send(JSON.stringify({op: 'welcome', currentPlayer: currentPlayer}));
 
             console.log('User ' + currentPlayer.id + ' spawning into the game');
         }
@@ -154,7 +162,7 @@ var AppServer = function (wss, app) {
                 self.model.addActor(currentPlayer.sphere);
 
                 // Pass any data to the for final setup
-                ws.send(JSON.stringify({op: 'game_setup', model: self.model, isFirstSpawn: msg.isFirstSpawn}));
+                ws.send(JSON.stringify({op: 'game_setup', model: self.model}));
 
                 // Notify other clients that player has joined
                 var msgObj = JSON.stringify({op: 'player_join', player: currentPlayer});
