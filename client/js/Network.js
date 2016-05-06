@@ -109,7 +109,7 @@ function setupSocket(ws) {
             actor.position = new THREE.Vector3(position.x, position.y, position.z);
         }
 
-        createScene();
+        ZOR.UI.on('init', createScene);
 
         console.log('Game initialzed');
     }
