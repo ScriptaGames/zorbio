@@ -64,6 +64,12 @@ button, a {
     touch-action : none;
     z-index      : 10;
     cursor       : url('../images/cursor.png') -4 -4, crosshair;
+
+    opacity      : 0.01;
+    transition: opacity 0.918s ease-in-out;
+    &.active {
+        opacity: 1;
+    }
 }
 
 input {

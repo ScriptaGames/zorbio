@@ -99,6 +99,12 @@ function respawnPlayer() {
 
 function createScene() {
 
+    // a function to reveal the canvas after a few frames have been drawn.
+    // turns into a noop afterwards.
+    var revealCanvas = _.after(4, function () {
+        canvas.classList.add('active');
+    });
+
     try {
         init();
         animate();
@@ -184,7 +190,7 @@ function createScene() {
         requestAnimationFrame(animate);
 
         if (ZOR.UI.state() === ZOR.UI.STATES.LOGIN_SCREEN) {
-            camera.rotation.y -= 0.001 * ZOR.LagScale.get();
+            camera.rotation.y -= config.TITLE_CAMERA_SPIN_SPEED * ZOR.LagScale.get();
         }
 
         var fogCenter;
@@ -228,6 +234,8 @@ function createScene() {
     function render() {
 
         ZOR.Game.renderer.render( scene, camera );
+
+        revealCanvas();
 
     }
 }
