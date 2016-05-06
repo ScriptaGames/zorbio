@@ -11,29 +11,21 @@ var actorUpdateGap = 0;
 // handles to setInterval methods so we can clear them later
 var interval_id_heartbeat;
 
-function connectToServer(playerType, playerName, color) {
-    var key;
+function connectToServer() {
+    var uri = new URI(config.BALANCER + ':' + config.PORT);
 
-    if (!ws) {
-        key = ZOR.UI.engine.get('alpha_key');
+    ws = new WebSocket( uri.toString() );
+    ws.binaryType = 'arraybuffer';
 
-        var uri = new URI(config.BALANCER + ':' + config.PORT);
-        uri.addQuery('type', playerType);
-        uri.addQuery('name', playerName);
-        uri.addQuery('color', color);
-        uri.addQuery('key', key);
+    ws.onopen = function wsOpen () {
+        console.log("WebSocket connection established and ready.");
+        setupSocket( ws );
+    };
+}
 
-        ws = new WebSocket( uri.toString() );
-        ws.binaryType = 'arraybuffer';
-
-        ws.onopen = function wsOpen () {
-            console.log("WebSocket connection established and ready.");
-            setupSocket( ws );
-            sendRespawn(true);
-        };
-    }
-    else if (ws.readyState === WebSocket.OPEN) {
-        sendRespawn(true);
+function sendEnterGame(playerType, playerName, color, key) {
+    if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({op: 'enter_game', type: playerType, name: playerName, color: color, key: key}));
     }
 }
 
@@ -43,6 +35,9 @@ function setupSocket(ws) {
             var message = JSON.parse(msg.data);
 
             switch (message.op) {
+                case 'init_game':
+                    handle_msg_init_game(message);
+                    break;
                 case 'welcome':
                     handle_msg_welcome(message);
                     break;
@@ -88,28 +83,44 @@ function setupSocket(ws) {
             // handle binary message
             handle_msg_actor_updates(msg.data);
         }
-
-        ws.onclose = function wsClose (e) {
-            if (e.code != config.CLOSE_NO_RESTART) {
-                handleNetworkTermination();
-            }
-            disconnected = true;
-            console.log('Connection closed:', e.code, e.reason);
-        };
-
-        ws.onerror = function wsError(e) {
-            console.error("Websocket error occured", e);
-        }
     };
+
+    ws.onclose = function wsClose (e) {
+        if (e.code != config.CLOSE_NO_RESTART) {
+            handleNetworkTermination();
+        }
+        disconnected = true;
+        console.log('Connection closed:', e.code, e.reason);
+    };
+
+    ws.onerror = function wsError(e) {
+        console.error("Websocket error occured", e);
+    };
+
+    function handle_msg_init_game(msg) {
+        zorbioModel = msg.model;
+
+        // iterate over actors and create THREE objects that don't serialize over websockets
+        var actorIds = Object.getOwnPropertyNames(zorbioModel.actors);
+        for (var i = 0, l = actorIds.length; i < l; i++) {
+            var actorId = +actorIds[i];  // make sure id is a number
+            var actor = zorbioModel.actors[actorId];
+            var position = actor.position;
+            actor.position = new THREE.Vector3(position.x, position.y, position.z);
+        }
+
+        createScene();
+
+        console.log('Game initialzed');
+    }
 
     function handle_msg_welcome(msg) {
         var playerModel = msg.currentPlayer;
-        var isFirstSpawn = msg.isFirstSpawn;
 
         player = new ZOR.PlayerController(playerModel);
         ZOR.UI.engine.set('player', player.model);
 
-        ws.send(JSON.stringify({op: 'player_ready', isFirstSpawn: isFirstSpawn}));
+        ws.send(JSON.stringify({op: 'player_ready'}));
     }
 
     function handle_msg_game_setup(msg) {
@@ -126,13 +137,8 @@ function setupSocket(ws) {
             actor.position = new THREE.Vector3(position.x, position.y, position.z);
         }
 
-        if (msg.isFirstSpawn) {
-            // create the scene
-            createScene();
-        } else {
-            // re-add player to scene and reset camera
-            initCameraAndPlayer();
-        }
+        // add player to scene and reset camera
+        initCameraAndPlayer();
 
         gameStart = true;
 
@@ -142,11 +148,14 @@ function setupSocket(ws) {
     }
 
     function handle_msg_player_join(message) {
-        if (!gameStart) return;
         var newPlayer = message.player;
 
-        //Add new player if it's not the current player
-        if (newPlayer.id !== player.getPlayerId() && !players[newPlayer.id]) {
+        if (player && (newPlayer.id === player.getPlayerId())) {
+            return; // ignore own join message
+        }
+
+        //Add new player if it's already added
+        if (!players[newPlayer.id]) {
             players[newPlayer.id] = new ZOR.PlayerController(newPlayer, scene);
 
             //Keep model in sync with the server
@@ -165,14 +174,13 @@ function setupSocket(ws) {
     }
 
     function handle_msg_actor_updates(arrayBuffer) {
-        if (!gameStart) {
-            return; // don't start updating player positions in the client until their game has started
-        }
 
-        // Record gap since last actor update was received
-        var nowTime = Date.now();
-        actorUpdateGap = nowTime - player.model.au_receive_metric.last_time;
-        player.model.au_receive_metric.last_time = nowTime;
+        if (player) {
+            // Record gap since last actor update was received
+            var nowTime = Date.now();
+            actorUpdateGap = nowTime - player.model.au_receive_metric.last_time;
+            player.model.au_receive_metric.last_time = nowTime;
+        }
 
         var actorsArray = new Float32Array(arrayBuffer);
 
@@ -275,9 +283,9 @@ function handleNetworkTermination() {
     setTimeout(location.reload.bind(location), 500);
 }
 
-function sendRespawn(isFirstSpawn) {
+function sendRespawn() {
     gameStart = false;
-    ws.send(JSON.stringify({op: 'respawn', isFirstSpawn: isFirstSpawn}));
+    ws.send(JSON.stringify({op: 'respawn'}));
 }
 
 function sendPing() {
