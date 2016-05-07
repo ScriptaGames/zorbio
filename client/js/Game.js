@@ -212,7 +212,7 @@ function createScene() {
             fogCenter = camera.position;
         }
         else if (player && player.isDead) {
-            fogCenter = player.view.mainSphere.position;
+            fogCenter = player.model.sphere.position;
         } else {
             fogCenter = {x: 0, y: 0, z: 0}
         }
