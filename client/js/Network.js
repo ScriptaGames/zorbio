@@ -124,7 +124,7 @@ function setupSocket(ws) {
     }
 
     function handle_msg_game_setup(msg) {
-        players[player.getPlayerId()] = player;
+        ZOR.Game.players[player.getPlayerId()] = player;
 
         zorbioModel = msg.model;
 
@@ -155,8 +155,8 @@ function setupSocket(ws) {
         }
 
         //Add new player if it's already added
-        if (!players[newPlayer.id]) {
-            players[newPlayer.id] = new ZOR.PlayerController(newPlayer, scene);
+        if (!ZOR.Game.players[newPlayer.id]) {
+            ZOR.Game.players[newPlayer.id] = new ZOR.PlayerController(newPlayer, scene);
 
             //Keep model in sync with the server
             zorbioModel.players[newPlayer.id] = newPlayer;
@@ -209,7 +209,7 @@ function setupSocket(ws) {
         var targetPlayerId = msg.targetPlayerId;
 
         console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
-        var targetPlayer = players[targetPlayerId];
+        var targetPlayer = ZOR.Game.players[targetPlayerId];
         handleSuccessfulPlayerCapture(targetPlayer);
         removePlayerFromGame(targetPlayerId);
     }

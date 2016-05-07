@@ -8,7 +8,7 @@ var ZOR = ZOR || {};
  * @param scene
  */
 
-ZOR.PlayerView = function ZORPlayerView(actor, scene) {
+ZOR.PlayerView = function ZORPlayerView(player, actor, scene) {
     this.playerColor = ZOR.PlayerView.COLORS[actor.color];
 
     this.geometry = new THREE.SphereGeometry(
@@ -48,7 +48,7 @@ ZOR.PlayerView = function ZORPlayerView(actor, scene) {
     this.mainSphere = new THREE.Mesh( this.geometry, this.material );
     this.mainSphere.position.copy(actor.position);
 
-    //this.drainView = new DrainView();
+    this.drainView = new ZOR.DrainView(player, scene);
 
     this.setScale(actor.scale);
 
@@ -65,10 +65,10 @@ ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
 };
 
-ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {
-    //TODO: update the drain view here
-    //var drainee_player = ZOR.Game.players[drain_target_id];
-
+ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target) {
+    if (drain_target) {
+        this.drainView.update( drain_target );
+    }
 };
 
 ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position) {

@@ -3,14 +3,15 @@ var ZOR = ZOR || {};
 /**
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
  * visually, and how to move it's different 3D pieces around.
- * @param actor
- * @constructor
+ * @param player
  * @param scene
+ * @constructor
  */
 
-ZOR.DrainView = function ZORDrainView(scene) {
+ZOR.DrainView = function ZORDrainView(player, scene) {
 
     this.scene = scene;
+    this.player = player;
 
     this.time = 0.1;
 
@@ -26,37 +27,22 @@ ZOR.DrainView.prototype.pinch = function pinch(x, h) {
 };
 
 
-ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( scene, players_obj ) {
+ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drain_target ) {
 
-    var players_arr = _.values( players_obj );
-    var ai = players_arr.length;
-    var di;
     var did;
     var obj;
     var dist;
-    var drainer;
-    var drainee;
+    var drainer = this.player;
+    var drainee = drain_target;
 
     this.clear();
 
     this.time += ZOR.LagScale.get() / config.DRAIN_RADIO_FREQUENCY;
 
-    while ( ai-- ) {
-        drainer = players_arr[ai];
-        if (drainer.drains) {
-            di = drainer.drains.length;
-            while ( di-- ) {
-                did = drainer.drains[di];
-                if (did) {
-                    drainee = players_obj[ did ];
-                    obj = this.createCylinder( drainer, drainee );
-                    if (obj) {
-                        this.meshes.push(obj);
-                        scene.add(obj);
-                    }
-                }
-            }
-        }
+    obj = this.createCylinder( drainer, drainee );
+    if (obj) {
+        this.meshes.push(obj);
+        this.scene.add(obj);
     }
 };
 

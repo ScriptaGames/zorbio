@@ -20,7 +20,6 @@ var player;
 var playerFogCenter = new THREE.Vector3();
 
 // Game state
-var players = {};
 var gameStart = false;
 var disconnected = false;
 var foodController;
@@ -29,6 +28,8 @@ var drainView;
 
 // Model that represents the game state shared with server
 var zorbioModel;
+
+ZOR.Game.players = {};
 
 ZOR.Game.fullscreen = function go_fullscreen() {
     var el = document.body;
@@ -288,7 +289,7 @@ function drawPlayers() {
         if (playerModel.type === ZOR.PlayerTypes.PLAYER) {
             // Only draw other players
             if (!player || (id !== player.getPlayerId())) {
-                players[id] = new ZOR.PlayerController(playerModel, scene);
+                ZOR.Game.players[id] = new ZOR.PlayerController(playerModel, scene);
             }
         }
     }
@@ -304,8 +305,8 @@ function updateActors() {
         var actor = actors[id];
         if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
             if (!player || (id !== player.getSphereId())) {
-                var otherPlayer = players[actor.playerId];
-                if (otherPlayer.view) {
+                var otherPlayer = ZOR.Game.players[actor.playerId];
+                if (otherPlayer && otherPlayer.view) {
                     // update actor
                     otherPlayer.updatePosition(actor.position);
                     otherPlayer.updateScale(actor.scale);
@@ -404,7 +405,7 @@ function keyReleased(key) {
 }
 
 function removePlayerFromGame(playerId) {
-    var thePlayer = players[playerId];
+    var thePlayer = ZOR.Game.players[playerId];
 
     if (thePlayer || zorbioModel.players[playerId]) {
         if (thePlayer && thePlayer.view) {
@@ -414,7 +415,7 @@ function removePlayerFromGame(playerId) {
 
             // Remove player from the scene
             thePlayer.removeView(scene);
-            delete players[playerId];
+            delete ZOR.Game.players[playerId];
         }
 
         if (zorbioModel.players[playerId]) {
