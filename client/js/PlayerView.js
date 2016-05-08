@@ -48,7 +48,7 @@ ZOR.PlayerView = function ZORPlayerView(player, actor, scene) {
     this.mainSphere = new THREE.Mesh( this.geometry, this.material );
     this.mainSphere.position.copy(actor.position);
 
-    this.drainView = new ZOR.DrainView(player, scene);
+    this.drainView = new ZOR.DrainView(this, scene);
 
     this.setScale(actor.scale);
 

@@ -3,15 +3,15 @@ var ZOR = ZOR || {};
 /**
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
  * visually, and how to move it's different 3D pieces around.
- * @param player
+ * @param playerView
  * @param scene
  * @constructor
  */
 
-ZOR.DrainView = function ZORDrainView(player, scene) {
+ZOR.DrainView = function ZORDrainView(playerView, scene) {
 
     this.scene = scene;
-    this.player = player;
+    this.playerView = playerView;
 
     this.time = 0.1;
 
@@ -29,17 +29,13 @@ ZOR.DrainView.prototype.pinch = function pinch(x, h) {
 
 ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drain_target ) {
 
-    var did;
     var obj;
-    var dist;
-    var drainer = this.player;
-    var drainee = drain_target;
 
     this.clear();
 
     this.time += ZOR.LagScale.get() / config.DRAIN_RADIO_FREQUENCY;
 
-    obj = this.createCylinder( drainer, drainee );
+    obj = this.createCylinder( drain_target );
     if (obj) {
         this.meshes.push(obj);
         this.scene.add(obj);
@@ -62,11 +58,11 @@ ZOR.DrainView.prototype.clear = function ZORDrainViewClear() {
     // that should take care of removing ALL references to the lines
 };
 
-ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(drainer, drainee) {
+ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(drainee) {
 
-    var drainer_pos = drainer.view.mainSphere.position;
+    var drainer_pos = this.playerView.mainSphere.position;
     var drainee_pos = drainee.view.mainSphere.position;
-    var drainer_scale = drainer.view.mainSphere.scale.x;
+    var drainer_scale = this.playerView.mainSphere.scale.x;
     var drainee_scale = drainee.view.mainSphere.scale.x;
 
     if (typeof drainer_pos === 'undefined') return;
@@ -89,7 +85,7 @@ ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(dra
         uniforms: {
             time: { type: "f", value: this.time },
             power: { type: "f", value: opacity },
-            erColor: { type: "c", value: drainer.view.material.uniforms.color.value },
+            erColor: { type: "c", value: this.playerView.material.uniforms.color.value },
             eeColor: { type: "c", value: drainee.view.material.uniforms.color.value },
             len: { type: "f", value: dist },
         },
