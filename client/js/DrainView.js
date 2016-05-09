@@ -17,6 +17,27 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
 
     this.meshes = [];
 
+    this.material = new THREE.ShaderMaterial({
+        uniforms: {
+            time: { type: "f", value: this.time },
+            power: { type: "f", value: 0 },
+            erColor: { type: "c", value: this.playerView.material.uniforms.color.value },
+            eeColor: { type: "c", value: 0 },
+            len: { type: "f", value: 0 },
+        },
+        vertexShader   : document.getElementById( 'drain-vertex-shader' ).textContent,
+        fragmentShader : document.getElementById( 'drain-frag-shader' ).textContent,
+        side           : THREE.DoubleSide,
+        transparent    : true,
+        opacity        : 0.8,
+        depthFunc      : THREE.LessDepth,
+        depthTest      : false,
+        depthWrite     : true,
+        blending       : THREE.AdditiveBlending,
+        alphaTest      : 1.0,
+        morphTargets   : true,
+    });
+
 };
 
 ZOR.DrainView.prototype.pinch = function pinch(x, h) {
@@ -74,33 +95,17 @@ ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(dra
 
     if (dist < 0) return;
 
+    // Set material parameters
+    this.material.uniforms.time.value = this.time;
+    this.material.uniforms.eeColor.value = drainee.view.material.uniforms.color.value;
+    this.material.uniforms.len.value = dist;
     // base cylinder's opacity on how large the drain is (percentage of
     // theoretical maximum drain)
     var opacity = 1 - dist / config.DRAIN_MAX_DISTANCE;
+    this.material.uniforms.power.value = opacity;
 
     var geometry = new THREE.CylinderGeometry( drainer_scale/2, drainee_scale/2, dist, 16, 12, true );
     geometry.rotateX(Math.PI/2); // rotate geo so its ends point 'up'
-
-    var material = new THREE.ShaderMaterial({
-        uniforms: {
-            time: { type: "f", value: this.time },
-            power: { type: "f", value: opacity },
-            erColor: { type: "c", value: this.playerView.material.uniforms.color.value },
-            eeColor: { type: "c", value: drainee.view.material.uniforms.color.value },
-            len: { type: "f", value: dist },
-        },
-        vertexShader   : document.getElementById( 'drain-vertex-shader' ).textContent,
-        fragmentShader : document.getElementById( 'drain-frag-shader' ).textContent,
-        side           : THREE.DoubleSide,
-        transparent    : true,
-        opacity        : 0.8,
-        depthFunc      : THREE.LessDepth,
-        depthTest      : false,
-        depthWrite     : true,
-        blending       : THREE.AdditiveBlending,
-        alphaTest      : 1.0,
-        morphTargets   : true,
-    });
 
     var pinchVertices = [];
     for ( var i = 0; i < geometry.vertices.length; i ++ ) {
@@ -115,7 +120,7 @@ ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(dra
     geometry.morphTargets.push( { name: "pinch", vertices: pinchVertices } );
 
 
-    var cylinder = new THREE.Mesh( geometry, material );
+    var cylinder = new THREE.Mesh( geometry, this.material );
 
     // strength of pinch effect
     cylinder.morphTargetInfluences[ 0 ] = 0.4;
