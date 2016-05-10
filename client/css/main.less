@@ -66,6 +66,16 @@ button, a {
     cursor       : url('../images/cursor.png') -4 -4, crosshair;
 }
 
+// fade in the canvas and the UI, when they become active
+#render-canvas,
+#ui-overlay {
+    opacity      : 0.01;
+    transition: opacity 0.618s ease-in-out;
+    &.active {
+        opacity: 1;
+    }
+}
+
 input {
     padding    : @default-padding;
     background : darken(@primary-color, 10%);

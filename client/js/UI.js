@@ -8,6 +8,7 @@ var ZOR = ZOR || {};
 ZOR.UI = function ZORUI() {
 
     var engine; // the UI engine, currently Ractive
+    var initialized = false;
 
     /**
      * A list of the browser features that are required to run Zorbio.  The
@@ -84,6 +85,9 @@ ZOR.UI = function ZORUI() {
         on       : on,
     };
 
+    // array of registered on-init handlers
+    var init_handlers = [];
+
     // the previous state
     var previous = STATES.INITIAL;
 
@@ -127,6 +131,14 @@ ZOR.UI = function ZORUI() {
      */
 
     function on( event, handler ) {
+        if (event === 'init') {
+            if (initialized) {
+                handler.call(this);
+            }
+            else {
+                init_handlers.push(handler.bind(this));
+            }
+        }
         engine.on( event, handler );
     }
 
@@ -188,6 +200,16 @@ ZOR.UI = function ZORUI() {
         state( STATES.INITIAL );
 
         init_events();
+
+        // call all the registered init handlers
+        _.invokeMap(init_handlers, _.call);
+
+        // add active class to UI overlay so it'll show up
+        engine.el.classList.add('active')
+
+        // mark initialized true so future on('init') handlers will be executed
+        // immediately
+        initialized = true;
     }
 
     /**

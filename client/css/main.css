@@ -94,6 +94,16 @@ a {
   z-index: 10;
   cursor: url('../images/cursor.png') -4 -4, crosshair;
 }
+#render-canvas,
+#ui-overlay {
+  opacity: 0.01;
+  -webkit-transition: opacity 0.618s ease-in-out;
+  transition: opacity 0.618s ease-in-out;
+}
+#render-canvas.active,
+#ui-overlay.active {
+  opacity: 1;
+}
 input {
   padding: 20px;
   background: #dedede;

@@ -21,12 +21,13 @@ config.REQUIRE_ALPHA_KEY = false;
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE       = 1600;
+config.WORLD_SIZE       = 600;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
 
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //
 ////////////////////////////////////////////////////////////////////////
+
 config.PORT                     = 80;
 config.MAX_PLAYERS              = 50;
 config.HEARTBEAT_ENABLE         = true;
@@ -55,6 +56,7 @@ config.BALANCER = 'NA';
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
+
 config.INITIAL_PLAYER_RADIUS = 2;
 config.MAX_PLAYER_RADIUS     = 150;
 
@@ -107,7 +109,7 @@ config.DRAIN_RADIO_FREQUENCY = 65; // how quickly the radio waves flow down the 
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 25;    // How much food there is, total food = this number cubed
+config.FOOD_DENSITY                = 11;    // How much food there is, total food = this number cubed
 config.FOOD_VALUE                  = 0.7;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
@@ -124,6 +126,7 @@ config.FOOD_GET_VALUE              = function FoodGetValue( r ) {
 ////////////////////////////////////////////////////////////////////////
 //                         VALIDATION SETTINGS                        //
 ////////////////////////////////////////////////////////////////////////
+
 config.ENABLE_VALIDATION              = true;   // enable validation checks on the server to prevent cheating
 config.FOOD_CAPTURE_EXTRA_TOLERANCE   = 10;     // extra distance that we'll tolerate for valid food capture
 config.PLAYER_CAPTURE_EXTRA_TOLERANCE = 1;      // extra distance that we'll tolerate for valid player capture
@@ -141,6 +144,7 @@ config.MAX_PLAYER_NAME_LENGTH         = 20;     // How many characters can be in
 ////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
+
 config.FOG_ENABLED             = true;
 config.FOG_NEAR                = 100;
 config.FOG_FAR                 = 1000;
@@ -153,6 +157,12 @@ config.PLAYER_SPHERE_POLYCOUNT = 64; // height and width segments of the spheres
 config.FOOD_ALPHA_ENABLED      = false;
 config.LAG_SCALE_ENABLE        = true;
 config.REQUIRED_WEBGL_EXTENSIONS = ['ANGLE_instanced_arrays'];
+
+////////////////////////////////////////////////////////////////////////
+//                            UI SETTINGS                             //
+////////////////////////////////////////////////////////////////////////
+
+config.TITLE_CAMERA_SPIN_SPEED = 0.0003;
 
 ////////////////////////////////////////////////////////////////////////
 //                           SOUND SETTINGS                           //
