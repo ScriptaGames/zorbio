@@ -17,27 +17,36 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
 
     this.meshes = [];
 
-    this.material = new THREE.ShaderMaterial({
-        uniforms: {
-            time: { type: "f", value: this.time },
-            power: { type: "f", value: 0 },
-            erColor: { type: "c", value: this.playerView.material.uniforms.color.value },
-            eeColor: { type: "c", value: 0 },
-            len: { type: "f", value: 0 },
-        },
-        vertexShader   : document.getElementById( 'drain-vertex-shader' ).textContent,
-        fragmentShader : document.getElementById( 'drain-frag-shader' ).textContent,
-        side           : THREE.DoubleSide,
-        transparent    : true,
-        opacity        : 0.8,
-        depthFunc      : THREE.LessDepth,
-        depthTest      : false,
-        depthWrite     : true,
-        blending       : THREE.AdditiveBlending,
-        alphaTest      : 1.0,
-        morphTargets   : true,
-    });
+    this.geometry = new THREE.CylinderGeometry( 10, 10, 50, 16, 12, true );
+    this.geometry.rotateX(Math.PI/2); // rotate geo so its ends point 'up'
+    this.createPinch(1); // initialize morphTargets
 
+    this.material = new THREE.MeshNormalMaterial();
+
+    // this.material = new THREE.ShaderMaterial({
+    //     uniforms: {
+    //         time: { type: "f", value: this.time },
+    //         power: { type: "f", value: 0 },
+    //         erColor: { type: "c", value: this.playerView.material.uniforms.color.value },
+    //         eeColor: { type: "c", value: 0 },
+    //         len: { type: "f", value: 0 },
+    //     },
+    //     vertexShader   : document.getElementById( 'drain-vertex-shader' ).textContent,
+    //     fragmentShader : document.getElementById( 'drain-frag-shader' ).textContent,
+    //     side           : THREE.DoubleSide,
+    //     transparent    : true,
+    //     opacity        : 0.8,
+    //     depthFunc      : THREE.LessDepth,
+    //     depthTest      : false,
+    //     depthWrite     : true,
+    //     blending       : THREE.AdditiveBlending,
+    //     alphaTest      : 1.0,
+    //     morphTargets   : true,
+    // });
+
+    this.mesh = new THREE.Mesh( this.geometry, this.material );
+    this.mesh.renderOrder = 10;
+    this.mesh.morphTargetInfluences[ 0 ] = 0.4; // strength of pinch effect
 };
 
 ZOR.DrainView.prototype.pinch = function pinch(x, h) {
@@ -47,92 +56,86 @@ ZOR.DrainView.prototype.pinch = function pinch(x, h) {
     );
 };
 
-
-ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drain_target ) {
-
-    var obj;
-
-    this.clear();
-
-    this.time += ZOR.LagScale.get() / config.DRAIN_RADIO_FREQUENCY;
-
-    obj = this.createCylinder( drain_target );
-    if (obj) {
-        this.meshes.push(obj);
-        this.scene.add(obj);
-    }
-};
-
-/**
- * Remove all drain objects from the scene.
- */
-ZOR.DrainView.prototype.clear = function ZORDrainViewClear() {
-    var i = this.meshes.length;
-    var obj;
-    while ( i-- ) {
-        obj = this.meshes[i];
-        this.scene.remove(obj); // remove from scene
-        obj.geometry.dispose();
-        obj.material.dispose();
-    }
-    this.meshes = []; // clear out meshes array
-    // that should take care of removing ALL references to the lines
-};
-
-ZOR.DrainView.prototype.createCylinder = function ZORDrainViewCreateCylinder(drainee) {
+ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drainee ) {
 
     var drainer_pos = this.playerView.mainSphere.position;
     var drainee_pos = drainee.view.mainSphere.position;
     var drainer_scale = this.playerView.mainSphere.scale.x;
     var drainee_scale = drainee.view.mainSphere.scale.x;
+    var distance = drainer_pos.distanceTo( drainee_pos ) - drainer_scale - drainee_scale;
+    var visible;
 
-    if (typeof drainer_pos === 'undefined') return;
-    if (typeof drainee_pos === 'undefined') return;
-    if (typeof drainer_scale === 'undefined') return;
-    if (typeof drainee_scale === 'undefined') return;
+    // make invisible if any required params are unavailable
+    if (drainer_pos && drainee_pos && drainer_scale && drainee_scale) {
+        visible = this.updateVisibility( distance );
+    }
+    else {
+        visible = this.updateVisibility( -1 );
+    }
 
-    var dist = drainer_pos.distanceTo( drainee_pos ) - drainer_scale - drainee_scale;
+    if (visible) {
+        // this.updatePinch( distance );
+        this.updateStretch( distance );
+        // this.updateTaper( drainer_scale, drainee_scale ); // TODO impl
+        // this.updateUniforms( drainee, distance ); // until shadermaterial is back
+        this.updatePosition( drainer_pos, drainee_pos, drainer_scale, drainee_scale );
+    }
+};
 
-    if (dist < 0) return;
+ZOR.DrainView.prototype.updateVisibility = function ZORDrainViewUpdateVisibility( distance ) {
+    // hide drain beam if spheres intersect
+    var visible = distance > 0;
+    this.mesh.material.visible = visible;
+    return visible;
+};
 
+ZOR.DrainView.prototype.updatePosition = function ZORDrainViewUpdatePosition(  drainer_pos, drainee_pos, drainer_scale, drainee_scale ) {
+    // position and angle the cylinder correctly
+    var drainer_edge_pos = drainee_pos.clone().sub( drainer_pos ).normalize().multiplyScalar( -drainee_scale ).add( drainer_pos );
+    var drainee_edge_pos = drainer_pos.clone().sub( drainee_pos ).normalize().multiplyScalar( -drainer_scale ).add( drainee_pos );
+    this.mesh.position.copy( drainer_edge_pos.add( drainee_edge_pos ).divideScalar(2) );
+    this.mesh.lookAt( drainer_pos );
+};
+
+ZOR.DrainView.prototype.updateUniforms = function ZORDrainViewUpdateUniforms( drainee, distance ) {
+    this.time += ZOR.LagScale.get() / config.DRAIN_RADIO_FREQUENCY;
     // Set material parameters
     this.material.uniforms.time.value = this.time;
     this.material.uniforms.eeColor.value = drainee.view.material.uniforms.color.value;
-    this.material.uniforms.len.value = dist;
+    this.material.uniforms.len.value = distance;
     // base cylinder's opacity on how large the drain is (percentage of
     // theoretical maximum drain)
-    var opacity = 1 - dist / config.DRAIN_MAX_DISTANCE;
+    var opacity = 1 - distance / config.DRAIN_MAX_DISTANCE;
     this.material.uniforms.power.value = opacity;
+};
 
-    var geometry = new THREE.CylinderGeometry( drainer_scale/2, drainee_scale/2, dist, 16, 12, true );
-    geometry.rotateX(Math.PI/2); // rotate geo so its ends point 'up'
+ZOR.DrainView.prototype.updateStretch = function ZORDrainViewUpdateStretch( distance ) {
+};
 
-    var pinchVertices = [];
-    for ( var i = 0; i < geometry.vertices.length; i ++ ) {
+ZOR.DrainView.prototype.createPinch = function ZORDrainViewCreatePinch( distance ) {
+    var pinchVertices = this.createPinchVertices( distance );
+    this.geometry.morphTargets.push( { name: "pinch", vertices: pinchVertices } );
+};
 
-        pinchVertices[i] = geometry.vertices[ i ].clone();
+// ZOR.DrainView.prototype.updatePinch = function ZORDrainViewUpdatePinch( distance ) {
+//     this.createPinchVertices( distance, this.geometry.morphTargets[0].vertices );
+// };
 
-        pinchVertices[i].x *= -this.pinch(pinchVertices[i].z + dist/2, dist);
-        pinchVertices[i].y *= -this.pinch(pinchVertices[i].z + dist/2, dist);
-
+ZOR.DrainView.prototype.createPinchVertices = function ZORDrainViewCreatePinchVertices( distance, o_array ) {
+    var pinchVertices = o_array || [];
+    for ( var i = 0; i < this.geometry.vertices.length; i ++ ) {
+        pinchVertices[i] = this.geometry.vertices[ i ].clone();
+        pinchVertices[i].x *= -this.pinch(pinchVertices[i].z + distance/2, distance);
+        pinchVertices[i].y *= -this.pinch(pinchVertices[i].z + distance/2, distance);
     }
+    return pinchVertices;
+};
 
-    geometry.morphTargets.push( { name: "pinch", vertices: pinchVertices } );
-
-
-    var cylinder = new THREE.Mesh( geometry, this.material );
-
-    // strength of pinch effect
-    cylinder.morphTargetInfluences[ 0 ] = 0.4;
-
-    // position and angle the cylinder correctly
-    // cylinder.position.copy( drainer_pos.clone().add( drainee_pos).divideScalar(2) );
-    var drainer_edge_pos = drainee_pos.clone().sub( drainer_pos ).normalize().multiplyScalar( -drainee_scale ).add( drainer_pos );
-    var drainee_edge_pos = drainer_pos.clone().sub( drainee_pos ).normalize().multiplyScalar( -drainer_scale ).add( drainee_pos );
-    cylinder.position.copy( drainer_edge_pos.add( drainee_edge_pos ).divideScalar(2) );
-
-    cylinder.lookAt( drainer_pos );
-
-    cylinder.renderOrder = 10;
-    return cylinder;
+/**
+ * Remove all drain objects from the scene.
+ */
+ZOR.DrainView.prototype.dispose = function ZORDrainViewDispose() {
+    this.scene.remove(this.mesh);
+    this.geometry.dispose();
+    this.material.dispose();
 };

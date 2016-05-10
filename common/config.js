@@ -73,7 +73,7 @@ config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
 config.PLAYER_GET_SCORE      = function PlayerGetScore( radius ) {
     return Math.floor(radius * 10);
 };
-config.AUTO_RUN_ENABLED      = true;
+config.AUTO_RUN_ENABLED      = false;
 config.STEERING_METHODS      = Object.freeze({ // enum-ish
     MOUSE_DRAG: {
         NAME: 'DRAG',
@@ -87,7 +87,7 @@ config.STEERING_METHODS      = Object.freeze({ // enum-ish
         SPEED : 0.3,  // higher makes camera rotate faster
     },
 });
-config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
+config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
 
 config.Y_AXIS_MULT = 1;
 config.X_AXIS_MULT = 1;

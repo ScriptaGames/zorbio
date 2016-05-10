@@ -120,8 +120,8 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
         this.scale = scale;
         this.expectedScale = scale;
     } else {
-        this.scale = config.INITIAL_PLAYER_RADIUS;
-        this.expectedScale = config.INITIAL_PLAYER_RADIUS;
+        this.scale = Math.random() * config.INITIAL_PLAYER_RADIUS;
+        this.expectedScale = this.scale;
     }
 
     if (velocity) {
