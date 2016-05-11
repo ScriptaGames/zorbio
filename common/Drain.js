@@ -86,7 +86,6 @@ ZOR.Drain.amount = function ZORDrainAmount( distance ) {
     var n = 0.007;
     var o = 3.0;
     var p = 0.05;
-    return 0;
     return p / ( (n * (distance * distance)) + o );
 };
 
