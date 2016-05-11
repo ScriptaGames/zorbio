@@ -162,7 +162,7 @@ config.REQUIRED_WEBGL_EXTENSIONS = ['ANGLE_instanced_arrays'];
 //                            UI SETTINGS                             //
 ////////////////////////////////////////////////////////////////////////
 
-config.TITLE_CAMERA_SPIN_SPEED = 0.0003;
+config.TITLE_CAMERA_SPIN_SPEED = 0.001;
 
 ////////////////////////////////////////////////////////////////////////
 //                           SOUND SETTINGS                           //
