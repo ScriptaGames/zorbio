@@ -46,6 +46,8 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
     this.mesh.renderOrder = 10;
     //this.mesh.morphTargetInfluences[ 0 ] = 0.4; // strength of pinch effect
 
+    this.hide(); // initially hide
+
     scene.add(this.mesh);
 };
 
