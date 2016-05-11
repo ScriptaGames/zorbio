@@ -65,10 +65,8 @@ ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
 };
 
-ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target) {
-    if (drain_target) {
-        this.drainView.update( drain_target );
-    }
+ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {
+    this.drainView.update( drain_target_id );
 };
 
 ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position) {

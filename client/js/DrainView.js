@@ -19,7 +19,7 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
 
     this.geometry = new THREE.CylinderGeometry( 10, 10, 50, 16, 12, true );
     this.geometry.rotateX(Math.PI/2); // rotate geo so its ends point 'up'
-    this.createPinch(1); // initialize morphTargets
+    //this.createPinch(1); // initialize morphTargets
 
     this.material = new THREE.MeshNormalMaterial();
 
@@ -46,7 +46,9 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
 
     this.mesh = new THREE.Mesh( this.geometry, this.material );
     this.mesh.renderOrder = 10;
-    this.mesh.morphTargetInfluences[ 0 ] = 0.4; // strength of pinch effect
+    //this.mesh.morphTargetInfluences[ 0 ] = 0.4; // strength of pinch effect
+
+    scene.add(this.mesh);
 };
 
 ZOR.DrainView.prototype.pinch = function pinch(x, h) {
@@ -56,24 +58,29 @@ ZOR.DrainView.prototype.pinch = function pinch(x, h) {
     );
 };
 
-ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drainee ) {
+ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drain_target_id ) {
 
+    if (drain_target_id === 0) {
+        this.hide();
+        return;  // no drain target
+    }
+
+    var drainee = ZOR.Game.players[drain_target_id];
     var drainer_pos = this.playerView.mainSphere.position;
     var drainee_pos = drainee.view.mainSphere.position;
     var drainer_scale = this.playerView.mainSphere.scale.x;
     var drainee_scale = drainee.view.mainSphere.scale.x;
     var distance = drainer_pos.distanceTo( drainee_pos ) - drainer_scale - drainee_scale;
-    var visible;
 
     // make invisible if any required params are unavailable
-    if (drainer_pos && drainee_pos && drainer_scale && drainee_scale) {
-        visible = this.updateVisibility( distance );
+    if (drainee && drainer_pos && drainee_pos && drainer_scale && drainee_scale) {
+        this.updateVisibility( distance );
     }
     else {
-        visible = this.updateVisibility( -1 );
+        this.hide();
     }
 
-    if (visible) {
+    if (this.isVisible()) {
         // this.updatePinch( distance );
         this.updateStretch( distance );
         // this.updateTaper( drainer_scale, drainee_scale ); // TODO impl
@@ -82,11 +89,30 @@ ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drainee ) {
     }
 };
 
+ZOR.DrainView.prototype.hide = function ZORDrainViewHide() {
+    if (this.mesh.material.visible) {
+        this.mesh.material.visible = false;
+    }
+};
+
+ZOR.DrainView.prototype.show = function ZORDrainViewShow() {
+    if (!this.mesh.material.visible) {
+        this.mesh.material.visible = true;
+    }
+};
+
+ZOR.DrainView.prototype.isVisible = function ZORDrainViewShow() {
+    return this.material.visible;
+};
+
 ZOR.DrainView.prototype.updateVisibility = function ZORDrainViewUpdateVisibility( distance ) {
     // hide drain beam if spheres intersect
-    var visible = distance > 0;
-    this.mesh.material.visible = visible;
-    return visible;
+    if (distance > 0) {
+        this.show();
+    }
+    else {
+        this.hide();
+    }
 };
 
 ZOR.DrainView.prototype.updatePosition = function ZORDrainViewUpdatePosition(  drainer_pos, drainee_pos, drainer_scale, drainee_scale ) {

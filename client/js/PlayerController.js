@@ -91,7 +91,8 @@ ZOR.PlayerController.prototype.updateScale = function ZORPlayerControllerUpdateS
 };
 
 ZOR.PlayerController.prototype.updateDrain = function ZORPlayerControllerUpdateDrain(drain_target_id) {
-    this.view.updateDrain( ZOR.Game.players[drain_target_id] );
+    this.model.sphere.drain_target_id = drain_target_id;
+    this.view.updateDrain( drain_target_id );
 };
 
 ZOR.PlayerController.prototype.updatePosition = function ZORPlayerControllerUpdatePosition(position) {
