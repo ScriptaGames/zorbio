@@ -21,28 +21,26 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
     this.geometry.rotateX(Math.PI/2); // rotate geo so its ends point 'up'
     //this.createPinch(1); // initialize morphTargets
 
-    this.material = new THREE.MeshNormalMaterial();
-
-    // this.material = new THREE.ShaderMaterial({
-    //     uniforms: {
-    //         time: { type: "f", value: this.time },
-    //         power: { type: "f", value: 0 },
-    //         erColor: { type: "c", value: this.playerView.material.uniforms.color.value },
-    //         eeColor: { type: "c", value: 0 },
-    //         len: { type: "f", value: 0 },
-    //     },
-    //     vertexShader   : document.getElementById( 'drain-vertex-shader' ).textContent,
-    //     fragmentShader : document.getElementById( 'drain-frag-shader' ).textContent,
-    //     side           : THREE.DoubleSide,
-    //     transparent    : true,
-    //     opacity        : 0.8,
-    //     depthFunc      : THREE.LessDepth,
-    //     depthTest      : false,
-    //     depthWrite     : true,
-    //     blending       : THREE.AdditiveBlending,
-    //     alphaTest      : 1.0,
-    //     morphTargets   : true,
-    // });
+    this.material = new THREE.ShaderMaterial({
+        uniforms: {
+            time: {type: "f", value: this.time},
+            power: {type: "f", value: 0},
+            erColor: {type: "c", value: this.playerView.material.uniforms.color.value},
+            eeColor: {type: "c", value: 0},
+            len: {type: "f", value: 0},
+        },
+        vertexShader   : document.getElementById('drain-vertex-shader').textContent,
+        fragmentShader : document.getElementById('drain-frag-shader').textContent,
+        side           : THREE.DoubleSide,
+        transparent    : true,
+        opacity        : 0.8,
+        depthFunc      : THREE.LessDepth,
+        depthTest      : false,
+        depthWrite     : true,
+        blending       : THREE.AdditiveBlending,
+        alphaTest      : 1.0,
+        morphTargets   : true,
+    });
 
     this.mesh = new THREE.Mesh( this.geometry, this.material );
     this.mesh.renderOrder = 10;
@@ -84,7 +82,7 @@ ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drain_target_id ) 
         // this.updatePinch( distance );
         this.updateStretch( distance );
         // this.updateTaper( drainer_scale, drainee_scale ); // TODO impl
-        // this.updateUniforms( drainee, distance ); // until shadermaterial is back
+        this.updateUniforms( drainee, distance );
         this.updatePosition( drainer_pos, drainee_pos, drainer_scale, drainee_scale );
     }
 };
