@@ -17,11 +17,12 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
 
     this.meshes = [];
 
-    this.initialCylinderLength = 50;
+    this.initialCylinderLength = config.DRAIN_MAX_DISTANCE;
 
     this.geometry = new THREE.CylinderGeometry( 10, 10, this.initialCylinderLength, 16, 12, true );
     this.geometry.rotateX( Math.PI/2 ); // rotate geo so its ends point 'up'
     this.createPinch( this.initialCylinderLength ); // initialize morphTargets
+    this.createStretch( this.initialCylinderLength ); // initialize morphTargets
 
     this.material = new THREE.ShaderMaterial({
         uniforms: {
@@ -47,6 +48,7 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
     this.mesh = new THREE.Mesh( this.geometry, this.material );
     this.mesh.renderOrder = 10;
     this.mesh.morphTargetInfluences[ 0 ] = 0.4; // strength of pinch effect
+    this.mesh.morphTargetInfluences[ 1 ] = 0; // length of stretch
 
     this.hide(); // initially hide
 
@@ -83,9 +85,7 @@ ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drain_target_id ) 
     }
 
     if (this.isVisible()) {
-        // this.updatePinch( distance );
         this.updateStretch( distance );
-        // this.updateTaper( drainer_scale, drainee_scale ); // TODO impl
         this.updateUniforms( drainee, distance );
         this.updatePosition( drainer_pos, drainee_pos, drainer_scale, drainee_scale );
     }
@@ -135,6 +135,20 @@ ZOR.DrainView.prototype.updateUniforms = function ZORDrainViewUpdateUniforms( dr
     // theoretical maximum drain)
     var opacity = 1 - distance / config.DRAIN_MAX_DISTANCE;
     this.material.uniforms.power.value = opacity;
+};
+
+ZOR.DrainView.prototype.createStretch = function ZORDrainViewCreateStretch( distance ) {
+    var stretchVertices = this.createStretchVertices( distance );
+    this.geometry.morphTargets.push( { name: "stretch", vertices: stretchVertices } );
+};
+
+ZOR.DrainView.prototype.createStretchVertices = function ZORDrainViewCreateStretchVertices( distance, o_array ) {
+    var stretchVertices = o_array || [];
+    for ( var i = 0; i < this.geometry.vertices.length; i ++ ) {
+        stretchVertices[i] = this.geometry.vertices[ i ].clone();
+        stretchVertices[i].z *= 0;
+    }
+    return stretchVertices;
 };
 
 ZOR.DrainView.prototype.updateStretch = function ZORDrainViewUpdateStretch( distance ) {
