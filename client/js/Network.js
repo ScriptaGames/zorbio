@@ -245,8 +245,9 @@ function setupSocket(ws) {
     }
 
     function handle_msg_food_captured(msg) {
-        if (!gameStart) return;
-        foodController.hideFood( msg.fi );
+        if (foodController && foodController.isInitialized()) {
+            foodController.hideFood( msg.fi );
+        }
     }
 
     function handle_msg_server_tick_slow(msg) {

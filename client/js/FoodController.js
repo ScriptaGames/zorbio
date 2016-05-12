@@ -4,15 +4,13 @@
  * @param fogCenterPosition
  * @constructor
  */
-var FoodController = function ZORFoodController(model, fogCenterPosition, scene) {
+var FoodController = function ZORFoodController(model, fogCenterPosition) {
 
     this.model = model;
     this.view = new FoodView();
     this.fogCenterPosition = new THREE.Vector3();
-    this.vdist = new THREE.Vector3();
 
     this.fogCenterPosition.copy(fogCenterPosition);
-
 
     // create octree
     this.octree = new THREE.Octree( {
@@ -44,6 +42,14 @@ var FoodController = function ZORFoodController(model, fogCenterPosition, scene)
         this.fogCenterPosition.copy(fogCenterPosition);
 
         this.view.update();
+    };
+
+    /**
+     * Returns true of the food controller is fully initialed and drawn and ready to use
+     * @returns {boolean}
+     */
+    this.isInitialized = function ZORFoodControllerIsInitialized() {
+        return this.view.initialized;
     };
 
     /**

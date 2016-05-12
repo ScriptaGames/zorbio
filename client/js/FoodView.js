@@ -4,6 +4,8 @@
  */
 var FoodView = function ZORFoodView() {
 
+    this.initialized = false;
+
     this.drawFood = function ZORFoodViewDrawFood(scene, food, foodCount, fogCenterPosition, octree) {
         this.translate = new Float32Array( foodCount * 3 );
         this.colors = new Float32Array( foodCount * 3 );
@@ -78,15 +80,8 @@ var FoodView = function ZORFoodView() {
         this.mesh.frustumCulled = false;
 
         scene.add( this.mesh );
-    };
 
-    /**
-     * Decrement the food item at index i if it is gt 0.
-     */
-    function decfood( v, i, c ) {
-        if ( v <= config.FOOD_RESPAWN_ANIM_DURATION ) {
-            c[i] = Math.max( 0, v - Math.round( ZOR.LagScale.get() ) );
-        }
+        this.initialized = true;
     };
 
     this.update = function ZORFoodViewUpdate() {
