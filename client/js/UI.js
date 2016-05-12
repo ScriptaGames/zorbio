@@ -131,6 +131,8 @@ ZOR.UI = function ZORUI() {
      */
 
     function on( event, handler ) {
+
+        // 'init' is a custom event owned by UI.js
         if (event === 'init') {
             if (initialized) {
                 handler.call(this);
@@ -139,7 +141,10 @@ ZOR.UI = function ZORUI() {
                 init_handlers.push(handler.bind(this));
             }
         }
-        engine.on( event, handler );
+        // let Ractive handle the other events
+        else {
+            engine.on( event, handler );
+        }
     }
 
     /**
@@ -216,7 +221,6 @@ ZOR.UI = function ZORUI() {
      * Initialize all the UI event handlers.
      */
     function init_events() {
-        'use strict';
 
         if (localStorage.alpha_key) {
             engine.set('alpha_key', localStorage.alpha_key)
