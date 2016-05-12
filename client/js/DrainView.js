@@ -146,12 +146,13 @@ ZOR.DrainView.prototype.createStretchVertices = function ZORDrainViewCreateStret
     var stretchVertices = o_array || [];
     for ( var i = 0; i < this.geometry.vertices.length; i ++ ) {
         stretchVertices[i] = this.geometry.vertices[ i ].clone();
-        stretchVertices[i].z *= 0;
+        stretchVertices[i].z = 0;
     }
     return stretchVertices;
 };
 
 ZOR.DrainView.prototype.updateStretch = function ZORDrainViewUpdateStretch( distance ) {
+    this.mesh.morphTargetInfluences[ 1 ] = 1 - distance / config.DRAIN_MAX_DISTANCE;
 };
 
 ZOR.DrainView.prototype.createPinch = function ZORDrainViewCreatePinch( distance ) {
