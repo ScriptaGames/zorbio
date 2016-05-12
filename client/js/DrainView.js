@@ -133,8 +133,7 @@ ZOR.DrainView.prototype.updateUniforms = function ZORDrainViewUpdateUniforms( dr
     this.material.uniforms.len.value = distance;
     // base cylinder's opacity on how large the drain is (percentage of
     // theoretical maximum drain)
-    var opacity = 1 - distance / config.DRAIN_MAX_DISTANCE;
-    this.material.uniforms.power.value = opacity;
+    this.material.uniforms.power.value = 1 - distance / config.DRAIN_MAX_DISTANCE;
 };
 
 ZOR.DrainView.prototype.createStretch = function ZORDrainViewCreateStretch( distance ) {
