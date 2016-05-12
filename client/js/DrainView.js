@@ -17,9 +17,11 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
 
     this.meshes = [];
 
-    this.geometry = new THREE.CylinderGeometry( 10, 10, 50, 16, 12, true );
-    this.geometry.rotateX(Math.PI/2); // rotate geo so its ends point 'up'
-    this.createPinch(1); // initialize morphTargets
+    this.initialCylinderLength = 50;
+
+    this.geometry = new THREE.CylinderGeometry( 10, 10, this.initialCylinderLength, 16, 12, true );
+    this.geometry.rotateX( Math.PI/2 ); // rotate geo so its ends point 'up'
+    this.createPinch( this.initialCylinderLength ); // initialize morphTargets
 
     this.material = new THREE.ShaderMaterial({
         uniforms: {
