@@ -28,7 +28,7 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
     );
     this.geometry.rotateX( Math.PI/2 );               // rotate geo so its ends point 'up'
     this.createPinch( this.initialCylinderLength );   // initialize pinch morphTarget
-    this.createStretch( this.initialCylinderLength ); // initialize stretch morphTarget
+    this.createStretch();                             // initialize stretch morphTarget
     this.createDrainerTaper();                        // initialize drainer taper morphTarget
     this.createDraineeTaper();                        // initialize drainee taper morphTarget
 
@@ -153,12 +153,12 @@ ZOR.DrainView.prototype.updateUniforms = function ZORDrainViewUpdateUniforms( dr
 ///////////////
 
 
-ZOR.DrainView.prototype.createStretch = function ZORDrainViewCreateStretch( distance ) {
-    var stretchVertices = this.createStretchVertices( distance );
+ZOR.DrainView.prototype.createStretch = function ZORDrainViewCreateStretch() {
+    var stretchVertices = this.createStretchVertices();
     this.geometry.morphTargets.push( { name: "stretch", vertices: stretchVertices } );
 };
 
-ZOR.DrainView.prototype.createStretchVertices = function ZORDrainViewCreateStretchVertices( distance ) {
+ZOR.DrainView.prototype.createStretchVertices = function ZORDrainViewCreateStretchVertices() {
     var stretchVertices = [];
     for ( var i = 0; i < this.geometry.vertices.length; i ++ ) {
         stretchVertices[i] = this.geometry.vertices[ i ].clone();
@@ -175,7 +175,7 @@ ZOR.DrainView.prototype.updateStretch = function ZORDrainViewUpdateStretch( dist
 //  Drainer taper  //
 /////////////////////
 
-ZOR.DrainView.prototype.createDrainerTaper = function ZORDrainViewCreateDrainerTaper( distance ) {
+ZOR.DrainView.prototype.createDrainerTaper = function ZORDrainViewCreateDrainerTaper() {
     var taperVertices = this.createDrainerTaperVertices();
     this.geometry.morphTargets.push( { name: "drainer_taper", vertices: taperVertices } );
 };
@@ -193,15 +193,14 @@ ZOR.DrainView.prototype.createDrainerTaperVertices = function ZORDrainViewCreate
 };
 
 ZOR.DrainView.prototype.updateDrainerTaper = function ZORDrainViewUpdateDrainerTaper( scale ) {
-    var influence = 1 - scale / config.MAX_PLAYER_RADIUS;
-    this.mesh.morphTargetInfluences[ 2 ] = influence;
+    this.mesh.morphTargetInfluences[ 2 ] = 1 - scale / config.MAX_PLAYER_RADIUS;
 };
 
 /////////////////////
 //  Drainee taper  //
 /////////////////////
 
-ZOR.DrainView.prototype.createDraineeTaper = function ZORDrainViewCreateDraineeTaper( distance ) {
+ZOR.DrainView.prototype.createDraineeTaper = function ZORDrainViewCreateDraineeTaper() {
     var taperVertices = this.createDraineeTaperVertices();
     this.geometry.morphTargets.push( { name: "drainee_taper", vertices: taperVertices } );
 };
@@ -219,8 +218,7 @@ ZOR.DrainView.prototype.createDraineeTaperVertices = function ZORDrainViewCreate
 };
 
 ZOR.DrainView.prototype.updateDraineeTaper = function ZORDrainViewUpdateDraineeTaper( scale ) {
-    var influence = 1 - scale / config.MAX_PLAYER_RADIUS;
-    this.mesh.morphTargetInfluences[ 3 ] = influence;
+    this.mesh.morphTargetInfluences[ 3 ] = 1 - scale / config.MAX_PLAYER_RADIUS;
 };
 
 /////////////
