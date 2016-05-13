@@ -124,7 +124,9 @@ function setupSocket(ws) {
     }
 
     function handle_msg_game_setup() {
+        // add player to players and actors
         ZOR.Game.players[player.getPlayerId()] = player;
+        zorbioModel.actors[player.model.sphere.id] = player.model.sphere;
 
         // add player to scene and reset camera
         initCameraAndPlayer();
