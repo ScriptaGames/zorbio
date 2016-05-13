@@ -42,7 +42,7 @@ function setupSocket(ws) {
                     handle_msg_welcome(message);
                     break;
                 case 'game_setup':
-                    handle_msg_game_setup(message);
+                    handle_msg_game_setup();
                     break;
                 case 'player_join':
                     handle_msg_player_join(message);
@@ -123,19 +123,8 @@ function setupSocket(ws) {
         ws.send(JSON.stringify({op: 'player_ready'}));
     }
 
-    function handle_msg_game_setup(msg) {
+    function handle_msg_game_setup() {
         ZOR.Game.players[player.getPlayerId()] = player;
-
-        zorbioModel = msg.model;
-
-        // iterate over actors and create THREE objects that don't serialize over websockets
-        var actorIds = Object.getOwnPropertyNames(zorbioModel.actors);
-        for (var i = 0, l = actorIds.length; i < l; i++) {
-            var actorId = +actorIds[i];  // make sure id is a number
-            var actor = zorbioModel.actors[actorId];
-            var position = actor.position;
-            actor.position = new THREE.Vector3(position.x, position.y, position.z);
-        }
 
         // add player to scene and reset camera
         initCameraAndPlayer();

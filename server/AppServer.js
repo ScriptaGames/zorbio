@@ -69,7 +69,7 @@ var AppServer = function (wss, app) {
                         handle_msg_respawn();
                         break;
                     case 'player_ready':
-                        handle_msg_player_ready(message);
+                        handle_msg_player_ready();
                         break;
                     case 'zor_ping':
                         handle_msg_zor_ping(message);
@@ -133,7 +133,7 @@ var AppServer = function (wss, app) {
             console.log('User ' + currentPlayer.id + ' spawning into the game');
         }
 
-        function handle_msg_player_ready(msg) {
+        function handle_msg_player_ready() {
             console.log('Player ' + currentPlayer.id + ' client ready');
 
             if (Validators.is_profane(currentPlayer.name)) {
@@ -162,7 +162,7 @@ var AppServer = function (wss, app) {
                 self.model.addActor(currentPlayer.sphere);
 
                 // Pass any data to the for final setup
-                ws.send(JSON.stringify({op: 'game_setup', model: self.model}));
+                ws.send(JSON.stringify({op: 'game_setup'}));
 
                 // Notify other clients that player has joined
                 var msgObj = JSON.stringify({op: 'player_join', player: currentPlayer});
