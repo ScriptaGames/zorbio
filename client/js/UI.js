@@ -62,7 +62,7 @@ ZOR.UI = function ZORUI() {
         prev_state       : STATES.INITIAL,
         STATES           : STATES,
         ACTIONS          : ACTIONS,
-        COLORS           : ZOR.PlayerView.COLORS,
+        COLORS           : config.COLORS,
         MISSING_FEATURES : [],
         AUTHORS          : ['Michael Clayton', 'Jared Sprague'],
         leaders          : [],

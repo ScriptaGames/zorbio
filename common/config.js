@@ -163,6 +163,23 @@ config.REQUIRED_WEBGL_EXTENSIONS = ['ANGLE_instanced_arrays'];
 ////////////////////////////////////////////////////////////////////////
 
 config.TITLE_CAMERA_SPIN_SPEED = 0.001;
+config.COLORS = [
+    '#38FF4D',
+    '#38FFC3',
+    '#417AFF',
+    '#41ACFF',
+    '#5941FF',
+    '#99FF38',
+    '#A040FF',
+    '#E140FF',
+    '#F8FF38',
+    '#FF386A',
+    '#FF6B38',
+    '#FF6DD2',
+    '#FFB638',
+    '#FFF42E',
+];
+
 
 ////////////////////////////////////////////////////////////////////////
 //                           SOUND SETTINGS                           //

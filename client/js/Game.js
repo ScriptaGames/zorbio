@@ -84,8 +84,8 @@ function startGame(type) {
     var key        = localStorage.alpha_key   = ZOR.UI.engine.get('alpha_key');
 
     // Enter the game
-    var colorCode = UTIL.getRandomIntInclusive(0, ZOR.PlayerView.COLORS.length - 1);
-    var colorHex = ZOR.PlayerView.COLORS[colorCode];
+    var colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
+    var colorHex = config.COLORS[colorCode];
     document.querySelector("meta[name=theme-color]").content = colorHex;
     console.log('Player color', colorHex);
 

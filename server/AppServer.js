@@ -726,6 +726,11 @@ var AppServer = function (wss, app) {
     if (config.CHECK_VERSION) {
         gameloop.setGameLoop(self.versionCheck, config.CHECK_VERSION_INTERVAL);
     }
+
+    // Add AI
+    //var colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
+    //var aiSphere = new Zorbio.PlayerSphere(Zorbio.IdGenerator.get_next_id(), )
+    //self.model.addActor();
 };
 
 if (NODEJS) module.exports = AppServer;

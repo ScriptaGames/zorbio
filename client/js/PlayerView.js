@@ -9,7 +9,7 @@ var ZOR = ZOR || {};
  */
 
 ZOR.PlayerView = function ZORPlayerView(player, actor, scene) {
-    this.playerColor = ZOR.PlayerView.COLORS[actor.color];
+    this.playerColor = config.COLORS[actor.color];
 
     this.geometry = new THREE.SphereGeometry(
         1,
@@ -92,20 +92,3 @@ ZOR.PlayerView.prototype.adjustCamera = function ZORPlayerViewAdjustCamera(scale
     this.camera_controls.minDistance = scale / Math.tan( Math.PI * camera.fov / 360 ) + 100;
     this.camera_controls.maxDistance = this.camera_controls.minDistance;
 };
-
-ZOR.PlayerView.COLORS = [
-    '#38FF4D',
-    '#38FFC3',
-    '#417AFF',
-    '#41ACFF',
-    '#5941FF',
-    '#99FF38',
-    '#A040FF',
-    '#E140FF',
-    '#F8FF38',
-    '#FF386A',
-    '#FF6B38',
-    '#FF6DD2',
-    '#FFB638',
-    '#FFF42E',
-];
