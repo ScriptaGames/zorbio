@@ -115,6 +115,7 @@ ZOR.UI = function ZORUI() {
      */
 
     function state( newstate ) {
+        if (!newstate) return uidata.state;
         if (newstate !== uidata.prev_state) {
             uidata.prev_state = uidata.state;
         }
