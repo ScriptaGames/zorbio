@@ -294,7 +294,7 @@ function drawPlayers() {
     for (var i = 0, l = playerIds.length; i < l; i++) {
         var id = +playerIds[i];  // make sure id is a number
         var playerModel = playerModels[id];
-        if (playerModel.type === ZOR.PlayerTypes.PLAYER) {
+        if (playerModel.type != ZOR.PlayerTypes.SPECTATOR) {
             // Only draw other players
             if (!player || (id !== player.getPlayerId())) {
                 ZOR.Game.players[id] = new ZOR.PlayerController(playerModel, scene);

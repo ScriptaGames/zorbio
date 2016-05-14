@@ -1,6 +1,5 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
-var URL        = require('url');
 var config     = require('../common/config.js');
 var pjson      = require('../package.json');
 var request    = require('request');
@@ -12,6 +11,7 @@ var ZorApi     = require('./ZorApi.js');
 var UTIL       = require('../common/util.js');
 var Drain      = require('../common/Drain.js');
 var WebSocket  = require('ws');
+var BotController = require('./BotController.js');
 
 /**
  * This module contains all of the app logic and state,
@@ -38,6 +38,7 @@ var AppServer = function (wss, app) {
     self.model = new Zorbio.Model(config.WORLD_SIZE, config.FOOD_DENSITY);
     self.sockets = {};
     self.serverRestartMsg = '';
+    self.bots = [];
 
     // Api
     self.api = new ZorApi(self.app, self.model, self.sockets);
@@ -523,6 +524,12 @@ var AppServer = function (wss, app) {
         var attackingPlayer = self.model.players[attackingPlayerId];
         var targetPlayer = self.model.players[targetPlayerId];
 
+        if (attackingPlayer.type === Zorbio.PlayerTypes.BOT && targetPlayer.type === Zorbio.PlayerTypes.BOT) {
+            // don't let bots capture eachother
+            console.log("Ignoring bot on bot capture: ", attackingPlayerId, targetPlayerId);
+            return;
+        }
+
         // Increment player captures for the attacking player
         attackingPlayer.playerCaptures++;
 
@@ -531,14 +538,18 @@ var AppServer = function (wss, app) {
         var targetSphere = targetPlayer.sphere;
         attackingSphere.growExpected( config.PLAYER_CAPTURE_VALUE( targetSphere.radius() ) );
 
-        // Inform the attacking player that they captured target player
-        self.sockets[attackingPlayerId].send(JSON.stringify({op: 'captured_player', targetPlayerId: targetPlayerId}));
+        if (attackingPlayer.type != Zorbio.PlayerTypes.BOT) {
+            // Inform the attacking player that they captured target player
+            self.sockets[attackingPlayerId].send(JSON.stringify({op: 'captured_player', targetPlayerId: targetPlayerId}));
+        }
 
-        // Inform the target player that they died
-        targetPlayer.deathTime = Date.now();
-        targetPlayer.score = config.PLAYER_GET_SCORE( targetPlayer.sphere.scale );
-        var msgObj = {op: 'you_died', attackingPlayerId: attackingPlayerId, targetPlayer: targetPlayer};
-        self.sockets[targetPlayerId].send(JSON.stringify(msgObj));
+        if (targetPlayer.type != Zorbio.PlayerTypes.BOT) {
+            // Inform the target player that they died
+            targetPlayer.deathTime = Date.now();
+            targetPlayer.score = config.PLAYER_GET_SCORE( targetPlayer.sphere.scale );
+            var msgObj = {op: 'you_died', attackingPlayerId: attackingPlayerId, targetPlayer: targetPlayer};
+            self.sockets[targetPlayerId].send(JSON.stringify(msgObj));
+        }
 
         // Inform other clients that target player died
         msgObj = {op: "player_died", attackingPlayerId: attackingPlayerId, targetPlayerId: targetPlayerId};
@@ -587,13 +598,15 @@ var AppServer = function (wss, app) {
     };
 
     self.checkHeartbeats = function appCheckHeartbeats() {
+        if (!config.HEARTBEAT_ENABLE) return;
+
         var time = Date.now();
 
         var playerIds = Object.getOwnPropertyNames(self.model.players);
         for (var i = 0, l = playerIds.length; i < l; i++) {
             var id = +playerIds[i];  // make sure id is a number
             var player = self.model.players[id];
-            if (player && player.lastHeartbeat) {
+            if (player && player.type != Zorbio.PlayerTypes.BOT && player.lastHeartbeat) {
                 if ((time - player.lastHeartbeat) > config.HEARTBEAT_TIMEOUT) {
                     var msg = "You were kicked because last heartbeat was over " + (config.HEARTBEAT_TIMEOUT / 1000) + " seconds ago.";
                     self.kickPlayer(id, msg);
@@ -682,8 +695,16 @@ var AppServer = function (wss, app) {
      */
     self.serverTickFast = function appServerTickFast() {
         self.playerUpdates();
+        self.updateBots();
         self.updatePlayerCaptures();
         self.sendActorUpdates();
+    };
+
+    self.updateBots = function appUpdateBots() {
+        for (var i = 0; i < self.bots.length; i++) {
+            var bot = self.bots[i];
+            bot.move();
+        }
     };
 
     /**
@@ -727,10 +748,15 @@ var AppServer = function (wss, app) {
         gameloop.setGameLoop(self.versionCheck, config.CHECK_VERSION_INTERVAL);
     }
 
-    // Add AI
-    //var colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
-    //var aiSphere = new Zorbio.PlayerSphere(Zorbio.IdGenerator.get_next_id(), )
-    //self.model.addActor();
+    // Add Bots
+    var size_increment = Math.floor(config.MAX_PLAYER_RADIUS / config.MAX_BOTS);
+    for (var i = 0; i < config.MAX_BOTS; i++) {
+        var bot = new BotController(config.INITIAL_PLAYER_RADIUS + (i * size_increment));
+        self.bots.push(bot);
+        self.model.players[bot.player.id] = bot.player;
+        self.model.addActor(bot.player.sphere);
+    }
+
 };
 
 if (NODEJS) module.exports = AppServer;

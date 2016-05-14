@@ -213,7 +213,7 @@ UTIL.adjustVelocityWallHit = function UTILadjustVelocityWallHit( p, r, v, w ) {
  */
 UTIL.slopewell = function slopewell( r ) {
     return Math.max(0, ( -config.STEERING.WELL + r ) / config.STEERING.SLOPE);
-}
+};
 
 /**
  * Get a random world coordinate which a sphere could be placed in.  Because
@@ -227,7 +227,7 @@ UTIL.safeRandomCoordinate = function UTILsafeRandomCoordinate() {
     var v = arguments[0] || Math.random();
     var safe_size = config.WORLD_SIZE - 2 * config.INITIAL_PLAYER_RADIUS;
     return v * safe_size - safe_size / 2;
-}
+};
 
 /**
  * Returns a good spawning point for a player.  The point is likely to be far
@@ -260,7 +260,7 @@ UTIL.trimPosition = function UTILTrimPosition(position, trim) {
  */
 UTIL.fourPad = function UTILFourPad(n) {
     return n + ( 4 - n % 4 );
-}
+};
 
 UTIL.trimFloat = function UTILTrimFloat(num, trim) {
     return +num.toFixed(trim);

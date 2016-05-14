@@ -23,6 +23,7 @@ config.REQUIRE_ALPHA_KEY = false;
 
 config.WORLD_SIZE       = 1600;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
+config.MAX_BOTS         = 10;
 
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //
@@ -31,7 +32,7 @@ config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD
 config.PORT                     = 80;
 config.MAX_PLAYERS              = 50;
 config.HEARTBEAT_ENABLE         = true;
-config.HEARTBEAT_TIMEOUT        = 300000; // how long before a client is considered disconnected
+config.HEARTBEAT_TIMEOUT        = 30000;  // how long before a client is considered disconnected
 config.HEARTBEAT_CHECK_INTERVAL = 1000;   // server heartbeat test interval
 config.HEARTBEAT_PULSE_INTERVAL = 5000;   // client heartbeat pulse
 config.TICK_SLOW_INTERVAL       = 200;    // General server updates in milliseconds

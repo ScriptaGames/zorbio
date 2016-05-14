@@ -163,7 +163,8 @@ ZOR.PlayerSphere.prototype.growExpected = function ZORPlayerSphereGrowExpected(a
  */
 ZOR.PlayerTypes = Object.freeze({
     SPECTATOR : 'SPECTATOR',
-    PLAYER    : 'PLAYER'
+    PLAYER    : 'PLAYER',
+    BOT       : 'BOT',
 });
 
 /**
