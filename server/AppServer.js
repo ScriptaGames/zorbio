@@ -38,7 +38,6 @@ var AppServer = function (wss, app) {
     self.model = new Zorbio.Model(config.WORLD_SIZE, config.FOOD_DENSITY);
     self.sockets = {};
     self.serverRestartMsg = '';
-    self.bots = [];
 
     // Api
     self.api = new ZorApi(self.app, self.model, self.sockets);
@@ -550,6 +549,16 @@ var AppServer = function (wss, app) {
             var msgObj = {op: 'you_died', attackingPlayerId: attackingPlayerId, targetPlayer: targetPlayer};
             self.sockets[targetPlayerId].send(JSON.stringify(msgObj));
         }
+        else {
+            // bot was captured, lets see if we need to spawn another to replace it
+            var playerIds = Object.getOwnPropertyNames(self.model.players);
+            if (playerIds.length < config.MAX_BOTS + 1) {
+                var bot = self.botController.spawnBot();
+
+                // Notify other clients that bot has joined
+                self.wss.broadcast(JSON.stringify({op: 'player_join', player: bot.player}));
+            }
+        }
 
         // Inform other clients that target player died
         msgObj = {op: "player_died", attackingPlayerId: attackingPlayerId, targetPlayerId: targetPlayerId};
@@ -695,16 +704,10 @@ var AppServer = function (wss, app) {
      */
     self.serverTickFast = function appServerTickFast() {
         self.playerUpdates();
-        self.updateBots();
+        self.botController.update();
         self.updatePlayerCaptures();
         self.sendActorUpdates();
-    };
 
-    self.updateBots = function appUpdateBots() {
-        for (var i = 0; i < self.bots.length; i++) {
-            var bot = self.bots[i];
-            bot.move();
-        }
     };
 
     /**
@@ -748,13 +751,12 @@ var AppServer = function (wss, app) {
         gameloop.setGameLoop(self.versionCheck, config.CHECK_VERSION_INTERVAL);
     }
 
-    // Add Bots
-    var size_increment = Math.floor(config.MAX_PLAYER_RADIUS / config.MAX_BOTS);
+
+    self.botController = new BotController(self.model);
+
+    // Spawn Bots
     for (var i = 0; i < config.MAX_BOTS; i++) {
-        var bot = new BotController(config.INITIAL_PLAYER_RADIUS + (i * size_increment));
-        self.bots.push(bot);
-        self.model.players[bot.player.id] = bot.player;
-        self.model.addActor(bot.player.sphere);
+        self.botController.spawnBot();
     }
 
 };

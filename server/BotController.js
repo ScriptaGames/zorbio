@@ -1,39 +1,41 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
-var config     = require('../common/config.js');
-var Zorbio     = require('../common/zorbio.js');
-var UTIL       = require('../common/util.js');
+var config = require('../common/config.js');
+var Bot    = require('./Bot.js');
 
-var BotController = function (scale) {
+var BotController = function (model) {
     //  Scope
     var self = this;
 
-    // initialized player properties
-    var colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
-    var id = Zorbio.IdGenerator.get_next_id();
-    var position = UTIL.safePlayerPosition();
-    var name = "BOT_" + id;
-    self.scale = scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);
+    self.model = model;
 
-    // Create the player model
-    self.player = new Zorbio.Player(id, name, colorCode, Zorbio.PlayerTypes.BOT, position, self.scale);
+    self.bots = [];
 
-    self.move = function botMove() {
+    self.currentSpawnScale = config.INITIAL_PLAYER_RADIUS;
 
-        var sphere = self.player.sphere;
+    self.spawnBot = function botSpawnBot() {
+        var bot = new Bot(self.currentSpawnScale);
+        self.bots.push(bot);
+        self.model.players[bot.player.id] = bot.player;
+        self.model.addActor(bot.player.sphere);
 
-        //sphere.position.sub(
-        //    UTIL.adjustVelocityWallHit(
-        //        sphere.position,
-        //        0,
-        //        self.velocity,
-        //        config.WORLD_SIZE
-        //    )
-        //);
+        self.currentSpawnScale += 10;
+        if (self.currentSpawnScale > config.MAX_PLAYER_RADIUS) {
+            self.currentSpawnScale = config.INITIAL_PLAYER_RADIUS;
+        }
 
-        sphere.pushRecentPosition({position: sphere.position, radius: sphere.scale, time: Date.now()});
+        console.log("Spawned bot: ", bot.name, bot.player.id, bot.scale);
 
-    }
+        return bot;
+    };
+
+    self.update = function botUpdate() {
+        for (var i = 0; i < self.bots.length; i++) {
+            var bot = self.bots[i];
+            bot.move();
+        }
+    };
+
 };
 
 if (NODEJS) module.exports = BotController;
