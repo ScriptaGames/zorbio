@@ -14,7 +14,7 @@ var BotController = function (model) {
     self.currentSpawnScale = config.INITIAL_PLAYER_RADIUS;
 
     self.spawnBot = function botSpawnBot() {
-        var bot = new Bot(self.currentSpawnScale);
+        var bot = new Bot(self.currentSpawnScale, self.model);
         self.bots.push(bot);
         self.model.players[bot.player.id] = bot.player;
         self.model.addActor(bot.player.sphere);
