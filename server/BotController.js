@@ -29,12 +29,36 @@ var BotController = function (model) {
         return bot;
     };
 
+    self.removeBot = function botRemoveBot() {
+        var bot = self.bots.shift();
+
+        // remove from model
+        var playerId = bot.player.id;
+        var actorId = 0;
+        if (self.model.players[playerId]) {
+            // remove player from model
+            actorId = self.model.players[playerId].sphere.id;
+            delete self.model.players[playerId];
+        }
+        if (self.model.actors[actorId]) {
+            delete self.model.actors[actorId];
+        }
+
+        console.log("Removed bot: ", bot.id, bot.name, bot.scale);
+
+        return bot;
+    };
+
     self.update = function botUpdate() {
         for (var i = 0; i < self.bots.length; i++) {
             var bot = self.bots[i];
             bot.move();
         }
     };
+
+    self.hasBots = function botHasBots() {
+        return self.bots.length > 0;
+    }
 
 };
 

@@ -168,8 +168,17 @@ var AppServer = function (wss, app) {
                 var msgObj = JSON.stringify({op: 'player_join', player: currentPlayer});
                 setTimeout(self.wss.broadcast, 2000, msgObj);  // give player time to load the game
 
+                var playerCount = Object.getOwnPropertyNames(self.model.players).length;
                 console.log('Player ' + currentPlayer.id + ' joined game!');
-                console.log('Total players: ' + Object.getOwnPropertyNames(self.model.players).length);
+                console.log('Total players: ' + playerCount);
+
+                // see if we need to remove a bot
+                if (self.botController.hasBots() && playerCount > config.MAX_BOTS) {
+                    var bot = self.botController.removeBot();
+
+                    // notify other players that this bot was removed
+                    self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: bot.player.id}));
+                }
             }
         }
 
@@ -293,6 +302,8 @@ var AppServer = function (wss, app) {
 
             self.removePlayerFromModel(player_id);
             self.removePlayerSocket(player_id);
+
+            self.replenishBot();
         }
 
         function handle_msg_speed_boost_req() {
@@ -542,6 +553,8 @@ var AppServer = function (wss, app) {
             self.sockets[attackingPlayerId].send(JSON.stringify({op: 'captured_player', targetPlayerId: targetPlayerId}));
         }
 
+        self.removePlayerFromModel(targetPlayerId);
+
         if (targetPlayer.type != Zorbio.PlayerTypes.BOT) {
             // Inform the target player that they died
             targetPlayer.deathTime = Date.now();
@@ -550,21 +563,12 @@ var AppServer = function (wss, app) {
             self.sockets[targetPlayerId].send(JSON.stringify(msgObj));
         }
         else {
-            // bot was captured, lets see if we need to spawn another to replace it
-            var playerIds = Object.getOwnPropertyNames(self.model.players);
-            if (playerIds.length < config.MAX_BOTS + 1) {
-                var bot = self.botController.spawnBot();
-
-                // Notify other clients that bot has joined
-                self.wss.broadcast(JSON.stringify({op: 'player_join', player: bot.player}));
-            }
+            self.replenishBot();
         }
 
         // Inform other clients that target player died
         msgObj = {op: "player_died", attackingPlayerId: attackingPlayerId, targetPlayerId: targetPlayerId};
         self.wss.broadcast(JSON.stringify(msgObj));
-
-        self.removePlayerFromModel(targetPlayerId);
     };
 
     self.isPlayerInGame = function appIsPlayerInGame(player_id) {
@@ -741,6 +745,21 @@ var AppServer = function (wss, app) {
                 }
             }
         })
+    };
+
+
+    /**
+     * Adds a bot to the game if the population is to low
+     */
+    self.replenishBot = function appReplenishBot() {
+        // bot was captured, lets see if we need to spawn another to replace it
+        var playerIds = Object.getOwnPropertyNames(self.model.players);
+        if (playerIds.length < config.MAX_BOTS) {
+            var bot = self.botController.spawnBot();
+
+            // Notify other clients that bot has joined
+            self.wss.broadcast(JSON.stringify({op: 'player_join', player: bot.player}));
+        }
     };
 
     // Start game loops
