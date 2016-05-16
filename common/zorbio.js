@@ -213,7 +213,6 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.infractions_scale = 0;
 
     // Client Metrics
-    this.handshake = undefined;
     this.ping_metric = new ZOR.PlayerMetric(100);
     this.fps_metric = new ZOR.PlayerMetric(20, true);
     this.pp_send_metric = new ZOR.PlayerMetric(200);
