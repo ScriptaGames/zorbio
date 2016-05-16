@@ -44,13 +44,13 @@ var Bot = function (scale, model) {
             sphere.pushRecentPosition({position: sphere.position, radius: sphere.scale, time: Date.now()});
         },
 
-        // follow a target actor
-        follow: function moveFollow() {
-            if (!self.followActor || !self.followActor.position) return;
+        // chase a target actor
+        chase: function moveChase() {
+            if (!self.chaseTarget || !self.chaseTarget.position) return;
 
             var sphere = self.player.sphere;
 
-            var targetPos = self.followActor.position.clone();
+            var targetPos = self.chaseTarget.position.clone();
 
             targetPos.sub(sphere.position);
             targetPos.normalize();
@@ -64,11 +64,11 @@ var Bot = function (scale, model) {
         },
     };
 
-    self.setFollowTarget = function botFollowTarget(actor_id) {
-        self.followActor = self.model.actors[actor_id];
+    self.setChaseTarget = function botChaseTarget(actor_id) {
+        self.chaseTarget = self.model.actors[actor_id];
     };
 
-    self.move = self.movementPaterns.hold;
+    self.move = self.movementPaterns.chase;
 };
 
 if (NODEJS) module.exports = Bot;
