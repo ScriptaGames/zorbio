@@ -179,12 +179,6 @@ var AppServer = function (wss, app) {
                     // notify other players that this bot was removed
                     self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: bot.player.id}));
                 }
-
-                if (self.botController.hasBots()) {
-                    console.log("Setting bot chase target: ", currentPlayer.sphere.id);
-                    //TODO: REPLACE THIS TEMP TEST CODE WHEN A BETTER CHASE CHOOSING ALGORITHM
-                    self.botController.bots[0].setChaseTarget(currentPlayer.sphere.id);
-                }
             }
         }
 
@@ -546,7 +540,8 @@ var AppServer = function (wss, app) {
         }
 
         if (attackingPlayer.type === Zorbio.PlayerTypes.BOT && targetPlayer.type === Zorbio.PlayerTypes.BOT) {
-            console.log("bot on bot capture: ", attackingPlayerId, targetPlayerId);
+            console.log("Ignore bot on bot capture: ", attackingPlayerId, targetPlayerId);
+            return;
         }
 
         // Increment player captures for the attacking player
