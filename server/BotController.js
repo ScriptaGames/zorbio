@@ -11,17 +11,20 @@ var BotController = function (model) {
 
     self.bots = [];
 
-    self.currentSpawnScale = config.INITIAL_PLAYER_RADIUS;
+    self.currentSpawnCycle = 1;
 
     self.spawnBot = function botSpawnBot() {
-        var bot = new Bot(self.currentSpawnScale, self.model);
+        // https://www.desmos.com/calculator/fmmedr9kzi
+        var scale = (30 / (self.currentSpawnCycle - 0.75)) + 2;
+        var bot = new Bot(scale, self.model);
+
         self.bots.push(bot);
         self.model.players[bot.player.id] = bot.player;
         self.model.addActor(bot.player.sphere);
 
-        self.currentSpawnScale += 10;
-        if (self.currentSpawnScale > config.MAX_BOT_RADIUS) {
-            self.currentSpawnScale = config.INITIAL_PLAYER_RADIUS;
+        self.currentSpawnCycle++;
+        if (self.currentSpawnCycle > config.MAX_BOTS) {
+            self.currentSpawnCycle = 1;
         }
 
         console.log("Spawned bot: ", bot.name, bot.player.id, bot.scale);
@@ -30,7 +33,7 @@ var BotController = function (model) {
     };
 
     self.removeBot = function botRemoveBot() {
-        var bot = self.bots.shift();
+        var bot = self.bots.pop();
 
         // remove from model
         var playerId = bot.player.id;
