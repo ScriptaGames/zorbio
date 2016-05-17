@@ -348,21 +348,25 @@ var AppServer = function (wss, app) {
                 drainee_id = drain_target.id;
 
                 drainer.drain_target_id = drainee_id;
-                drainee = self.model.players[drainee_id].sphere;
+                var drainee_player = self.model.players[drainee_id];
+                drainee = drainee_player.sphere;
 
-                drain_amount = Drain.amount( drain_target.dist );
+                // Bots can't drain eachother
+                if (player.type != Zorbio.PlayerTypes.BOT || drainee_player.type != Zorbio.PlayerTypes.BOT) {
+                    drain_amount = Drain.amount(drain_target.dist);
 
-                drainer.growExpected( +drain_amount );
-                drainee.growExpected( -drain_amount );
+                    drainer.growExpected(+drain_amount);
+                    drainee.growExpected(-drain_amount);
 
-                player.drainAmount += +drain_amount;  // save drain amount stat
+                    player.drainAmount += +drain_amount;  // save drain amount stat
 
-                // if the drain caused the drainer to get bigger than the drainee,
-                // correct so that they're the same size.  drain shouldn't be able
-                // to make a player larger than another because it leads to
-                // infinite back and forth draining.
-                if (drainer.scale > drainee.scale) {
-                    drainer.scale = drainee.scale = ( drainer.scale + drainee.scale ) / 2;
+                    // if the drain caused the drainer to get bigger than the drainee,
+                    // correct so that they're the same size.  drain shouldn't be able
+                    // to make a player larger than another because it leads to
+                    // infinite back and forth draining.
+                    if (drainer.scale > drainee.scale) {
+                        drainer.scale = drainee.scale = ( drainer.scale + drainee.scale ) / 2;
+                    }
                 }
             }
         }
