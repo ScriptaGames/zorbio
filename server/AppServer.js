@@ -540,10 +540,13 @@ var AppServer = function (wss, app) {
         var attackingPlayer = self.model.players[attackingPlayerId];
         var targetPlayer = self.model.players[targetPlayerId];
 
-        if (attackingPlayer.type === Zorbio.PlayerTypes.BOT && targetPlayer.type === Zorbio.PlayerTypes.BOT) {
-            // don't let bots capture eachother
-            console.log("Ignoring bot on bot capture: ", attackingPlayerId, targetPlayerId);
+        if (!attackingPlayer || !targetPlayer) {
+            console.log("ERROR: player capture attacking or target player undefined.");
             return;
+        }
+
+        if (attackingPlayer.type === Zorbio.PlayerTypes.BOT && targetPlayer.type === Zorbio.PlayerTypes.BOT) {
+            console.log("bot on bot capture: ", attackingPlayerId, targetPlayerId);
         }
 
         // Increment player captures for the attacking player

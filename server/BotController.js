@@ -20,7 +20,7 @@ var BotController = function (model) {
         self.model.addActor(bot.player.sphere);
 
         self.currentSpawnScale += 10;
-        if (self.currentSpawnScale > config.MAX_PLAYER_RADIUS) {
+        if (self.currentSpawnScale > config.MAX_BOT_RADIUS) {
             self.currentSpawnScale = config.INITIAL_PLAYER_RADIUS;
         }
 
