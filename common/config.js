@@ -23,7 +23,7 @@ config.REQUIRE_ALPHA_KEY = false;
 
 config.WORLD_SIZE       = 1600;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
-config.MAX_BOTS         = 8;
+config.MAX_BOTS         = 10;
 config.MAX_BOT_RADIUS   = 100;
 
 ////////////////////////////////////////////////////////////////////////
