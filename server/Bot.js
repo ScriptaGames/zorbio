@@ -12,7 +12,7 @@ var Bot = function (scale, model) {
     // initialized player properties
     self.colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
     self.id = Zorbio.IdGenerator.get_next_id();
-    self.name = "BOT_" + self.id;
+    self.name = "AI_" + self.id;
     self.scale = scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);
 
     var position = UTIL.safePlayerPosition();
@@ -62,13 +62,41 @@ var Bot = function (scale, model) {
 
             sphere.pushRecentPosition({position: sphere.position, radius: sphere.scale, time: Date.now()});
         },
+
+        // move to a random points
+        randomPoint: function moveRandomPoint() {
+            var sphere = self.player.sphere;
+
+            if (!self.moveToPoint) {
+                self.moveToPoint = UTIL.safePlayerPosition();
+            }
+
+            var dist = sphere.position.distanceTo(self.moveToPoint);
+
+            if (dist < 5) {
+                // reached point, generate a new one
+                self.moveToPoint = UTIL.safePlayerPosition();
+            }
+
+            var targetPos = self.moveToPoint.clone();
+
+            targetPos.sub(sphere.position);
+            targetPos.normalize();
+
+            var speed = self.player.getSpeed() * 3; // times 3 because it's every 50 ms not every 16 ms
+            targetPos.multiplyScalar( speed );
+
+            sphere.position.add(targetPos);
+
+            sphere.pushRecentPosition({position: sphere.position, radius: sphere.scale, time: Date.now()});
+        }
     };
 
     self.setChaseTarget = function botChaseTarget(actor_id) {
         self.chaseTarget = self.model.actors[actor_id];
     };
 
-    self.move = self.movementPaterns.chase;
+    self.move = self.movementPaterns.randomPoint;
 };
 
 if (NODEJS) module.exports = Bot;

@@ -86,6 +86,10 @@ ZOR.Actor = function ZORActor() {
 };
 
 ZOR.Actor.prototype.pushRecentPosition = function ZORActorPushRecentPosition(position) {
+
+    // make a copy of the position
+    position.position = new THREE.Vector3(position.position.x, position.position.y, position.position.z);
+
     if (this.recentPositions.length === 0) {
         this.recentPositions.push(position);
     }
