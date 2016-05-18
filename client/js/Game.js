@@ -6,11 +6,15 @@ ZOR.Game = {};
 // Scene and canvas
 var scene;
 var canvas;
-var octree;
 
 // Camera
 var camera;
 var camera_controls;
+var raycaster = new THREE.Raycaster();
+if (config.FOG_ENABLED) {
+    raycaster.far = config.FOG_FAR;
+}
+
 
 // Player
 var playerType;
@@ -24,12 +28,12 @@ var gameStart = false;
 var disconnected = false;
 var foodController;
 
-var drainView;
-
 // Model that represents the game state shared with server
 var zorbioModel;
 
 ZOR.Game.players = {};
+
+ZOR.Game.player_meshes = [];
 
 ZOR.Game.fullscreen = function go_fullscreen() {
     var el = document.body;
@@ -214,6 +218,18 @@ function createScene() {
             foodController.checkFoodCaptures(player, captureFood);
 
             camera_controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
+
+            raycaster.set(player.view.mainSphere.position, camera.getWorldDirection().normalize());
+
+            // calculate objects intersecting the picking ray
+            var intersects = raycaster.intersectObjects( ZOR.Game.player_meshes );
+
+            if (intersects && intersects.length > 0) {
+                //TODO: only update the UI if the player intersect changes
+                var playerMesh = intersects[0].object;
+                var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
+                console.log("Looking at: ", pointedPlayer.model.name, pointedPlayer.model.sphere.scale);
+            }
         }
         else if (ZOR.UI.state() === ZOR.UI.STATES.LOGIN_SCREEN) {
             fogCenter = camera.position;

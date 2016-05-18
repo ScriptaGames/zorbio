@@ -54,7 +54,7 @@ ZOR.PlayerController.prototype.getSpeed = function ZORPlayerControllerGetSpeed()
 };
 
 ZOR.PlayerController.prototype.initView = function ZORPlayerControllerInitView(scene) {
-    this.view = new ZOR.PlayerView(this, this.model.sphere, scene);
+    this.view = new ZOR.PlayerView(this.model, scene);
 };
 
 ZOR.PlayerController.prototype.removeView = function ZORPlayerControllerRemoveView(scene) {

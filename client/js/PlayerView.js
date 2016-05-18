@@ -3,12 +3,16 @@ var ZOR = ZOR || {};
 /**
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
  * visually, and how to move it's different 3D pieces around.
- * @param actor
  * @constructor
+ * @param model
  * @param scene
  */
 
-ZOR.PlayerView = function ZORPlayerView(player, actor, scene) {
+ZOR.PlayerView = function ZORPlayerView(model, scene) {
+    this.model = model;
+
+    var actor = model.sphere;
+
     this.playerColor = config.COLORS[actor.color];
 
     this.geometry = new THREE.SphereGeometry(
@@ -52,6 +56,9 @@ ZOR.PlayerView = function ZORPlayerView(player, actor, scene) {
 
     this.setScale(actor.scale);
 
+    this.mainSphere.player_id = this.model.id;
+    ZOR.Game.player_meshes.push(this.mainSphere);  // store play mesh for raycaster search
+
     scene.add( this.mainSphere );
 };
 
@@ -76,6 +83,7 @@ ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(p
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
     this.drainView.dispose();
     scene.remove(this.mainSphere);
+    //TODO: remove player_mesh reference
 };
 
 ZOR.PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
