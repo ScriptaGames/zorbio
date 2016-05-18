@@ -83,7 +83,17 @@ ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(p
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
     this.drainView.dispose();
     scene.remove(this.mainSphere);
-    //TODO: remove player_mesh reference
+
+    // find the player mesh used for raycasting and remove it
+    for (var i = 0; i < ZOR.Game.player_meshes.length; i++) {
+        var playerMesh = ZOR.Game.player_meshes[i];
+
+        if (playerMesh && playerMesh.player_id === this.model.id) {
+            // remove this players mesh
+            console.log("Removing mesh for player: ", this.model.id);
+            ZOR.Game.player_meshes.splice(i, 1);
+        }
+    }
 };
 
 ZOR.PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
