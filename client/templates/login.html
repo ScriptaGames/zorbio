@@ -10,6 +10,12 @@
     <button on-click="{{ ACTIONS.SHOW_TUTORIAL }}" class="secondary" id="tutorial-button"><span>Tutorial</span></button>
     <button on-click="{{ ACTIONS.SHOW_CONFIG }}" class="secondary" id="config-button"><span>Settings</span></button>
 
+    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+    </fb:login-button>
+
+    <div id="status">
+    </div>
+
     {{ > social }}
 
     <div id="ad-login-center">
