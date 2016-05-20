@@ -1,4 +1,5 @@
-varying vec2 vUv;
+uniform vec3 mainSpherePos;
+uniform vec3 pos;
 #ifdef USE_MORPHTARGETS
 #ifndef USE_MORPHNORMALS
 uniform float morphTargetInfluences[ 8 ];
@@ -6,6 +7,8 @@ uniform float morphTargetInfluences[ 8 ];
 uniform float morphTargetInfluences[ 4 ];
 #endif
 #endif
+varying vec2 vUv;
+varying float vDist;
 void main()
 {
     vUv = uv;
@@ -25,6 +28,7 @@ void main()
 #endif
 #endif
 
+    vDist = length( pos - mainSpherePos );
     vec4 mvPosition = modelViewMatrix * vec4(transformed, 1.0 );
     gl_Position = projectionMatrix * mvPosition;
 }

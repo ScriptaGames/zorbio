@@ -34,11 +34,15 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
 
     this.material = new THREE.ShaderMaterial({
         uniforms: {
-            time: {type: "f", value: this.time},
-            power: {type: "f", value: 0},
-            erColor: {type: "c", value: this.playerView.material.uniforms.color.value},
-            eeColor: {type: "c", value: 0},
-            len: {type: "f", value: 0},
+            time          : { type : "f",  value : this.time },
+            power         : { type : "f",  value : 0 },
+            erColor       : { type : "c",  value : this.playerView.material.uniforms.color.value },
+            eeColor       : { type : "c",  value : 0 },
+            len           : { type : "f",  value : 0 },
+            mainSpherePos : { type : "v3", value : playerFogCenter },
+            pos           : { type : "v3", value : new THREE.Vector3() },
+            FOG_FAR       : { type : "f",  value : config.FOG_FAR },
+            FOG_ENABLED   : { type : "f",  value : ~~config.FOG_ENABLED },
         },
         vertexShader   : document.getElementById('drain-vertex-shader').textContent,
         fragmentShader : document.getElementById('drain-frag-shader').textContent,
@@ -85,6 +89,8 @@ ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drain_target_id ) 
     var drainer_scale = this.playerView.mainSphere.scale.x;
     var drainee_scale = drainee.view.mainSphere.scale.x;
     var distance = drainer_pos.distanceTo( drainee_pos ) - drainer_scale - drainee_scale;
+
+    this.material.uniforms.pos.value.copy(this.mesh.position);
 
     // make invisible if any required params are unavailable
     if (drainee && drainer_pos && drainee_pos && drainer_scale && drainee_scale) {
