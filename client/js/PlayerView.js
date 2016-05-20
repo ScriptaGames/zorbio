@@ -76,6 +76,14 @@ ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_t
     this.drainView.update( drain_target_id );
 };
 
+ZOR.PlayerView.prototype.setAlpha = function ZORPlayerViewSetAlpha(alpha) {
+    // TODO remove transparent true/false
+    this.material.transparent = !alpha;
+
+    // TODO implement this
+    // this.material.alpha = alpha;
+};
+
 ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(position) {
     this.mainSphere.position.lerp(position, config.PLAYER_MOVE_LERP_WEIGHT);
 };

@@ -314,6 +314,7 @@ function drawPlayers() {
             // Only draw other players
             if (!player || (id !== player.getPlayerId())) {
                 ZOR.Game.players[id] = new ZOR.PlayerController(playerModel, scene);
+                ZOR.Game.players[id].setAlpha(1);
             }
         }
     }

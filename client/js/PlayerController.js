@@ -53,6 +53,12 @@ ZOR.PlayerController.prototype.getSpeed = function ZORPlayerControllerGetSpeed()
     return this.model.getSpeed();
 };
 
+ZOR.PlayerController.prototype.setAlpha = function ZORPlayerControllerSetAlpha(alpha) {
+    if (this.view) {
+        this.view.setAlpha(alpha);
+    }
+};
+
 ZOR.PlayerController.prototype.initView = function ZORPlayerControllerInitView(scene) {
     this.view = new ZOR.PlayerView(this.model, scene);
 };
