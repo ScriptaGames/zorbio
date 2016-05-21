@@ -221,14 +221,14 @@ function createScene() {
 
             raycaster.set(player.view.mainSphere.position, camera.getWorldDirection().normalize());
 
-            // calculate objects intersecting the picking ray
+            // calculate objects intersecting the ray
             var intersects = raycaster.intersectObjects( ZOR.Game.player_meshes );
 
             if (intersects && intersects.length > 0) {
                 //TODO: only update the UI if the player intersect changes
                 var playerMesh = intersects[0].object;
                 var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
-                console.log("Looking at: ", pointedPlayer.model.name, pointedPlayer.model.sphere.scale);
+                //console.log("Looking at: ", pointedPlayer.model.name, pointedPlayer.model.sphere.scale);
             }
         }
         else if (ZOR.UI.state() === ZOR.UI.STATES.LOGIN_SCREEN) {
