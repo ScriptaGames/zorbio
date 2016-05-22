@@ -148,6 +148,7 @@ function setupSocket(ws) {
         //Add new player if it's already added
         if (!ZOR.Game.players[newPlayer.id]) {
             ZOR.Game.players[newPlayer.id] = new ZOR.PlayerController(newPlayer, scene);
+            ZOR.Game.players[newPlayer.id].setAlpha(1);
 
             //Keep model in sync with the server
             zorbioModel.players[newPlayer.id] = newPlayer;

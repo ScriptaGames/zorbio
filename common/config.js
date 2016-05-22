@@ -59,7 +59,7 @@ config.BALANCER = 'NA';
 //                          PLAYER SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.INITIAL_PLAYER_RADIUS = 2;
+config.INITIAL_PLAYER_RADIUS = 5;
 config.MAX_PLAYER_RADIUS     = 150;
 
 // https://www.desmos.com/calculator/dphm84crab
@@ -111,7 +111,7 @@ config.DRAIN_RADIO_FREQUENCY = 65; // how quickly the radio waves flow down the 
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 25;    // How much food there is, total food = this number cubed
+config.FOOD_DENSITY                = 29;    // How much food there is, total food = this number cubed
 config.FOOD_VALUE                  = 0.8;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
