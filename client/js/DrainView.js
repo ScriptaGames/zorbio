@@ -183,8 +183,8 @@ ZOR.DrainView.prototype.updateStretch = function ZORDrainViewUpdateStretch( dist
 };
 
 ZOR.DrainView.prototype.updateTaper = function ZORDrainViewUpdateTaper( scale, influence_index ) {
-    // var influence = 1 - scale / config.MAX_PLAYER_RADIUS;
-    var influence = 0.90 - Math.pow(scale / config.MAX_PLAYER_RADIUS, 2) / 2;
+    // https://www.desmos.com/calculator/dpjwagi0va
+    var influence = 0.85 - Math.pow(scale / config.MAX_PLAYER_RADIUS, 2) / 2;
     this.mesh.morphTargetInfluences[ influence_index ] = influence;
 };
 

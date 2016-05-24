@@ -6,7 +6,7 @@ ZOR.Env = {
     WORLD_SIZE        : 400,
     MAX_BOTS          : 3,
     FOOD_DENSITY      : 5,
-    INITIAL_PLAYER_RADIUS: 2,
+    INITIAL_PLAYER_RADIUS: 5,
     FOOD_VALUE        : 10,
     PORT              : 3000,
     DEBUG             : true,
