@@ -352,7 +352,7 @@ ZOR.UI = function ZORUI() {
         var needs_fetching = document.querySelector('script[type="text/ractive"]').innerHTML === "";
 
         if (needs_fetching) {
-            var scripts = document.querySelectorAll('script[type="text/ractive"], script[type^=x-shader]')
+            var scripts = document.querySelectorAll('script[type="text/ractive"], script[type^=x-shader]');
             Promise.all( _.map(scripts, fetch_inject) ).then( init );
         }
         else {
