@@ -351,7 +351,7 @@ function updateTargetLock() {
         if (target_changed && !targeting_self) {
             player.setTargetLock(playerMesh.player_id);
             var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
-            ZOR.UI.data.target = { name: pointedPlayer.model.name, color: pointedPlayer.model.sphere.color };
+            ZOR.UI.data.target = { name: pointedPlayer.model.name, score: pointedPlayer.model.getScore(), color: pointedPlayer.model.sphere.color };
             clearTimeout(ZOR.UI.target_clear_timeout_id);
             console.log("Set target lock: ", ZOR.UI.data.target);
         }
