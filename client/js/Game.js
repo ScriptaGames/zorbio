@@ -221,25 +221,7 @@ function createScene() {
 
             raycaster.set(player.view.mainSphere.position, camera.getWorldDirection().normalize());
 
-            // calculate objects intersecting the ray
-            var intersects = raycaster.intersectObjects( ZOR.Game.player_meshes );
-            var target_clear_timeout_id;
-            var target_last_player_id;
-
-            if (intersects && intersects.length > 0) {
-                //TODO: only update the UI if the player intersect changes
-                var playerMesh      = intersects[0].object;
-                var targetting_self = playerMesh.player_id === player.model.id;
-                var target_changed  = target_last_player_id !== playerMesh.player_id;
-                if (target_changed && !targetting_self) {
-                    target_last_player_id = playerMesh.player_id;
-                    var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
-                    ZOR.UI.data.target = { name: pointedPlayer.model.name, color: pointedPlayer.model.sphere.color };
-                    clearTimeout(target_clear_timeout_id);
-                    target_clear_timeout_id = setTimeout(ZOR.UI.clearTarget, 4618);
-                }
-                // console.log("Looking at: ", pointedPlayer.model.name, pointedPlayer.model.sphere.scale);
-            }
+            updateTargetLock();
         }
         else if (ZOR.UI.state() === ZOR.UI.STATES.LOGIN_SCREEN) {
             fogCenter = camera.position;
@@ -354,6 +336,31 @@ function updateActors() {
                 player.updateDrain(actor.drain_target_id);
             }
         }
+    }
+}
+
+function updateTargetLock() {
+    // calculate objects intersecting the ray
+    var intersects = raycaster.intersectObjects( ZOR.Game.player_meshes );
+
+    if (intersects && intersects.length > 0) {
+        // looking at a player
+        var playerMesh     = intersects[0].object;
+        var targeting_self = playerMesh.player_id === player.model.id;
+        var target_changed = player.getTargetLock() !== playerMesh.player_id;
+        if (target_changed && !targeting_self) {
+            player.setTargetLock(playerMesh.player_id);
+            var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
+            ZOR.UI.data.target = { name: pointedPlayer.model.name, color: pointedPlayer.model.sphere.color };
+            clearTimeout(ZOR.UI.target_clear_timeout_id);
+            console.log("Set target lock: ", ZOR.UI.data.target);
+        }
+    }
+    else if (player.getTargetLock()) {
+        // not looking at anything so clear target name after timeout
+        player.setTargetLock(0);
+        ZOR.UI.target_clear_timeout_id = setTimeout(ZOR.UI.clearTarget, 4000);
+        console.log("clearing target lock");
     }
 }
 

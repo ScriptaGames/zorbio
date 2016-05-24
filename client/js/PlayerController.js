@@ -211,3 +211,13 @@ ZOR.PlayerController.prototype.speedBoost = function ZORPlayerControllerSpeedBoo
 
     //TODO: Activate visual speed boost embelishment to this.view here
 };
+
+ZOR.PlayerController.prototype.setTargetLock = function ZORPlayerControllerSetTargetLock(player_id) {
+    this.targeting_player_id = player_id;
+};
+
+ZOR.PlayerController.prototype.getTargetLock = function ZORPlayerControllerGetTargetLock() {
+    return this.targeting_player_id;
+};
+
+

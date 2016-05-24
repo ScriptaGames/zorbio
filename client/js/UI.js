@@ -348,7 +348,7 @@ ZOR.UI = function ZORUI() {
      */
     function get_updater() {
         return UTIL.nth( engine.update.bind(engine), 20 );
-    };
+    }
 
     /**
      * Fetch Ractive templates and GLSL shaders, then init UI.
