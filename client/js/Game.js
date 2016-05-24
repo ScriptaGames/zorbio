@@ -223,12 +223,22 @@ function createScene() {
 
             // calculate objects intersecting the ray
             var intersects = raycaster.intersectObjects( ZOR.Game.player_meshes );
+            var target_clear_timeout_id;
+            var target_last_player_id;
 
             if (intersects && intersects.length > 0) {
                 //TODO: only update the UI if the player intersect changes
-                var playerMesh = intersects[0].object;
-                var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
-                //console.log("Looking at: ", pointedPlayer.model.name, pointedPlayer.model.sphere.scale);
+                var playerMesh      = intersects[0].object;
+                var targetting_self = playerMesh.player_id === player.model.id;
+                var target_changed  = target_last_player_id !== playerMesh.player_id;
+                if (target_changed && !targetting_self) {
+                    target_last_player_id = playerMesh.player_id;
+                    var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
+                    ZOR.UI.data.target = { name: pointedPlayer.model.name, color: pointedPlayer.model.sphere.color };
+                    clearTimeout(target_clear_timeout_id);
+                    target_clear_timeout_id = setTimeout(ZOR.UI.clearTarget, 4618);
+                }
+                // console.log("Looking at: ", pointedPlayer.model.name, pointedPlayer.model.sphere.scale);
             }
         }
         else if (ZOR.UI.state() === ZOR.UI.STATES.LOGIN_SCREEN) {

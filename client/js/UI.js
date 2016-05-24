@@ -78,11 +78,12 @@ ZOR.UI = function ZORUI() {
 
     // the public functions exposes by this module (may be modified during execution)
     var api = {
-        STATES   : STATES,
-        ACTIONS  : ACTIONS,
-        data     : uidata,
-        state    : state,
-        on       : on,
+        STATES      : STATES,
+        ACTIONS     : ACTIONS,
+        data        : uidata,
+        state       : state,
+        on          : on,
+        clearTarget : clearTarget,
     };
 
     // array of registered on-init handlers
@@ -90,6 +91,10 @@ ZOR.UI = function ZORUI() {
 
     // the previous state
     var previous = STATES.INITIAL;
+
+    function clearTarget() {
+        uidata.target = undefined;
+    }
 
     /**
      * The Ractive template engine.  Data + Templates = HTML

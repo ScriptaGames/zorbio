@@ -334,3 +334,20 @@ button:hover::before {
 #gear-btn:hover {
   opacity: 0.4;
 }
+#targets {
+  position: absolute;
+  top: 40vh;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  padding: 0;
+  opacity: 0.8;
+  background: none;
+  border-radius: 0;
+  font-size: 1rem;
+  pointer-events: none;
+  max-width: 30%;
+  overflow: hidden;
+  text-align: center;
+  margin: 0;
+}

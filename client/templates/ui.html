@@ -1,6 +1,7 @@
 {{ #if state === STATES.LOGIN_SCREEN    }} {{ > login       }} {{ /if }}
 {{ #if state === STATES.PLAYING         }} {{ > leaderboard }} {{ /if }}
 {{ #if state === STATES.PLAYING         }} {{ > playing     }} {{ /if }}
+{{ #if state === STATES.PLAYING         }} {{ > targets     }} {{ /if }}
 {{ #if state === STATES.CONFIG          }} {{ > config      }} {{ /if }}
 {{ #if state === STATES.TUTORIAL_SCREEN }} {{ > tutorial    }} {{ /if }}
 {{ #if state === STATES.RESPAWN_SCREEN  }} {{ > death       }} {{ /if }}
