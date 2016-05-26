@@ -278,6 +278,8 @@ button:hover::before {
   margin-right: auto;
   padding: 0;
   margin: 0 auto 0 0;
+  font-size: 14px;
+  max-height: none;
 }
 #leaderboard-playing ul li,
 #leaderboard-playing #leaders {
@@ -289,12 +291,12 @@ button:hover::before {
 #leaderboard-playing ul li div,
 #leaderboard-playing #leaders div {
   margin: 3px;
-  font-size: 18px;
+  font-size: 10.5px;
 }
 #leaderboard-playing ul li.mobile div,
 #leaderboard-playing #leaders.mobile div {
   margin-bottom: 2px;
-  font-size: 10.5px;
+  font-size: 7.5px;
 }
 #server-message {
   position: absolute;
@@ -346,7 +348,7 @@ button:hover::before {
   border-radius: 0;
   font-size: 1rem;
   pointer-events: none;
-  max-width: 30%;
+  max-width: 60%;
   overflow: hidden;
   text-align: center;
   margin: 0;

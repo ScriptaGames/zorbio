@@ -253,16 +253,19 @@ button {
     padding      : 0;
     margin       : 0 auto 0 0;
 
+    font-size: 14px;
+    max-height: none; // override
+
     ul li,
     #leaders {
         display    : flex;
         div {
             margin    : 3px;
-            font-size : @font-size-base * 0.6;
+            font-size : @font-size-base * 0.35;
         }
         &.mobile div {
             margin-bottom : 2px;
-            font-size : @font-size-base * 0.35;
+            font-size : @font-size-base * 0.25;
         }
     }
 }
