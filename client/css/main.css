@@ -300,8 +300,9 @@ button:hover::before {
 }
 #server-message {
   position: absolute;
-  top: 4px;
-  left: 4px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
   color: #f7f7f7;
   font-size: 18px;
 }
