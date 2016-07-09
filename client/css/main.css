@@ -56,12 +56,6 @@ body {
   padding: 0;
   background-color: #171717;
 }
-body #ui-overlay {
-  font-family: Orbitron, monospace;
-  font-size: 30px;
-  font-weight: bold;
-  letter-spacing: 1px;
-}
 input,
 textarea,
 select,
@@ -117,33 +111,33 @@ input[type=range] {
 input:focus {
   background: #ffffff;
 }
-#start-menu h3 {
-  padding-bottom: 0;
-  margin-bottom: 0;
-}
-#start-menu ul {
-  margin: 10px;
-  padding: 10px;
-  margin-top: 0;
-}
 .error-text {
   color: #0B7BF4;
   font-size: 21px;
   text-align: center;
 }
 #ui-overlay {
+  font-family: Orbitron, monospace;
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: 1px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   -webkit-box-align: center;
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
   pointer-events: none;
   position: absolute;
   z-index: 20;
@@ -154,9 +148,8 @@ input:focus {
   padding: 0;
   margin: 0;
 }
-#ui-overlay > * {
+#ui-overlay .greybox {
   max-width: calc(100% - 10px);
-  max-height: calc(100% - 80px);
   overflow-y: auto;
   pointer-events: auto;
   display: -webkit-box;
@@ -178,45 +171,38 @@ input:focus {
   padding: 20px;
   margin: 20px;
 }
-#ui-overlay > * > * {
+#ui-overlay .greybox > * {
   margin-bottom: 20px;
   border-radius: 8px;
 }
-#ui-overlay > * > *:first-child {
+#ui-overlay .greybox > *:first-child {
   margin-top: 0;
   padding-top: 0;
 }
-#ui-overlay > * > *:last-child {
+#ui-overlay .greybox > *:last-child {
   margin-bottom: 0;
 }
-#ui-overlay > * h1 {
+#ui-overlay .greybox h1 {
   text-align: center;
   font-size: 60px;
 }
-#ui-overlay > * h1 small {
+#ui-overlay .greybox h1 small {
   float: right;
   clear: both;
 }
-#ui-overlay > * h2 {
+#ui-overlay .greybox h2 {
   text-align: center;
   font-size: 30px;
 }
-#ui-overlay > * p {
+#ui-overlay .greybox p {
   text-align: center;
   font-size: 15px;
-}
-#ui-overlay #start-menu h1 {
-  margin-bottom: 5px;
-}
-#ui-overlay #start-menu h2 {
-  letter-spacing: 6px;
-  color: #696969;
-  font-size: 1rem;
 }
 button:focus {
   outline: none;
 }
 button {
+  pointer-events: auto;
   -moz-osx-font-smoothing: grayscale;
   -webkit-backface-visibility: hidden;
   background: #0B7BF4;
@@ -230,43 +216,26 @@ button {
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
-  min-height: 80px;
   overflow: hidden;
   padding: 20px;
   position: relative;
   z-index: 1;
-}
-button.secondary {
-  background: #787878;
-}
-button.secondary::before {
-  background: #919191;
-}
-button::before {
-  content: '';
-  z-index: -1;
-  position: absolute;
-  top: 50%;
-  left: 100%;
-  margin: -15px 0 0 1px;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: #3c95f6;
-  -webkit-transform-origin: 150% 50%;
-          transform-origin: 150% 50%;
-  -webkit-transition: opacity 0.4s, -webkit-transform 0.4s;
-  transition: opacity 0.4s, -webkit-transform 0.4s;
-  transition: transform 0.4s, opacity 0.4s;
-  transition: transform 0.4s, opacity 0.4s, -webkit-transform 0.4s;
+  -webkit-transition: box-shadow 0.08s linear, -webkit-transform 0.04s ease-out;
+  transition: box-shadow 0.08s linear, -webkit-transform 0.04s ease-out;
+  transition: box-shadow 0.08s linear, transform 0.04s ease-out;
+  transition: box-shadow 0.08s linear, transform 0.04s ease-out, -webkit-transform 0.04s ease-out;
 }
 button > span {
   vertical-align: middle;
   padding-left: 0.75em;
 }
-button:hover::before {
-  -webkit-transform: scale3d(9, 9, 1);
-          transform: scale3d(9, 9, 1);
+button:hover {
+  box-shadow: inset 0 0 0 0.8vw rgba(255, 255, 255, 0.2);
+}
+button:active {
+  box-shadow: inset 0 0 0 0.8vw rgba(255, 255, 255, 0.2);
+  -webkit-transform: scale3d(0.97, 0.97, 1);
+          transform: scale3d(0.97, 0.97, 1);
 }
 #leaderboard-playing {
   background: none;
@@ -310,7 +279,8 @@ button:hover::before {
   display: block;
   position: absolute;
   bottom: 0;
-  right: 0;
+  width: 100%;
+  text-align: center;
   font-size: 12px;
   background: none;
   color: #404040;
@@ -320,6 +290,7 @@ button:hover::before {
 #copy a {
   color: #404040;
   text-decoration: underline;
+  pointer-events: auto;
 }
 #gear-btn {
   position: absolute;
@@ -327,12 +298,13 @@ button:hover::before {
   right: 0;
   padding: 0;
   width: 40px;
-  opacity: 0.1;
+  opacity: 0.2;
   background: none;
   margin: 8px;
   cursor: pointer;
   -webkit-transition: opacity ease-in-out 0.1s;
   transition: opacity ease-in-out 0.1s;
+  pointer-events: auto;
 }
 #gear-btn:hover {
   opacity: 0.4;
@@ -353,4 +325,37 @@ button:hover::before {
   overflow: hidden;
   text-align: center;
   margin: 0;
+}
+#title {
+  margin: 4vh;
+  color: white;
+}
+#tabs {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-justify-content: space-around;
+      -ms-flex-pack: distribute;
+          justify-content: space-around;
+}
+#tabs button {
+  border-radius: 50% 50%;
+  width: 16vw;
+  height: 16vw;
+  max-height: 200px;
+  max-width: 200px;
+  margin: 1vw 1vw 5vh;
+}
+* {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  cursor: url('../images/cursor.png') -4 -4, crosshair;
 }

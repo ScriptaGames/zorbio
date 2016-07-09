@@ -1,13 +1,26 @@
-{{ #if state === STATES.LOGIN_SCREEN    }} {{ > login       }} {{ /if }}
-{{ #if state === STATES.PLAYING         }} {{ > leaderboard }} {{ /if }}
-{{ #if state === STATES.PLAYING         }} {{ > playing     }} {{ /if }}
-{{ #if state === STATES.PLAYING         }} {{ > targets     }} {{ /if }}
-{{ #if state === STATES.CONFIG          }} {{ > config      }} {{ /if }}
-{{ #if state === STATES.TUTORIAL_SCREEN }} {{ > tutorial    }} {{ /if }}
-{{ #if state === STATES.RESPAWN_SCREEN  }} {{ > death       }} {{ /if }}
-{{ #if state === STATES.KICKED_SCREEN   }} {{ > kicked      }} {{ /if }}
-{{ #if state === STATES.GAME_INIT_ERROR }} {{ > initerror   }} {{ /if }}
-{{ #if state === STATES.CREDITS_SCREEN  }} {{ > credits     }} {{ /if }}
+{{ #if state.indexOf('playing') !== 0 }}
+    {{ > title }}
+{{ /if }}
+{{ #if state === STATES.MENU_GAME_SCREEN   }} {{ > menu     }} {{ /if }}
+{{ #if state === STATES.MENU_STORE_SCREEN  }} {{ > menu     }} {{ /if }}
+{{ #if state === STATES.MENU_CONFIG_SCREEN }} {{ > menu     }} {{ /if }}
+{{ #if state === STATES.PLAYING_CONFIG     }} {{ > config    }} {{ /if }}
+{{ #if state === STATES.TUTORIAL_SCREEN    }} {{ > tutorial  }} {{ /if }}
+{{ #if state === STATES.RESPAWN_SCREEN     }} {{ > death     }} {{ /if }}
+{{ #if state === STATES.KICKED_SCREEN      }} {{ > kicked    }} {{ /if }}
+{{ #if state === STATES.GAME_INIT_ERROR    }} {{ > initerror }} {{ /if }}
+{{ #if state === STATES.CREDITS_SCREEN     }} {{ > credits   }} {{ /if }}
+{{ #if state.indexOf('playing') === 0 }}
+    {{ > leaderboard }}
+    {{ > playing     }}
+    {{ > targets     }}
+{{ /if }}
+
+{{ #if state.indexOf('playing') !== 0 }}
+    {{ > ad }}
+    {{ > tabs }}
+    {{ > copyright }}
+{{ /if }}
 
 {{ #if server_message }}
 <div id="server-message"> {{ server_message }} </div>

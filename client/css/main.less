@@ -29,13 +29,6 @@ html, body {
     background-color : @secondary-color;
 }
 
-body #ui-overlay {
-    font-family    : @primary-font;
-    font-size      : @font-size-base;
-    font-weight    : bold;
-    letter-spacing : 1px;
-}
-
 input, textarea, select, button {
     font-family: inherit;
     font-size: inherit;
@@ -54,6 +47,11 @@ button, a {
 }
 
 #render-canvas {
+
+    // TODO: show canvas again!
+    // visibility: hidden;
+    // TODO: show canvas again!
+
     width        : 100%;
     height       : 100%;
     position     : absolute;
@@ -93,19 +91,6 @@ input {
     }
 }
 
-#start-menu {
-    h3 {
-        padding-bottom : 0;
-        margin-bottom  : 0;
-    }
-
-    ul {
-        margin     : 10px;
-        padding    : 10px;
-        margin-top : 0;
-    }
-
-}
 .error-text {
     color      : @accent-color;
     font-size  : @font-size-base * 0.7;
@@ -114,9 +99,16 @@ input {
 
 // UI overlay.  all UI components are placed within this element.
 #ui-overlay {
+
+    font-family    : @primary-font;
+    font-size      : @font-size-base;
+    font-weight    : bold;
+    letter-spacing : 1px;
+
     display         : flex;
-    justify-content : center;
+    justify-content : space-between;
     align-items     : center;
+    flex-direction  : column;
 
     pointer-events  : none; // disable click/touch events for the overlay itself
 
@@ -129,9 +121,8 @@ input {
     padding         : 0;
     margin          : 0;
 
-    & > * {
+    .greybox {
         max-width       : calc(~"100% - 10px");
-        max-height      : calc(~"100% - 80px");
 
         overflow-y      : auto; // scroll if ya gotta
 
@@ -182,23 +173,13 @@ input {
 
     }
 
-    #start-menu {
-        & h1 {
-            margin-bottom: 5px;
-        }
-        & h2 {
-            letter-spacing: 6px;
-            color: lighten(@secondary-color, 32%);
-            font-size: 1rem;
-        }
-    }
-
 }
 
 button:focus {
     outline: none;
 }
 button {
+    pointer-events: auto;
     -moz-osx-font-smoothing     : grayscale;
     -webkit-backface-visibility : hidden;
     background                  : @accent-color;
@@ -206,38 +187,22 @@ button {
     color                       : @primary-color;
     display                     : flex;
     justify-content             : center;
-    min-height                  : 80px;
     overflow                    : hidden;
     padding                     : @default-padding;
     position                    : relative;
     z-index                     : 1;
-    &.secondary {
-        @alt-bg-color: darken(@primary-color, 50%);
-        background: @alt-bg-color;
-        &::before {
-            background: lighten(@alt-bg-color, 10%);
-        }
-    }
-    &::before {
-        content                  : '';
-        z-index                  : -1;
-        position                 : absolute;
-        top                      : 50%;
-        left                     : 100%;
-        margin                   : -15px 0 0 1px;
-        width                    : 30px;
-        height                   : 30px;
-        border-radius            : 50%;
-        background               : lighten(@accent-color, 10%);
-        transform-origin         : 150% 50%;
-        transition               : transform 0.4s, opacity 0.4s;
-    }
     & > span {
         vertical-align : middle;
         padding-left   : 0.75em;
     }
-    &:hover::before {
-        transform         : scale3d(9, 9, 1);
+
+    transition: box-shadow 0.08s linear, transform 0.04s ease-out;
+    &:hover {
+        box-shadow: inset 0 0 0 0.8vw rgba(255,255,255,0.2);
+    }
+    &:active {
+        box-shadow: inset 0 0 0 0.8vw rgba(255,255,255,0.2);
+        transform: scale3d(0.97, 0.97, 1);
     }
 }
 
@@ -283,7 +248,8 @@ button {
     display: block;
     position: absolute;
     bottom: 0;
-    right: 0;
+    width: 100%;
+    text-align: center;
     font-size: 12px;
     background: none;
     color: lighten(@secondary-color, 16%);
@@ -292,6 +258,7 @@ button {
     a {
         color: lighten(@secondary-color, 16%);
         text-decoration: underline;
+        pointer-events: auto;
     }
 }
 
@@ -301,11 +268,12 @@ button {
     right      : 0;
     padding    : 0;
     width      : 40px;
-    opacity    : 0.1;
+    opacity    : 0.2;
     background : none;
     margin     : 8px;
     cursor     : pointer;
     transition : opacity ease-in-out 0.1s;
+    pointer-events: auto;
     &:hover {
         opacity: 0.4;
     }
@@ -327,4 +295,32 @@ button {
     overflow       : hidden;
     text-align     : center;
     margin         : 0;
+}
+
+#title {
+    margin: 4vh;
+    color: white;
+}
+
+.circle(@radius: 15vw, @max-radius: 200px) {
+    border-radius : 50% 50%;
+    width         : 16vw;
+    height        : 16vw;
+    max-height    : 200px;
+    max-width     : 200px;
+}
+
+#tabs {
+    button {
+        .circle(16vw, 200px);
+        margin: 1vw 1vw 5vh;
+    }
+    display         : flex;
+    flex-direction  : row;
+    justify-content : space-around;
+}
+
+* {
+    user-select: none;
+    cursor: url('../images/cursor.png') -4 -4, crosshair;
 }

@@ -133,7 +133,7 @@ function createScene() {
         ZOR.Game.renderer.setPixelRatio( window.devicePixelRatio );
         ZOR.Game.renderer.setSize( window.innerWidth, window.innerHeight );
 
-        // Initial login screen camera
+        // Initial title screen camera
         camera = new THREE.PerspectiveCamera(
             config.INITIAL_FOV,
             window.innerWidth / window.innerHeight,
@@ -194,7 +194,7 @@ function createScene() {
     function animate() {
         requestAnimationFrame(animate);
 
-        if (ZOR.UI.state() === ZOR.UI.STATES.LOGIN_SCREEN) {
+        if (ZOR.UI.state().indexOf('menu') === 0) {
             camera.rotation.y -= config.TITLE_CAMERA_SPIN_SPEED * ZOR.LagScale.get();
         }
 
@@ -223,7 +223,7 @@ function createScene() {
 
             updateTargetLock();
         }
-        else if (ZOR.UI.state() === ZOR.UI.STATES.LOGIN_SCREEN) {
+        else if (ZOR.UI.state().indexOf('menu') === 0) {
             fogCenter = camera.position;
         }
         else if (player && player.isDead) {

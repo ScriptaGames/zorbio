@@ -1,4 +1,4 @@
-<div id="config">
+<div id="config" class="{{ state === STATES.PLAYING_CONFIG ? 'greybox' : '' }}">
     <h1>Settings</h1>
     <div>
         <input type="checkbox" {{ flip_y ? 'checked' : '' }} on-click="{{ ACTIONS.TOGGLE_Y_AXIS }}" id="flip-y-axis">
@@ -18,5 +18,7 @@
         <input id="sfx-volume" type="range" on-change="volume-sfx" min="0" max="1" step="0.01" value="{{ volume.sfx }}">
         <label for="sfx-volume">SFX volume</LABEL>
     </div>
-    <button on-click="{{ ACTIONS.SHOW_PREVIOUS }}">Back</button>
+    {{ #if state === STATES.PLAYING_CONFIG }}
+    <button on-click="{{ ACTIONS.SHOW_PREVIOUS }}">Done</button>
+    {{ /if }}
 </div>

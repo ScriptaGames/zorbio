@@ -1,7 +1,7 @@
 <div id="credits">
     <p> Zorbio was created by {{ Math.random()>0.5?AUTHORS.join(' and '):AUTHORS.reverse().join(' and ') }}.  </p>
     <p> Zorbio is &copy; 2016 by <a href="http://scripta.co">Scripta, Inc.</a>  </p>
-    <p> The music is <i>starfish oblivion</i> by <a href="http://www.kahvi.org/releases.php?release_number=202">Acrilic Colors</a>. </p>
+    <!-- <p> The music is <i>starfish oblivion</i> by <a href="http://www.kahvi.org/releases.php?release_number=202">Acrilic Colors</a>. </p> -->
     <p> Zorbio makes use of these heroic and fun open source libraries: </p>
     <ul>
         <li> <a href="http://threejs.org/">three.js</a> &mdash; <a href="https://raw.githubusercontent.com/mrdoob/three.js/r74/LICENSE">LICENSE</a> </li>
@@ -9,5 +9,5 @@
         <li> <a href="http://socket.io/">socket.io</a> &mdash; <a href="https://raw.githubusercontent.com/socketio/socket.io/1.4.4/LICENSE">LICENSE</a> </li>
         <li> <a href="https://lodash.com/">lodash</a> &mdash; <a href="https://raw.githubusercontent.com/lodash/lodash/4.0.0/LICENSE">LICENSE</a> </li>
     </ul>
-    <button on-click="{{ ACTIONS.SHOW_LOGIN }}">Back</button>
+    <button on-click="{{ ACTIONS.SHOW_PREVIOUS }}">Back</button>
 </div>

@@ -22,16 +22,19 @@ ZOR.UI = function ZORUI() {
      */
 
     var STATES = {
-        INITIAL            : 'login-screen',
-        LOGIN_SCREEN       : 'login-screen',
-        PLAYING            : 'playing',
-        CONFIG             : 'config',
-        RESPAWN_SCREEN     : 'respawn-screen',
-        KICKED_SCREEN      : 'kicked-screen',
-        GAME_INIT_ERROR    : 'game-init-error',
-        SERVER_MSG_SCREEN  : 'server-msg-screen',
-        CREDITS_SCREEN     : 'credits-screen',
-        TUTORIAL_SCREEN    : 'tutorial-screen',
+        INITIAL             : 'menu-game-screen',
+        MENU_SCREEN         : 'menu-game-screen',
+        MENU_GAME_SCREEN    : 'menu-game-screen',
+        MENU_STORE_SCREEN   : 'menu-store-screen',
+        MENU_CONFIG_SCREEN  : 'menu-config-screen',
+        PLAYING             : 'playing',
+        PLAYING_CONFIG      : 'playing-config',
+        RESPAWN_SCREEN      : 'respawn-screen',
+        KICKED_SCREEN       : 'kicked-screen',
+        GAME_INIT_ERROR     : 'game-init-error',
+        SERVER_MSG_SCREEN   : 'server-msg-screen',
+        CREDITS_SCREEN      : 'credits-screen',
+        TUTORIAL_SCREEN     : 'tutorial-screen',
     };
 
     /**
@@ -39,20 +42,26 @@ ZOR.UI = function ZORUI() {
      */
 
     var ACTIONS = {
-        PLAYER_LOGIN_KEYPRESS : 'player-login-keypress',
-        PLAYER_LOGIN          : 'player-login',
-        PLAYER_RESPAWN        : 'player-respawn',
-        PAGE_RELOAD           : 'page-reload',
-        SHOW_CREDITS          : 'show-credits',
-        SHOW_LOGIN            : 'show-login',
-        SHOW_TUTORIAL         : 'show-tutorial',
-        SHOW_CONFIG           : 'show-config',
-        SHOW_PREVIOUS         : 'show-previous',
-        TOGGLE_Y_AXIS         : 'toggle-y-axis',
-        TOGGLE_X_AXIS         : 'toggle-x-axis',
-        VOLUME_MUSIC          : 'volume-music',
-        VOLUME_SFX            : 'volume-sfx',
+        PLAYER_LOGIN_KEYPRESS    : 'player-login-keypress',
+        PLAYER_LOGIN             : 'player-login',
+        PLAYER_RESPAWN           : 'player-respawn',
+        PAGE_RELOAD              : 'page-reload',
+        SHOW_CREDITS             : 'show-credits',
+        SHOW_MENU                : 'show-menu',
+        SHOW_TUTORIAL            : 'show-tutorial',
+        SHOW_PLAYING_CONFIG      : 'show-playing-config',
+        SHOW_PREVIOUS            : 'show-previous',
+
+        SHOW_MENU_GAME_SCREEN    : 'show-menu-game-screen ',
+        SHOW_MENU_STORE_SCREEN   : 'show-menu-store-screen ',
+        SHOW_MENU_CONFIG_SCREEN  : 'show-menu-config-screen ',
+
+        TOGGLE_Y_AXIS            : 'toggle-y-axis',
+        TOGGLE_X_AXIS            : 'toggle-x-axis',
+        VOLUME_MUSIC             : 'volume-music',
+        VOLUME_SFX               : 'volume-sfx',
     };
+
     /**
      * The data to pass into templates.
      */
@@ -67,6 +76,8 @@ ZOR.UI = function ZORUI() {
         AUTHORS          : ['Michael Clayton', 'Jared Sprague'],
         leaders          : [],
         is_mobile        : isMobile.any,
+        screen_x         : 0,
+        screen_y         : 0,
         flip_x           : JSON.parse(localStorage.flip_x || "false"),
         flip_y           : JSON.parse(localStorage.flip_y || "false"),
         music_enabled    : config.MUSIC_ENABLED,
@@ -168,7 +179,7 @@ ZOR.UI = function ZORUI() {
         _.assign(uidata.MISSING_FEATURES, missing_feature_names);
 
         if (missing_feature_names.length) {
-            console.log('Missing browser feature(s) found: ' + JSON.stringify(missing_feature_names));
+            console.log('Missing browser feature(s): ' + JSON.stringify(missing_feature_names));
         }
 
         if (missing_feature_names.length) {
@@ -186,6 +197,11 @@ ZOR.UI = function ZORUI() {
         // have a value of false (omitBy defaults to _.identity which grants us
         // falsy values only).
         return _.chain(Modernizr).forOwn().omitBy().value();
+    }
+
+    function set_screen_size() {
+        engine.set('screen_x', window.innerWidth);
+        engine.set('screen_y', window.innerHeight);
     }
 
     function init() {
@@ -221,6 +237,16 @@ ZOR.UI = function ZORUI() {
         // mark initialized true so future on('init') handlers will be executed
         // immediately
         initialized = true;
+
+        // capture screen size, and future adjustments to screen size
+        set_screen_size();
+        window.addEventListener( 'resize', set_screen_size, false );
+    }
+
+    function stateSetter(newState) {
+        return function () {
+            state(newState);
+        };
     }
 
     /**
@@ -252,27 +278,19 @@ ZOR.UI = function ZORUI() {
             localStorage.volume_sfx = vol;
         });
 
-        // show/hide UI panels
+        // state change events
 
-        on( ACTIONS.SHOW_CREDITS, function ZORShowCredits() {
-            state( STATES.CREDITS_SCREEN );
-        });
-
-        on( ACTIONS.SHOW_TUTORIAL, function ZORShowTutorial() {
-            state( STATES.TUTORIAL_SCREEN );
-        });
-
-        on( ACTIONS.SHOW_CONFIG, function ZORShowConfig() {
-            state( STATES.CONFIG );
-        });
-
-        on( ACTIONS.SHOW_LOGIN, function ZORShowLogin() {
-            state( STATES.LOGIN_SCREEN );
-        });
-
+        on( ACTIONS.SHOW_MENU_GAME_SCREEN   , stateSetter( STATES.MENU_GAME_SCREEN ) );
+        on( ACTIONS.SHOW_MENU_STORE_SCREEN  , stateSetter( STATES.MENU_STORE_SCREEN ) );
+        on( ACTIONS.SHOW_MENU_CONFIG_SCREEN , stateSetter( STATES.MENU_CONFIG_SCREEN ) );
+        on( ACTIONS.SHOW_CREDITS            , stateSetter( STATES.CREDITS_SCREEN ) );
+        on( ACTIONS.SHOW_TUTORIAL           , stateSetter( STATES.TUTORIAL_SCREEN ) );
+        on( ACTIONS.SHOW_PLAYING_CONFIG     , stateSetter( STATES.PLAYING_CONFIG ) );
+        on( ACTIONS.SHOW_MENU               , stateSetter( STATES.MENU_SCREEN ) );
         on( ACTIONS.SHOW_PREVIOUS, function ZORShowPrevious() {
             state( uidata.prev_state );
         });
+
 
         on( ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
             // check if the nick is valid
@@ -347,7 +365,7 @@ ZOR.UI = function ZORUI() {
      * from the server.
      */
     function get_updater() {
-        return UTIL.nth( engine.update.bind(engine), 20 );
+        return _.throttle( engine.update.bind(engine), 1000 );
     }
 
     /**
