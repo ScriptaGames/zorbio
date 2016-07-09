@@ -74,8 +74,11 @@ var AppServer = function (wss, app) {
                     case 'zor_ping':
                         handle_msg_zor_ping(message);
                         break;
-                    case 'speed_boost_req':
-                        handle_msg_speed_boost_req();
+                    case 'speed_boost_start':
+                        handle_msg_speed_boost_start();
+                        break;
+                    case 'speed_boost_stop':
+                        handle_msg_speed_boost_stop();
                         break;
                 }
             }
@@ -306,7 +309,7 @@ var AppServer = function (wss, app) {
             self.replenishBot();
         }
 
-        function handle_msg_speed_boost_req() {
+        function handle_msg_speed_boost_start() {
             console.log("Speed boost request received for player: ", currentPlayer.id);
 
             if (currentPlayer.abilities.speed_boost.activate(currentPlayer)) {
@@ -317,6 +320,10 @@ var AppServer = function (wss, app) {
                 ws.send(JSON.stringify({op: "speed_boost_res", is_valid: true}));
 
             }
+        }
+
+        function handle_msg_speed_boost_stop() {
+            console.log("Stopping speed boost");
         }
     });
 

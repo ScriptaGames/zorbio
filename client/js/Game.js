@@ -437,13 +437,17 @@ function keyDown( key ) {
 function keyJustPressed(key) {
     if ( key === 'w' && config.AUTO_RUN_ENABLED) {
         if (player.model.abilities['speed_boost'].isReady(player.radius())) {
-            sendRequestSpeedBoost();
+            sendSpeedBoostStart();
         }
     }
 }
 
 function keyReleased(key) {
-    //console.log('key ' + key + ' released');
+    console.log('key ' + key + ' released');
+
+    if (key === 'w' && config.AUTO_RUN_ENABLED) {
+        sendSpeedBoostStop();
+    }
 }
 
 function removePlayerFromGame(playerId) {
