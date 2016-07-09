@@ -366,8 +366,12 @@ function sendPlayerUpdate() {
     ws.send(bufferView.buffer);
 }
 
-function sendRequestSpeedBoost() {
-    ws.send(JSON.stringify({op: "speed_boost_req"}));
+function sendSpeedBoostStart() {
+    ws.send(JSON.stringify({op: "speed_boost_start"}));
+}
+
+function sendSpeedBoostStop() {
+    ws.send(JSON.stringify({op: "speed_boost_stop"}));
 }
 
 var throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
