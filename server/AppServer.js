@@ -533,7 +533,6 @@ var AppServer = function (wss, app) {
     };
 
     self.capturePlayer = function appCapturePlayer(attackingPlayerId, targetPlayerId) {
-        console.log("Capture player: ", attackingPlayerId, targetPlayerId);
 
         var attackingPlayer = self.model.players[attackingPlayerId];
         var targetPlayer = self.model.players[targetPlayerId];
@@ -544,9 +543,11 @@ var AppServer = function (wss, app) {
         }
 
         if (attackingPlayer.type === Zorbio.PlayerTypes.BOT && targetPlayer.type === Zorbio.PlayerTypes.BOT) {
-            console.log("Ignore bot on bot capture: ", attackingPlayerId, targetPlayerId);
+            // Don't allow bots to capture each other
             return;
         }
+
+        console.log("Capture player: ", attackingPlayerId, targetPlayerId);
 
         // Increment player captures for the attacking player
         attackingPlayer.playerCaptures++;
