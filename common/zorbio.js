@@ -156,9 +156,14 @@ ZOR.PlayerSphere.prototype.radius = function ZORPlayerSphereRadius() {
 
 ZOR.PlayerSphere.prototype.growExpected = function ZORPlayerSphereGrowExpected(amount) {
     this.expectedScale += amount;
+
     if (this.expectedScale > config.MAX_PLAYER_RADIUS) {
         this.expectedScale = config.MAX_PLAYER_RADIUS;
     }
+    else if (this.expectedScale < config.INITIAL_PLAYER_RADIUS) {
+        this.expectedScale = config.INITIAL_PLAYER_RADIUS;
+    }
+
     this.scale = this.expectedScale;
 };
 
@@ -192,11 +197,18 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
 
     // Abilities
     this.abilities = {};
-    this.abilities.speed_boost = new ZOR.SpeedBurstAbility();
-    this.abilities.speed_boost.onactivate = function () {
-        // apply penalty
+    this.abilities.speed_boost = new ZOR.SpeedBoostAbility();
+    this.abilities.speed_boost.onupdate = function () {
         var currentScale = self.sphere.scale;
-        self.sphere.growExpected(-(Math.round(currentScale * config.ABILITY_SPEED_BOOST_PENALTY)));
+        if (NODEJS) {
+            var shrink_amount = -(currentScale * config.ABILITY_SPEED_BOOST_PENALTY);
+            console.log("Shrink amount: " + shrink_amount);
+            self.sphere.growExpected(shrink_amount);
+        }
+
+        if (self.sphere.scale === config.INITIAL_PLAYER_RADIUS) {
+            self.abilities.speed_boost.deactivate();
+        }
     };
     this.abilities.speed_boost.ondeactivate = function () {
         // start validating again at the regular speed
@@ -291,10 +303,11 @@ ZOR.PlayerMetric.prototype.add = function ZORPlayerMetricAdd(value) {
 };
 
 ZOR.Ability = function ZORAbility() {
-    this.isActive = undefined; // implemented by subclass
-    this.activate = undefined; // implemented by subclass
-    this.isReady  = undefined; // implemented by subclass
-    this.update   = undefined; // implemented by subclass
+    this.isActive   = undefined; // implemented by subclass
+    this.activate   = undefined; // implemented by subclass
+    this.deactivate = undefined; // implemented by subclass
+    this.isReady    = undefined; // implemented by subclass
+    this.update     = undefined; // implemented by subclass
 };
 
 ZOR.SpeedBurstAbility = function ZORSpeedBurstAbility() {
@@ -342,6 +355,14 @@ ZOR.SpeedBurstAbility = function ZORSpeedBurstAbility() {
         return true;
     };
 
+    this.deactivate = function ZORSpeedBurstAbilityDeactivate() {
+        this.active = false;
+
+        if (typeof this.ondeactivate === 'function') {
+            this.ondeactivate();
+        }
+    };
+
     /**
      * Update this ability state
      */
@@ -352,20 +373,91 @@ ZOR.SpeedBurstAbility = function ZORSpeedBurstAbility() {
         var elapsedTime = nowTime - this.start_time;
 
         if (elapsedTime >= this.max_duration) {
-            this.active = false;
-
-            if (typeof this.ondeactivate === 'function') {
-                this.ondeactivate();
-            }
+            this.deactivate();
         }
+    };
+
+    this.getBoostSpeed = function ZORSpeedBurstAbilityGetBoostSpeed() {
+        return this.boost_speed;
+    }
+};
+ZOR.SpeedBurstAbility.prototype = Object.create(ZOR.Ability.prototype);
+ZOR.SpeedBurstAbility.constructor = ZOR.SpeedBurstAbility;
+
+
+ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
+    // call super class constructor
+    ZOR.Ability.call(this);
+
+    this.active = false;
+    this.min_scale = config.ABILITY_SPEED_BOOST_MIN_SCALE;
+    this.boost_speed = config.ABILITY_SPEED_BOOST_SPEED;
+    this.onactivate = undefined;
+    this.ondeactivate = undefined;
+
+    /**
+     * Returns true of this ability is ready to activate.
+     * @param scale
+     * @returns {boolean}
+     */
+    this.isReady = function ZORSpeedBoostAbilityIsReady(scale) {
+        return !this.active && scale > this.min_scale;
+    };
+
+    /**
+     * Is this ability active
+     * @returns {boolean}
+     */
+    this.isActive = function ZORSpeedBoostAbilityIsActive() {
+        return this.active;
+    };
+
+    /**
+     * Activate this ability
+     * @return {boolean}
+     */
+    this.activate = function ZORSpeedBoostAbilityActivate(aPlayer) {
+        if (!this.isReady(aPlayer.sphere.scale)) return false;
+
+        this.active = true;
+        this.start_time = Date.now();
+
+        if (typeof this.onactivate === 'function') {
+            this.onactivate();
+        }
+
+        return true;
+    };
+
+    this.deactivate = function ZORSpeedBoostAbilityDeactivate() {
+        this.active = false;
+
+        console.log("Deactivating speed boost ability");
+
+        if (typeof this.ondeactivate === 'function') {
+            this.ondeactivate();
+        }
+    };
+
+    /**
+     * Update this ability state
+     */
+    this.update = function ZORSpeedBoostAbilityUpdate() {
+        if (!this.active) return;
+
+        if (typeof this.onupdate === 'function') {
+            this.onupdate();
+        }
+
+        // TODO: Add sphere poops based on interval while active
     };
 
     this.getBoostSpeed = function ZORSpeedBoostGetBoostSpeed() {
         return this.boost_speed;
     }
 };
-ZOR.SpeedBurstAbility.prototype = Object.create(ZOR.Ability.prototype);
-ZOR.SpeedBurstAbility.constructor = ZOR.SpeedBurstAbility;
+ZOR.SpeedBoostAbility.prototype = Object.create(ZOR.Ability.prototype);
+ZOR.SpeedBoostAbility.constructor = ZOR.SpeedBoostAbility;
 
 
 /**
