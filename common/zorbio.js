@@ -192,7 +192,7 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
 
     // Abilities
     this.abilities = {};
-    this.abilities.speed_boost = new ZOR.SpeedBoostAbility();
+    this.abilities.speed_boost = new ZOR.SpeedBurstAbility();
     this.abilities.speed_boost.onactivate = function () {
         // apply penalty
         var currentScale = self.sphere.scale;
@@ -297,7 +297,7 @@ ZOR.Ability = function ZORAbility() {
     this.update   = undefined; // implemented by subclass
 };
 
-ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
+ZOR.SpeedBurstAbility = function ZORSpeedBurstAbility() {
     // call super class constructor
     ZOR.Ability.call(this);
 
@@ -313,7 +313,7 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
      * @param scale
      * @returns {boolean}
      */
-    this.isReady = function ZORSpeedBoostAbilityIsReady(scale) {
+    this.isReady = function ZORSpeedBurstAbilityIsReady(scale) {
         return !this.active && scale >= this.min_scale;
     };
 
@@ -321,7 +321,7 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
      * Is this ability active
      * @returns {boolean}
      */
-    this.isActive = function ZORSpeedBoostAbilityIsActive() {
+    this.isActive = function ZORSpeedBurstAbilityIsActive() {
         return this.active;
     };
 
@@ -329,7 +329,7 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
      * Activate this ability
      * @return {boolean}
      */
-    this.activate = function ZORSpeedBoostAbilityActivate(aPlayer) {
+    this.activate = function ZORSpeedBurstAbilityActivate(aPlayer) {
         if (!this.isReady(aPlayer.sphere.scale)) return false;
 
         this.active = true;
@@ -345,7 +345,7 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
     /**
      * Update this ability state
      */
-    this.update = function ZORSpeedBoostAbilityUpdate() {
+    this.update = function ZORSpeedBurstAbilityUpdate() {
         if (!this.active) return;
 
         var nowTime = Date.now();
@@ -364,8 +364,8 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
         return this.boost_speed;
     }
 };
-ZOR.SpeedBoostAbility.prototype = Object.create(ZOR.Ability.prototype);
-ZOR.SpeedBoostAbility.constructor = ZOR.SpeedBoostAbility;
+ZOR.SpeedBurstAbility.prototype = Object.create(ZOR.Ability.prototype);
+ZOR.SpeedBurstAbility.constructor = ZOR.SpeedBurstAbility;
 
 
 /**
