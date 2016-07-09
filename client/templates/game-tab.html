@@ -1,0 +1,8 @@
+<input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" placeholder="Player name" value="{{ player_name }}" autofocus />
+<input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" placeholder="Alpha key" value="{{ alpha_key }}"/>
+{{ #if login_error_msg }}
+<b class="error-text">Nick name must be alphanumeric characters only!</b>
+{{ /if }}
+<button on-click="{{ ACTIONS.PLAYER_LOGIN }}" id="start-button">Play</button>
+<!-- Tutorial button is broken right now, will fix! -->
+<!-- <button on-click="{{ ACTIONS.SHOW_TUTORIAL }}" class="secondary" id="tutorial-button">Tutorial</button> -->
