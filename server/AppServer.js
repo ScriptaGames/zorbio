@@ -324,6 +324,8 @@ var AppServer = function (wss, app) {
 
         function handle_msg_speed_boost_stop() {
             console.log("Stopping speed boost");
+
+            currentPlayer.abilities.speed_boost.deactivate();
         }
     });
 

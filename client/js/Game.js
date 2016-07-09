@@ -436,7 +436,7 @@ function keyDown( key ) {
 
 function keyJustPressed(key) {
     if ( key === 'w' && config.AUTO_RUN_ENABLED) {
-        if (player.model.abilities['speed_boost'].isReady(player.radius())) {
+        if (player.model.abilities.speed_boost.isReady(player.radius())) {
             sendSpeedBoostStart();
         }
     }
@@ -446,6 +446,7 @@ function keyReleased(key) {
     console.log('key ' + key + ' released');
 
     if (key === 'w' && config.AUTO_RUN_ENABLED) {
+        player.model.abilities.speed_boost.deactivate();
         sendSpeedBoostStop();
     }
 }
