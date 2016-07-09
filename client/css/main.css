@@ -279,6 +279,7 @@ button:active {
   display: block;
   position: absolute;
   bottom: 0;
+  left: 0;
   width: 100%;
   text-align: center;
   font-size: 12px;
