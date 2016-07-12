@@ -194,7 +194,8 @@ function createScene() {
     function animate() {
         requestAnimationFrame(animate);
 
-        if (ZOR.UI.state().indexOf('menu') === 0) {
+        var ui_state = ZOR.UI.state();
+        if (ui_state.indexOf('menu') === 0 || ui_state === ZOR.UI.STATES.CREDITS_SCREEN ) {
             camera.rotation.y -= config.TITLE_CAMERA_SPIN_SPEED * ZOR.LagScale.get();
         }
 
