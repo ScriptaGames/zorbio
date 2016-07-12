@@ -248,11 +248,13 @@ ZOR.Player.prototype.getScore = function ZORPlayerGetScore() {
  * @returns {number}
  */
 ZOR.Player.prototype.getSpeed = function ZORPlayerGetScore() {
+    var playerSpeed = config.PLAYER_GET_SPEED(this.sphere.scale);
+
     if (this.abilities.speed_boost.isActive()) {
-        return this.abilities.speed_boost.getBoostSpeed();
+        playerSpeed = playerSpeed * config.ABILITY_SPEED_BOOST_MULTIPLIER;
     }
 
-    return config.PLAYER_GET_SPEED(this.sphere.scale);
+    return playerSpeed;
 };
 
 /**
@@ -393,7 +395,6 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
 
     this.active = false;
     this.min_scale = config.ABILITY_SPEED_BOOST_MIN_SCALE;
-    this.boost_speed = config.ABILITY_SPEED_BOOST_SPEED;
     this.onactivate = undefined;
     this.ondeactivate = undefined;
 
@@ -453,10 +454,6 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
 
         // TODO: Add sphere poops based on interval while active
     };
-
-    this.getBoostSpeed = function ZORSpeedBoostGetBoostSpeed() {
-        return this.boost_speed;
-    }
 };
 ZOR.SpeedBoostAbility.prototype = Object.create(ZOR.Ability.prototype);
 ZOR.SpeedBoostAbility.constructor = ZOR.SpeedBoostAbility;
