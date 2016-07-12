@@ -72,6 +72,9 @@ button, a {
     &.active {
         opacity: 1;
     }
+    & > * {
+        color: @primary-color;
+    }
 }
 
 input {
@@ -143,7 +146,7 @@ input {
             border-radius : 8px;
         }
 
-        & > *:first-child {
+        & > *:first-child:not(input) {
             margin-top  : 0;
             padding-top : 0;
         }

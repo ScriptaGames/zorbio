@@ -98,6 +98,10 @@ a {
 #ui-overlay.active {
   opacity: 1;
 }
+#render-canvas > *,
+#ui-overlay > * {
+  color: #f7f7f7;
+}
 input {
   padding: 20px;
   background: #dedede;
@@ -122,20 +126,16 @@ input:focus {
   font-weight: bold;
   letter-spacing: 1px;
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
       -ms-flex-pack: justify;
           justify-content: space-between;
   -webkit-box-align: center;
-  -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-  -webkit-flex-direction: column;
       -ms-flex-direction: column;
           flex-direction: column;
   pointer-events: none;
@@ -153,16 +153,13 @@ input:focus {
   overflow-y: auto;
   pointer-events: auto;
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-  -webkit-flex-direction: column;
       -ms-flex-direction: column;
           flex-direction: column;
   -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
       -ms-flex-pack: justify;
           justify-content: space-between;
   border-radius: 12px;
@@ -175,7 +172,7 @@ input:focus {
   margin-bottom: 20px;
   border-radius: 8px;
 }
-#ui-overlay .greybox > *:first-child {
+#ui-overlay .greybox > *:first-child:not(input) {
   margin-top: 0;
   padding-top: 0;
 }
@@ -209,11 +206,9 @@ button {
   border: none;
   color: #f7f7f7;
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: center;
-  -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
   overflow: hidden;
@@ -241,9 +236,8 @@ button:active {
   background: none;
   pointer-events: none;
   border-radius: 0;
-  -webkit-align-self: flex-start;
-      -ms-flex-item-align: start;
-          align-self: flex-start;
+  -ms-flex-item-align: start;
+      align-self: flex-start;
   margin-right: auto;
   padding: 0;
   margin: 0 auto 0 0;
@@ -253,7 +247,6 @@ button:active {
 #leaderboard-playing ul li,
 #leaderboard-playing #leaders {
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
 }
@@ -333,17 +326,14 @@ button:active {
 }
 #tabs {
   display: -webkit-box;
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  -webkit-flex-direction: row;
       -ms-flex-direction: row;
           flex-direction: row;
-  -webkit-justify-content: space-around;
-      -ms-flex-pack: distribute;
-          justify-content: space-around;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
 }
 #tabs button {
   border-radius: 50% 50%;
