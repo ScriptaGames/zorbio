@@ -3,47 +3,41 @@ var ZOR = ZOR || {};
 ZOR.Sounds = (function ZORSounds() {
 
     var sounds = {
-
         sfx: {
-            food_capture: {
-                "01": new Howl({
-                    urls: ['../sfx/58697__arioke__kalimba-lam01-f2-tip-soft.wav'],
-                }),
-                "02": new Howl({
-                    urls: ['../sfx/58699__arioke__kalimba-lam02-g2-tip-soft.wav'],
-                }),
-                "03": new Howl({
-                    urls: ['../sfx/58701__arioke__kalimba-lam03-bb2-tip-soft.wav'],
-                }),
-                "04": new Howl({
-                    urls: ['../sfx/58703__arioke__kalimba-lam04-d3-tip-soft.wav'],
-                }),
-                "05": new Howl({
-                    urls: ['../sfx/58705__arioke__kalimba-lam05-e3-tip-soft.wav'],
-                }),
-                "06": new Howl({
-                    urls: ['../sfx/58707__arioke__kalimba-lam06-f3-tip-soft.wav'],
-                }),
-                "07": new Howl({
-                    urls: ['../sfx/58711__arioke__kalimba-lam08-a3-tip-soft.wav'],
-                }),
-            },
+            // a chime sound for food capture
+            food_capture: new Wad({
+                source: 'sine',
+                volume: 0.3,
+                env: {
+                    attack: 0,
+                    decay: 0.001,
+                    sustain: .9,
+                    hold: 0.1,
+                    release: 0.5
+                },
+                vibrato : { // A vibrating pitch effect.  Only works for oscillators.
+                    shape     : 'square', // shape of the lfo waveform. Possible values are 'sine', 'sawtooth', 'square', and 'triangle'.
+                    magnitude : 2,      // how much the pitch changes. Sensible values are from 1 to 10.
+                    speed     : 10,      // How quickly the pitch changes, in cycles per second.  Sensible values are from 0.1 to 10.
+                    attack    : 0.5       // Time in seconds for the vibrato effect to reach peak magnitude.
+                },
+            }),
         },
-        music: {},
-
+        music: {
+            background: new Howl({
+                urls: ['../music/starfish-oblivion.mp3'],
+                autoplay: false,
+                loop: true,
+                volume: config.VOLUME_MUSIC_INITIAL,
+                buffer: true, // don't wait for entire file to download
+            }),
+        },
     };
 
-    if (config.MUSIC_ENABLED) {
-        sounds.music.background = new Howl({
-            urls: ['../music/starfish-oblivion.mp3'],
-            autoplay: false,
-            loop: true,
-            volume: config.VOLUME_MUSIC_INITIAL,
-            buffer: true, // don't wait for entire file to download
-        });
+    if (!config.MUSIC_ENABLED) {
+        sounds.music = {};
     }
 
     return sounds;
 
 })();
-

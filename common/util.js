@@ -32,12 +32,26 @@ UTIL.getRandomArbitrary = function UTILGetRandomArbitrary(min, max) {
  * Checks for a valid nick
  *
  * @param {String} nickname
- * @returns {boolean}
+ * @returns {Boolean}
  */
 UTIL.validNick = function UTILValidNick (nickname) {
     var regex = /^\w*$/;
     return regex.exec(nickname) !== null;
 };
+
+
+/**
+ * Given a sphere size, return the fraction of maximum size.  For example, if
+ * maximum sphere size is 150, getSizePercentage(75) will return 0.5.
+ *
+ * @param {Number} size a sphere's size
+ * @returns {number}
+ */
+UTIL.getSizePercentage = function UTILGetSizePercentage(size) {
+    // similar to  https://www.desmos.com/calculator/dphm84crab
+    var factor = ((size * 1) / config.MAX_PLAYER_RADIUS);
+    return factor;
+}
 
 /**
  * Detect hitting the wall in the positive direction
@@ -48,7 +62,7 @@ UTIL.validNick = function UTILValidNick (nickname) {
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
  * @param {'x'|'y'|'z'} axis the axis on which to test for collision
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function hitp( p, r, v, w, axis ) {
     return p[axis] + r - v[axis] > w[axis]/2;
@@ -63,7 +77,7 @@ function hitp( p, r, v, w, axis ) {
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
  * @param {'x'|'y'|'z'} axis the axis on which to test for collision
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function hitn( p, r, v, w, axis ) {
     return p[axis] - r - v[axis] < -w[axis]/2;
@@ -77,7 +91,7 @@ function hitn( p, r, v, w, axis ) {
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function hitxp( p, r, v, w ) {
     return hitp( p, r, v, w, 'x' );
@@ -92,7 +106,7 @@ function hitxp( p, r, v, w ) {
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function hitxn( p, r, v, w ) {
     return hitn( p, r, v, w, 'x' );
@@ -106,7 +120,7 @@ function hitxn( p, r, v, w ) {
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function hityp( p, r, v, w ) {
     return hitp( p, r, v, w, 'y' );
@@ -120,7 +134,7 @@ function hityp( p, r, v, w ) {
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function hityn( p, r, v, w ) {
     return hitn( p, r, v, w, 'y' );
@@ -134,7 +148,7 @@ function hityn( p, r, v, w ) {
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function hitzp( p, r, v, w ) {
     return hitp( p, r, v, w, 'z' );
@@ -148,7 +162,7 @@ function hitzp( p, r, v, w ) {
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function hitzn( p, r, v, w ) {
     return hitn( p, r, v, w, 'z' );
@@ -162,7 +176,7 @@ function hitzn( p, r, v, w ) {
  * @param {Number} r the radius of the sphere being tested
  * @param {Vector3} v the velocity of the sphere being tested
  * @param {Vector3} w the world dimensions
- * @returns {boolean} whether the wall would be hit after applying given velocity
+ * @returns {Boolean} whether the wall would be hit after applying given velocity
  */
 UTIL.checkWallCollision = function UTILcheckWallCollision( p, r, v, w ) {
 
@@ -479,7 +493,7 @@ UTIL.nth = function nth(f, n) {
 /**
  * Test if a string is undefinted null or blank
  * @param str
- * @returns {boolean}
+ * @returns {Boolean}
  */
 UTIL.isBlank = function isBlank(str) {
     return (!str || /^\s*$/.test(str));
