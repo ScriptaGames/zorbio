@@ -1,5 +1,5 @@
 <div id="tabs" style="font-size: {{Math.min(38,screen_x/40)}}px;">
-    <button on-click="{{ ACTIONS.SHOW_MENU_GAME_SCREEN   }}" id="menu-game-tab">Game</button>
-    <button on-click="{{ ACTIONS.SHOW_MENU_STORE_SCREEN  }}" id="menu-store-tab">Style</button>
-    <button on-click="{{ ACTIONS.SHOW_MENU_CONFIG_SCREEN }}" id="menu-config-tab">Settings</button>
+    <button class="{{ state === STATES.MENU_GAME_SCREEN ? 'active' : '' }}" on-click="{{ ACTIONS.SHOW_MENU_GAME_SCREEN   }}" id="menu-game-tab">Game</button>
+    <button class="{{ state === STATES.MENU_STORE_SCREEN ? 'active' : '' }}" on-click="{{ ACTIONS.SHOW_MENU_STORE_SCREEN  }}" id="menu-store-tab">Shop</button>
+    <button class="{{ state === STATES.MENU_CONFIG_SCREEN ? 'active' : '' }}" on-click="{{ ACTIONS.SHOW_MENU_CONFIG_SCREEN }}" id="menu-config-tab">Settings</button>
 </div>
