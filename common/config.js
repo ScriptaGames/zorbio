@@ -209,12 +209,11 @@ if (!NODEJS) {
     config.VOLUME_MUSIC_INITIAL = localStorage.volume_music || 0.45;
     config.VOLUME_SFX_INITIAL   = localStorage.volume_sfx || 1.0;
     config.MUSIC_ENABLED        = false;
-    config.SFX_FOOD_CAPTURE_SCALE = [
-        'F3',
-        'Eb3',
-        'G3',
-        'Bb3',
+    config.SFX_FOOD_CAPTURE_TONES = [
         'D3',
+        'E3',
+        'A3',
+        'B3',
     ];
 }
 

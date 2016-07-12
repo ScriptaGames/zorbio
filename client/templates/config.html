@@ -15,7 +15,7 @@
     </div>
     {{ /if }}
     <div>
-        <input id="sfx-volume" type="range" on-change="volume-sfx" min="0" max="1" step="0.01" value="{{ volume.sfx }}">
+        <input id="sfx-volume" type="range" on-change="volume-sfx" min="0" max="0.5" step="0.01" value="{{ volume.sfx }}">
         <label for="sfx-volume">SFX volume</LABEL>
     </div>
     {{ #if state === STATES.PLAYING_CONFIG }}

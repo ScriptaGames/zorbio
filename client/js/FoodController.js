@@ -108,11 +108,10 @@ var FoodController = function ZORFoodController(model, fogCenterPosition) {
                 dist = octreeObj.position.distanceTo( mainSphere.position );
                 if ( dist <= ( sphere_radius + config.FOOD_CAPTURE_ASSIST ) ) {
                     callback( fi );
-                    var pitch = _.sample(config.SFX_FOOD_CAPTURE_SCALE);
+                    var pitch = _.sample(config.SFX_FOOD_CAPTURE_TONES);
 
                     ZOR.Sounds.sfx.food_capture.play( {
                         pitch: pitch,
-                        volume: 0.2 - UTIL.getSizePercentage(sphere_radius)/6,
                         env: {
                             hold: Math.random() * 0.3 + 0.5,
                         }

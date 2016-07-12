@@ -438,6 +438,7 @@ function keyJustPressed(key) {
     if ( key === 'w' && config.AUTO_RUN_ENABLED) {
         if (player.model.abilities.speed_boost.isReady(player.radius())) {
             sendSpeedBoostStart();
+            ZOR.Sounds.sfx.woosh.play();
         }
     }
 }
@@ -448,6 +449,7 @@ function keyReleased(key) {
     if (key === 'w' && config.AUTO_RUN_ENABLED) {
         player.model.abilities.speed_boost.deactivate();
         sendSpeedBoostStop();
+        ZOR.Sounds.sfx.woosh.stop();
     }
 }
 

@@ -272,8 +272,8 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.VOLUME_SFX, function ZORVolumeSfx() {
             var vol = this.get('volume.sfx');
             _.each(
-                ZOR.Sounds.sfx.food_capture,
-                _.partial( _.invoke, _, 'volume', vol )
+                ZOR.Sounds.sfx,
+                _.partial( _.invoke, _, 'setVolume', vol )
             );
             localStorage.volume_sfx = vol;
         });
