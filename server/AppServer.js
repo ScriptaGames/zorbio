@@ -314,7 +314,7 @@ var AppServer = function (wss, app) {
 
             if (currentPlayer.abilities.speed_boost.activate(currentPlayer)) {
 
-                console.log("Speed boost activated for player: ", currentPlayer.id);
+                console.log("Speed boost START for player: ", currentPlayer.id);
 
                 // Tell client to activate speed boost
                 ws.send(JSON.stringify({op: "speed_boost_res", is_valid: true}));
@@ -323,7 +323,7 @@ var AppServer = function (wss, app) {
         }
 
         function handle_msg_speed_boost_stop() {
-            console.log("Stopping speed boost");
+            console.log("Speed boost STOP for player: ", currentPlayer.id);
 
             currentPlayer.abilities.speed_boost.deactivate();
         }

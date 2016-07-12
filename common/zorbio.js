@@ -204,7 +204,6 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
         //TODO: add different handlers for client and server
         if (NODEJS) {
             var shrink_amount = -(currentScale * config.ABILITY_SPEED_BOOST_PENALTY);
-            console.log("Shrink amount: " + shrink_amount);
             self.sphere.growExpected(shrink_amount);
         }
 
@@ -434,8 +433,6 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
 
     this.deactivate = function ZORSpeedBoostAbilityDeactivate() {
         this.active = false;
-
-        console.log("Deactivating speed boost ability");
 
         if (typeof this.ondeactivate === 'function') {
             this.ondeactivate();
