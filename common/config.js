@@ -23,7 +23,7 @@ config.REQUIRE_ALPHA_KEY = false;
 
 config.WORLD_SIZE       = 1600;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
-config.MAX_BOTS         = 10;
+config.MAX_BOTS         = 15;
 config.MAX_BOT_RADIUS   = 100;
 
 ////////////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ config.X_AXIS_MULT = 1;
 config.ABILITY_SPEED_BOOST_DURATION = 500;  // milliseconds that speed boost will last
 config.ABILITY_SPEED_BOOST_MIN_SCALE = config.INITIAL_PLAYER_RADIUS;   // min scale be fore speed boost can be used
 config.ABILITY_SPEED_BOOST_MULTIPLIER = 1.75; // percent speed increase
-config.ABILITY_SPEED_BOOST_PENALTY = 0.015;   // Percent scale to remove
+config.ABILITY_SPEED_BOOST_PENALTY = 0.01;   // Percent scale to remove
 
 config.DRAIN_MAX_DISTANCE    = 300; // distance at which draining starts
 config.DRAIN_PINCH_STRENGTH  = 0.4;
