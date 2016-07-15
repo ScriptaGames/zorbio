@@ -59,7 +59,40 @@ ZOR.PlayerView = function ZORPlayerView(model, scene) {
     this.mainSphere.player_id = this.model.id;
     ZOR.Game.player_meshes.push(this.mainSphere);  // store mesh for raycaster search
 
-    scene.add( this.mainSphere );
+    scene.add(this.mainSphere);
+
+    this.circlePoints = [];
+    var twoPI = Math.PI * 2;
+    var index = 0;
+    var scale = 1;
+    var inc = twoPI / 32.0;
+
+    for (var i = 0; i <= twoPI + inc; i += inc) {
+
+        var vector = new THREE.Vector3();
+        vector.set(Math.cos(i) * scale, Math.sin(i) * scale, 0);
+        this.circlePoints[index] = vector;
+        index++;
+
+    }
+
+    // create the trail renderer object
+    this.trail = new THREE.TrailRenderer(scene, false);
+
+    // create material for the trail renderer
+    this.trailMaterial = THREE.TrailRenderer.createBaseMaterial();
+    this.trailMaterial.uniforms.headColor.value.set(1, 0, 0, 0.5);
+    this.trailMaterial.uniforms.tailColor.value.set(0, 1, 0, 0.5);
+
+    // specify length of trail
+    var trailLength = 50;
+
+    // initialize the trail
+    this.trail.initialize(this.trailMaterial, trailLength, false, 0, this.circlePoints, this.mainSphere);
+    this.trail.activate();
+    this.trail.advance();
+
+    this.lastTrailUpdateTime = performance.now();
 };
 
 ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
@@ -70,6 +103,15 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
+
+    var time = performance.now();
+    if ( time - this.lastTrailUpdateTime > 10 ) {
+        this.trail.advance();
+        this.lastTrailUpdateTime = time;
+    } else {
+        this.trail.updateHead();
+
+    }
 };
 
 ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {
