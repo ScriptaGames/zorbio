@@ -10,6 +10,7 @@ var ZOR = ZOR || {};
 
 ZOR.PlayerView = function ZORPlayerView(model, scene) {
     this.model = model;
+    this.scene = scene;
 
     var actor = model.sphere;
 
@@ -59,7 +60,103 @@ ZOR.PlayerView = function ZORPlayerView(model, scene) {
     this.mainSphere.player_id = this.model.id;
     ZOR.Game.player_meshes.push(this.mainSphere);  // store mesh for raycaster search
 
+    this.initParticleTrail();
+
     scene.add( this.mainSphere );
+};
+        function getRandomNumber( base ) {
+            return Math.random() * base - (base/2);
+        }
+
+        function getRandomColor() {
+            var c = new THREE.Color();
+            c.setRGB( Math.random(), Math.random(), Math.random() );
+            return c;
+        }
+ZOR.PlayerView.prototype.initParticleTrail= function ZORPlayerViewInitParticleTrail() {
+    // establish a particle emitter group if it hasn't been
+    this.particleGroup = new SPE.Group({
+        hasPerspective: true,
+        texture: {
+            value: new THREE.TextureLoader().load( "textures/soft-square.png" ),
+        }
+    });
+    // this.emitter = new SPE.Emitter({
+    //     // type: SPE.distributions.SPHERE,
+    //     position: this.mainSphere.position,
+    //     color: {
+    //         value: [ new THREE.Color( 0.5, 0.5, 0.5 ), new THREE.Color() ],
+    //         spread: new THREE.Vector3(1, 1, 1),
+    //     },
+    //     size: {
+    //         value: [5, 0]
+    //     },
+    //     particleCount: 1500
+    // });
+
+    this.emitter = new SPE.Emitter({
+        maxAge: 5,
+        type: 'sphere',
+        // position: this.mainSphere.position,
+        position: {
+            value: new THREE.Vector3(
+                getRandomNumber(1000),
+                getRandomNumber(1000),
+                getRandomNumber(1000)
+            )
+        },
+
+        acceleration:{
+            value: new THREE.Vector3(
+                getRandomNumber(-2),
+                getRandomNumber(-2),
+                getRandomNumber(-2)
+            )
+        },
+
+        velocity: {
+            value: new THREE.Vector3(
+                getRandomNumber(5),
+                getRandomNumber(5),
+                getRandomNumber(5)
+            )
+        },
+
+        rotation: {
+            axis: new THREE.Vector3(
+                getRandomNumber(1),
+                getRandomNumber(1),
+                getRandomNumber(1)
+            ),
+            angle: Math.random() * Math.PI,
+            center: new THREE.Vector3(
+                getRandomNumber(100),
+                getRandomNumber(100),
+                getRandomNumber(100)
+            )
+        },
+
+        wiggle: {
+            value: Math.random() * 20
+        },
+
+        drag: {
+            value: Math.random()
+        },
+
+        color: {
+            value: [ getRandomColor(), getRandomColor() ]
+        },
+        size: {
+            value: [0, 2+ Math.random() * 10, 0]
+        },
+
+        particleCount: 100,
+
+        opacity: [0, 1, 0]
+    });
+
+    this.scene.add(this.particleGroup.mesh);
 };
 
 ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
@@ -69,6 +166,7 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 };
 
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
+    this.particleGroup.tick(ZOR.LagScale.get());
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
 };
 
