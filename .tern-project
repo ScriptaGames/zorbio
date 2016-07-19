@@ -1,9 +1,11 @@
 {
-    "libs": [ "browser", "ecma5" ],
+    "libs": [ "browser", "ecma5", "ecma6" ],
     "loadEagerly": [
-        "client/bower_components/three.js/build/three.js"
-    ],
-    "plugins": {
-        "node": {}
-    }
+        "client/bower_components/three.js/three.js",
+        "client/bower_components/isMobile/isMobile.js",
+        "client/bower_components/lodash/dist/lodash.js",
+        "client/bower_components/Wad/build/wad.js",
+        "server/*.js",
+        "client/js/**/*.js"
+    ]
 }
