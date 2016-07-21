@@ -72,6 +72,7 @@ ZOR.UI = function ZORUI() {
         STATES           : STATES,
         ACTIONS          : ACTIONS,
         COLORS           : config.COLORS,
+        REQUIRE_ALPHA_KEY: config.REQUIRE_ALPHA_KEY,
         MISSING_FEATURES : [],
         AUTHORS          : ['Michael Clayton', 'Jared Sprague'],
         leaders          : [],
