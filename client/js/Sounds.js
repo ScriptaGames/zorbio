@@ -7,7 +7,7 @@ ZOR.Sounds = (function ZORSounds() {
             // a chime sound for food capture
             food_capture: new Wad({
                 source: 'sine',
-                volume: 0.05,
+                volume: config.VOLUME_FOOD_CAPTURE,
                 env: {
                     attack: 0.001,
                     decay: 0.001,
