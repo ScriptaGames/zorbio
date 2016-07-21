@@ -212,8 +212,16 @@ if (!NODEJS) {
     config.SFX_FOOD_CAPTURE_TONES = [
         'D3',
         'E3',
+        'G3',
+        'G4',
         'A3',
+        'A4',
+        'D4',
         'B3',
+        'B4',
+        'C3',
+        'E4',
+        'Gb3',
     ];
     config.VOLUME_FOOD_CAPTURE = 0.05;
 }
