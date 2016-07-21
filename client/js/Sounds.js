@@ -15,12 +15,6 @@ ZOR.Sounds = (function ZORSounds() {
                     hold: 0.1,
                     release: 0.5
                 },
-                vibrato : { // A vibrating pitch effect.  Only works for oscillators.
-                    shape     : 'square', // shape of the lfo waveform. Possible values are 'sine', 'sawtooth', 'square', and 'triangle'.
-                    magnitude : 2,      // how much the pitch changes. Sensible values are from 1 to 10.
-                    speed     : 10,      // How quickly the pitch changes, in cycles per second.  Sensible values are from 0.1 to 10.
-                    attack    : 0.5       // Time in seconds for the vibrato effect to reach peak magnitude.
-                },
             }),
             woosh: new Wad({
                 source: 'noise',
