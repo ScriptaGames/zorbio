@@ -323,6 +323,8 @@ button:active {
 #title {
   margin: 4vh;
   color: white;
+  font-size: 4rem;
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
 }
 #tabs {
   display: -webkit-box;
