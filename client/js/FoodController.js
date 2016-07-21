@@ -109,7 +109,7 @@ var FoodController = function ZORFoodController(model, fogCenterPosition) {
                 if ( dist <= ( sphere_radius + config.FOOD_CAPTURE_ASSIST ) ) {
                     callback( fi );
                     var pitch = _.sample(config.SFX_FOOD_CAPTURE_TONES);
-                    var pan = camera.matrixWorldInverse.multiplyVector3(octreeObj.position).x / 32;
+                    var pan = octreeObj.position.applyProjection( camera.matrixWorldInverse ).x / 32;
 
                     ZOR.Sounds.sfx.food_capture.play( {
                         pitch: pitch,
