@@ -26,6 +26,14 @@ ZOR.PlayerController = function ZORPlayerController(model, scene) {
     if (scene) {
         this.initView(scene);
     }
+
+    this.model.abilities.speed_boost.on('activate', function () {
+        ZOR.Sounds.sfx.woosh.play();
+    });
+
+    this.model.abilities.speed_boost.on('deactivate', function () {
+        ZOR.Sounds.sfx.woosh.stop();
+    });
 };
 
 ZOR.PlayerController.prototype.queueFoodCapture = function ZORPlayerControllerQueueFoodCapture(fi) {
