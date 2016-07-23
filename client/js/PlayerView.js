@@ -10,6 +10,7 @@ var ZOR = ZOR || {};
 
 ZOR.PlayerView = function ZORPlayerView(model, scene) {
     this.model = model;
+    this.scene = scene;
 
     var actor = model.sphere;
 
@@ -60,6 +61,78 @@ ZOR.PlayerView = function ZORPlayerView(model, scene) {
     ZOR.Game.player_meshes.push(this.mainSphere);  // store mesh for raycaster search
 
     scene.add( this.mainSphere );
+
+    this.initTrail();
+};
+
+ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
+    this.trail = particleGroup = new SPE.Group({
+        texture: {
+            value:  new THREE.TextureLoader().load( "textures/trail-particle.png" ),
+        }
+    });
+
+    // var opacity = this.mainSphere.player_id === window.player.getPlayerId() ? 0.02 : 0.4;
+    var opacity = 0.4;
+
+    this.trailEmitter = new SPE.Emitter({
+        maxAge: {
+            value: 2,
+            spread: 2,
+        },
+        position: {
+            value: new THREE.Vector3(0, 0, 0),
+            distribution: SPE.distributions.SPHERE,
+            radius: 4,
+        },
+
+        opacity: {
+            value: [opacity, opacity, opacity, 0],
+        },
+
+        drag: {
+            value: 1.0,
+        },
+
+        color: {
+            value: new THREE.Color(this.playerColor),
+        },
+
+        size: {
+            value: 16,
+        },
+
+        particleCount: 200,
+    });
+
+    this.trailClock = new THREE.Clock();
+    this.trail.mesh.renderOrder = -1
+    this.trail.mesh.frustumCulled = false;
+    this.trail.addEmitter( this.trailEmitter );
+    this.scene.add( this.trail.mesh );
+};
+
+ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
+    var oldPos = this.trailEmitter.position._value.clone();
+    var newPos = this.mainSphere.position.clone();
+
+    this.trailEmitter.position._value.x = newPos.x;
+    this.trailEmitter.position._value.y = newPos.y;
+    this.trailEmitter.position._value.z = newPos.z;
+
+    var scale = 0.8 * this.mainSphere.scale.x;
+    this.trailEmitter.position._radius = scale;
+
+    var speed = oldPos.clone().sub(newPos).length();
+    var diffPos = newPos.sub(oldPos).multiplyScalar(speed);
+
+    this.trailEmitter.velocity._value.x = diffPos.x;
+    this.trailEmitter.velocity._value.y = diffPos.y;
+
+    this.trailEmitter.updateFlags.position = true;
+    this.trailEmitter.updateFlags.velocity = true;
+
+    this.trail.tick( this.trailClock.getDelta() );
 };
 
 ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
@@ -70,6 +143,7 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
+    this.updateTrail();
 };
 
 ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {

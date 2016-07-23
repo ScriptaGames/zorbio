@@ -22,7 +22,6 @@
   ],
   "dependencies": {
     "isMobile": "0.3.9",
-    "three.js": "^0.75.0",
     "lodash": "~4.0.0",
     "ractive": "~0.7.3",
     "howler.js": "^1.1.29",
@@ -30,6 +29,8 @@
     "uri.js": "^1.17.1",
     "fetch": "^0.11.0",
     "es6-promise": "^3.2.1",
-    "Wad": "wad#^2.4.1"
+    "Wad": "wad#^2.4.1",
+    "three.js": "threejs#*",
+    "ShaderParticleEngine": "https://github.com/squarefeet/ShaderParticleEngine.git#^1.0.5"
   }
 }
