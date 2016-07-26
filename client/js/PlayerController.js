@@ -8,10 +8,13 @@ var ZOR = ZOR || {};
  * @constructor
  *
  */
-ZOR.PlayerController = function ZORPlayerController(model, scene) {
+ZOR.PlayerController = function ZORPlayerController(model, scene, current) {
     this.model = new ZOR.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
         model.sphere.scale, model.sphere.velocity);
     this.isDead = false;
+
+    this.is_current_player = current || false;
+
     /**
      * Player velocity
      * @type {THREE.Vector3}
@@ -68,7 +71,7 @@ ZOR.PlayerController.prototype.setAlpha = function ZORPlayerControllerSetAlpha(a
 };
 
 ZOR.PlayerController.prototype.initView = function ZORPlayerControllerInitView(scene) {
-    this.view = new ZOR.PlayerView(this.model, scene);
+    this.view = new ZOR.PlayerView(this.model, scene, this.is_current_player);
 };
 
 ZOR.PlayerController.prototype.removeView = function ZORPlayerControllerRemoveView(scene) {

@@ -8,8 +8,9 @@ var ZOR = ZOR || {};
  * @param scene
  */
 
-ZOR.PlayerView = function ZORPlayerView(model, scene) {
+ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.model = model;
+    this.is_current_player = current || false;
 
     var actor = model.sphere;
 
