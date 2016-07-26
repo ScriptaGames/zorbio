@@ -68,7 +68,7 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 
 ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
     this.trail = particleGroup = new SPE.Group({
-        scale: window.innerWidth,
+        scale: Math.min(window.innerWidth, window.innerHeight),
         texture: {
             value:  new THREE.TextureLoader().load( "textures/trail-particle.png" ),
         },
