@@ -221,6 +221,16 @@ ZOR.PlayerController.prototype.speedBoost = function ZORPlayerControllerSpeedBoo
     this.model.abilities.speed_boost.activate();
 };
 
+/**
+ * Set the activity state of the speed boost on the model, for tracking other players speed boost.
+ * NOTE: this does NOT activate speed boost, just sets the active flag for other players.
+ * @param state
+ */
+ZOR.PlayerController.prototype.setSpeedBoostActive = function ZORPlayerControllerSetSpeedBoostActive(state) {
+    this.model.abilities.speed_boost.active = state;
+};
+
+
 ZOR.PlayerController.prototype.setTargetLock = function ZORPlayerControllerSetTargetLock(player_id) {
     this.targeting_player_id = player_id;
 };

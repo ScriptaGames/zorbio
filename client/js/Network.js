@@ -177,7 +177,7 @@ function setupSocket(ws) {
         var actorsArray = new Float32Array(arrayBuffer);
 
         // sync the actors positions from the server model to the client model
-        for (var i = 0, l = actorsArray.length; i < l; i += 6) {
+        for (var i = 0, l = actorsArray.length; i < l; i += 7) {
             var id = +actorsArray[ i ];
             var actor = zorbioModel.actors[id];
 
@@ -187,10 +187,14 @@ function setupSocket(ws) {
                 var z = actorsArray[ i + 3 ];
                 var s = actorsArray[ i + 4 ];
                 var drain_target_id = actorsArray[ i + 5 ];
+                var speed_boosting = actorsArray[ i + 6 ];
 
                 actor.position.copy({x: x, y: y, z: z});
                 actor.scale = s;
                 actor.drain_target_id = drain_target_id;
+
+                var playerController = ZOR.Game.players[actor.playerId];
+                playerController.setSpeedBoostActive(!!speed_boosting);
             }
         }
     }

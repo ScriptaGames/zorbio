@@ -396,7 +396,7 @@ var AppServer = function (wss, app) {
         if (actorIds.length === 0) return;  // nothing to do if there's no actors
 
         const NUM_ACTORS = actorIds.length;
-        const ACTOR_PARTS = 6;
+        const ACTOR_PARTS = 7;
 
         var bufferView = new Float32Array(ACTOR_PARTS * NUM_ACTORS);
 
@@ -422,6 +422,7 @@ var AppServer = function (wss, app) {
             bufferView[ offset + 3 ] = position.z;
             bufferView[ offset + 4 ] = actor.scale;
             bufferView[ offset + 5 ] = actor.drain_target_id;
+            bufferView[ offset + 6 ] = actor.speed_boosting ? 1 : 0;
 
             offset += ACTOR_PARTS;
         }
