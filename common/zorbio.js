@@ -197,11 +197,10 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
 
     // Abilities
     this.abilities = {};
-    this.abilities.speed_boost = new ZOR.SpeedBoostAbility();
-    this.abilities.speed_boost.onupdate = function () {
+    this.abilities.speed_boost = new ZOR.SpeedBoostAbility(this.sphere);
+    this.abilities.speed_boost.on('update', function () {
         var currentScale = self.sphere.scale;
 
-        //TODO: add different handlers for client and server
         if (NODEJS) {
             var shrink_amount = -(currentScale * config.ABILITY_SPEED_BOOST_PENALTY);
             self.sphere.growExpected(shrink_amount);
@@ -210,11 +209,12 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
         if (self.sphere.scale <= config.INITIAL_PLAYER_RADIUS + 0.1) {
             self.abilities.speed_boost.deactivate();
         }
-    };
-    this.abilities.speed_boost.ondeactivate = function () {
+    });
+
+    this.abilities.speed_boost.on('deactivate', function () {
         // start validating again at the regular speed
         self.sphere.recentPositions = [];
-    };
+    });
 
     // Stats
     this.foodCaptures = 0;
@@ -306,89 +306,28 @@ ZOR.PlayerMetric.prototype.add = function ZORPlayerMetricAdd(value) {
 };
 
 ZOR.Ability = function ZORAbility() {
+    var self = this;
+
     this.isActive   = undefined; // implemented by subclass
     this.activate   = undefined; // implemented by subclass
     this.deactivate = undefined; // implemented by subclass
     this.isReady    = undefined; // implemented by subclass
     this.update     = undefined; // implemented by subclass
-};
 
-ZOR.SpeedBurstAbility = function ZORSpeedBurstAbility() {
-    // call super class constructor
-    ZOR.Ability.call(this);
-
-    this.active = false;
-    this.max_duration = config.ABILITY_SPEED_BOOST_DURATION;
-    this.min_scale = config.ABILITY_SPEED_BOOST_MIN_SCALE;
-    this.boost_speed = config.ABILITY_SPEED_BOOST_SPEED;
-    this.onactivate = undefined;
-    this.ondeactivate = undefined;
-
-    /**
-     * Returns true of this ability is ready to activate.
-     * @param scale
-     * @returns {boolean}
-     */
-    this.isReady = function ZORSpeedBurstAbilityIsReady(scale) {
-        return !this.active && scale >= this.min_scale;
+    self.events = {
+        activate: [],
+        deactivate: [],
+        update: [],
     };
 
-    /**
-     * Is this ability active
-     * @returns {boolean}
-     */
-    this.isActive = function ZORSpeedBurstAbilityIsActive() {
-        return this.active;
-    };
-
-    /**
-     * Activate this ability
-     * @return {boolean}
-     */
-    this.activate = function ZORSpeedBurstAbilityActivate(aPlayer) {
-        if (!this.isReady(aPlayer.sphere.scale)) return false;
-
-        this.active = true;
-        this.start_time = Date.now();
-
-        if (typeof this.onactivate === 'function') {
-            this.onactivate();
-        }
-
-        return true;
-    };
-
-    this.deactivate = function ZORSpeedBurstAbilityDeactivate() {
-        this.active = false;
-
-        if (typeof this.ondeactivate === 'function') {
-            this.ondeactivate();
-        }
-    };
-
-    /**
-     * Update this ability state
-     */
-    this.update = function ZORSpeedBurstAbilityUpdate() {
-        if (!this.active) return;
-
-        var nowTime = Date.now();
-        var elapsedTime = nowTime - this.start_time;
-
-        if (elapsedTime >= this.max_duration) {
-            this.deactivate();
-        }
-    };
-
-    this.getBoostSpeed = function ZORSpeedBurstAbilityGetBoostSpeed() {
-        return this.boost_speed;
+    this.on = function ZORAbilityOn(eventName, func) {
+        self.events[eventName].push(func);
     }
 };
-ZOR.SpeedBurstAbility.prototype = Object.create(ZOR.Ability.prototype);
-ZOR.SpeedBurstAbility.constructor = ZOR.SpeedBurstAbility;
 
+ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
+    this.sphere = sphere;
 
-ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
     // call super class constructor
     ZOR.Ability.call(this);
 
@@ -418,14 +357,17 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
      * Activate this ability
      * @return {boolean}
      */
-    this.activate = function ZORSpeedBoostAbilityActivate(aPlayer) {
-        if (!this.isReady(aPlayer.sphere.scale)) return false;
+    this.activate = function ZORSpeedBoostAbilityActivate() {
+        if (!this.isReady(this.sphere.scale)) return false;
 
         this.active = true;
         this.start_time = Date.now();
 
-        if (typeof this.onactivate === 'function') {
-            this.onactivate();
+        // iterate over event listeners and execute them
+        for (var i = 0; i < this.events.activate.length; i++) {
+            if (typeof this.events.activate[i] === 'function') {
+                this.events.activate[i]();
+            }
         }
 
         return true;
@@ -434,8 +376,11 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
     this.deactivate = function ZORSpeedBoostAbilityDeactivate() {
         this.active = false;
 
-        if (typeof this.ondeactivate === 'function') {
-            this.ondeactivate();
+        // iterate over event listeners and execute them
+        for (var i = 0; i < this.events.deactivate.length; i++) {
+            if (typeof this.events.deactivate[i] === 'function') {
+                this.events.deactivate[i]();
+            }
         }
     };
 
@@ -445,8 +390,11 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
     this.update = function ZORSpeedBoostAbilityUpdate() {
         if (!this.active) return;
 
-        if (typeof this.onupdate === 'function') {
-            this.onupdate();
+        // iterate over event listeners and execute them
+        for (var i = 0; i < this.events.update.length; i++) {
+            if (typeof this.events.update[i] === 'function') {
+                this.events.update[i]();
+            }
         }
 
         // TODO: Add sphere poops based on interval while active
