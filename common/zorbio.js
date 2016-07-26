@@ -137,6 +137,8 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
     // Draining target actor ID
     this.drain_target_id = 0;
 
+    this.speed_boosting = false;
+
     // maintain a reference to the player who owns this sphere
     this.playerId = playerId;
 
@@ -361,6 +363,7 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
         if (!this.isReady(this.sphere.scale)) return false;
 
         this.active = true;
+        this.sphere.speed_boosting = true;
         this.start_time = Date.now();
 
         // iterate over event listeners and execute them
@@ -375,6 +378,7 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
 
     this.deactivate = function ZORSpeedBoostAbilityDeactivate() {
         this.active = false;
+        this.sphere.speed_boosting = false;
 
         // iterate over event listeners and execute them
         for (var i = 0; i < this.events.deactivate.length; i++) {
