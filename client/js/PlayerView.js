@@ -68,24 +68,22 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 
 ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
     this.trail = particleGroup = new SPE.Group({
-        scale: 962,
+        scale: window.innerWidth,
         texture: {
             value:  new THREE.TextureLoader().load( "textures/trail-particle.png" ),
-        }
+        },
+        maxParticleCount: 200,
     });
 
-    // var opacity = this.mainSphere.player_id === window.player.getPlayerId() ? 0.02 : 0.4;
-    var opacity = 1.0;
+    var opacity = this.is_current_player ? 0.18 : 0.6;
 
     this.trailEmitter = new SPE.Emitter({
         maxAge: {
-            value: 3,
+            value: 4,
             // spread: 2,
         },
         position: {
             value: new THREE.Vector3(0, 0, 0),
-            // distribution: SPE.distributions.SPHERE,
-            // radius: 0,
         },
 
         opacity: {
@@ -178,6 +176,7 @@ ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(p
 
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
     this.drainView.dispose();
+    this.trail.dispose();
     scene.remove(this.mainSphere);
 
     // find the player mesh used for raycasting and remove it
