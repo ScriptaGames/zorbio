@@ -75,7 +75,7 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
         maxParticleCount: 200,
     });
 
-    var opacity = this.is_current_player ? 0.18 : 0.6;
+    var opacity = this.is_current_player ? 0.2 : 0.6;
 
     this.trailEmitter = new SPE.Emitter({
         maxAge: {
@@ -107,7 +107,7 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
     });
 
     this.trailClock = new THREE.Clock();
-    this.trail.mesh.renderOrder = -1;
+    this.trail.mesh.renderOrder = 1;
     this.trail.mesh.frustumCulled = false;
     this.trail.addEmitter( this.trailEmitter );
     this.scene.add( this.trail.mesh );
