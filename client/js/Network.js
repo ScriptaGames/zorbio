@@ -192,9 +192,10 @@ function setupSocket(ws) {
                 var s = actorsArray[ i + 4 ];
                 var drain_target_id = actorsArray[ i + 5 ];
 
-                var old_pos = actor.position.clone();
+                var last_pos_update = (actor.lastPosition || actor.position).clone();
                 actor.position.set(x, y, z);
-                actor.velocity = actor.position.clone().sub(old_pos);
+                actor.lastPosition = actor.position.clone();
+                actor.velocity = actor.position.clone().sub(last_pos_update);
                 actor.scale = s;
                 actor.drain_target_id = drain_target_id;
             }
