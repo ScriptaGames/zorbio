@@ -12,11 +12,6 @@ ZOR.PlayerController = function ZORPlayerController(model, scene) {
     this.model = new ZOR.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
         model.sphere.scale, model.sphere.velocity);
     this.isDead = false;
-    /**
-     * Player velocity
-     * @type {THREE.Vector3}
-     */
-    this.velocity = new THREE.Vector3();
 
     this.move_forward_v = new THREE.Vector3();
     this.move_backward_v = new THREE.Vector3();
@@ -91,6 +86,11 @@ ZOR.PlayerController.prototype.refreshSphereModel = function ZORPlayerController
     this.model.sphere.position.copy(this.view.mainSphere.position);
 };
 
+ZOR.PlayerController.prototype.updateVelocity = function ZORPlayerControllerUpdateScale(scale) {
+    this.setScale(scale);
+    this.view.update(scale);
+};
+
 ZOR.PlayerController.prototype.updateScale = function ZORPlayerControllerUpdateScale(scale) {
     this.setScale(scale);
     this.view.update(scale);
@@ -123,7 +123,7 @@ ZOR.PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(s
 ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls, lag_scale) {
 
     // first update any player abilities
-    this.model.abilities['speed_boost'].update();
+    this.model.abilities.speed_boost.update();
 
     if (config.AUTO_RUN_ENABLED) {
         this.moveForward(camera); // always move forward
@@ -142,15 +142,15 @@ ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene
 };
 
 ZOR.PlayerController.prototype.applyVelocity = function ZORPlayerControllerApplyVelocity(lag_scale, camera_controls) {
-    this.velocity.sub( camera_controls.velocityRequest );
-    this.velocity.normalize();
-    this.velocity.multiplyScalar( player.getSpeed() * lag_scale );
+    this.model.sphere.velocity.sub( camera_controls.velocityRequest );
+    this.model.sphere.velocity.normalize();
+    this.model.sphere.velocity.multiplyScalar( player.getSpeed() * lag_scale );
 
     this.view.mainSphere.position.sub(
         UTIL.adjustVelocityWallHit(
             this.view.mainSphere.position,
             0,
-            this.velocity,
+            this.model.sphere.velocity,
             zorbioModel.worldSize
         )
     );
@@ -178,7 +178,7 @@ ZOR.PlayerController.prototype.addRecentPosition = function ZORPlayerControllerA
 };
 
 ZOR.PlayerController.prototype.resetVelocity = function ZORPlayerControllerResetVelocity() {
-    this.velocity.set( 0, 0, 0 );
+    this.model.sphere.velocity.set( 0, 0, 0 );
 };
 
 ZOR.PlayerController.prototype.moveForward = function ZORPlayerControllerMoveForward(camera) {
@@ -189,7 +189,7 @@ ZOR.PlayerController.prototype.moveForward = function ZORPlayerControllerMoveFor
     v.multiplyScalar( -1 );
     v.normalize();
     v.multiplyScalar( this.getSpeed() );
-    this.velocity.add( v );
+    this.model.sphere.velocity.add( v );
 };
 
 ZOR.PlayerController.prototype.moveBackward = function ZORPlayerControllerMoveBackward(camera) {
@@ -199,7 +199,7 @@ ZOR.PlayerController.prototype.moveBackward = function ZORPlayerControllerMoveBa
     v.sub( camera.position );
     v.normalize();
     v.multiplyScalar( this.getSpeed() );
-    this.velocity.add( v );
+    this.model.sphere.velocity.add( v );
 };
 
 ZOR.PlayerController.prototype.setCameraControls = function ZORPlayerControllerSetCameraControls(camera_controls) {
@@ -208,8 +208,6 @@ ZOR.PlayerController.prototype.setCameraControls = function ZORPlayerControllerS
 
 ZOR.PlayerController.prototype.speedBoost = function ZORPlayerControllerSpeedBoost() {
     this.model.abilities.speed_boost.activate(this.model);
-
-    //TODO: Activate visual speed boost embelishment to this.view here
 };
 
 ZOR.PlayerController.prototype.setTargetLock = function ZORPlayerControllerSetTargetLock(player_id) {
@@ -219,5 +217,3 @@ ZOR.PlayerController.prototype.setTargetLock = function ZORPlayerControllerSetTa
 ZOR.PlayerController.prototype.getTargetLock = function ZORPlayerControllerGetTargetLock() {
     return this.targeting_player_id;
 };
-
-

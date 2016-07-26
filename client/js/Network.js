@@ -105,8 +105,10 @@ function setupSocket(ws) {
         for (var i = 0, l = actorIds.length; i < l; i++) {
             var actorId = +actorIds[i];  // make sure id is a number
             var actor = zorbioModel.actors[actorId];
+            var velocity = actor.velocity;
             var position = actor.position;
             actor.position = new THREE.Vector3(position.x, position.y, position.z);
+            actor.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
         }
 
         ZOR.UI.on('init', createScene);
@@ -155,6 +157,8 @@ function setupSocket(ws) {
             zorbioModel.actors[newPlayer.sphere.id] = newPlayer.sphere;
             var position = newPlayer.sphere.position;
             zorbioModel.actors[newPlayer.sphere.id].position = new THREE.Vector3(position.x, position.y, position.z);
+            var velocity = actor.velocity;
+            actor.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
         }
 
         console.log('Player joined: ', newPlayer.id, newPlayer.name);
@@ -188,7 +192,9 @@ function setupSocket(ws) {
                 var s = actorsArray[ i + 4 ];
                 var drain_target_id = actorsArray[ i + 5 ];
 
-                actor.position.copy({x: x, y: y, z: z});
+                var old_pos = actor.position.clone();
+                actor.position.set(x, y, z);
+                actor.velocity = actor.position.clone().sub(old_pos);
                 actor.scale = s;
                 actor.drain_target_id = drain_target_id;
             }

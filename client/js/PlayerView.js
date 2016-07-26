@@ -67,27 +67,28 @@ ZOR.PlayerView = function ZORPlayerView(model, scene) {
 
 ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
     this.trail = particleGroup = new SPE.Group({
+        scale: 962,
         texture: {
             value:  new THREE.TextureLoader().load( "textures/trail-particle.png" ),
         }
     });
 
     // var opacity = this.mainSphere.player_id === window.player.getPlayerId() ? 0.02 : 0.4;
-    var opacity = 0.4;
+    var opacity = 1.0;
 
     this.trailEmitter = new SPE.Emitter({
         maxAge: {
-            value: 2,
-            spread: 2,
+            value: 3,
+            // spread: 2,
         },
         position: {
             value: new THREE.Vector3(0, 0, 0),
-            distribution: SPE.distributions.SPHERE,
-            radius: 4,
+            // distribution: SPE.distributions.SPHERE,
+            // radius: 0,
         },
 
         opacity: {
-            value: [opacity, opacity, opacity, 0],
+            value: [opacity, 0],
         },
 
         drag: {
@@ -99,14 +100,15 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
         },
 
         size: {
-            value: 16,
+            value: [100, 0],
         },
 
         particleCount: 200,
+        activeMultiplier: 0.1,
     });
 
     this.trailClock = new THREE.Clock();
-    this.trail.mesh.renderOrder = -1
+    this.trail.mesh.renderOrder = -1;
     this.trail.mesh.frustumCulled = false;
     this.trail.addEmitter( this.trailEmitter );
     this.scene.add( this.trail.mesh );
@@ -120,17 +122,28 @@ ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
     this.trailEmitter.position._value.y = newPos.y;
     this.trailEmitter.position._value.z = newPos.z;
 
-    var scale = 0.8 * this.mainSphere.scale.x;
-    this.trailEmitter.position._radius = scale;
+    var scale = Math.PI* 3/4 * this.mainSphere.scale.x;
+    // this.trailEmitter.position._radius = scale;
+    this.trailEmitter.size._value =  [scale, scale*2/3, scale*1/3, 0];
 
-    var speed = oldPos.clone().sub(newPos).length();
-    var diffPos = newPos.sub(oldPos).multiplyScalar(speed);
+    var boosting = this.model.abilities.speed_boost.isActive();
 
-    this.trailEmitter.velocity._value.x = diffPos.x;
-    this.trailEmitter.velocity._value.y = diffPos.y;
+    if (boosting) {
+        this.trailEmitter.activeMultiplier = 1;
+    }
+    else {
+        this.trailEmitter.activeMultiplier = 0.1;
+    }
+
+    // var speed = oldPos.clone().sub(newPos).length();
+    // var diffPos = newPos.sub(oldPos).multiplyScalar(speed);
+
+    // this.trailEmitter.velocity._value.x = diffPos.x;
+    // this.trailEmitter.velocity._value.y = diffPos.y;
 
     this.trailEmitter.updateFlags.position = true;
     this.trailEmitter.updateFlags.velocity = true;
+    this.trailEmitter.updateFlags.size = true;
 
     this.trail.tick( this.trailClock.getDelta() );
 };
