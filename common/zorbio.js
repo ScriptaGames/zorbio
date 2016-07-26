@@ -197,7 +197,7 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
 
     // Abilities
     this.abilities = {};
-    this.abilities.speed_boost = new ZOR.SpeedBoostAbility();
+    this.abilities.speed_boost = new ZOR.SpeedBoostAbility(this.sphere);
     this.abilities.speed_boost.on('update', function () {
         var currentScale = self.sphere.scale;
 
@@ -325,7 +325,9 @@ ZOR.Ability = function ZORAbility() {
     }
 };
 
-ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
+ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
+    this.sphere = sphere;
+
     // call super class constructor
     ZOR.Ability.call(this);
 
@@ -355,8 +357,8 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility() {
      * Activate this ability
      * @return {boolean}
      */
-    this.activate = function ZORSpeedBoostAbilityActivate(aPlayer) {
-        if (!this.isReady(aPlayer.sphere.scale)) return false;
+    this.activate = function ZORSpeedBoostAbilityActivate() {
+        if (!this.isReady(this.sphere.scale)) return false;
 
         this.active = true;
         this.start_time = Date.now();
