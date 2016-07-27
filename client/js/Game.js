@@ -326,7 +326,9 @@ function updateActors() {
                 var otherPlayer = ZOR.Game.players[actor.playerId];
                 if (otherPlayer && otherPlayer.view) {
                     // update actor
-                    var latency = (actorUpdateGap) || 50; // use ping or assume a latency if ping not available
+                    updateActors.runningActorUpdateGap = 0.99 * updateActors.runningActorUpdateGap + 0.01 * (actorUpdateGap || config.TICK_FAST_INTERVAL);
+                    console.log(updateActors.runningActorUpdateGap, actorUpdateGap);
+                    var latency = (updateActors.runningActorUpdateGap); // use ping or assume a latency if ping not available
                     var velocityScale = 16.66667 * ZOR.LagScale.get() / latency;
                     actor.position.add(actor.velocity.clone().multiplyScalar(velocityScale));
                     otherPlayer.updatePosition(actor.position);
@@ -342,6 +344,7 @@ function updateActors() {
         }
     }
 }
+updateActors.runningActorUpdateGap = config.TICK_FAST_INTERVAL;
 
 function updateTargetLock() {
     // calculate objects intersecting the ray
