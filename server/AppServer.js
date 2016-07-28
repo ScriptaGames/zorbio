@@ -1,17 +1,18 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
-var config     = require('../common/config.js');
-var pjson      = require('../package.json');
-var request    = require('request');
-var gameloop   = require('node-gameloop');
-var _          = require('lodash');
-var Zorbio     = require('../common/zorbio.js');
-var Validators = require('./Validators.js');
-var ZorApi     = require('./ZorApi.js');
-var UTIL       = require('../common/util.js');
-var Drain      = require('../common/Drain.js');
-var WebSocket  = require('ws');
+var config        = require('../common/config.js');
+var pjson         = require('../package.json');
+var request       = require('request');
+var gameloop      = require('node-gameloop');
+var _             = require('lodash');
+var Zorbio        = require('../common/zorbio.js');
+var Validators    = require('./Validators.js');
+var ZorApi        = require('./ZorApi.js');
+var UTIL          = require('../common/util.js');
+var Drain         = require('../common/Drain.js');
+var WebSocket     = require('ws');
 var BotController = require('./BotController.js');
+var ServerPlayer  = require('./ServerPlayer.js');
 
 /**
  * This module contains all of the app logic and state,
@@ -128,7 +129,7 @@ var AppServer = function (wss, app) {
             }
 
             // Create the Player
-            currentPlayer = new Zorbio.Player(player_id, name, color, type, position);
+            currentPlayer = new ServerPlayer(player_id, name, color, type, position);
             currentPlayer.headers = headers;
 
             ws.send(JSON.stringify({op: 'welcome', currentPlayer: currentPlayer}));

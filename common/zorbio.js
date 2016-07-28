@@ -200,19 +200,6 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     // Abilities
     this.abilities = {};
     this.abilities.speed_boost = new ZOR.SpeedBoostAbility(this.sphere);
-    this.abilities.speed_boost.on('update', function () {
-        var currentScale = self.sphere.scale;
-
-        if (NODEJS) {
-            var shrink_amount = -(currentScale * config.ABILITY_SPEED_BOOST_PENALTY);
-            self.sphere.growExpected(shrink_amount);
-        }
-
-        if (self.sphere.scale <= config.INITIAL_PLAYER_RADIUS + 0.1) {
-            self.abilities.speed_boost.deactivate();
-        }
-    });
-
     this.abilities.speed_boost.on('deactivate', function () {
         // start validating again at the regular speed
         self.sphere.recentPositions = [];

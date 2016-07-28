@@ -21,7 +21,7 @@ Validators.is_profane = function (str) {
 
 Validators.movement = function () {
 
-    var msPerFrame = 1/60 * 1000;
+    const MS_PER_FRAME = 1/60 * 1000;
     var recentSpeeds = [];
     var currentScale = 1;
     var currentAvgSpeed = 0;
@@ -49,7 +49,7 @@ Validators.movement = function () {
         if (sphere.oldestPosition) {
             var oldestPosition = sphere.oldestPosition;
             var time = latestPosition.time - oldestPosition.time;
-            var minTime = ((config.PLAYER_POSITIONS_WINDOW * msPerFrame) - 180);
+            var minTime = ((config.PLAYER_POSITIONS_WINDOW * MS_PER_FRAME) - 180);
 
             if (time < minTime) {
                 return 0; // only can calculate enough time has passed
@@ -72,7 +72,7 @@ Validators.movement = function () {
 
             var maxToleratedSpeed = expectedSpeed + config.SPEED_EXTRA_TOLERANCE;
             var measuredSpeed = vdist / time;
-            var actualSpeed = msPerFrame * measuredSpeed;
+            var actualSpeed = MS_PER_FRAME * measuredSpeed;
 
             // do the actual validation
             if (actualSpeed > maxToleratedSpeed) {
