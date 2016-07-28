@@ -176,6 +176,7 @@ ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(p
 
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
     this.drainView.dispose();
+    this.trail.emitters.forEach(function (emitter) { emitter.remove(); });
     this.trail.dispose();
     scene.remove(this.mainSphere);
 
