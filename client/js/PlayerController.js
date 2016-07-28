@@ -215,8 +215,16 @@ ZOR.PlayerController.prototype.setCameraControls = function ZORPlayerControllerS
     this.view.setCameraControls(camera_controls);
 };
 
-ZOR.PlayerController.prototype.speedBoost = function ZORPlayerControllerSpeedBoost() {
+ZOR.PlayerController.prototype.speedBoostStart = function ZORPlayerControllerSpeedBoostStart() {
     this.model.abilities.speed_boost.activate();
+};
+
+ZOR.PlayerController.prototype.speedBoostStop = function ZORPlayerControllerSpeedBoostStop() {
+    this.model.abilities.speed_boost.deactivate();
+};
+
+ZOR.PlayerController.prototype.isSpeedBoostActive = function ZORPlayerControllerIsSpeedBoostActive() {
+    return this.model.abilities.speed_boost.isActive();
 };
 
 /**

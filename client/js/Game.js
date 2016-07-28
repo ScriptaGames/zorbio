@@ -450,11 +450,12 @@ function keyJustPressed(key) {
 }
 
 function keyReleased(key) {
-    console.log('key ' + key + ' released');
-
+    //console.log('key ' + key + ' released');
     if (key === 'w' && config.AUTO_RUN_ENABLED) {
-        player.model.abilities.speed_boost.deactivate();
-        sendSpeedBoostStop();
+        if (player.isSpeedBoostActive()) {
+            player.speedBoostStop();
+            sendSpeedBoostStop();
+        }
     }
 }
 

@@ -49,9 +49,12 @@ Validators.movement = function () {
         if (sphere.oldestPosition) {
             var oldestPosition = sphere.oldestPosition;
             var time = latestPosition.time - oldestPosition.time;
-            var minTime = ((config.PLAYER_POSITIONS_WINDOW * MS_PER_FRAME) - 180);
+            var minTime = ((config.PLAYER_POSITIONS_WINDOW * MS_PER_FRAME) - 100);
 
-            if (time < minTime) {
+            //console.log("time, minTime: ", time, minTime);
+            //console.log("recent positions length: ", actor.recentPositions.length);
+
+            if (actor.recentPositions.length < config.PLAYER_POSITIONS_WINDOW || time < minTime) {
                 return 0; // only can calculate enough time has passed
             }
 

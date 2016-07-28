@@ -322,8 +322,6 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
 
     this.active = false;
     this.min_scale = config.ABILITY_SPEED_BOOST_MIN_SCALE;
-    this.onactivate = undefined;
-    this.ondeactivate = undefined;
 
     /**
      * Returns true of this ability is ready to activate.
@@ -351,7 +349,6 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
 
         this.active = true;
         this.sphere.speed_boosting = true;
-        this.start_time = Date.now();
 
         // iterate over event listeners and execute them
         for (var i = 0; i < this.events.activate.length; i++) {

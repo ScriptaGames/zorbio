@@ -129,7 +129,7 @@ var AppServer = function (wss, app) {
             }
 
             // Create the Player
-            currentPlayer = new ServerPlayer(player_id, name, color, type, position);
+            currentPlayer = new ServerPlayer(player_id, name, color, type, position, ws);
             currentPlayer.headers = headers;
 
             ws.send(JSON.stringify({op: 'welcome', currentPlayer: currentPlayer}));

@@ -3,9 +3,9 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 var config = require('../common/config.js');
 var Zorbio = require('../common/zorbio.js');
 
-var ServerPlayer = function ZORServerPlayer() {
+var ServerPlayer = function ZORServerPlayer(player_id, name, color, type, position, ws) {
     // call super class constructor
-    Zorbio.Player.apply(this, arguments);
+    Zorbio.Player.call(this, player_id, name, color, type, position);
 
     var self = this;
 
@@ -14,9 +14,9 @@ var ServerPlayer = function ZORServerPlayer() {
         var shrink_amount = -(currentScale * config.ABILITY_SPEED_BOOST_PENALTY);
         self.sphere.growExpected(shrink_amount);
 
-        console.log('scales: ', self.sphere.scale, config.INITIAL_PLAYER_RADIUS + 0.1, self.sphere.scale <= config.INITIAL_PLAYER_RADIUS + 0.1);
-        if (self.sphere.scale <= config.INITIAL_PLAYER_RADIUS + 0.1) {
-            self.abilities.speed_boost.deactivate();
+        if (self.sphere.scale <= config.INITIAL_PLAYER_RADIUS) {
+            console.log("Sending speed boost stop: ", player_id);
+            ws.send(JSON.stringify({op: 'speed_boost_stop'}));
         }
     });
 };

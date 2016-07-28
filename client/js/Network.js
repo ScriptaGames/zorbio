@@ -77,6 +77,9 @@ function setupSocket(ws) {
                 case 'speed_boost_res':
                     handle_msg_speed_boost_res(message);
                     break;
+                case 'speed_boost_stop':
+                    handle_msg_speed_boost_stop();
+                    break;
             }
         }
         else {
@@ -276,7 +279,13 @@ function setupSocket(ws) {
 
     function handle_msg_speed_boost_res(msg) {
         console.log("speed boost is valid:", msg.is_valid);
-        player.speedBoost();
+        player.speedBoostStart();
+    }
+
+    function handle_msg_speed_boost_stop() {
+        console.log("Received speed boost STOP");
+        player.speedBoostStop();
+        sendSpeedBoostStop();
     }
 }
 
