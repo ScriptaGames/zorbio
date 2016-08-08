@@ -269,6 +269,7 @@ var AppServer = function (wss, app) {
                 actor.position.set( latestPosition.position.x, latestPosition.position.y, latestPosition.position.z);
 
                 // Recent positions
+                //TODO: figure out how THREE is defined here without a require()
                 actor.pushRecentPosition({position: new THREE.Vector3(prev_3_x, prev_3_y, prev_3_z), radius: prev_3_r, time: prev_3_t});
                 actor.pushRecentPosition({position: new THREE.Vector3(prev_2_x, prev_2_y, prev_2_z), radius: prev_2_r, time: prev_2_t});
                 actor.pushRecentPosition({position: new THREE.Vector3(prev_1_x, prev_1_y, prev_1_z), radius: prev_1_r, time: prev_1_t});
