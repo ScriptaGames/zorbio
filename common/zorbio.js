@@ -85,6 +85,10 @@ ZOR.Actor = function ZORActor() {
     this.recentPositions = [];
 };
 
+ZOR.Actor.prototype.reduce = function ZORActorReduce() {
+    return this;  // Abstract method to be implemented by subclasses
+};
+
 ZOR.Actor.prototype.pushRecentPosition = function ZORActorPushRecentPosition(position) {
 
     // make a copy of the position
@@ -146,6 +150,24 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
 };
 ZOR.PlayerSphere.prototype = Object.create(ZOR.Actor.prototype);
 ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
+
+/**
+ * Returns the reduced actor with just the data important to sync between client and server
+ * @returns {Object}
+ */
+ZOR.PlayerSphere.prototype.reduce = function ZORPlayerSphereReduce() {
+    return {
+        id: this.id,
+        position: this.position,
+        velocity: this.velocity,
+        scale: this.scale,
+        type: this.type,
+        color: this.color,
+        drain_target_id: this.drain_target_id,
+        speed_boosting: this.speed_boosting,
+        playerId: this.playerId,
+    }
+};
 
 /**
  * Returns the radius of the player sphere in terms of the sphere scale
