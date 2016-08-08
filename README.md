@@ -8,7 +8,7 @@ Absorb the Orbs!
 
 Install package dependancies:
 
-    dnf install nodejs npm js-devel fedora-packager @development-tools
+    dnf install nodejs js-devel fedora-packager @development-tools
 
 After cloning the repository, cd into it and install dependencies:
    
