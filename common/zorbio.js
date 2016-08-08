@@ -249,6 +249,18 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.buffered_amount_metric = new ZOR.PlayerMetric(320);
 };
 
+/**
+ * Reduce the player to the bare minimum needed to sync between client and server
+ */
+ZOR.Player.prototype.reduce = function ZORPlayerReduce() {
+    return {
+        id: this.id,
+        name: this.name,
+        type: this.type,
+        sphere: this.sphere.reduce(),
+    }
+};
+
 ZOR.Player.prototype.getScore = function ZORPlayerGetScore() {
     return config.PLAYER_GET_SCORE(this.sphere.scale);
 };

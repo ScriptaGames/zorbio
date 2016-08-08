@@ -396,15 +396,14 @@ var AppServer = function (wss, app) {
         // Send the bare minimum to init the game on the client
         var initialModel = {
             actors: {},
+            players: {},
+            worldSize: self.model.worldSize,
             food: self.model.food,
             foodCount: self.model.foodCount,
             foodDensity: self.model.foodDensity,
             food_respawning: self.model.food_respawning,
             food_respawn_ready_queue: self.model.food_respawn_ready_queue,
             food_respawning_indexes: self.model.food_respawning_indexes,
-            leaders: self.model.leaders,
-            players: self.model.players,
-            worldSize: self.model.worldSize,
         };
 
         // iterate over actors and reduce them
@@ -413,6 +412,14 @@ var AppServer = function (wss, app) {
             var actorId = +actorIds[i];  // make sure id is a number
             var actor = self.model.actors[actorId];
             initialModel.actors[actorId] = actor.reduce();
+        }
+
+        // iterate over players and reduce them
+        var playerIds = Object.getOwnPropertyNames(self.model.players);
+        for (i = 0, l = playerIds.length; i < l; i++) {
+            var playerId = +playerIds[i];  // make sure id is a number
+            var player = self.model.players[playerId];
+            initialModel.players[playerId] = player.reduce();
         }
 
         ws.send(JSON.stringify({op: 'init_game', model: initialModel}));
