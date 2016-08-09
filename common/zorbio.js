@@ -60,6 +60,44 @@ ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
 };
 
 /**
+ * Reduce the model to just what is needed to sync state between client and server.  Helps reduce size of message
+ * over the wire.
+ * @returns Object
+ */
+ZOR.Model.prototype.reduce = function ZORModelReduce() {
+    // Send the bare minimum to init the game on the client
+    var reducedModel = {
+        actors: {},
+        players: {},
+        worldSize: this.worldSize,
+        food: this.food,
+        foodCount: this.foodCount,
+        foodDensity: this.foodDensity,
+        food_respawning: this.food_respawning,
+        food_respawn_ready_queue: this.food_respawn_ready_queue,
+        food_respawning_indexes: this.food_respawning_indexes,
+    };
+
+    // iterate over actors and reduce them
+    var actorIds = Object.getOwnPropertyNames(this.actors);
+    for (var i = 0, l = actorIds.length; i < l; i++) {
+        var actorId = +actorIds[i];  // make sure id is a number
+        var actor = this.actors[actorId];
+        reducedModel.actors[actorId] = actor.reduce();
+    }
+
+    // iterate over players and reduce them
+    var playerIds = Object.getOwnPropertyNames(this.players);
+    for (i = 0, l = playerIds.length; i < l; i++) {
+        var playerId = +playerIds[i];  // make sure id is a number
+        var player = this.players[playerId];
+        reducedModel.players[playerId] = player.reduce();
+    }
+
+    return reducedModel;
+};
+
+/**
  * ZOR.ActorTypes is a lookup table (enum basically) of all the types of actors
  * in Zorbio.
  */
