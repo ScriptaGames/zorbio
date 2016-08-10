@@ -1,20 +1,11 @@
 var ZOR = ZOR || {};
-ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 
-/**
- * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
- * visually, and how to move it's different 3D pieces around.
- * @constructor
- * @param model
- * @param scene
- */
-
-ZOR.PlayerSkins.default = function ZORPlayerSkin(playerView) {
+ZOR.PlayerSkin = function ZORPlayerSkin(playerView) {
     this.model = playerView.model;
     this.scene = playerView.scene;
     this.is_current_player = playerView.is_current_player;
 
-    var actor = model.sphere;
+    var actor = this.model.sphere;
 
     this.playerColor = config.COLORS[actor.color];
 
