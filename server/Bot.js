@@ -93,7 +93,7 @@ var Bot = function (scale, model) {
     };
 
     self.setChaseTarget = function botChaseTarget(actor_id) {
-        self.chaseTarget = self.model.actors[actor_id];
+        self.chaseTarget = self.model.getActorById(actor_id);
     };
 
     self.move = self.movementPaterns.randomPoint;

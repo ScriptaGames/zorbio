@@ -3,11 +3,11 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 var ZOR = ZOR || {};
 
 ZOR.Env = {
-    WORLD_SIZE        : 800,
-    MAX_BOTS          : 2,
-    FOOD_DENSITY      : 3,
+    WORLD_SIZE        : 300,
+    MAX_BOTS          : 0,
+    FOOD_DENSITY      : 5,
     INITIAL_PLAYER_RADIUS: 5,
-    FOOD_VALUE        : 5,
+    FOOD_VALUE        : 40,
     PORT              : 3000,
     DEBUG             : true,
     HEARTBEAT_ENABLE  : false,

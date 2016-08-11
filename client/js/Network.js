@@ -101,18 +101,15 @@ function setupSocket(ws) {
     };
 
     function handle_msg_init_game(msg) {
-        zorbioModel = msg.model;
+        _.assign(zorbioModel, msg.model);
 
         // iterate over actors and create THREE objects that don't serialize over websockets
-        var actorIds = Object.getOwnPropertyNames(zorbioModel.actors);
-        for (var i = 0, l = actorIds.length; i < l; i++) {
-            var actorId = +actorIds[i];  // make sure id is a number
-            var actor = zorbioModel.actors[actorId];
+        zorbioModel.actors.forEach(function eachActor(actor) {
             var velocity = actor.velocity;
             var position = actor.position;
             actor.position = new THREE.Vector3(position.x, position.y, position.z);
             actor.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
-        }
+        });
 
         ZOR.UI.on('init', createScene);
 
@@ -131,7 +128,7 @@ function setupSocket(ws) {
     function handle_msg_game_setup() {
         // add player to players and actors
         ZOR.Game.players[player.getPlayerId()] = player;
-        zorbioModel.actors[player.model.sphere.id] = player.model.sphere;
+        zorbioModel.addActor(player.model.sphere);
 
         // add player to scene and reset camera
         initCameraAndPlayer();
@@ -155,13 +152,15 @@ function setupSocket(ws) {
             ZOR.Game.players[newPlayer.id] = new ZOR.PlayerController(newPlayer, scene);
             ZOR.Game.players[newPlayer.id].setAlpha(1);
 
-            //Keep model in sync with the server
-            zorbioModel.players[newPlayer.id] = newPlayer;
-            zorbioModel.actors[newPlayer.sphere.id] = newPlayer.sphere;
+            //Initialize THREE objects
             var position = newPlayer.sphere.position;
-            zorbioModel.actors[newPlayer.sphere.id].position = new THREE.Vector3(position.x, position.y, position.z);
-            var velocity = actor.velocity;
-            actor.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
+            var velocity = newPlayer.sphere.velocity;
+            newPlayer.sphere.position = new THREE.Vector3(position.x, position.y, position.z);
+            newPlayer.sphere.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
+
+            //Keep model in sync with the server
+            zorbioModel.players.push(newPlayer);
+            zorbioModel.addActor(newPlayer.sphere);
         }
 
         console.log('Player joined: ', newPlayer.id, newPlayer.name);
@@ -186,7 +185,7 @@ function setupSocket(ws) {
         // sync the actors positions from the server model to the client model
         for (var i = 0, l = actorsArray.length; i < l; i += 7) {
             var id = +actorsArray[ i ];
-            var actor = zorbioModel.actors[id];
+            var actor = zorbioModel.getActorById(id);
 
             if (actor) {
                 var x = actorsArray[ i + 1 ];
@@ -230,7 +229,7 @@ function setupSocket(ws) {
         console.log("YOU DIED! You were alive for " + timeAlive + " seconds. Killed by: ", attackingPlayerId);
         setDeadState();
 
-        var attackingPlayer = zorbioModel.players[attackingPlayerId];
+        var attackingPlayer = zorbioModel.getPlayerById(attackingPlayerId);
         attackingPlayer.score = config.PLAYER_GET_SCORE(attackingPlayer.sphere.scale);
         targetPlayer.drainAmount = config.PLAYER_GET_SCORE(targetPlayer.drainAmount);
 

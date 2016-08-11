@@ -42,8 +42,7 @@ var ZorApi = function zorApi (app, model, sockets) {
      * API to return the current count of players on this server
      */
     self.app.get('/api/players/count', function (req, res) {
-        var playerIds = Object.getOwnPropertyNames(self.model.players);
-        var count = typeof playerIds.length !== 'undefined' ? playerIds.length : 0;
+        var count = self.model.players.length;
         res.setHeader('content-type', 'application/json');
         res.send( "{\"count\": " + count + "}" );
     });

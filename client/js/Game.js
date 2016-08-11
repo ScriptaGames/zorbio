@@ -29,7 +29,7 @@ var disconnected = false;
 var foodController;
 
 // Model that represents the game state shared with server
-var zorbioModel;
+var zorbioModel = new ZOR.Model();
 
 ZOR.Game.players = {};
 
@@ -297,32 +297,25 @@ function initCameraAndPlayer() {
 }
 
 function drawPlayers() {
-    var playerModels = zorbioModel.players;
     // Iterate over player
-    var playerIds = Object.getOwnPropertyNames(playerModels);
-    for (var i = 0, l = playerIds.length; i < l; i++) {
-        var id = +playerIds[i];  // make sure id is a number
-        var playerModel = playerModels[id];
+    zorbioModel.players.forEach(function drawEachPlayer(playerModel) {
         if (playerModel.type != ZOR.PlayerTypes.SPECTATOR) {
+            var id = playerModel.id;
+
             // Only draw other players
             if (!player || (id !== player.getPlayerId())) {
                 ZOR.Game.players[id] = new ZOR.PlayerController(playerModel, scene);
                 ZOR.Game.players[id].setAlpha(1);
             }
         }
-    }
+    });
 }
 
 function updateActors() {
-    var actors = zorbioModel.actors;
-
     // Iterate over actor properties in the actors object
-    var actorIds = Object.getOwnPropertyNames(actors);
-    for (var i = 0, l = actorIds.length; i < l; i++) {
-        var id = +actorIds[i];  // make sure id is a number
-        var actor = actors[id];
+    zorbioModel.actors.forEach(function updateEachActor(actor) {
         if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
-            if (!player || (id !== player.getSphereId())) {
+            if (!player || (actor.id !== player.getSphereId())) {
                 var otherPlayer = ZOR.Game.players[actor.playerId];
                 if (otherPlayer && otherPlayer.view) {
                     // update actor
@@ -342,7 +335,7 @@ function updateActors() {
                 player.updateDrain(actor.drain_target_id);
             }
         }
-    }
+    });
 }
 updateActors.runningActorUpdateGap = config.TICK_FAST_INTERVAL;
 
@@ -462,24 +455,19 @@ function keyReleased(key) {
 function removePlayerFromGame(playerId) {
     var thePlayer = ZOR.Game.players[playerId];
 
-    if (thePlayer || zorbioModel.players[playerId]) {
-        if (thePlayer && thePlayer.view) {
-            // remove player from model actors
-            var sphereId = thePlayer.getSphereId();
-            delete zorbioModel.actors[sphereId];
+    // remove player from model
+    zorbioModel.removePlayer(playerId);
 
+    // remove player from scene and client
+    if (thePlayer) {
+        if (thePlayer && thePlayer.view) {
             // Remove player from the scene
             thePlayer.removeView(scene);
             delete ZOR.Game.players[playerId];
         }
-
-        if (zorbioModel.players[playerId]) {
-            // remove the player from the model
-            delete zorbioModel.players[playerId];
-        }
-
-        console.log('Removed player: ', playerId);
     }
+
+    console.log('Removed player: ', playerId);
 }
 
 function handleServerTick(serverTickData) {

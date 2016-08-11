@@ -526,5 +526,15 @@ UTIL.toArrayBuffer = function UTILtoArrayBuffer(buffer) {
     return ab;
 };
 
+/**
+ * Returns the index of the element matching given id.  used for looking up things like players in an array.
+ * @param theArray
+ * @param id
+ * @return {number}
+ */
+UTIL.findIndexById = function UTILFindINdexById(theArray, id) {
+    return _.findIndex(theArray, function(o) { return o.id == id; });
+};
+
 // if we're in nodejs, export the root UTIL object
 if (NODEJS) module.exports = UTIL;
