@@ -13,6 +13,7 @@ var Drain         = require('../common/Drain.js');
 var WebSocket     = require('ws');
 var BotController = require('./BotController.js');
 var ServerPlayer  = require('./ServerPlayer.js');
+var Schemas       = require('../common/schemas.js');
 
 /**
  * This module contains all of the app logic and state,
