@@ -7,22 +7,22 @@ var ZOR = ZOR || {};
 ZOR.Schemas = function ZORSchemas() {
     var vector3 = {x: "float32", y: "float32", z: "float32"};
     var actor = {
-        id: "uint32",
+        id: "varuint",
         position: vector3,
         velocity: vector3,
         scale: "uint16",
         type: "string",
         color: "uint8",
-        drain_target_id: "uint32",
+        drain_target_id: "varuint",
         speed_boosting: "boolean",
-        playerId: "uint32"
+        playerId: "varuint"
     };
 
     var model = {
         actors: [actor],
         players: [
             {
-                id: "uint32",
+                id: "varuint",
                 name: "string",
                 type: "string",
                 sphere: actor,
@@ -32,9 +32,9 @@ ZOR.Schemas = function ZORSchemas() {
         food: ["int16"],
         foodCount: "uint32",
         foodDensity: "uint8",
-        food_respawning: ["uint32"],
-        food_respawn_ready_queue: ["uint32"],
-        food_respawning_indexes: ["uint32"]
+        food_respawning: ["varuint"],
+        food_respawn_ready_queue: ["varuint"],
+        food_respawning_indexes: ["varuint"]
     };
 
     var op_init_game = {

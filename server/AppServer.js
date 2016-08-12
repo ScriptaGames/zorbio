@@ -394,12 +394,7 @@ var AppServer = function (wss, app) {
         var initialModel = self.model.reduce();
         var initGameMessage = {0: Schemas.ops.INIT_GAME, model: initialModel};
         var buffer = Schemas.initGameSchema.encode(initGameMessage);
-        console.log("Time to encode initial model: ", time);
         ws.send(buffer);
-
-        //TODO: remove this comment code when done takine benchmarks for schemapack
-        // var json = JSON.stringify({op: 'init_game', model: initialModel});
-        // ws.send(json);
     };
 
     self.sendActorUpdates = function appSendActorUpdates() {
