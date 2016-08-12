@@ -420,7 +420,7 @@ var foodMaps = {
         var blockSize = config.WORLD_SIZE / density;
         var ints      = 3; // 6 for XYZ
         var offset    = 0;
-        var positions = new Int32Array(count * 3);
+        var positions = new Int16Array(count * 3);
 
         for (var i = 1; i < density; ++i) {
             for (var j = 1; j < density; ++j) {
@@ -445,7 +445,7 @@ var foodMaps = {
         var blockSize = config.WORLD_SIZE / density;
         var ints      = 3; // 6 for XYZ
         var offset    = 0;
-        var positions = new Int32Array(count * 3);
+        var positions = new Int16Array(count * 3);
 
         for (var i = 1; i < density; ++i) {
             for (var j = 1; j < density; ++j) {

@@ -14,6 +14,7 @@ var WebSocket     = require('ws');
 var BotController = require('./BotController.js');
 var ServerPlayer  = require('./ServerPlayer.js');
 var Schemas       = require('../common/schemas.js');
+var sp            = require('schemapack');
 
 /**
  * This module contains all of the app logic and state,
@@ -392,9 +393,15 @@ var AppServer = function (wss, app) {
     self.sendInitGame = function appSendInitGame(ws) {
         var initialModel = self.model.reduce();
 
-        console.log(initialModel);
+        var modelSchema = sp.build(Schemas.model);
 
-        ws.send(JSON.stringify({op: 'init_game', model: initialModel}));
+        var buffer = modelSchema.encode(initialModel);
+
+        var json = JSON.stringify({op: 'init_game', model: initialModel});
+
+        ws.send(buffer);
+
+        ws.send(json);
     };
 
     self.sendActorUpdates = function appSendActorUpdates() {
@@ -426,12 +433,13 @@ var AppServer = function (wss, app) {
             bufferView[ offset + 4 ] = actor.scale;
             bufferView[ offset + 5 ] = actor.drain_target_id;
             bufferView[ offset + 6 ] = actor.speed_boosting ? 1 : 0;
+            //TODO: do we need to sync velocity here?
 
             offset += ACTOR_PARTS;
         }
 
         // Send actors updates to all clients
-        self.wss.broadcast(bufferView.buffer, {binary: true, mask: true});
+        self.wss.broadcast(bufferView.buffer);
     };
 
     self.foodCapture = function appFoodCapture (player, fi, actor, origRadius) {
@@ -772,7 +780,7 @@ var AppServer = function (wss, app) {
     };
 
     // Start game loops
-    gameloop.setGameLoop(self.serverTickFast, config.TICK_FAST_INTERVAL);
+    // gameloop.setGameLoop(self.serverTickFast, config.TICK_FAST_INTERVAL);
     gameloop.setGameLoop(self.serverTickSlow, config.TICK_SLOW_INTERVAL);
 
     if (config.CHECK_VERSION) {

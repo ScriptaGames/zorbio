@@ -95,11 +95,6 @@ ZOR.PlayerController.prototype.refreshSphereModel = function ZORPlayerController
     this.model.sphere.position.copy(this.view.mainSphere.position);
 };
 
-ZOR.PlayerController.prototype.updateVelocity = function ZORPlayerControllerUpdateScale(scale) {
-    this.setScale(scale);
-    this.view.update(scale);
-};
-
 ZOR.PlayerController.prototype.updateScale = function ZORPlayerControllerUpdateScale(scale) {
     this.setScale(scale);
     this.view.update(scale);
