@@ -536,5 +536,15 @@ UTIL.findIndexById = function UTILFindINdexById(theArray, id) {
     return _.findIndex(theArray, function(o) { return o.id == id; });
 };
 
+/**
+ * Returns the first byte of an array buffer
+ * @param arrayBuffer
+ * @returns {number}
+ */
+UTIL.readFirstByte = function UTILReadFirstByte(arrayBuffer) {
+    var view = new Uint8Array(arrayBuffer);
+    return view[0];
+};
+
 // if we're in nodejs, export the root UTIL object
 if (NODEJS) module.exports = UTIL;

@@ -37,9 +37,18 @@ ZOR.Schemas = function ZORSchemas() {
         food_respawning_indexes: ["uint32"]
     };
 
-    return {
+    var op_init_game = {
+        0: "uint8",
         model: model,
-        actor: actor,
+    };
+
+    var ops = {
+        INIT_GAME: 1,
+    };
+
+    return {
+        ops: ops,
+        initGameSchema: schemapack.build(op_init_game),
     }
 }();
 

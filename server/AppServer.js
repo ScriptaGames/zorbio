@@ -392,16 +392,14 @@ var AppServer = function (wss, app) {
 
     self.sendInitGame = function appSendInitGame(ws) {
         var initialModel = self.model.reduce();
-
-        var modelSchema = sp.build(Schemas.model);
-
-        var buffer = modelSchema.encode(initialModel);
-
-        var json = JSON.stringify({op: 'init_game', model: initialModel});
-
+        var initGameMessage = {0: Schemas.ops.INIT_GAME, model: initialModel};
+        var buffer = Schemas.initGameSchema.encode(initGameMessage);
+        console.log("Time to encode initial model: ", time);
         ws.send(buffer);
 
-        ws.send(json);
+        //TODO: remove this comment code when done takine benchmarks for schemapack
+        // var json = JSON.stringify({op: 'init_game', model: initialModel});
+        // ws.send(json);
     };
 
     self.sendActorUpdates = function appSendActorUpdates() {
@@ -780,7 +778,7 @@ var AppServer = function (wss, app) {
     };
 
     // Start game loops
-    // gameloop.setGameLoop(self.serverTickFast, config.TICK_FAST_INTERVAL);
+    gameloop.setGameLoop(self.serverTickFast, config.TICK_FAST_INTERVAL);
     gameloop.setGameLoop(self.serverTickSlow, config.TICK_SLOW_INTERVAL);
 
     if (config.CHECK_VERSION) {

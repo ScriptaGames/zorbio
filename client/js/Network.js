@@ -32,7 +32,7 @@ function sendEnterGame(playerType, playerName, color, key) {
 function setupSocket(ws) {
     ws.onmessage = function wsMessage (msg) {
         if (typeof msg.data === "string") {
-            var message = JSON.parse(msg.data);
+            var message = parseJson(msg.data);
 
             switch (message.op) {
                 case 'init_game':
@@ -83,8 +83,16 @@ function setupSocket(ws) {
             }
         }
         else {
-            // handle binary message
-            handle_msg_actor_updates(msg.data);
+            var op = UTIL.readFirstByte(msg.data);
+
+            switch (op) {
+                case ZOR.Schemas.ops.INIT_GAME:
+                    handle_msg_init_game( ZOR.Schemas.initGameSchema.decode(msg.data) );
+                    break;
+                default:
+                    // handle binary message
+                    handle_msg_actor_updates(msg.data);
+            }
         }
     };
 
@@ -99,6 +107,11 @@ function setupSocket(ws) {
     ws.onerror = function wsError(e) {
         console.error("Websocket error occured", e);
     };
+
+    function parseJson(msg) {
+        // put in own function so we can see how long this takes in the profiler
+        return JSON.parse(msg);
+    }
 
     function handle_msg_init_game(msg) {
         _.assign(zorbioModel, msg.model);
@@ -172,47 +185,39 @@ function setupSocket(ws) {
     }
 
     function handle_msg_actor_updates(arrayBuffer) {
+        if (player) {
+            // Record gap since last actor update was received
+            var nowTime = Date.now();
+            actorUpdateGap = nowTime - player.model.au_receive_metric.last_time;
+            player.model.au_receive_metric.last_time = nowTime;
+        }
 
-        //TODO: REMOVE TEST CODE
-        var modelSchema = schemapack.build(ZOR.Schemas.model);
+        var actorsArray = new Float32Array(arrayBuffer);
 
-        var initialModel = modelSchema.decode(arrayBuffer);
+        // sync the actors positions from the server model to the client model
+        for (var i = 0, l = actorsArray.length; i < l; i += 7) {
+            var id = +actorsArray[ i ];
+            var actor = zorbioModel.getActorById(id);
 
-        // console.log(initialModel);
+            if (actor) {
+                var x = actorsArray[ i + 1 ];
+                var y = actorsArray[ i + 2 ];
+                var z = actorsArray[ i + 3 ];
+                var s = actorsArray[ i + 4 ];
+                var drain_target_id = actorsArray[ i + 5 ];
+                var speed_boosting = actorsArray[ i + 6 ];
 
-        // if (player) {
-        //     // Record gap since last actor update was received
-        //     var nowTime = Date.now();
-        //     actorUpdateGap = nowTime - player.model.au_receive_metric.last_time;
-        //     player.model.au_receive_metric.last_time = nowTime;
-        // }
-        //
-        // var actorsArray = new Float32Array(arrayBuffer);
-        //
-        // // sync the actors positions from the server model to the client model
-        // for (var i = 0, l = actorsArray.length; i < l; i += 7) {
-        //     var id = +actorsArray[ i ];
-        //     var actor = zorbioModel.getActorById(id);
-        //
-        //     if (actor) {
-        //         var x = actorsArray[ i + 1 ];
-        //         var y = actorsArray[ i + 2 ];
-        //         var z = actorsArray[ i + 3 ];
-        //         var s = actorsArray[ i + 4 ];
-        //         var drain_target_id = actorsArray[ i + 5 ];
-        //         var speed_boosting = actorsArray[ i + 6 ];
-        //
-        //         var last_pos_update = (actor.lastPosition || actor.position).clone();
-        //         actor.position.set(x, y, z);
-        //         actor.lastPosition = actor.position.clone();
-        //         actor.velocity = actor.position.clone().sub(last_pos_update);
-        //         actor.scale = s;
-        //         actor.drain_target_id = drain_target_id;
-        //
-        //         var playerController = ZOR.Game.players[actor.playerId];
-        //         playerController.setSpeedBoostActive(!!speed_boosting);
-        //     }
-        // }
+                var last_pos_update = (actor.lastPosition || actor.position).clone();
+                actor.position.set(x, y, z);
+                actor.lastPosition = actor.position.clone();
+                actor.velocity = actor.position.clone().sub(last_pos_update);
+                actor.scale = s;
+                actor.drain_target_id = drain_target_id;
+
+                var playerController = ZOR.Game.players[actor.playerId];
+                playerController.setSpeedBoostActive(!!speed_boosting);
+            }
+        }
     }
 
     function handle_msg_captured_player(msg) {
