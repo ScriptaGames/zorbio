@@ -37,7 +37,7 @@ Validators.movement = function () {
         if (!config.ENABLE_VALIDATION) return 0;
 
         // Give the player a grace period while they are loading before validating movement.
-        var zPlayer = model.players[actor.playerId];
+        var zPlayer = model.getPlayerById(actor.playerId);
         var curTime = Date.now();
         var timeSinceSpawn = curTime - zPlayer.spawnTime;
         if (timeSinceSpawn < config.LOADING_WAIT_DURATION) {
@@ -165,16 +165,18 @@ Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, s
     if (!config.ENABLE_VALIDATION) return 0;
 
     // Make sure target is in model
-    if (!model.players[targetPlayerId]) {
+    var targetPlayer = model.getPlayerById(targetPlayerId);
+
+    if (!targetPlayer) {
         // target player not in model
         return Validators.ErrorCodes.PLAYER_NOT_IN_MODEL;
     }
 
     var otherSphere = undefined;
-    var attackingPlayerSphere = model.players[attackingPlayerId].sphere;
+    var attackingPlayerSphere = model.getPlayerById(attackingPlayerId).sphere;
 
     if (sendingSphere.playerId === attackingPlayerId) {
-        otherSphere = model.players[targetPlayerId].sphere;
+        otherSphere = targetPlayer.sphere;
     } else {
         otherSphere = attackingPlayerSphere;
     }

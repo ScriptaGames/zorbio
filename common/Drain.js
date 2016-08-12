@@ -17,7 +17,7 @@ ZOR.Drain = {};
  * @return {Object} an array of all player pairs within drain distance
  */
 ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
-    var players_array = _.values( players );
+    var players_array = players;
     var drain = {};
     var p1;
     var p2;

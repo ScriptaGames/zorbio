@@ -15,10 +15,13 @@ var ZOR = ZOR || {};
  * sizes, etc.  The model will be synchronized between the server and all the
  * clients, and the same Model code will be running on both server and clients.
  */
-ZOR.Model = function ZORModel(worldSize, foodDensity) {
-    this.actors = {};
-    this.players = {};
+ZOR.Model = function ZORModel() {
+    this.actors = [];
+    this.players = [];
     this.leaders = [];
+};
+
+ZOR.Model.prototype.init = function ZORModelInit(worldSize, foodDensity) {
     this.worldSize = new THREE.Vector3(worldSize, worldSize, worldSize);
     this.foodDensity = foodDensity;
 
@@ -56,7 +59,7 @@ ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
         throw 'Actors must have an ID';
     }
 
-    this.actors[actor.id] = actor;
+    this.actors.push(actor);
 };
 
 /**
@@ -67,8 +70,8 @@ ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
 ZOR.Model.prototype.reduce = function ZORModelReduce() {
     // Send the bare minimum to init the game on the client
     var reducedModel = {
-        actors: {},
-        players: {},
+        actors: this.reduceObjects(this.actors),
+        players: this.reduceObjects(this.players),
         worldSize: this.worldSize,
         food: this.food,
         foodCount: this.foodCount,
@@ -78,23 +81,69 @@ ZOR.Model.prototype.reduce = function ZORModelReduce() {
         food_respawning_indexes: this.food_respawning_indexes,
     };
 
-    // iterate over actors and reduce them
-    var actorIds = Object.getOwnPropertyNames(this.actors);
-    for (var i = 0, l = actorIds.length; i < l; i++) {
-        var actorId = +actorIds[i];  // make sure id is a number
-        var actor = this.actors[actorId];
-        reducedModel.actors[actorId] = actor.reduce();
-    }
-
-    // iterate over players and reduce them
-    var playerIds = Object.getOwnPropertyNames(this.players);
-    for (i = 0, l = playerIds.length; i < l; i++) {
-        var playerId = +playerIds[i];  // make sure id is a number
-        var player = this.players[playerId];
-        reducedModel.players[playerId] = player.reduce();
-    }
-
     return reducedModel;
+};
+
+/**
+ * Returns reduced array
+ * @param array
+ * @returns {Array}
+ */
+ZOR.Model.prototype.reduceObjects = function ZORModelReduceObjects(array) {
+    var reduced = [];
+
+    // iterate over actors and reduce them
+    array.forEach(function reduceEach(obj) {
+        reduced.push(obj.reduce());
+    });
+
+    return reduced;
+};
+
+/**
+ * Returns reduced actors array
+ * @returns {Array}
+ */
+ZOR.Model.prototype.reduceActors = function ZORModelReduceActors() {
+    return this.reduceObjects(this.actors);
+};
+
+/**
+ * Return the actor object matching id
+ * @param id
+ */
+ZOR.Model.prototype.getActorById = function ZORModelGetActorById(id) {
+    return this.actors[UTIL.findIndexById(this.actors, id)];
+};
+
+/**
+ * Return the player object matching id
+ * @param id
+ */
+ZOR.Model.prototype.getPlayerById = function ZORModelGetPlayersById(id) {
+    return this.players[UTIL.findIndexById(this.players, id)];
+};
+
+ZOR.Model.prototype.removePlayer = function ZORModelRemovePlayer(id) {
+    var playerIndex = UTIL.findIndexById(this.players, id);
+    var player = this.players[playerIndex];
+
+    var actorIndex = _.findIndex(this.actors, function(o) { return o.playerId == id; });
+    var actor = this.actors[actorIndex];
+
+    if (player) {
+        // check for corresponding actor
+        actorIndex = UTIL.findIndexById(this.actors, player.sphere.id);
+        actor = this.actors[actorIndex];
+
+        // remove player from model
+        this.players.splice(playerIndex, 1);
+    }
+
+    if (actor) {
+        // remove the actor from the model
+        this.actors.splice(actorIndex, 1);
+    }
 };
 
 /**

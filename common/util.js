@@ -420,7 +420,7 @@ var foodMaps = {
         var blockSize = config.WORLD_SIZE / density;
         var ints      = 3; // 6 for XYZ
         var offset    = 0;
-        var positions = new Int32Array(count * 3);
+        var positions = new Int16Array(count * 3);
 
         for (var i = 1; i < density; ++i) {
             for (var j = 1; j < density; ++j) {
@@ -445,7 +445,7 @@ var foodMaps = {
         var blockSize = config.WORLD_SIZE / density;
         var ints      = 3; // 6 for XYZ
         var offset    = 0;
-        var positions = new Int32Array(count * 3);
+        var positions = new Int16Array(count * 3);
 
         for (var i = 1; i < density; ++i) {
             for (var j = 1; j < density; ++j) {
@@ -524,6 +524,26 @@ UTIL.toArrayBuffer = function UTILtoArrayBuffer(buffer) {
         view[i] = buffer[i];
     }
     return ab;
+};
+
+/**
+ * Returns the index of the element matching given id.  used for looking up things like players in an array.
+ * @param theArray
+ * @param id
+ * @return {number}
+ */
+UTIL.findIndexById = function UTILFindINdexById(theArray, id) {
+    return _.findIndex(theArray, function(o) { return o.id == id; });
+};
+
+/**
+ * Returns the first byte of an array buffer
+ * @param arrayBuffer
+ * @returns {number}
+ */
+UTIL.readFirstByte = function UTILReadFirstByte(arrayBuffer) {
+    var view = new Uint8Array(arrayBuffer);
+    return view[0];
 };
 
 // if we're in nodejs, export the root UTIL object

@@ -32,7 +32,7 @@ function sendEnterGame(playerType, playerName, color, key) {
 function setupSocket(ws) {
     ws.onmessage = function wsMessage (msg) {
         if (typeof msg.data === "string") {
-            var message = JSON.parse(msg.data);
+            var message = parseJson(msg.data);
 
             switch (message.op) {
                 case 'init_game':
@@ -83,8 +83,18 @@ function setupSocket(ws) {
             }
         }
         else {
-            // handle binary message
-            handle_msg_actor_updates(msg.data);
+            var op = UTIL.readFirstByte(msg.data);
+
+            switch (op) {
+                case ZOR.Schemas.ops.INIT_GAME:
+                    handle_msg_init_game( ZOR.Schemas.initGameSchema.decode(msg.data) );
+                    break;
+                case ZOR.Schemas.ops.ACTOR_UPDATES:
+                    handle_msg_actor_updates( ZOR.Schemas.actorUpdatesSchema.decode(msg.data) );
+                    break;
+                default:
+                    console.err("Error: Unknown binary op code: ", op);
+            }
         }
     };
 
@@ -100,19 +110,21 @@ function setupSocket(ws) {
         console.error("Websocket error occured", e);
     };
 
+    function parseJson(msg) {
+        // put in own function so we can see how long this takes in the profiler
+        return JSON.parse(msg);
+    }
+
     function handle_msg_init_game(msg) {
-        zorbioModel = msg.model;
+        _.assign(zorbioModel, msg.model);
 
         // iterate over actors and create THREE objects that don't serialize over websockets
-        var actorIds = Object.getOwnPropertyNames(zorbioModel.actors);
-        for (var i = 0, l = actorIds.length; i < l; i++) {
-            var actorId = +actorIds[i];  // make sure id is a number
-            var actor = zorbioModel.actors[actorId];
+        zorbioModel.actors.forEach(function eachActor(actor) {
             var velocity = actor.velocity;
             var position = actor.position;
             actor.position = new THREE.Vector3(position.x, position.y, position.z);
             actor.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
-        }
+        });
 
         ZOR.UI.on('init', createScene);
 
@@ -131,7 +143,7 @@ function setupSocket(ws) {
     function handle_msg_game_setup() {
         // add player to players and actors
         ZOR.Game.players[player.getPlayerId()] = player;
-        zorbioModel.actors[player.model.sphere.id] = player.model.sphere;
+        zorbioModel.addActor(player.model.sphere);
 
         // add player to scene and reset camera
         initCameraAndPlayer();
@@ -155,13 +167,15 @@ function setupSocket(ws) {
             ZOR.Game.players[newPlayer.id] = new ZOR.PlayerController(newPlayer, scene);
             ZOR.Game.players[newPlayer.id].setAlpha(1);
 
-            //Keep model in sync with the server
-            zorbioModel.players[newPlayer.id] = newPlayer;
-            zorbioModel.actors[newPlayer.sphere.id] = newPlayer.sphere;
+            //Initialize THREE objects
             var position = newPlayer.sphere.position;
-            zorbioModel.actors[newPlayer.sphere.id].position = new THREE.Vector3(position.x, position.y, position.z);
-            var velocity = actor.velocity;
-            actor.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
+            var velocity = newPlayer.sphere.velocity;
+            newPlayer.sphere.position = new THREE.Vector3(position.x, position.y, position.z);
+            newPlayer.sphere.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
+
+            //Keep model in sync with the server
+            zorbioModel.players.push(newPlayer);
+            zorbioModel.addActor(newPlayer.sphere);
         }
 
         console.log('Player joined: ', newPlayer.id, newPlayer.name);
@@ -172,8 +186,7 @@ function setupSocket(ws) {
         console.log('Ping: ' + zorPingDuration + 'ms');
     }
 
-    function handle_msg_actor_updates(arrayBuffer) {
-
+    function handle_msg_actor_updates(msg) {
         if (player) {
             // Record gap since last actor update was received
             var nowTime = Date.now();
@@ -181,32 +194,19 @@ function setupSocket(ws) {
             player.model.au_receive_metric.last_time = nowTime;
         }
 
-        var actorsArray = new Float32Array(arrayBuffer);
+        msg.actors.forEach(function updateEachActor(serverActor) {
+            var clientActor = zorbioModel.getActorById(serverActor.id);
 
-        // sync the actors positions from the server model to the client model
-        for (var i = 0, l = actorsArray.length; i < l; i += 7) {
-            var id = +actorsArray[ i ];
-            var actor = zorbioModel.actors[id];
+            var last_pos_update = (clientActor.lastPosition || clientActor.position).clone();
+            clientActor.position.copy(serverActor.position);
+            clientActor.lastPosition = clientActor.position.clone();
+            clientActor.velocity = clientActor.position.clone().sub(last_pos_update);
+            clientActor.scale = serverActor.scale;
+            clientActor.drain_target_id = serverActor.drain_target_id;
 
-            if (actor) {
-                var x = actorsArray[ i + 1 ];
-                var y = actorsArray[ i + 2 ];
-                var z = actorsArray[ i + 3 ];
-                var s = actorsArray[ i + 4 ];
-                var drain_target_id = actorsArray[ i + 5 ];
-                var speed_boosting = actorsArray[ i + 6 ];
-
-                var last_pos_update = (actor.lastPosition || actor.position).clone();
-                actor.position.set(x, y, z);
-                actor.lastPosition = actor.position.clone();
-                actor.velocity = actor.position.clone().sub(last_pos_update);
-                actor.scale = s;
-                actor.drain_target_id = drain_target_id;
-
-                var playerController = ZOR.Game.players[actor.playerId];
-                playerController.setSpeedBoostActive(!!speed_boosting);
-            }
-        }
+            var playerController = ZOR.Game.players[clientActor.playerId];
+            playerController.setSpeedBoostActive(serverActor.speed_boosting);
+        });
     }
 
     function handle_msg_captured_player(msg) {
@@ -230,7 +230,7 @@ function setupSocket(ws) {
         console.log("YOU DIED! You were alive for " + timeAlive + " seconds. Killed by: ", attackingPlayerId);
         setDeadState();
 
-        var attackingPlayer = zorbioModel.players[attackingPlayerId];
+        var attackingPlayer = zorbioModel.getPlayerById(attackingPlayerId);
         attackingPlayer.score = config.PLAYER_GET_SCORE(attackingPlayer.sphere.scale);
         targetPlayer.drainAmount = config.PLAYER_GET_SCORE(targetPlayer.drainAmount);
 
