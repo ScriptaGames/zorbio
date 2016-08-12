@@ -398,41 +398,10 @@ var AppServer = function (wss, app) {
     };
 
     self.sendActorUpdates = function appSendActorUpdates() {
-        const NUM_ACTORS = self.model.actors.length;
-
-        if (NUM_ACTORS === 0) return;  // nothing to do if there's no actors
-
-        const ACTOR_PARTS = 7;
-
-        var bufferView = new Float32Array(ACTOR_PARTS * NUM_ACTORS);
-
-        var actor;
-        var position;
-
-        var drainers = Drain.findAll( self.model.players );
-        self.updateActorDrains( drainers );
-
-        // Iterate over all actors. Make the payload as small as possible, send only what's needed on the client
-        var offset = 0;
-        for (var i = 0, l = NUM_ACTORS; i < l; ++i) {
-            actor = self.model.actors[i];
-            position = actor.position;
-
-            // actor data
-            bufferView[ offset ] = actor.id;
-            bufferView[ offset + 1 ] = position.x;
-            bufferView[ offset + 2 ] = position.y;
-            bufferView[ offset + 3 ] = position.z;
-            bufferView[ offset + 4 ] = actor.scale;
-            bufferView[ offset + 5 ] = actor.drain_target_id;
-            bufferView[ offset + 6 ] = actor.speed_boosting ? 1 : 0;
-            //TODO: do we need to sync velocity here?
-
-            offset += ACTOR_PARTS;
-        }
-
-        // Send actors updates to all clients
-        self.wss.broadcast(bufferView.buffer);
+        var actors = self.model.reduceActors();
+        var actorUpdatesMessage = {0: Schemas.ops.ACTOR_UPDATES, actors: actors};
+        var buffer = Schemas.actorUpdatesSchema.encode(actorUpdatesMessage);
+        self.wss.broadcast(buffer);
     };
 
     self.foodCapture = function appFoodCapture (player, fi, actor, origRadius) {
@@ -721,8 +690,8 @@ var AppServer = function (wss, app) {
         self.playerUpdates();
         self.botController.update();
         self.updatePlayerCaptures();
+        self.updateActorDrains( Drain.findAll( self.model.players ) );
         self.sendActorUpdates();
-
     };
 
     /**
