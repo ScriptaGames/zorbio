@@ -116,15 +116,13 @@ function setupSocket(ws) {
     }
 
     function handle_msg_init_game(msg) {
-        _.assign(zorbioModel, msg.model);
-
         // iterate over actors and create THREE objects that don't serialize over websockets
-        zorbioModel.actors.forEach(function eachActor(actor) {
-            var velocity = actor.velocity;
-            var position = actor.position;
-            actor.position = new THREE.Vector3(position.x, position.y, position.z);
-            actor.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
+        msg.model.actors.forEach(function eachActor(actor) {
+            UTIL.toVector3(actor, 'position');
+            UTIL.toVector3(actor, 'velocity');
         });
+
+        _.assign(zorbioModel, msg.model);
 
         ZOR.UI.on('init', createScene);
 
@@ -168,10 +166,8 @@ function setupSocket(ws) {
             ZOR.Game.players[newPlayer.id].setAlpha(1);
 
             //Initialize THREE objects
-            var position = newPlayer.sphere.position;
-            var velocity = newPlayer.sphere.velocity;
-            newPlayer.sphere.position = new THREE.Vector3(position.x, position.y, position.z);
-            newPlayer.sphere.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
+            UTIL.toVector3(newPlayer.sphere, 'position');
+            UTIL.toVector3(newPlayer.sphere, 'velocity');
 
             //Keep model in sync with the server
             zorbioModel.players.push(newPlayer);

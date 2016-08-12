@@ -221,6 +221,7 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
 
     if (velocity) {
         this.velocity = velocity;
+        UTIL.toVector3(this, 'velocity');
     }
 
     this.color = color;

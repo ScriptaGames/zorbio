@@ -51,7 +51,11 @@ UTIL.getSizePercentage = function UTILGetSizePercentage(size) {
     // similar to  https://www.desmos.com/calculator/dphm84crab
     var factor = ((size * 1) / config.MAX_PLAYER_RADIUS);
     return factor;
-}
+};
+
+UTIL.toVector3 = function UTILToVec3(obj, prop) {
+    obj[prop] = new THREE.Vector3().copy(obj[prop]);
+};
 
 /**
  * Detect hitting the wall in the positive direction
