@@ -10,7 +10,7 @@ ZOR.Schemas = function ZORSchemas() {
         id: "varuint",
         position: vector3,
         velocity: vector3,
-        scale: "uint16",
+        scale: "float32",
         type: "string",
         color: "uint8",
         drain_target_id: "varuint",
@@ -42,13 +42,20 @@ ZOR.Schemas = function ZORSchemas() {
         model: model,
     };
 
+    var op_actor_updates = {
+        0: "uint8",
+        actors: [actor],
+    };
+
     var ops = {
         INIT_GAME: 1,
+        ACTOR_UPDATES: 2,
     };
 
     return {
         ops: ops,
         initGameSchema: schemapack.build(op_init_game),
+        actorUpdatesSchema: schemapack.build(op_actor_updates),
     }
 }();
 

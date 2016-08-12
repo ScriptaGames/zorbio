@@ -89,9 +89,11 @@ function setupSocket(ws) {
                 case ZOR.Schemas.ops.INIT_GAME:
                     handle_msg_init_game( ZOR.Schemas.initGameSchema.decode(msg.data) );
                     break;
+                case ZOR.Schemas.ops.ACTOR_UPDATES:
+                    handle_msg_actor_updates( ZOR.Schemas.actorUpdatesSchema.decode(msg.data) );
+                    break;
                 default:
-                    // handle binary message
-                    handle_msg_actor_updates(msg.data);
+                    console.err("Error: Unknown binary op code: ", op);
             }
         }
     };
@@ -184,7 +186,7 @@ function setupSocket(ws) {
         console.log('Ping: ' + zorPingDuration + 'ms');
     }
 
-    function handle_msg_actor_updates(arrayBuffer) {
+    function handle_msg_actor_updates(msg) {
         if (player) {
             // Record gap since last actor update was received
             var nowTime = Date.now();
@@ -192,32 +194,19 @@ function setupSocket(ws) {
             player.model.au_receive_metric.last_time = nowTime;
         }
 
-        var actorsArray = new Float32Array(arrayBuffer);
+        msg.actors.forEach(function updateEachActor(serverActor) {
+            var clientActor = zorbioModel.getActorById(serverActor.id);
 
-        // sync the actors positions from the server model to the client model
-        for (var i = 0, l = actorsArray.length; i < l; i += 7) {
-            var id = +actorsArray[ i ];
-            var actor = zorbioModel.getActorById(id);
+            var last_pos_update = (clientActor.lastPosition || clientActor.position).clone();
+            clientActor.position.copy(serverActor.position);
+            clientActor.lastPosition = clientActor.position.clone();
+            clientActor.velocity = clientActor.position.clone().sub(last_pos_update);
+            clientActor.scale = serverActor.scale;
+            clientActor.drain_target_id = serverActor.drain_target_id;
 
-            if (actor) {
-                var x = actorsArray[ i + 1 ];
-                var y = actorsArray[ i + 2 ];
-                var z = actorsArray[ i + 3 ];
-                var s = actorsArray[ i + 4 ];
-                var drain_target_id = actorsArray[ i + 5 ];
-                var speed_boosting = actorsArray[ i + 6 ];
-
-                var last_pos_update = (actor.lastPosition || actor.position).clone();
-                actor.position.set(x, y, z);
-                actor.lastPosition = actor.position.clone();
-                actor.velocity = actor.position.clone().sub(last_pos_update);
-                actor.scale = s;
-                actor.drain_target_id = drain_target_id;
-
-                var playerController = ZOR.Game.players[actor.playerId];
-                playerController.setSpeedBoostActive(!!speed_boosting);
-            }
-        }
+            var playerController = ZOR.Game.players[clientActor.playerId];
+            playerController.setSpeedBoostActive(serverActor.speed_boosting);
+        });
     }
 
     function handle_msg_captured_player(msg) {

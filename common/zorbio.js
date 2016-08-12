@@ -70,8 +70,8 @@ ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
 ZOR.Model.prototype.reduce = function ZORModelReduce() {
     // Send the bare minimum to init the game on the client
     var reducedModel = {
-        actors: [],
-        players: [],
+        actors: this.reduceObjects(this.actors),
+        players: this.reduceObjects(this.players),
         worldSize: this.worldSize,
         food: this.food,
         foodCount: this.foodCount,
@@ -81,17 +81,31 @@ ZOR.Model.prototype.reduce = function ZORModelReduce() {
         food_respawning_indexes: this.food_respawning_indexes,
     };
 
-    // iterate over actors and reduce them
-    this.actors.forEach(function pushToActors(actor) {
-        reducedModel.actors.push(actor.reduce());
-    });
-
-    // iterate over players and reduce them
-    this.players.forEach(function pushToPlayers(player) {
-        reducedModel.players.push(player.reduce());
-    });
-
     return reducedModel;
+};
+
+/**
+ * Returns reduced array
+ * @param array
+ * @returns {Array}
+ */
+ZOR.Model.prototype.reduceObjects = function ZORModelReduceObjects(array) {
+    var reduced = [];
+
+    // iterate over actors and reduce them
+    array.forEach(function reduceEach(obj) {
+        reduced.push(obj.reduce());
+    });
+
+    return reduced;
+};
+
+/**
+ * Returns reduced actors array
+ * @returns {Array}
+ */
+ZOR.Model.prototype.reduceActors = function ZORModelReduceActors() {
+    return this.reduceObjects(this.actors);
 };
 
 /**
