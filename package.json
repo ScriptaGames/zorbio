@@ -8,9 +8,10 @@
     "test": "exit 0",
     "start": "./node_modules/.bin/supervisor --watch server,common,package.json server/server.js",
     "start-prod": "node server/server.js dist",
-    "css": "lessc client/css/main.less client/css/main.css && node_modules/postcss-cli/bin/postcss --use autoprefixer -r client/css/main.css",
+    "css": "./node_modules/.bin/lessc client/css/main.less client/css/main.css && node_modules/postcss-cli/bin/postcss --use autoprefixer -r client/css/main.css",
     "build": "bash build.sh",
-    "build-upload": "bash build.sh --upload"
+    "build-upload": "bash build.sh --upload",
+    "postinstall": "./node_modules/.bin/bower install"
   },
   "author": "Scripta Games, Inc.",
   "dependencies": {
@@ -26,6 +27,9 @@
   },
   "devDependencies": {
     "autoprefixer": "^6.3.7",
+    "bower": "^1.7.9",
+    "eslint": "^3.0.1",
+    "eslint-config-google": "^0.6.0",
     "html-inline": "https://github.com/mwcz/html-inline/archive/node-0.10-compat.tar.gz",
     "html-minifier": "^3.0.1",
     "jasmine": "^2.3.2",
@@ -35,9 +39,8 @@
     "karma-firefox-launcher": "^1.0.0",
     "karma-jasmine": "^1.0.2",
     "karma-super-dots-reporter": "^0.1.0",
+    "less": "^2.7.1",
     "postcss-cli": "^2.5.2",
-    "supervisor": "^0.11.0",
-    "eslint": "^3.0.1",
-    "eslint-config-google": "^0.6.0"
+    "supervisor": "^0.11.0"
   }
 }
