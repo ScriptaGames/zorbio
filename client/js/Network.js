@@ -308,10 +308,10 @@ function setIntervalMethods() {
 }
 
 function sendPlayerUpdate() {
+    // save metrics
     var nowTime = Date.now();
     var gap = nowTime - player.model.pp_send_metric.last_time;
     player.model.pp_send_metric.last_time = nowTime;
-
     var bufferedAmount = ws.bufferedAmount;
 
     // Make sure model is synced with view
@@ -319,67 +319,34 @@ function sendPlayerUpdate() {
 
     var sphereModel = player.model.sphere;
 
+    // make sure we always have at least 4 recent positions
     while (sphereModel.recentPositions.length < 4) {
-        player.addRecentPosition();  // make sure we always have at least 4 recent positions
+        player.addRecentPosition();
     }
 
-    // for now we only need to send the oldest position and the most recent position
-    var oldestPosition = sphereModel.recentPositions[0];
-    var prevPosition3  = sphereModel.recentPositions[sphereModel.recentPositions.length - 4];
-    var prevPosition2  = sphereModel.recentPositions[sphereModel.recentPositions.length - 3];
-    var prevPosition1  = sphereModel.recentPositions[sphereModel.recentPositions.length - 2];
-    var latestPosition = sphereModel.recentPositions[sphereModel.recentPositions.length - 1];
+    // Send oldest position and most recent 4 positions
+    var playerUpdateMessage = {
+        0: ZOR.Schemas.ops.PLAYER_UPDATE,
+        player_id: player.getPlayerId(),
+        sphere_id: sphereModel.id,
+        pp_gap: gap,
+        au_gap: actorUpdateGap,
+        buffered_mount: bufferedAmount,
+        latest_position: sphereModel.recentPositions[sphereModel.recentPositions.length - 1],
+        prev_position_1: sphereModel.recentPositions[sphereModel.recentPositions.length - 2],
+        prev_position_2: sphereModel.recentPositions[sphereModel.recentPositions.length - 3],
+        prev_position_3: sphereModel.recentPositions[sphereModel.recentPositions.length - 4],
+        oldest_position: sphereModel.recentPositions[0],
+        food_capture_queue: player.food_capture_queue,
+    };
 
-    var bufferView = new Float32Array(config.BIN_PP_POSITIONS_LENGTH + (player.food_capture_queue.length * 2));
-    var index = 0;
-    bufferView[index++] = sphereModel.id;            // Actor ID
-    bufferView[index++] = gap;                       // Gap since last pp update
-    bufferView[index++] = actorUpdateGap;            // Gap since last au update
-    bufferView[index++] = bufferedAmount;            // Amount of bytes currently buffered to send in the ws
-
-    // oldest position
-    bufferView[index++] = oldestPosition.position.x; // Old position X
-    bufferView[index++] = oldestPosition.position.y; // Old position Y
-    bufferView[index++] = oldestPosition.position.z; // Old position Z
-    bufferView[index++] = oldestPosition.radius;     // Old radius
-    bufferView[index++] = oldestPosition.time;       // Old time
-
-    // Previous positions
-    bufferView[index++] = prevPosition3.position.x;
-    bufferView[index++] = prevPosition3.position.y;
-    bufferView[index++] = prevPosition3.position.z;
-    bufferView[index++] = prevPosition3.radius;
-    bufferView[index++] = prevPosition3.time;
-    bufferView[index++] = prevPosition2.position.x;
-    bufferView[index++] = prevPosition2.position.y;
-    bufferView[index++] = prevPosition2.position.z;
-    bufferView[index++] = prevPosition2.radius;
-    bufferView[index++] = prevPosition2.time;
-    bufferView[index++] = prevPosition1.position.x;
-    bufferView[index++] = prevPosition1.position.y;
-    bufferView[index++] = prevPosition1.position.z;
-    bufferView[index++] = prevPosition1.radius;
-    bufferView[index++] = prevPosition1.time;
-
-    // Latest position
-    bufferView[index++] = latestPosition.position.x; // New position X
-    bufferView[index++] = latestPosition.position.y; // New position Y
-    bufferView[index++] = latestPosition.position.z; // New position Z
-    bufferView[index++] = latestPosition.radius;     // New radius
-    bufferView[index++] = latestPosition.time;       // New time
-
-    // Now add any queued food captures
-    for(var i = 0, l = player.food_capture_queue.length; i < l; i++) {
-        var food_cap = player.food_capture_queue[i];
-        bufferView[index++] = food_cap.fi;
-        bufferView[index++] = food_cap.radius;  //TODO: no need to send radius anymore since all scale is handled on the server
-    }
+    var buffer = ZOR.Schemas.playerUdateSchema.encode(playerUpdateMessage);
 
     // clear food queue
     player.food_capture_queue = [];
 
     // Send player update data
-    ws.send(bufferView.buffer);
+    ws.send(buffer);
 }
 
 function sendSpeedBoostStart() {
