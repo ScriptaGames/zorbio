@@ -69,7 +69,7 @@ ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
  */
 ZOR.Model.prototype.reduce = function ZORModelReduce() {
     // Send the bare minimum to init the game on the client
-    var reducedModel = {
+    return {
         actors: this.reduceObjects(this.actors),
         players: this.reduceObjects(this.players),
         worldSize: this.worldSize,
@@ -80,21 +80,20 @@ ZOR.Model.prototype.reduce = function ZORModelReduce() {
         food_respawn_ready_queue: this.food_respawn_ready_queue,
         food_respawning_indexes: this.food_respawning_indexes,
     };
-
-    return reducedModel;
 };
 
 /**
  * Returns reduced array
  * @param array
+ * @param tiny True if should be reduced to the smallest possible object
  * @returns {Array}
  */
-ZOR.Model.prototype.reduceObjects = function ZORModelReduceObjects(array) {
+ZOR.Model.prototype.reduceObjects = function ZORModelReduceObjects(array, tiny) {
     var reduced = [];
 
     // iterate over actors and reduce them
     array.forEach(function reduceEach(obj) {
-        reduced.push(obj.reduce());
+        reduced.push(obj.reduce(tiny));
     });
 
     return reduced;
@@ -102,10 +101,11 @@ ZOR.Model.prototype.reduceObjects = function ZORModelReduceObjects(array) {
 
 /**
  * Returns reduced actors array
+ * @param tiny True if you want to reduce them to tiny actors
  * @returns {Array}
  */
-ZOR.Model.prototype.reduceActors = function ZORModelReduceActors() {
-    return this.reduceObjects(this.actors);
+ZOR.Model.prototype.reduceActors = function ZORModelReduceActors(tiny) {
+    return this.reduceObjects(this.actors, tiny);
 };
 
 /**
@@ -243,18 +243,25 @@ ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
  * Returns the reduced actor with just the data important to sync between client and server
  * @returns {Object}
  */
-ZOR.PlayerSphere.prototype.reduce = function ZORPlayerSphereReduce() {
-    return {
+ZOR.PlayerSphere.prototype.reduce = function ZORPlayerSphereReduce(tiny) {
+    var is_tiny = tiny || false;
+
+    var reducedActor = {
         id: this.id,
         position: this.position,
         velocity: this.velocity,
         scale: this.scale,
-        type: this.type,
-        color: this.color,
         drain_target_id: this.drain_target_id,
         speed_boosting: this.speed_boosting,
-        playerId: this.playerId,
+    };
+
+    if (!is_tiny) {
+        reducedActor.type = this.type;
+        reducedActor.color = this.color;
+        reducedActor.playerId = this.playerId;
     }
+
+    return reducedActor
 };
 
 /**

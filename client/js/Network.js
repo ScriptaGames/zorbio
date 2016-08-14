@@ -196,13 +196,15 @@ function setupSocket(ws) {
             if (clientActor) {
                 var last_pos_update = (clientActor.lastPosition || clientActor.position).clone();
                 clientActor.position.copy(serverActor.position);
+                clientActor.scale = serverActor.scale;
                 clientActor.lastPosition = clientActor.position.clone();
                 clientActor.velocity = clientActor.position.clone().sub(last_pos_update);
-                clientActor.scale = serverActor.scale;
-                clientActor.drain_target_id = serverActor.drain_target_id;
 
-                var playerController = ZOR.Game.players[clientActor.playerId];
-                playerController.setSpeedBoostActive(serverActor.speed_boosting);
+                if (clientActor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
+                    clientActor.drain_target_id = serverActor.drain_target_id;
+                    var playerController = ZOR.Game.players[clientActor.playerId];
+                    playerController.setSpeedBoostActive(serverActor.speed_boosting);
+                }
             }
         });
     }

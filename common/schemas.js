@@ -11,11 +11,20 @@ ZOR.Schemas = function ZORSchemas() {
         position: vector3,
         velocity: vector3,
         scale: "float32",
-        type: "string",
-        color: "uint8",
         drain_target_id: "varuint",
         speed_boosting: "boolean",
+        type: "string",
+        color: "uint8",
         playerId: "varuint"
+    };
+
+    var tiny_actor = {
+        id: "varuint",
+        position: vector3,
+        velocity: vector3,
+        scale: "float32",
+        drain_target_id: "varuint",
+        speed_boosting: "boolean",
     };
 
     var model = {
@@ -55,7 +64,7 @@ ZOR.Schemas = function ZORSchemas() {
 
     var op_actor_updates = {
         0: "uint8",
-        actors: [actor],
+        actors: [tiny_actor],
     };
 
     var op_player_update = {

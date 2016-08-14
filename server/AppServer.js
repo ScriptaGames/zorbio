@@ -360,8 +360,8 @@ var AppServer = function (wss, app) {
     };
 
     self.sendActorUpdates = function appSendActorUpdates() {
-        var actors = self.model.reduceActors();
-        var actorUpdatesMessage = {0: Schemas.ops.ACTOR_UPDATES, actors: actors};
+        var tinyActors = self.model.reduceActors(true);
+        var actorUpdatesMessage = {0: Schemas.ops.ACTOR_UPDATES, actors: tinyActors};
         var buffer = Schemas.actorUpdatesSchema.encode(actorUpdatesMessage);
         self.wss.broadcast(buffer);
     };
