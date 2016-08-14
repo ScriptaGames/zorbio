@@ -163,20 +163,23 @@ var AppServer = function (wss, app) {
                     self.model.removePlayer(currentPlayer.id);
                 }
 
-                // Add the player to the model
-                self.model.players.push(currentPlayer);
-                self.model.addActor(currentPlayer.sphere);
-
                 // Pass any data to the for final setup
                 ws.send(JSON.stringify({op: 'game_setup'}));
 
-                // Notify other clients that player has joined
-                var msgObj = JSON.stringify({op: 'player_join', player: currentPlayer});
-                setTimeout(self.wss.broadcast, 2000, msgObj);  // give player time to load the game
+                // give the client player time to load the game before notifying other players to add them
+                setTimeout(function playerJoinDelay() {
+                    // Notify other clients that player has joined
+                    self.wss.broadcast(JSON.stringify({op: 'player_join', player: currentPlayer}));
 
-                var playerCount = self.model.players.length;
-                console.log('Player ' + currentPlayer.id + ' joined game!');
-                console.log('Total players: ' + playerCount);
+                    // Add the player to the model
+                    self.model.players.push(currentPlayer);
+                    self.model.addActor(currentPlayer.sphere);
+
+                    var playerCount = self.model.players.length;
+                    console.log('Player ' + currentPlayer.id + ' joined game!');
+                    console.log('Total players: ' + playerCount);
+                }, 200);
+
 
                 // see if we need to remove a bot
                 if (self.botController.hasBots() && playerCount > config.MAX_BOTS) {
