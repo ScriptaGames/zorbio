@@ -10,8 +10,17 @@ var ServerPlayer = function ZORServerPlayer(player_id, name, color, type, positi
     var self = this;
 
     this.abilities.speed_boost.on('update', function () {
-        // Apply speed boost penalty
-        self.sphere.growExpected(config.ABILITY_SPEED_BOOST_PENALTY);
+
+        // Get active duration in seconds
+        var active_duration = self.abilities.speed_boost.active_duration / 1000;
+
+        // The longer the player holds speed boost the worse the penalty gets. This allows big players to do
+        // Quick short boosts without losing to much, but they can't boost forever or they'll burn out.
+        // https://www.desmos.com/calculator/y14fpblqob
+        var shrink_amount = config.ABILITY_SPEED_BOOST_PENALTY + (Math.pow(active_duration, 2) * 0.005);
+
+        // Apply penalty
+        self.sphere.growExpected(-shrink_amount);
 
         if (self.sphere.scale <= config.INITIAL_PLAYER_RADIUS) {
             console.log("Sending speed boost stop: ", player_id);
