@@ -178,16 +178,15 @@ var AppServer = function (wss, app) {
                     var playerCount = self.model.players.length;
                     console.log('Player ' + currentPlayer.id + ' joined game!');
                     console.log('Total players: ' + playerCount);
+
+                    // see if we need to remove a bot
+                    if (self.botController.hasBots() && playerCount > config.MAX_BOTS) {
+                        var bot = self.botController.removeBot();
+
+                        // notify other players that this bot was removed
+                        self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: bot.player.id}));
+                    }
                 }, 200);
-
-
-                // see if we need to remove a bot
-                if (self.botController.hasBots() && playerCount > config.MAX_BOTS) {
-                    var bot = self.botController.removeBot();
-
-                    // notify other players that this bot was removed
-                    self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: bot.player.id}));
-                }
             }
         }
 
