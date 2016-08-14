@@ -101,7 +101,7 @@ config.X_AXIS_MULT = 1;
 config.ABILITY_SPEED_BOOST_DURATION = 500;  // milliseconds that speed boost will last
 config.ABILITY_SPEED_BOOST_MIN_SCALE = config.INITIAL_PLAYER_RADIUS;   // min scale be fore speed boost can be used
 config.ABILITY_SPEED_BOOST_MULTIPLIER = 1.75; // percent speed increase
-config.ABILITY_SPEED_BOOST_PENALTY = 0.01;   // Percent scale to remove
+config.ABILITY_SPEED_BOOST_PENALTY = -0.05;   // Flat penalty applied every server tick fast
 
 config.DRAIN_MAX_DISTANCE    = 300; // distance at which draining starts
 config.DRAIN_PINCH_STRENGTH  = 0.4;
