@@ -453,6 +453,7 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
     this.min_scale = config.ABILITY_SPEED_BOOST_MIN_SCALE;
     this.active_duration = 0;  // how long has the ability been active
     this.start_time = undefined;
+    this.cooldown_delay = 0;  // how long before the ability starts cooling down
 
     /**
      * Returns true of this ability is ready to activate.
@@ -481,6 +482,7 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
         this.active = true;
         this.start_time = Date.now() - this.active_duration;
         this.sphere.speed_boosting = true;
+        this.cooldown_delay = 1000;
 
         // iterate over event listeners and execute them
         for (var i = 0; i < this.events.activate.length; i++) {
@@ -510,11 +512,12 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
      */
     this.update = function ZORSpeedBoostAbilityUpdate() {
         if (!this.active) {
-            if (this.active_duration > 0) {
+            if (this.cooldown_delay > 0) {
+                this.cooldown_delay = Math.max(this.cooldown_delay - config.TICK_FAST_INTERVAL, 0);
+            }
+            else if (this.active_duration > 0) {
                 // Cool down
-                this.active_duration -= Math.max((config.TICK_FAST_INTERVAL / 2), 0);
-
-                console.log("active duration: ", this.active_duration);
+                this.active_duration = Math.max(this.active_duration - config.TICK_FAST_INTERVAL, 0);
             }
 
             return;

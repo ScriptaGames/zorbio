@@ -19,8 +19,6 @@ var ServerPlayer = function ZORServerPlayer(player_id, name, color, type, positi
         // https://www.desmos.com/calculator/y14fpblqob
         var shrink_amount = config.ABILITY_SPEED_BOOST_PENALTY + (Math.pow(active_duration, 2) * 0.005);
 
-        console.log("Shrink amount: ", shrink_amount);
-
         // Apply penalty
         self.sphere.growExpected(-shrink_amount);
 
