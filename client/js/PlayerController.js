@@ -120,6 +120,14 @@ ZOR.PlayerController.prototype.radius = function ZORPlayerControllerRadius() {
 };
 
 ZOR.PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(scale) {
+    var growth;
+    // tell the UI to show growth display if the current player grew or shrank
+    if (this.is_current_player && growth) {
+        growth = scale - this.radius();
+        if (growth) {
+            ZOR.UI.fire( ZOR.UI.ACTIONS.GROWTH, growth  );
+        }
+    }
     // set the scale on model
     this.model.sphere.scale = scale;
 };

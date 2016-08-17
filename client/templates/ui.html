@@ -12,8 +12,9 @@
 {{ #if state === STATES.CREDITS_SCREEN     }} {{ > credits   }} {{ /if }}
 {{ #if state.indexOf('playing') === 0 }}
     {{ > leaderboard }}
-    {{ > playing     }}
+    {{ > gear        }}
     {{ > targets     }}
+    {{ > growth     }}
 {{ /if }}
 
 {{ #if state.indexOf('playing') !== 0 }}

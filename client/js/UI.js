@@ -60,6 +60,8 @@ ZOR.UI = function ZORUI() {
         TOGGLE_X_AXIS            : 'toggle-x-axis',
         VOLUME_MUSIC             : 'volume-music',
         VOLUME_SFX               : 'volume-sfx',
+
+        GROWTH                   : 'growth',
     };
 
     /**
@@ -79,6 +81,7 @@ ZOR.UI = function ZORUI() {
         is_mobile        : isMobile.any,
         screen_x         : 0,
         screen_y         : 0,
+        growth           : '',
         flip_x           : JSON.parse(localStorage.flip_x || "false"),
         flip_y           : JSON.parse(localStorage.flip_y || "false"),
         music_enabled    : config.MUSIC_ENABLED,
@@ -96,6 +99,8 @@ ZOR.UI = function ZORUI() {
         state       : state,
         on          : on,
         clearTarget : clearTarget,
+        update      : _.noop, // initialized later
+        fire        : _.noop, // initialized later
     };
 
     // array of registered on-init handlers
@@ -222,6 +227,7 @@ ZOR.UI = function ZORUI() {
 
         api.engine = engine;
         api.update = get_updater();
+        api.fire = engine.fire.bind(engine);
 
         validate_browser_features();
         _.each( document.querySelectorAll('script[type="text/ractive"]'), register_partial ); // register all ractive templates as partials
@@ -303,6 +309,16 @@ ZOR.UI = function ZORUI() {
             }
         });
 
+        on( ACTIONS.GROWTH, function ZORUIGrowthHandler(growth) {
+            var sign;
+            if (growth) {
+                sign = growth > 0 ? '+' : '-';
+                engine.set('growth', sign + growth);
+            }
+            else {
+                engine.set('growth', '');
+            }
+        });
 
         config.X_AXIS_MULT = JSON.parse(localStorage.flip_x || "false") ? -1 : 1;
         config.Y_AXIS_MULT = JSON.parse(localStorage.flip_y || "false") ? -1 : 1;
