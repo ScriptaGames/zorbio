@@ -23,7 +23,7 @@ config.REQUIRE_ALPHA_KEY = false;
 
 config.WORLD_SIZE       = 1600;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
-config.MAX_BOTS         = 15;
+config.MAX_BOTS         = 12;
 config.MAX_BOT_RADIUS   = 100;
 
 ////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@ config.HEARTBEAT_TIMEOUT        = 30000;  // how long before a client is conside
 config.HEARTBEAT_CHECK_INTERVAL = 1000;   // server heartbeat test interval
 config.HEARTBEAT_PULSE_INTERVAL = 5000;   // client heartbeat pulse
 config.TICK_SLOW_INTERVAL       = 200;    // General server updates in milliseconds
-config.TICK_FAST_INTERVAL       = 40;     // How often actors update their position in milliseconds
+config.TICK_FAST_INTERVAL       = 50;     // How often actors update their position in milliseconds
 config.PENDING_PLAYER_CAPTURE_TTL = 3000; // how long pending player capture lives before it expires in milliseconds
 config.CHECK_VERSION            = true;   // check for latest version of the game through the zapi
 config.CHECK_VERSION_INTERVAL   = 30000;  // how often to check for new version
@@ -111,7 +111,7 @@ config.DRAIN_RADIO_FREQUENCY = 65; // how quickly the radio waves flow down the 
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 29;    // How much food there is, total food = this number cubed
+config.FOOD_DENSITY                = 25;    // How much food there is, total food = this number cubed
 config.FOOD_VALUE                  = 0.8;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames

@@ -432,10 +432,8 @@ function handleMouseUp(evt) {
     if (!gameStart || player.isDead) return;
 
     if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any) {
-        if (player.isSpeedBoostActive()) {
-            player.speedBoostStop();
-            sendSpeedBoostStop();
-        }
+        player.speedBoostStop();
+        sendSpeedBoostStop();
     }
 }
 
