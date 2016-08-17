@@ -203,7 +203,9 @@ function setupSocket(ws) {
                 if (clientActor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
                     clientActor.drain_target_id = serverActor.drain_target_id;
                     var playerController = ZOR.Game.players[clientActor.playerId];
-                    playerController.setSpeedBoostActive(serverActor.speed_boosting);
+                    if (playerController) {
+                        playerController.setSpeedBoostActive(serverActor.speed_boosting);
+                    }
                 }
             }
         });
