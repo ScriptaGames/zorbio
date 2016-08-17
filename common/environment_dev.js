@@ -4,10 +4,10 @@ var ZOR = ZOR || {};
 
 ZOR.Env = {
     WORLD_SIZE        : 1000,
-    MAX_BOTS          : 3,
-    FOOD_DENSITY      : 9,
+    MAX_BOTS          : 0,
+    FOOD_DENSITY      : 5,
     INITIAL_PLAYER_RADIUS: 5,
-    FOOD_VALUE        : 5,
+    FOOD_VALUE        : 1000,
     PORT              : 3000,
     DEBUG             : true,
     HEARTBEAT_ENABLE  : false,

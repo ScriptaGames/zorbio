@@ -114,12 +114,17 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
 };
 
 ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
-    var oldPos = this.trailEmitter.position._value.clone();
     var newPos = this.mainSphere.position.clone();
+    var offset = this.model.sphere.velocity.clone();
+
+    // pull trail back toward back edge of sphere based on their direction
+    offset.multiplyScalar(100);
+    newPos.sub(offset);
 
     this.trailEmitter.position._value.x = newPos.x;
     this.trailEmitter.position._value.y = newPos.y;
     this.trailEmitter.position._value.z = newPos.z;
+
 
     var scale = Math.PI* 3/4 * this.mainSphere.scale.x;
     // this.trailEmitter.position._radius = scale;
@@ -133,12 +138,6 @@ ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
     else {
         this.trailEmitter.activeMultiplier = 0.1;
     }
-
-    // var speed = oldPos.clone().sub(newPos).length();
-    // var diffPos = newPos.sub(oldPos).multiplyScalar(speed);
-
-    // this.trailEmitter.velocity._value.x = diffPos.x;
-    // this.trailEmitter.velocity._value.y = diffPos.y;
 
     this.trailEmitter.updateFlags.position = true;
     this.trailEmitter.updateFlags.velocity = true;

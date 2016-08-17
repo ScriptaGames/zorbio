@@ -325,6 +325,7 @@ function updateActors() {
                     var velocityScale = 16.66667 * ZOR.LagScale.get() / latency;
                     actor.position.add(actor.velocity.clone().multiplyScalar(velocityScale));
                     otherPlayer.updatePosition(actor.position);
+                    otherPlayer.updateVelocity(actor.velocity);
                     otherPlayer.updateScale(actor.scale);
                     otherPlayer.updateDrain(actor.drain_target_id);
                 }

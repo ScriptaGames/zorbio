@@ -110,6 +110,10 @@ ZOR.PlayerController.prototype.updatePosition = function ZORPlayerControllerUpda
     this.view.updatePosition(position);
 };
 
+ZOR.PlayerController.prototype.updateVelocity = function ZORPlayerControllerUpdateVelocity(velocity) {
+    this.model.sphere.velocity.copy(velocity);
+};
+
 /**
  * Returns the radius of the player sphere in terms of the sphere scale
  * @returns {number}
