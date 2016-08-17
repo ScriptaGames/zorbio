@@ -218,8 +218,18 @@ ZOR.PlayerController.prototype.speedBoostStop = function ZORPlayerControllerSpee
     this.model.abilities.speed_boost.deactivate();
 };
 
+/**
+ * @return {boolean}
+ */
 ZOR.PlayerController.prototype.isSpeedBoostActive = function ZORPlayerControllerIsSpeedBoostActive() {
     return this.model.abilities.speed_boost.isActive();
+};
+
+/**
+ * @return {boolean}
+ */
+ZOR.PlayerController.prototype.isSpeedBoostReady = function ZORPlayerControllerIsSpeedBoostReady() {
+    return this.model.abilities.speed_boost.isReady();
 };
 
 /**

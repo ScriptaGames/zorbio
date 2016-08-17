@@ -371,6 +371,8 @@ function captureFood(fi) {
 
 window.addEventListener("keydown", handleKeydown);
 window.addEventListener("keyup", handleKeyup);
+window.addEventListener("mousedown", handleMouseDown);
+window.addEventListener("mouseup", handleMouseUp);
 
 window.onload = function homeOnload() {
     connectToServer();
@@ -416,6 +418,27 @@ function handleKeyup(evt) {
     }
 }
 
+function handleMouseDown(evt) {
+    if (!gameStart || player.isDead) return;
+
+    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any) {
+        if (player.isSpeedBoostReady()) {
+            sendSpeedBoostStart();
+        }
+    }
+}
+
+function handleMouseUp(evt) {
+    if (!gameStart || player.isDead) return;
+
+    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any) {
+        if (player.isSpeedBoostActive()) {
+            player.speedBoostStop();
+            sendSpeedBoostStop();
+        }
+    }
+}
+
 function handleKeysDown() {
     for( var key in KeysDown ) {
         if (KeysDown[key]) {
@@ -436,7 +459,7 @@ function keyDown( key ) {
 
 function keyJustPressed(key) {
     if ( key === 'w' && config.AUTO_RUN_ENABLED) {
-        if (player.model.abilities.speed_boost.isReady(player.radius())) {
+        if (player.isSpeedBoostReady()) {
             sendSpeedBoostStart();
         }
     }

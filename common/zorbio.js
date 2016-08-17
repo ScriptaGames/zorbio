@@ -457,11 +457,10 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
 
     /**
      * Returns true of this ability is ready to activate.
-     * @param scale
      * @returns {boolean}
      */
-    this.isReady = function ZORSpeedBoostAbilityIsReady(scale) {
-        return !this.active && scale > this.min_scale;
+    this.isReady = function ZORSpeedBoostAbilityIsReady() {
+        return !this.active && this.sphere.scale > this.min_scale;
     };
 
     /**
@@ -477,7 +476,7 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
      * @return {boolean}
      */
     this.activate = function ZORSpeedBoostAbilityActivate() {
-        if (!this.isReady(this.sphere.scale)) return false;
+        if (!this.isReady()) return false;
 
         this.active = true;
         this.start_time = Date.now() - this.active_duration;
