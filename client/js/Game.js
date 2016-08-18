@@ -222,6 +222,8 @@ function createScene() {
 
             raycaster.set(player.view.mainSphere.position, camera.getWorldDirection().normalize());
 
+            updatePlayerSizeUI();
+
             updateTargetLock();
         }
         else if (ZOR.UI.state().indexOf('menu') === 0) {
@@ -338,6 +340,10 @@ function updateActors() {
     });
 }
 updateActors.runningActorUpdateGap = config.TICK_FAST_INTERVAL;
+
+function updatePlayerSizeUI() {
+    ZOR.UI.data.player = { score: player.getScore(), color: player.model.sphere.color };
+}
 
 function updateTargetLock() {
     // calculate objects intersecting the ray

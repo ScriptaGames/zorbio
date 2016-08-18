@@ -304,7 +304,8 @@ button:active {
 #gear-btn:hover {
   opacity: 0.4;
 }
-#targets {
+#targets,
+#player-size {
   position: absolute;
   top: 5vh;
   left: 50%;
@@ -320,6 +321,9 @@ button:active {
   max-width: 60%;
   overflow: hidden;
   text-align: center;
+}
+#player-size {
+  top: 1vh;
 }
 #title {
   margin: 4vh;
