@@ -115,8 +115,8 @@ function createScene() {
         animate();
     } catch (e) {
         console.error('Failed to init game.  Possible WebGL failure.  Original error below.');
-        console.error(e.message);
         ZOR.UI.state( ZOR.UI.STATES.GAME_INIT_ERROR );
+        throw e;
     }
 
     function init() {
