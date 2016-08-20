@@ -1,4 +1,5 @@
 <div id="ad-login-center">
+    {{ #if !DEBUG }}
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <!-- zor-login-screen-center -->
     <ins class="adsbygoogle"
@@ -7,4 +8,8 @@
         data-ad-slot="5413768947"
         data-ad-format="auto"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    {{ /if }}
+    {{ #if DEBUG }}
+    AD HERE
+    {{ /if }}
 </div>
