@@ -265,6 +265,7 @@ button:active {
   left: 50%;
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%);
+  top: 15vh;
   color: #f7f7f7;
   font-size: 18px;
 }
@@ -303,22 +304,26 @@ button:active {
 #gear-btn:hover {
   opacity: 0.4;
 }
-#targets {
+#targets,
+#player-size {
   position: absolute;
-  top: 40vh;
+  top: 5vh;
   left: 50%;
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%);
   padding: 0;
   opacity: 0.8;
   background: none;
+  margin: 3px;
   border-radius: 0;
   font-size: 1rem;
   pointer-events: none;
   max-width: 60%;
   overflow: hidden;
   text-align: center;
-  margin: 0;
+}
+#player-size {
+  top: 1vh;
 }
 #title {
   margin: 4vh;

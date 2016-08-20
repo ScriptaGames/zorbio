@@ -19,7 +19,7 @@ var BotController = function (model) {
         var bot = new Bot(scale, self.model);
 
         self.bots.push(bot);
-        self.model.players[bot.player.id] = bot.player;
+        self.model.players.push(bot.player);
         self.model.addActor(bot.player.sphere);
 
         self.currentSpawnCycle++;
@@ -36,16 +36,7 @@ var BotController = function (model) {
         var bot = self.bots.pop();
 
         // remove from model
-        var playerId = bot.player.id;
-        var actorId = 0;
-        if (self.model.players[playerId]) {
-            // remove player from model
-            actorId = self.model.players[playerId].sphere.id;
-            delete self.model.players[playerId];
-        }
-        if (self.model.actors[actorId]) {
-            delete self.model.actors[actorId];
-        }
+        self.model.removePlayer(bot.player.id);
 
         console.log("Removed bot: ", bot.id, bot.name, bot.scale);
 

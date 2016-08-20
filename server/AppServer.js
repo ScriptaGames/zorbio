@@ -13,6 +13,8 @@ var Drain         = require('../common/Drain.js');
 var WebSocket     = require('ws');
 var BotController = require('./BotController.js');
 var ServerPlayer  = require('./ServerPlayer.js');
+var Schemas       = require('../common/schemas.js');
+var sp            = require('schemapack');
 
 /**
  * This module contains all of the app logic and state,
@@ -36,7 +38,8 @@ var AppServer = function (wss, app) {
     self.app = app; // express
 
     // Game state
-    self.model = new Zorbio.Model(config.WORLD_SIZE, config.FOOD_DENSITY);
+    self.model = new Zorbio.Model();
+    self.model.init(config.WORLD_SIZE, config.FOOD_DENSITY);
     self.sockets = {};
     self.serverRestartMsg = '';
 
@@ -155,34 +158,35 @@ var AppServer = function (wss, app) {
                 currentPlayer.lastHeartbeat = Date.now();
                 currentPlayer.spawnTime = Date.now();
 
-                if (self.model.players[currentPlayer.id]) {
+                if (self.model.getPlayerById(currentPlayer.id)) {
                     // if current player is already in the players remove them
-                    delete self.model.players[currentPlayer.id];
+                    self.model.removePlayer(currentPlayer.id);
                 }
-
-                // Add the player to the players object
-                self.model.players[currentPlayer.id] = currentPlayer;
-
-                self.model.addActor(currentPlayer.sphere);
 
                 // Pass any data to the for final setup
                 ws.send(JSON.stringify({op: 'game_setup'}));
 
-                // Notify other clients that player has joined
-                var msgObj = JSON.stringify({op: 'player_join', player: currentPlayer});
-                setTimeout(self.wss.broadcast, 2000, msgObj);  // give player time to load the game
+                // give the client player time to load the game before notifying other players to add them
+                setTimeout(function playerJoinDelay() {
+                    // Notify other clients that player has joined
+                    self.wss.broadcast(JSON.stringify({op: 'player_join', player: currentPlayer}));
 
-                var playerCount = Object.getOwnPropertyNames(self.model.players).length;
-                console.log('Player ' + currentPlayer.id + ' joined game!');
-                console.log('Total players: ' + playerCount);
+                    // Add the player to the model
+                    self.model.players.push(currentPlayer);
+                    self.model.addActor(currentPlayer.sphere);
 
-                // see if we need to remove a bot
-                if (self.botController.hasBots() && playerCount > config.MAX_BOTS) {
-                    var bot = self.botController.removeBot();
+                    var playerCount = self.model.players.length;
+                    console.log('Player ' + currentPlayer.id + ' joined game!');
+                    console.log('Total players: ' + playerCount);
 
-                    // notify other players that this bot was removed
-                    self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: bot.player.id}));
-                }
+                    // see if we need to remove a bot
+                    if (self.botController.hasBots() && playerCount > config.MAX_BOTS) {
+                        var bot = self.botController.removeBot();
+
+                        // notify other players that this bot was removed
+                        self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: bot.player.id}));
+                    }
+                }, 200);
             }
         }
 
@@ -199,65 +203,32 @@ var AppServer = function (wss, app) {
         function handle_msg_player_update(buffer) {
             if (currentPlayer) currentPlayer.lastHeartbeat = Date.now();
 
+            // record timing
             var nowTime = Date.now();
             var receive_gap = nowTime - currentPlayer.pp_receive_metric.last_time;
             currentPlayer.pp_receive_metric.last_time = nowTime;
 
-            // Read binary data
-            var bufArr  = new ArrayBuffer(buffer.length);
-            var bufView = new Float32Array(bufArr);
-            var viewIndex = 0;
-            for (var bufferIndex = 0, l = buffer.length; bufferIndex < l; bufferIndex = bufferIndex + 4) {
-                bufView[viewIndex] = buffer.readFloatLE(bufferIndex);
-                viewIndex++;
-            }
-
-            // Pull out the data
-            var index     = 0;
-            var sphere_id = bufView[index++];
-            var gap       = bufView[index++];
-            var au_gap    = bufView[index++];
-            var ba        = bufView[index++];
-            var old_x     = bufView[index++];
-            var old_y     = bufView[index++];
-            var old_z     = bufView[index++];
-            var old_r     = bufView[index++];
-            var old_t     = bufView[index++];
-            var prev_3_x  = bufView[index++];
-            var prev_3_y  = bufView[index++];
-            var prev_3_z  = bufView[index++];
-            var prev_3_r  = bufView[index++];
-            var prev_3_t  = bufView[index++];
-            var prev_2_x  = bufView[index++];
-            var prev_2_y  = bufView[index++];
-            var prev_2_z  = bufView[index++];
-            var prev_2_r  = bufView[index++];
-            var prev_2_t  = bufView[index++];
-            var prev_1_x  = bufView[index++];
-            var prev_1_y  = bufView[index++];
-            var prev_1_z  = bufView[index++];
-            var prev_1_r  = bufView[index++];
-            var prev_1_t  = bufView[index++];
-            var new_x     = bufView[index++];
-            var new_y     = bufView[index++];
-            var new_z     = bufView[index++];
-            var new_r     = bufView[index++];
-            var new_t     = bufView[index];
+            // Decode the buffer
+            var msg = Schemas.playerUdateSchema.decode(buffer);
 
             // Save the client metrics
-            currentPlayer.pp_send_metric.add(gap);
+            currentPlayer.pp_send_metric.add(msg.pp_gap);
             currentPlayer.pp_receive_metric.add(receive_gap);
-            currentPlayer.au_receive_metric.add(au_gap);
-            currentPlayer.buffered_amount_metric.add(ba);
+            currentPlayer.au_receive_metric.add(msg.au_gap);
+            currentPlayer.buffered_amount_metric.add(msg.buffered_mount);
 
-            // Build the sphere object
-            var oldestPosition = {position: {x: old_x, y: old_y, z: old_z}, radius: old_r, time: old_t};
-            var latestPosition = {position: {x: new_x, y: new_y, z: new_z}, radius: new_r, time: new_t};
-            var sphere = {id: sphere_id, oldestPosition: oldestPosition, latestPosition: latestPosition, "scale": new_r};
+            // Build the validation object
+            var latestPosition = msg.latest_position;
+            var sphere = {
+                id: msg.sphere_id,
+                oldestPosition: msg.oldest_position,
+                latestPosition: latestPosition,
+                scale: latestPosition.radius,
+            };
 
             // Fixes bug #145 the client may send one last position update before they are removed from the game
             var err;
-            var actor = self.model.actors[sphere.id];
+            var actor = self.model.getActorById(sphere.id);
             if (!actor) {
                 err = Validators.ErrorCodes.PLAYER_NOT_IN_MODEL;
             } else {
@@ -269,28 +240,21 @@ var AppServer = function (wss, app) {
                 actor.position.set( latestPosition.position.x, latestPosition.position.y, latestPosition.position.z);
 
                 // Recent positions
-                //TODO: figure out how THREE is defined here without a require()
-                actor.pushRecentPosition({position: new THREE.Vector3(prev_3_x, prev_3_y, prev_3_z), radius: prev_3_r, time: prev_3_t});
-                actor.pushRecentPosition({position: new THREE.Vector3(prev_2_x, prev_2_y, prev_2_z), radius: prev_2_r, time: prev_2_t});
-                actor.pushRecentPosition({position: new THREE.Vector3(prev_1_x, prev_1_y, prev_1_z), radius: prev_1_r, time: prev_1_t});
-                actor.pushRecentPosition({position: actor.position, radius: actor.scale, time: latestPosition.time});
+                actor.pushRecentPosition(msg.prev_position_3);
+                actor.pushRecentPosition(msg.prev_position_2);
+                actor.pushRecentPosition(msg.prev_position_1);
+                actor.pushRecentPosition(latestPosition);
 
-                // Pull out the food captures if there are any
-                var foodCapLength = bufView.length - config.BIN_PP_POSITIONS_LENGTH;
-                if (foodCapLength > 1 && (foodCapLength % 2 === 0)) { // prevent buffer overflow
-                    // Iterate over food capture fi, radius pairs
-                    for (var i = config.BIN_PP_POSITIONS_LENGTH; i < bufView.length; i += 2) {
-                        var fi         = bufView[ i ];
-                        var origRadius = bufView[ i + 1 ];
+                // Iterate over pending food captures
+                msg.food_capture_queue.forEach(function captureEachFood(food_entry) {
+                    self.foodCapture(currentPlayer, food_entry.fi, actor, food_entry.radius);
+                });
 
-                        self.foodCapture(currentPlayer, fi, actor, origRadius);
-                    }
-                }
             } else {
                 switch (err) {
                     case Validators.ErrorCodes.SPEED_TO_FAST:
                         ws.send(JSON.stringify({op: 'speeding_warning'}));
-                        self.model.players[currentPlayer.id].infractions_speed++;
+                        self.model.getPlayerById(currentPlayer.id).infractions_speed++;
                         break;
                     case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
                         console.log("Recieved 'player_update' from player not in model!", sphere.id);
@@ -333,8 +297,6 @@ var AppServer = function (wss, app) {
 
     self.updateActorDrains = function appUpdateActorDrains(drainers) {
         // update drains
-
-        var player_ids = Object.getOwnPropertyNames(self.model.players);
         var drainer;
         var drainee;
         var drain_target;
@@ -343,12 +305,12 @@ var AppServer = function (wss, app) {
         var player;
         var drain_amount;
 
-        var i = player_ids.length;
+        var i = self.model.players.length;
 
         // iterate over players and set their drain targets
         while ( i-- ) {
-            player_id = player_ids[i];
-            player = self.model.players[player_id];
+            player = self.model.players[i];
+            player_id = player.id;
             drainer = player.sphere;
             drainer.drain_target_id = 0;  // reset
 
@@ -359,7 +321,7 @@ var AppServer = function (wss, app) {
                 drainee_id = drain_target.id;
 
                 drainer.drain_target_id = drainee_id;
-                var drainee_player = self.model.players[drainee_id];
+                var drainee_player = self.model.getPlayerById(drainee_id);
                 drainee = drainee_player.sphere;
 
                 // Bots can't drain eachother
@@ -385,58 +347,23 @@ var AppServer = function (wss, app) {
 
     self.playerUpdates = function appPlayerUpdates() {
         // call update() on all the player model objects
-        var playerIds = Object.getOwnPropertyNames(self.model.players);
-        for (var i = 0, l = playerIds.length; i < l; i++) {
-            var id = +playerIds[i];  // make sure id is a number
-            var player = self.model.players[id];
+        self.model.players.forEach(function updateEachPlayer(player) {
             player.update();
-        }
+        });
     };
 
     self.sendInitGame = function appSendInitGame(ws) {
         var initialModel = self.model.reduce();
-
-        ws.send(JSON.stringify({op: 'init_game', model: initialModel}));
+        var initGameMessage = {0: Schemas.ops.INIT_GAME, model: initialModel};
+        var buffer = Schemas.initGameSchema.encode(initGameMessage);
+        ws.send(buffer);
     };
 
     self.sendActorUpdates = function appSendActorUpdates() {
-        var actorIds = Object.getOwnPropertyNames(self.model.actors);
-        if (actorIds.length === 0) return;  // nothing to do if there's no actors
-
-        const NUM_ACTORS = actorIds.length;
-        const ACTOR_PARTS = 7;
-
-        var bufferView = new Float32Array(ACTOR_PARTS * NUM_ACTORS);
-
-        var id;
-        var actor;
-        var position;
-
-        var drainers = Drain.findAll( self.model.players );
-        self.updateActorDrains( drainers );
-
-        // Iterate over all actors. Make the payload as small as possible, send only what's needed on the client
-        var offset = 0;
-        for (var i = 0, l = NUM_ACTORS; i < l; ++i) {
-            id = +actorIds[i];  // make sure id is a number
-            actor = self.model.actors[id];
-            position = actor.position;
-
-            // update actor data
-
-            bufferView[ offset ] = id;
-            bufferView[ offset + 1 ] = position.x;
-            bufferView[ offset + 2 ] = position.y;
-            bufferView[ offset + 3 ] = position.z;
-            bufferView[ offset + 4 ] = actor.scale;
-            bufferView[ offset + 5 ] = actor.drain_target_id;
-            bufferView[ offset + 6 ] = actor.speed_boosting ? 1 : 0;
-
-            offset += ACTOR_PARTS;
-        }
-
-        // Send actors updates to all clients
-        self.wss.broadcast(bufferView.buffer, {binary: true, mask: true});
+        var tinyActors = self.model.reduceActors(true);
+        var actorUpdatesMessage = {0: Schemas.ops.ACTOR_UPDATES, actors: tinyActors};
+        var buffer = Schemas.actorUpdatesSchema.encode(actorUpdatesMessage);
+        self.wss.broadcast(buffer);
     };
 
     self.foodCapture = function appFoodCapture (player, fi, actor, origRadius) {
@@ -461,7 +388,7 @@ var AppServer = function (wss, app) {
             switch (err) {
                 case Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR:
                     // inform client of invalid capture, and make them shrink, mark infraction
-                    self.model.players[player.id].infractions_food++;
+                    self.model.getPlayerById(player.id).infractions_food++;
                     break;
                 case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
                     console.log("Recieved 'foodCapture' from player not in model!", actor.id);
@@ -474,7 +401,7 @@ var AppServer = function (wss, app) {
      * Checks all players for captures
      */
     self.updatePlayerCaptures = function appUpdatePlayerCaptures() {
-        var players_array = _.values(self.model.players);
+        var players_array = self.model.players;
         var p1;
         var p2;
         var distance;
@@ -552,8 +479,8 @@ var AppServer = function (wss, app) {
 
     self.capturePlayer = function appCapturePlayer(attackingPlayerId, targetPlayerId) {
 
-        var attackingPlayer = self.model.players[attackingPlayerId];
-        var targetPlayer = self.model.players[targetPlayerId];
+        var attackingPlayer = self.model.getPlayerById(attackingPlayerId);
+        var targetPlayer = self.model.getPlayerById(targetPlayerId);
 
         if (!attackingPlayer || !targetPlayer) {
             console.log("ERROR: player capture attacking or target player undefined.");
@@ -599,7 +526,7 @@ var AppServer = function (wss, app) {
     };
 
     self.isPlayerInGame = function appIsPlayerInGame(player_id) {
-        return (self.model.players[player_id] && self.sockets[player_id]);
+        return (self.model.getPlayerById(player_id) && self.sockets[player_id]);
     };
 
     self.kickPlayer = function appKickPlayer(playerId, reason) {
@@ -617,15 +544,8 @@ var AppServer = function (wss, app) {
     };
 
     self.removePlayerFromModel = function appRemovePlayerFromModel(playerId) {
-        var actorId = 0;
-        if (self.model.players[playerId]) {
-            // remove player from model
-            actorId = self.model.players[playerId].sphere.id;
-            delete self.model.players[playerId];
-        }
-        if (self.model.actors[actorId]) {
-            delete self.model.actors[actorId];
-        }
+        self.model.removePlayer(playerId);
+        console.log('Removed player:', playerId);
     };
 
     self.removePlayerSocket = function appRemovePlayerSocket(playerId) {
@@ -642,17 +562,14 @@ var AppServer = function (wss, app) {
 
         var time = Date.now();
 
-        var playerIds = Object.getOwnPropertyNames(self.model.players);
-        for (var i = 0, l = playerIds.length; i < l; i++) {
-            var id = +playerIds[i];  // make sure id is a number
-            var player = self.model.players[id];
+        self.model.players.forEach(function checkPlayerHeartbeats(player) {
             if (player && player.type != Zorbio.PlayerTypes.BOT && player.lastHeartbeat) {
                 if ((time - player.lastHeartbeat) > config.HEARTBEAT_TIMEOUT) {
                     var msg = "You were kicked because last heartbeat was over " + (config.HEARTBEAT_TIMEOUT / 1000) + " seconds ago.";
-                    self.kickPlayer(id, msg);
+                    self.kickPlayer(player.id, msg);
                 }
             }
-        }
+        });
     };
 
     self.updateFoodRespawns = function appUpdateFoodRespawns() {
@@ -680,10 +597,8 @@ var AppServer = function (wss, app) {
         self.model.leaders = [];
 
         // Iterate over all players and perform checks
-        var playerIds = Object.getOwnPropertyNames(self.model.players);
-        for (var i = 0, l = playerIds.length; i < l; i++) {
-            var id = +playerIds[i];  // make sure id is a number
-            var player = self.model.players[id];
+        self.model.players.forEach(function performPlayerChecks(player) {
+            var id = player.id;
 
             // Check for infractions
             if (player.infractions_food > config.INFRACTION_TOLERANCE_FOOD) {
@@ -710,7 +625,7 @@ var AppServer = function (wss, app) {
                 color: player.sphere.color
             };
             UTIL.sortedObjectPush(self.model.leaders, leader, 'score');
-        }
+        });
 
         // Prepare leaders array
         self.model.leaders.reverse();  // reverse for descending order
@@ -737,8 +652,8 @@ var AppServer = function (wss, app) {
         self.playerUpdates();
         self.botController.update();
         self.updatePlayerCaptures();
+        self.updateActorDrains( Drain.findAll( self.model.players ) );
         self.sendActorUpdates();
-
     };
 
     /**
@@ -780,8 +695,7 @@ var AppServer = function (wss, app) {
      */
     self.replenishBot = function appReplenishBot() {
         // bot was captured, lets see if we need to spawn another to replace it
-        var playerIds = Object.getOwnPropertyNames(self.model.players);
-        if (playerIds.length < config.MAX_BOTS) {
+        if (self.model.players.length < config.MAX_BOTS) {
             var bot = self.botController.spawnBot();
 
             // Notify other clients that bot has joined

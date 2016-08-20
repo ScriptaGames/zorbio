@@ -32,7 +32,7 @@ function sendEnterGame(playerType, playerName, color, key) {
 function setupSocket(ws) {
     ws.onmessage = function wsMessage (msg) {
         if (typeof msg.data === "string") {
-            var message = JSON.parse(msg.data);
+            var message = parseJson(msg.data);
 
             switch (message.op) {
                 case 'init_game':
@@ -83,8 +83,18 @@ function setupSocket(ws) {
             }
         }
         else {
-            // handle binary message
-            handle_msg_actor_updates(msg.data);
+            var op = UTIL.readFirstByte(msg.data);
+
+            switch (op) {
+                case ZOR.Schemas.ops.INIT_GAME:
+                    handle_msg_init_game( ZOR.Schemas.initGameSchema.decode(msg.data) );
+                    break;
+                case ZOR.Schemas.ops.ACTOR_UPDATES:
+                    handle_msg_actor_updates( ZOR.Schemas.actorUpdatesSchema.decode(msg.data) );
+                    break;
+                default:
+                    console.err("Error: Unknown binary op code: ", op);
+            }
         }
     };
 
@@ -100,19 +110,19 @@ function setupSocket(ws) {
         console.error("Websocket error occured", e);
     };
 
-    function handle_msg_init_game(msg) {
-        zorbioModel = msg.model;
+    function parseJson(msg) {
+        // put in own function so we can see how long this takes in the profiler
+        return JSON.parse(msg);
+    }
 
+    function handle_msg_init_game(msg) {
         // iterate over actors and create THREE objects that don't serialize over websockets
-        var actorIds = Object.getOwnPropertyNames(zorbioModel.actors);
-        for (var i = 0, l = actorIds.length; i < l; i++) {
-            var actorId = +actorIds[i];  // make sure id is a number
-            var actor = zorbioModel.actors[actorId];
-            var velocity = actor.velocity;
-            var position = actor.position;
-            actor.position = new THREE.Vector3(position.x, position.y, position.z);
-            actor.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
-        }
+        msg.model.actors.forEach(function eachActor(actor) {
+            UTIL.toVector3(actor, 'position');
+            UTIL.toVector3(actor, 'velocity');
+        });
+
+        _.assign(zorbioModel, msg.model);
 
         ZOR.UI.on('init', createScene);
 
@@ -131,7 +141,7 @@ function setupSocket(ws) {
     function handle_msg_game_setup() {
         // add player to players and actors
         ZOR.Game.players[player.getPlayerId()] = player;
-        zorbioModel.actors[player.model.sphere.id] = player.model.sphere;
+        zorbioModel.addActor(player.model.sphere);
 
         // add player to scene and reset camera
         initCameraAndPlayer();
@@ -155,13 +165,13 @@ function setupSocket(ws) {
             ZOR.Game.players[newPlayer.id] = new ZOR.PlayerController(newPlayer, scene);
             ZOR.Game.players[newPlayer.id].setAlpha(1);
 
+            //Initialize THREE objects
+            UTIL.toVector3(newPlayer.sphere, 'position');
+            UTIL.toVector3(newPlayer.sphere, 'velocity');
+
             //Keep model in sync with the server
-            zorbioModel.players[newPlayer.id] = newPlayer;
-            zorbioModel.actors[newPlayer.sphere.id] = newPlayer.sphere;
-            var position = newPlayer.sphere.position;
-            zorbioModel.actors[newPlayer.sphere.id].position = new THREE.Vector3(position.x, position.y, position.z);
-            var velocity = actor.velocity;
-            actor.velocity = new THREE.Vector3(velocity.x, velocity.y, velocity.z);
+            zorbioModel.players.push(newPlayer);
+            zorbioModel.addActor(newPlayer.sphere);
         }
 
         console.log('Player joined: ', newPlayer.id, newPlayer.name);
@@ -172,8 +182,7 @@ function setupSocket(ws) {
         console.log('Ping: ' + zorPingDuration + 'ms');
     }
 
-    function handle_msg_actor_updates(arrayBuffer) {
-
+    function handle_msg_actor_updates(msg) {
         if (player) {
             // Record gap since last actor update was received
             var nowTime = Date.now();
@@ -181,32 +190,25 @@ function setupSocket(ws) {
             player.model.au_receive_metric.last_time = nowTime;
         }
 
-        var actorsArray = new Float32Array(arrayBuffer);
+        msg.actors.forEach(function updateEachActor(serverActor) {
+            var clientActor = zorbioModel.getActorById(serverActor.id);
 
-        // sync the actors positions from the server model to the client model
-        for (var i = 0, l = actorsArray.length; i < l; i += 7) {
-            var id = +actorsArray[ i ];
-            var actor = zorbioModel.actors[id];
+            if (clientActor) {
+                var last_pos_update = (clientActor.lastPosition || clientActor.position).clone();
+                clientActor.position.copy(serverActor.position);
+                clientActor.scale = serverActor.scale;
+                clientActor.lastPosition = clientActor.position.clone();
+                clientActor.velocity = clientActor.position.clone().sub(last_pos_update);
 
-            if (actor) {
-                var x = actorsArray[ i + 1 ];
-                var y = actorsArray[ i + 2 ];
-                var z = actorsArray[ i + 3 ];
-                var s = actorsArray[ i + 4 ];
-                var drain_target_id = actorsArray[ i + 5 ];
-                var speed_boosting = actorsArray[ i + 6 ];
-
-                var last_pos_update = (actor.lastPosition || actor.position).clone();
-                actor.position.set(x, y, z);
-                actor.lastPosition = actor.position.clone();
-                actor.velocity = actor.position.clone().sub(last_pos_update);
-                actor.scale = s;
-                actor.drain_target_id = drain_target_id;
-
-                var playerController = ZOR.Game.players[actor.playerId];
-                playerController.setSpeedBoostActive(!!speed_boosting);
+                if (clientActor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
+                    clientActor.drain_target_id = serverActor.drain_target_id;
+                    var playerController = ZOR.Game.players[clientActor.playerId];
+                    if (playerController) {
+                        playerController.setSpeedBoostActive(serverActor.speed_boosting);
+                    }
+                }
             }
-        }
+        });
     }
 
     function handle_msg_captured_player(msg) {
@@ -230,7 +232,7 @@ function setupSocket(ws) {
         console.log("YOU DIED! You were alive for " + timeAlive + " seconds. Killed by: ", attackingPlayerId);
         setDeadState();
 
-        var attackingPlayer = zorbioModel.players[attackingPlayerId];
+        var attackingPlayer = zorbioModel.getPlayerById(attackingPlayerId);
         attackingPlayer.score = config.PLAYER_GET_SCORE(attackingPlayer.sphere.scale);
         targetPlayer.drainAmount = config.PLAYER_GET_SCORE(targetPlayer.drainAmount);
 
@@ -312,10 +314,10 @@ function setIntervalMethods() {
 }
 
 function sendPlayerUpdate() {
+    // save metrics
     var nowTime = Date.now();
     var gap = nowTime - player.model.pp_send_metric.last_time;
     player.model.pp_send_metric.last_time = nowTime;
-
     var bufferedAmount = ws.bufferedAmount;
 
     // Make sure model is synced with view
@@ -323,67 +325,34 @@ function sendPlayerUpdate() {
 
     var sphereModel = player.model.sphere;
 
+    // make sure we always have at least 4 recent positions
     while (sphereModel.recentPositions.length < 4) {
-        player.addRecentPosition();  // make sure we always have at least 4 recent positions
+        player.addRecentPosition();
     }
 
-    // for now we only need to send the oldest position and the most recent position
-    var oldestPosition = sphereModel.recentPositions[0];
-    var prevPosition3  = sphereModel.recentPositions[sphereModel.recentPositions.length - 4];
-    var prevPosition2  = sphereModel.recentPositions[sphereModel.recentPositions.length - 3];
-    var prevPosition1  = sphereModel.recentPositions[sphereModel.recentPositions.length - 2];
-    var latestPosition = sphereModel.recentPositions[sphereModel.recentPositions.length - 1];
+    // Send oldest position and most recent 4 positions
+    var playerUpdateMessage = {
+        0: ZOR.Schemas.ops.PLAYER_UPDATE,
+        player_id: player.getPlayerId(),
+        sphere_id: sphereModel.id,
+        pp_gap: gap,
+        au_gap: actorUpdateGap,
+        buffered_mount: bufferedAmount,
+        latest_position: sphereModel.recentPositions[sphereModel.recentPositions.length - 1],
+        prev_position_1: sphereModel.recentPositions[sphereModel.recentPositions.length - 2],
+        prev_position_2: sphereModel.recentPositions[sphereModel.recentPositions.length - 3],
+        prev_position_3: sphereModel.recentPositions[sphereModel.recentPositions.length - 4],
+        oldest_position: sphereModel.recentPositions[0],
+        food_capture_queue: player.food_capture_queue,
+    };
 
-    var bufferView = new Float32Array(config.BIN_PP_POSITIONS_LENGTH + (player.food_capture_queue.length * 2));
-    var index = 0;
-    bufferView[index++] = sphereModel.id;            // Actor ID
-    bufferView[index++] = gap;                       // Gap since last pp update
-    bufferView[index++] = actorUpdateGap;            // Gap since last au update
-    bufferView[index++] = bufferedAmount;            // Amount of bytes currently buffered to send in the ws
-
-    // oldest position
-    bufferView[index++] = oldestPosition.position.x; // Old position X
-    bufferView[index++] = oldestPosition.position.y; // Old position Y
-    bufferView[index++] = oldestPosition.position.z; // Old position Z
-    bufferView[index++] = oldestPosition.radius;     // Old radius
-    bufferView[index++] = oldestPosition.time;       // Old time
-
-    // Previous positions
-    bufferView[index++] = prevPosition3.position.x;
-    bufferView[index++] = prevPosition3.position.y;
-    bufferView[index++] = prevPosition3.position.z;
-    bufferView[index++] = prevPosition3.radius;
-    bufferView[index++] = prevPosition3.time;
-    bufferView[index++] = prevPosition2.position.x;
-    bufferView[index++] = prevPosition2.position.y;
-    bufferView[index++] = prevPosition2.position.z;
-    bufferView[index++] = prevPosition2.radius;
-    bufferView[index++] = prevPosition2.time;
-    bufferView[index++] = prevPosition1.position.x;
-    bufferView[index++] = prevPosition1.position.y;
-    bufferView[index++] = prevPosition1.position.z;
-    bufferView[index++] = prevPosition1.radius;
-    bufferView[index++] = prevPosition1.time;
-
-    // Latest position
-    bufferView[index++] = latestPosition.position.x; // New position X
-    bufferView[index++] = latestPosition.position.y; // New position Y
-    bufferView[index++] = latestPosition.position.z; // New position Z
-    bufferView[index++] = latestPosition.radius;     // New radius
-    bufferView[index++] = latestPosition.time;       // New time
-
-    // Now add any queued food captures
-    for(var i = 0, l = player.food_capture_queue.length; i < l; i++) {
-        var food_cap = player.food_capture_queue[i];
-        bufferView[index++] = food_cap.fi;
-        bufferView[index++] = food_cap.radius;  //TODO: no need to send radius anymore since all scale is handled on the server
-    }
+    var buffer = ZOR.Schemas.playerUdateSchema.encode(playerUpdateMessage);
 
     // clear food queue
     player.food_capture_queue = [];
 
     // Send player update data
-    ws.send(bufferView.buffer);
+    ws.send(buffer);
 }
 
 function sendSpeedBoostStart() {

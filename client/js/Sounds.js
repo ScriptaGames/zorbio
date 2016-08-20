@@ -33,15 +33,6 @@ ZOR.Sounds = (function ZORSounds() {
                 },
             }),
         },
-        music: {
-            background: new Howl({
-                urls: ['../music/starfish-oblivion.mp3'],
-                autoplay: false,
-                loop: true,
-                volume: config.VOLUME_MUSIC_INITIAL,
-                buffer: true, // don't wait for entire file to download
-            }),
-        },
     };
 
     if (!config.MUSIC_ENABLED) {

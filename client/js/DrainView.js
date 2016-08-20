@@ -89,6 +89,10 @@ ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drain_target_id ) 
     }
 
     var drainee = ZOR.Game.players[drain_target_id];
+
+    // sometimes drainee isn't in the players array yet
+    if (!drainee) return;
+
     var drainer_pos = this.playerView.mainSphere.position;
     var drainee_pos = drainee.view.mainSphere.position;
     var drainer_scale = this.playerView.mainSphere.scale.x;

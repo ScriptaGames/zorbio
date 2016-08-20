@@ -83,7 +83,7 @@ var Bot = function (scale, model) {
             targetPos.sub(sphere.position);
             targetPos.normalize();
 
-            var speed = self.player.getSpeed() * 3; // times 3 because it's every 50 ms not every 16 ms
+            var speed = self.player.getSpeed() * (config.TICK_FAST_INTERVAL / (1000/60)); // convert speed multiplier from fps to tick fast
             targetPos.multiplyScalar( speed );
 
             sphere.position.add(targetPos);
@@ -93,7 +93,7 @@ var Bot = function (scale, model) {
     };
 
     self.setChaseTarget = function botChaseTarget(actor_id) {
-        self.chaseTarget = self.model.actors[actor_id];
+        self.chaseTarget = self.model.getActorById(actor_id);
     };
 
     self.move = self.movementPaterns.randomPoint;

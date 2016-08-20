@@ -57,6 +57,10 @@ ZOR.PlayerController.prototype.getSpeed = function ZORPlayerControllerGetSpeed()
     return this.model.getSpeed();
 };
 
+ZOR.PlayerController.prototype.getScore = function ZORPlayerControllerGetScore() {
+    return this.model.getScore();
+};
+
 ZOR.PlayerController.prototype.setAlpha = function ZORPlayerControllerSetAlpha(alpha) {
     if (this.view) {
         this.view.setAlpha(alpha);
@@ -93,11 +97,6 @@ ZOR.PlayerController.prototype.refreshSphereModel = function ZORPlayerController
 
     // sync position
     this.model.sphere.position.copy(this.view.mainSphere.position);
-};
-
-ZOR.PlayerController.prototype.updateVelocity = function ZORPlayerControllerUpdateScale(scale) {
-    this.setScale(scale);
-    this.view.update(scale);
 };
 
 ZOR.PlayerController.prototype.updateScale = function ZORPlayerControllerUpdateScale(scale) {
@@ -223,8 +222,18 @@ ZOR.PlayerController.prototype.speedBoostStop = function ZORPlayerControllerSpee
     this.model.abilities.speed_boost.deactivate();
 };
 
+/**
+ * @return {boolean}
+ */
 ZOR.PlayerController.prototype.isSpeedBoostActive = function ZORPlayerControllerIsSpeedBoostActive() {
     return this.model.abilities.speed_boost.isActive();
+};
+
+/**
+ * @return {boolean}
+ */
+ZOR.PlayerController.prototype.isSpeedBoostReady = function ZORPlayerControllerIsSpeedBoostReady() {
+    return this.model.abilities.speed_boost.isReady();
 };
 
 /**
