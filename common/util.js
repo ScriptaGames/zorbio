@@ -550,5 +550,29 @@ UTIL.readFirstByte = function UTILReadFirstByte(arrayBuffer) {
     return view[0];
 };
 
+/**
+ * Function to simplify JS prototypal inheritance.
+ * @example function Dog(name) {
+ *     // Call the parent's constructor without hard coding the parent
+ *     Dog.base.constructor.call(this, name);
+ * }
+ * UTIL.extend(Dog, Animal, {
+ *     getWordsToSay: function(){
+ *         return "Ruff Ruff";
+ *     }
+ * });
+ */
+UTIL.extend = function extend(sub, base, methods) {
+    sub.prototype = Object.create(base.prototype);
+    sub.prototype.constructor = sub;
+    sub.base = base.prototype;
+
+    // Copy the methods passed in to the prototype
+    for (var name in methods) {
+        sub.prototype[name] = methods[name];
+    }
+    // so we can define the constructor inline
+    return sub;
+};
 // if we're in nodejs, export the root UTIL object
 if (NODEJS) module.exports = UTIL;

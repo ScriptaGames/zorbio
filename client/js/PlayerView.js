@@ -17,11 +17,9 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current, skin) {
 
     playerFogCenter.copy(actor.position);
 
-    this.setScale(actor.scale);
-
+    this.skin = new ZOR.PlayerSkin(this, ZOR.PlayerSkins[skin || 'default']);
     this.drainView = new ZOR.DrainView(this, scene);
-
-    this.skin = new ZOR.PlayerSkins[skin || 'default'](this);
+    this.setScale(actor.scale);
 };
 
 ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
@@ -31,6 +29,10 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
     this.skin.update(scale);
+};
+
+ZOR.PlayerView.prototype.setAlpha = function ZORPlayerViewSetAlpha(alpha) {
+    this.skin.setAlpha(alpha);
 };
 
 ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {

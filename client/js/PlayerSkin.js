@@ -1,6 +1,6 @@
 var ZOR = ZOR || {};
 
-ZOR.PlayerSkin = function ZORPlayerSkin(playerView) {
+ZOR.PlayerSkin = function ZORPlayerSkin(playerView, settings) {
     this.model = playerView.model;
     this.scene = playerView.scene;
     this.is_current_player = playerView.is_current_player;
@@ -16,18 +16,11 @@ ZOR.PlayerSkin = function ZORPlayerSkin(playerView) {
     );
 
     playerFogCenter.copy(actor.position);
+
+    this.settings = settings(playerView);
+
     this.material = new THREE.ShaderMaterial( {
-        uniforms:
-        {
-            "c"           : { type : "f",  value : 1.41803 },
-            "p"           : { type : "f",  value : 2.71828 },
-            color         : { type : "c",  value : new THREE.Color(this.playerColor) },
-            colorHSL      : { type : "v3",  value : new THREE.Color(this.playerColor).getHSL() },
-            spherePos     : { type : "v3", value : actor.position },
-            mainSpherePos : { type : "v3", value : playerFogCenter },
-            FOG_FAR       : { type : "f",  value : config.FOG_FAR },
-            FOG_ENABLED   : { type : "f",  value : ~~config.FOG_ENABLED }
-        },
+        uniforms: this.settings.material.uniforms,
         vertexShader:   document.getElementById( 'sphere-vertex-shader'   ).textContent,
         fragmentShader: document.getElementById( 'sphere-fragment-shader' ).textContent,
         transparent: true,
@@ -45,6 +38,7 @@ ZOR.PlayerSkin = function ZORPlayerSkin(playerView) {
 
     this.mainSphere = new THREE.Mesh( this.geometry, this.material );
     this.mainSphere.position.copy(actor.position);
+    playerView.mainSphere = this.mainSphere;
 
 
     this.setScale(actor.scale);
@@ -58,44 +52,9 @@ ZOR.PlayerSkin = function ZORPlayerSkin(playerView) {
 };
 
 ZOR.PlayerSkin.prototype.initTrail = function ZORPlayerInitTrail() {
-    this.trail = particleGroup = new SPE.Group({
-        scale: Math.min(window.innerWidth, window.innerHeight),
-        texture: {
-            value:  new THREE.TextureLoader().load( "textures/trail-particle.png" ),
-        },
-        maxParticleCount: 200,
-    });
+    this.trail = particleGroup = new SPE.Group(this.settings.trail.group);
 
-    var opacity = this.is_current_player ? 0.2 : 0.6;
-
-    this.trailEmitter = new SPE.Emitter({
-        maxAge: {
-            value: 4,
-            // spread: 2,
-        },
-        position: {
-            value: new THREE.Vector3(0, 0, 0),
-        },
-
-        opacity: {
-            value: [opacity, 0],
-        },
-
-        drag: {
-            value: 1.0,
-        },
-
-        color: {
-            value: new THREE.Color(this.playerColor),
-        },
-
-        size: {
-            value: [100, 0],
-        },
-
-        particleCount: 200,
-        activeMultiplier: 0.1,
-    });
+    this.trailEmitter = new SPE.Emitter(this.settings.trail.emitter);
 
     this.trailClock = new THREE.Clock();
     this.trail.mesh.renderOrder = 1;
