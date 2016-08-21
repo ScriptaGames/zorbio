@@ -17,6 +17,7 @@
         "client/bower_components/Wad/build/wad.js",
         "client/lib/environment.js",
         "client/js/config.js",
+        "client/skins/default/default.js",
         "client/js/FollowOrbitControls.js",
         "client/js/TrackballControls.js",
         "client/lib/util.js",

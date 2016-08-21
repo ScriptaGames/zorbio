@@ -8,14 +8,13 @@ var ZOR = ZOR || {};
  * @param scene
  */
 
-ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
+ZOR.PlayerView = function ZORPlayerView(model, scene, current, skinName) {
     this.model = model;
     this.scene = scene;
     this.is_current_player = current || false;
-
-    var actor = model.sphere;
-
-    this.playerColor = config.COLORS[actor.color];
+    this.playerColor = config.COLORS[model.sphere.color];
+    this.skinName = skinName;
+    this.skin = ZOR.PlayerSkins[this.skinName || 'default'](this);
 
     this.geometry = new THREE.SphereGeometry(
         1,
@@ -23,40 +22,19 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
         config.PLAYER_SPHERE_POLYCOUNT
     );
 
-    playerFogCenter.copy(actor.position);
-    this.material = new THREE.ShaderMaterial( {
-        uniforms:
-        {
-            "c"           : { type : "f",  value : 1.41803 },
-            "p"           : { type : "f",  value : 2.71828 },
-            color         : { type : "c",  value : new THREE.Color(this.playerColor) },
-            colorHSL      : { type : "v3",  value : new THREE.Color(this.playerColor).getHSL() },
-            spherePos     : { type : "v3", value : actor.position },
-            mainSpherePos : { type : "v3", value : playerFogCenter },
-            FOG_FAR       : { type : "f",  value : config.FOG_FAR },
-            FOG_ENABLED   : { type : "f",  value : ~~config.FOG_ENABLED }
-        },
-        vertexShader:   document.getElementById( 'sphere-vertex-shader'   ).textContent,
-        fragmentShader: document.getElementById( 'sphere-fragment-shader' ).textContent,
-        transparent: true,
-
-        // this allows spheres to clip each other nicely, BUT it makes spheres appear on top of the cube boundary. :/
-        // depthFunc      : THREE.LessDepth,
-        // depthTest      : false,
-        // depthWrite     : true,
-        // blending       : THREE.AdditiveBlending,
-    } );
+    playerFogCenter.copy(model.sphere.position);
+    this.material = new THREE.ShaderMaterial( this.skin.material.uniforms );
 
     if (config.FOOD_ALPHA_ENABLED) {
         this.material.depthWrite = true;
     }
 
     this.mainSphere = new THREE.Mesh( this.geometry, this.material );
-    this.mainSphere.position.copy(actor.position);
+    this.mainSphere.position.copy(model.sphere.position);
 
     this.drainView = new ZOR.DrainView(this, scene);
 
-    this.setScale(actor.scale);
+    this.setScale(model.sphere.scale);
 
     this.mainSphere.player_id = this.model.id;
     ZOR.Game.player_meshes.push(this.mainSphere);  // store mesh for raycaster search
@@ -67,44 +45,9 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 };
 
 ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
-    this.trail = particleGroup = new SPE.Group({
-        scale: Math.min(window.innerWidth, window.innerHeight),
-        texture: {
-            value:  new THREE.TextureLoader().load( "textures/trail-particle.png" ),
-        },
-        maxParticleCount: 200,
-    });
+    this.trail = particleGroup = new SPE.Group(this.skin.trail.group);
 
-    var opacity = this.is_current_player ? 0.2 : 0.6;
-
-    this.trailEmitter = new SPE.Emitter({
-        maxAge: {
-            value: 4,
-            // spread: 2,
-        },
-        position: {
-            value: new THREE.Vector3(0, 0, 0),
-        },
-
-        opacity: {
-            value: [opacity, 0],
-        },
-
-        drag: {
-            value: 1.0,
-        },
-
-        color: {
-            value: new THREE.Color(this.playerColor),
-        },
-
-        size: {
-            value: [100, 0],
-        },
-
-        particleCount: 200,
-        activeMultiplier: 0.1,
-    });
+    this.trailEmitter = new SPE.Emitter(this.skin.trail.emitter);
 
     this.trailClock = new THREE.Clock();
     this.trail.mesh.renderOrder = 1;
