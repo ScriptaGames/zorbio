@@ -93,7 +93,7 @@ function setupSocket(ws) {
                     handle_msg_actor_updates( ZOR.Schemas.actorUpdatesSchema.decode(msg.data) );
                     break;
                 default:
-                    console.err("Error: Unknown binary op code: ", op);
+                    console.error("Error: Unknown binary op code: ", op);
             }
         }
     };
