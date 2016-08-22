@@ -41,7 +41,7 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
         uniforms: {
             time          : { type : "f",  value : this.time },
             power         : { type : "f",  value : 0 },
-            erColor       : { type : "c",  value : this.playerView.material.uniforms.color.value },
+            erColor       : { type : "c",  value : new THREE.Color(this.playerView.playerColor) },
             eeColor       : { type : "c",  value : 0 },
             len           : { type : "f",  value : 0 },
             mainSpherePos : { type : "v3", value : playerFogCenter },
@@ -156,7 +156,7 @@ ZOR.DrainView.prototype.updateUniforms = function ZORDrainViewUpdateUniforms( dr
     this.time += ZOR.LagScale.get() / config.DRAIN_RADIO_FREQUENCY;
     // Set material parameters
     this.material.uniforms.time.value = this.time;
-    this.material.uniforms.eeColor.value = drainee.view.material.uniforms.color.value;
+    this.material.uniforms.eeColor.value = new THREE.Color(drainee.view.playerColor);
     this.material.uniforms.len.value = distance;
     // base cylinder's opacity on how large the drain is (percentage of
     // theoretical maximum drain)

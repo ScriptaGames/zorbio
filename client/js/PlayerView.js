@@ -23,7 +23,7 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current, skinName) {
     );
 
     playerFogCenter.copy(model.sphere.position);
-    this.material = new THREE.ShaderMaterial( this.skin.material.uniforms );
+    this.material = new THREE.ShaderMaterial( this.skin.material );
 
     if (config.FOOD_ALPHA_ENABLED) {
         this.material.depthWrite = true;
