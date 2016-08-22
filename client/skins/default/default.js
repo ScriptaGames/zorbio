@@ -8,6 +8,7 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
     var color = new THREE.Color(playerView.playerColor);
 
     return {
+        geometry: {},
         material: {
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },
