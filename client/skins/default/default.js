@@ -8,7 +8,6 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
     var color = new THREE.Color(playerView.playerColor);
 
     return {
-        friendly_name: 'Smooth Shade',
         material: {
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },
@@ -67,4 +66,11 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
             },
         },
     };
+};
+
+ZOR.PlayerSkins.default.meta = {
+    friendly_name: 'Smooth Shade',
+    name: 'default',
+    preview: 'skins/default/thumb.jpg',
+    sort: 1,
 };

@@ -46,6 +46,10 @@ button, a {
     cursor: pointer;
 }
 
+img {
+    max-width: 100%;
+}
+
 #render-canvas {
 
     // TODO: show canvas again!
@@ -174,6 +178,23 @@ input {
             font-size: @font-size-base * 0.5;
         }
 
+    }
+
+    #skin-list {
+        li {
+            float: left;
+            margin: 10px;
+            font-size: 0.5 * @font-size-base;
+            h1, button {
+                font-size: inherit;
+            }
+            img {
+                border-radius: 50%;
+            }
+            & * {
+                cursor: pointer;
+            }
+        }
     }
 
 }

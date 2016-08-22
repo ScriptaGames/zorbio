@@ -60,6 +60,8 @@ ZOR.UI = function ZORUI() {
         TOGGLE_X_AXIS            : 'toggle-x-axis',
         VOLUME_MUSIC             : 'volume-music',
         VOLUME_SFX               : 'volume-sfx',
+
+        SET_SKIN                 : 'set-skin',
     };
 
     /**
@@ -76,6 +78,7 @@ ZOR.UI = function ZORUI() {
         DEBUG            : config.DEBUG,
         MISSING_FEATURES : [],
         AUTHORS          : ['Michael Clayton', 'Jared Sprague'],
+        skins            : _(ZOR.PlayerSkins).map(_.partial(_.pick, _, 'meta')).sortBy('meta.sort').value(), // get the meta for every skin and sort them
         leaders          : [],
         is_mobile        : isMobile.any,
         screen_x         : 0,
@@ -293,6 +296,9 @@ ZOR.UI = function ZORUI() {
             state( uidata.prev_state );
         });
 
+        on( ACTIONS.SET_SKIN, function ZORSetSkin(e) {
+            localStorage.setItem('skin', e.node.value);
+        });
 
         on( ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
             // check if the nick is valid

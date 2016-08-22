@@ -75,6 +75,9 @@ button,
 a {
   cursor: pointer;
 }
+img {
+  max-width: 100%;
+}
 #render-canvas {
   width: 100%;
   height: 100%;
@@ -194,6 +197,21 @@ input:focus {
 #ui-overlay .greybox p {
   text-align: center;
   font-size: 15px;
+}
+#ui-overlay #skin-list li {
+  float: left;
+  margin: 10px;
+  font-size: 15px;
+}
+#ui-overlay #skin-list li h1,
+#ui-overlay #skin-list li button {
+  font-size: inherit;
+}
+#ui-overlay #skin-list li img {
+  border-radius: 50%;
+}
+#ui-overlay #skin-list li * {
+  cursor: pointer;
 }
 button:focus {
   outline: none;

@@ -8,11 +8,12 @@ var ZOR = ZOR || {};
  * @constructor
  *
  */
-ZOR.PlayerController = function ZORPlayerController(model, scene, current) {
+ZOR.PlayerController = function ZORPlayerController(model, scene, current, skinName) {
     this.model = new ZOR.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
         model.sphere.scale, model.sphere.velocity);
     this.isDead = false;
     this.is_current_player = current || false;
+    this.skinName = skinName;
 
     this.move_forward_v = new THREE.Vector3();
     this.move_backward_v = new THREE.Vector3();
@@ -68,7 +69,7 @@ ZOR.PlayerController.prototype.setAlpha = function ZORPlayerControllerSetAlpha(a
 };
 
 ZOR.PlayerController.prototype.initView = function ZORPlayerControllerInitView(scene) {
-    this.view = new ZOR.PlayerView(this.model, scene, this.is_current_player);
+    this.view = new ZOR.PlayerView(this.model, scene, this.is_current_player, this.skinName);
 };
 
 ZOR.PlayerController.prototype.removeView = function ZORPlayerControllerRemoveView(scene) {

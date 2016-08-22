@@ -8,7 +8,6 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
     var color = new THREE.Color('#ffffff');
 
     return {
-        friendly_name: 'Planet Earth',
         material: {
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },
@@ -73,4 +72,11 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
             },
         },
     };
+};
+
+ZOR.PlayerSkins.earth.meta = {
+    friendly_name: 'Planet Earth',
+    name: 'earth',
+    preview: 'skins/earth/thumb.jpg',
+    sort: 2,
 };
