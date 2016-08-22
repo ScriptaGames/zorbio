@@ -3,7 +3,10 @@
     <li>
         <h1>{{ skins[i].meta.friendly_name }}</h1>
         <img src="{{ skins[i].meta.preview }}" alt="thumbnail image for {{ skins[i].meta.friendly_name }}">
-        <button on-click="{{ ACTIONS.SET_SKIN }}" value="{{ skins[i].meta.name }}">Enable!</button>
+        <button 
+            {{ selected_skin == skins[i].meta.name ? 'disabled' : '' }}
+            on-click="{{ ACTIONS.SET_SKIN }}"
+            value="{{ skins[i].meta.name }}">Enable!</button>
     </li>
 {{ /each }}
 </ul>

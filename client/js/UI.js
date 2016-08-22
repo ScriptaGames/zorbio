@@ -79,6 +79,7 @@ ZOR.UI = function ZORUI() {
         MISSING_FEATURES : [],
         AUTHORS          : ['Michael Clayton', 'Jared Sprague'],
         skins            : _(ZOR.PlayerSkins).map(_.partial(_.pick, _, 'meta')).sortBy('meta.sort').value(), // get the meta for every skin and sort them
+        selected_skin    : localStorage.skin || 'default',
         leaders          : [],
         is_mobile        : isMobile.any,
         screen_x         : 0,
@@ -297,6 +298,7 @@ ZOR.UI = function ZORUI() {
         });
 
         on( ACTIONS.SET_SKIN, function ZORSetSkin(e) {
+            engine.set('selected_skin', e.node.value);
             localStorage.setItem('skin', e.node.value);
         });
 

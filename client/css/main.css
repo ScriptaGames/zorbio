@@ -207,6 +207,9 @@ input:focus {
 #ui-overlay #skin-list li button {
   font-size: inherit;
 }
+#ui-overlay #skin-list li button[disabled] {
+  background: #7e7f81;
+}
 #ui-overlay #skin-list li img {
   border-radius: 50%;
 }
