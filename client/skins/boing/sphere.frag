@@ -21,7 +21,7 @@ void main() {
     float strength = vIntensity * fogp; // min( fogp, vIntensity );
 
     vec4 fragColor = texture2D(sphereTexture, vUv);
-    /* fragColor.a = strength; */
+    fragColor.a = strength;
     gl_FragColor = fragColor;
 }
 
