@@ -73,6 +73,7 @@ ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
         this.trailEmitter.position._spreadClamp.setX( scale );
         this.trailEmitter.position._spread.setX( scale );
         this.trailEmitter.position._radius = scale;
+        this.trailEmitter.size._value =  [scale/2, scale*2/6, scale*1/6, 0];
     }
     // if there is no 'distribution', assume the trail wants to be a single
     // file trail of particles that begin their life the same size as the
