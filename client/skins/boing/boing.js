@@ -43,7 +43,7 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
             },
             emitter: {
                 maxAge: {
-                    value: 4,
+                    value: 8,
                     // spread: 2,
                 },
                 position: {
