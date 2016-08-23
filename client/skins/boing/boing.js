@@ -48,10 +48,17 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
                 },
                 position: {
                     value: new THREE.Vector3(0, 0, 0),
+                    spread: new THREE.Vector3(0, 0, 0),
+                    spreadClamp: new THREE.Vector3(0, 0, 0),
+                    radius: 5,
+                    distribution: SPE.distributions.SPHERE,
                 },
-
                 opacity: {
                     value: [opacity, 0],
+                },
+                angle: {
+                    value: [0],
+                    spread: [8, 0],
                 },
 
                 drag: {
