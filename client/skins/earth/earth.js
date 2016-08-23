@@ -4,7 +4,7 @@ ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 //
 
 ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
-    var opacity = playerView.is_current_player ? 0.1 : 0.4;
+    var opacity = playerView.is_current_player ? 0.2 : 0.6;
     var color = new THREE.Color('#ffffff');
 
     return {
@@ -55,7 +55,7 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
 
                 angle: {
                     value: [0],
-                    spread: [6, 0],
+                    spread: [8, 0],
                 },
 
                 drag: {
