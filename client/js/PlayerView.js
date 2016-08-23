@@ -59,29 +59,16 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
 ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
     var oldPos = this.trailEmitter.position._value.clone();
     var newPos = this.mainSphere.position.clone();
-    var scale;
 
     this.trailEmitter.position._value.x = newPos.x;
     this.trailEmitter.position._value.y = newPos.y;
     this.trailEmitter.position._value.z = newPos.z;
 
-    // if the emitter has a distribution, it means it wants many small
-    // particles randomly distributed within the trail cone, so let the
-    // particles stay small
-    if (this.trailEmitter.position._distribution === SPE.distributions.SPHERE) {
-        scale = this.mainSphere.scale.x;
-        this.trailEmitter.position._spreadClamp.setX( scale );
-        this.trailEmitter.position._spread.setX( scale );
-        this.trailEmitter.position._radius = scale;
-        this.trailEmitter.size._value =  [scale/2, scale*2/6, scale*1/6, 0];
-    }
-    // if there is no 'distribution', assume the trail wants to be a single
-    // file trail of particles that begin their life the same size as the
-    // sphere
-    else {
-        scale = Math.PI* 3/4 * this.mainSphere.scale.x;
-        this.trailEmitter.size._value =  [scale, scale*2/3, scale*1/3, 0];
-    }
+    var scale = this.mainSphere.scale.x * (this.skin.trail.customScale || 1);
+    this.trailEmitter.position._spreadClamp.setX( scale );
+    this.trailEmitter.position._spread.setX( scale );
+    this.trailEmitter.position._radius = scale;
+    this.trailEmitter.size._value =  [scale, scale*2/3, scale*1/3, 0];
 
     var boosting = this.model.abilities.speed_boost.isActive();
 

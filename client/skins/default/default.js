@@ -30,20 +30,25 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
             // blending       : THREE.AdditiveBlending,
         },
         trail: {
+            customScale: 0.5,
             group: {
-                scale: Math.min(window.innerWidth, window.innerHeight),
+                scale: Math.max(window.innerWidth, window.innerHeight),
                 texture: {
                     value:  new THREE.TextureLoader().load( "skins/default/trail.png" ),
                 },
-                maxParticleCount: 800,
+                maxParticleCount: 400,
             },
             emitter: {
                 maxAge: {
-                    value: 8,
+                    value: 20,
                     // spread: 2,
                 },
                 position: {
                     value: new THREE.Vector3(0, 0, 0),
+                    spread: new THREE.Vector3(0, 0, 0),
+                    spreadClamp: new THREE.Vector3(0, 0, 0),
+                    radius: 5,
+                    distribution: SPE.distributions.SPHERE,
                 },
 
                 opacity: {
@@ -59,10 +64,10 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
                 },
 
                 size: {
-                    value: [100, 0],
+                    value: [90, 60, 30, 0],
                 },
 
-                particleCount: 800,
+                particleCount: 400,
                 activeMultiplier: 0.1,
             },
         },
