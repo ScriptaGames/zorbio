@@ -31,6 +31,7 @@
     "es6-promise": "^3.2.1",
     "Wad": "wad#^2.4.1",
     "three.js": "threejs#*",
-    "ShaderParticleEngine": "https://github.com/squarefeet/ShaderParticleEngine.git#^1.0.5"
+    "ShaderParticleEngine": "https://github.com/squarefeet/ShaderParticleEngine.git#^1.0.5",
+    "raven-js": "^3.5.1"
   }
 }
