@@ -41,7 +41,7 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current, skinName) {
 
     scene.add( this.mainSphere );
 
-    this.initTrail();
+    // this.initTrail();
 };
 
 ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
@@ -100,7 +100,8 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
-    this.updateTrail();
+    // this.updateTrail();
+    this.updateCaptureAnimation();
 };
 
 ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {
@@ -121,8 +122,8 @@ ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(p
 
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
     this.drainView.dispose();
-    this.trail.emitters.forEach(function (emitter) { emitter.remove(); });
-    this.trail.dispose();
+    // this.trail.emitters.forEach(function (emitter) { emitter.remove(); });
+    // this.trail.dispose();
     scene.remove(this.mainSphere);
 
     // find the player mesh used for raycasting and remove it
@@ -150,4 +151,23 @@ ZOR.PlayerView.prototype.setCameraControls = function ZORPlayerViewSetCameraCont
 ZOR.PlayerView.prototype.adjustCamera = function ZORPlayerViewAdjustCamera(scale) {
     this.camera_controls.minDistance = scale / Math.tan( Math.PI * camera.fov / 360 ) + 100;
     this.camera_controls.maxDistance = this.camera_controls.minDistance;
+};
+
+ZOR.PlayerView.prototype.animateCapture = function ZORPlayerViewAnimateCapture(targetPlayer) {
+    console.log('animate capture');
+    this.captureGroup = new SPE.Group(this.skin.trail.group);
+    this.captureEmitter = new SPE.Emitter(this.skin.trail.emitter);
+    this.captureEmitter.activeMultiplier = 1;
+    this.captureEmitter.position._value = targetPlayer.model.sphere.position.clone();
+    this.captureEmitter.updateFlags.position = true;
+    this.captureClock = new THREE.Clock();
+    this.captureGroup.mesh.renderOrder = 1;
+    this.captureGroup.mesh.frustumCulled = false;
+    this.captureGroup.addEmitter( this.captureEmitter );
+    this.scene.add( this.captureGroup.mesh );
+};
+ZOR.PlayerView.prototype.updateCaptureAnimation = function ZORPlayerUpdateCaptureAnimation() {
+    if (this.captureGroup) {
+        this.captureGroup.tick(this.captureClock.getDelta());
+    }
 };

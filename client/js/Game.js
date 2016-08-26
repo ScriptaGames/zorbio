@@ -516,7 +516,7 @@ function handleServerTick(serverTickData) {
 }
 
 function handleSuccessfulPlayerCapture(targetPlayer) {
-    player.grow( config.PLAYER_CAPTURE_VALUE( targetPlayer.radius() ) );
+    player.animateCapture(targetPlayer);
 }
 
 function handlePlayerKick(msg) {

@@ -254,3 +254,7 @@ ZOR.PlayerController.prototype.setTargetLock = function ZORPlayerControllerSetTa
 ZOR.PlayerController.prototype.getTargetLock = function ZORPlayerControllerGetTargetLock() {
     return this.targeting_player_id;
 };
+
+ZOR.PlayerController.prototype.animateCapture = function ZORPlayerControllerAnimateCapture(targetPlayer) {
+    this.view.animateCapture(targetPlayer);
+};
