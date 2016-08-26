@@ -3,9 +3,9 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 var config = require('../common/config.js');
 var Zorbio = require('../common/zorbio.js');
 
-var ServerPlayer = function ZORServerPlayer(player_id, name, color, type, position, ws) {
+var ServerPlayer = function ZORServerPlayer(player_id, name, color, skin, type, position, ws) {
     // call super class constructor
-    Zorbio.Player.call(this, player_id, name, color, type, position);
+    Zorbio.Player.call(this, player_id, name, color, type, position, null, null, skin);
 
     var self = this;
 

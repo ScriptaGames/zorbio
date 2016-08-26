@@ -6,14 +6,16 @@ var ZOR = ZOR || {};
  * @constructor
  * @param model
  * @param scene
+ * @param current Is this the current player
  */
 
-ZOR.PlayerView = function ZORPlayerView(model, scene, current, skinName) {
+ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.model = model;
     this.scene = scene;
     this.is_current_player = current || false;
     this.playerColor = config.COLORS[model.sphere.color];
-    this.skinName = skinName;
+    this.skinName = config.SKINS[config.SKINS.indexOf(model.sphere.skin)];
+
     this.skin = ZOR.PlayerSkins[this.skinName || 'default'](this);
 
     this.geometry = new THREE.SphereGeometry(

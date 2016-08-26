@@ -93,7 +93,8 @@ function startGame(type) {
     document.querySelector("meta[name=theme-color]").content = colorHex;
     console.log('Player color', colorHex);
 
-    sendEnterGame(playerType, playerName, colorCode, key);
+    var skin = localStorage.getItem('skin') || 'default';
+    sendEnterGame(playerType, playerName, colorCode, skin, key);
 }
 
 function respawnPlayer() {

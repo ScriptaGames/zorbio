@@ -15,6 +15,7 @@ ZOR.Schemas = function ZORSchemas() {
         speed_boosting: "boolean",
         type: "string",
         color: "uint8",
+        skin: "string",
         playerId: "varuint"
     };
 

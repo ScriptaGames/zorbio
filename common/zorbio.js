@@ -201,7 +201,7 @@ ZOR.Actor.prototype.pushRecentPosition = function ZORActorPushRecentPosition(pos
 /**
  * ZOR.PlayerSphere is a constructor for creating a player's sphere.
  */
-ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, velocity) {
+ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, velocity, skin) {
     // call super class constructor
     ZOR.Actor.call(this);
 
@@ -222,9 +222,12 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
     if (velocity) {
         this.velocity = velocity;
         UTIL.toVector3(this, 'velocity');
+    } else {
+        this.velocity = {x: 0, y: 0, z: 0};
     }
 
     this.color = color;
+    this.skin = skin;
 
     // Draining target actor ID
     this.drain_target_id = 0;
@@ -258,6 +261,7 @@ ZOR.PlayerSphere.prototype.reduce = function ZORPlayerSphereReduce(tiny) {
     if (!is_tiny) {
         reducedActor.type = this.type;
         reducedActor.color = this.color;
+        reducedActor.skin = this.skin;
         reducedActor.playerId = this.playerId;
     }
 
@@ -306,13 +310,13 @@ ZOR.PlayerTypes = Object.freeze({
  * @param velocity
  * @constructor
  */
-ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity) {
+ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity, skin) {
     var self = this;
     this.id = id;
     this.name = name;
     this.type = type;
     this.createdTime = this.lastHeartbeat = Date.now();
-    this.sphere = new ZOR.PlayerSphere(this.id, color, position, scale, velocity);
+    this.sphere = new ZOR.PlayerSphere(this.id, color, position, scale, velocity, skin);
 
     // Abilities
     this.abilities = {};

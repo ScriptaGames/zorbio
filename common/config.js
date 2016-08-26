@@ -200,6 +200,12 @@ config.COLORS = [
     '#FFF42E',
 ];
 
+config.SKINS = [
+    'default',
+    'earth',
+    'boing',
+];
+
 
 ////////////////////////////////////////////////////////////////////////
 //                           SOUND SETTINGS                           //
