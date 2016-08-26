@@ -8,12 +8,11 @@ var ZOR = ZOR || {};
  * @constructor
  *
  */
-ZOR.PlayerController = function ZORPlayerController(model, scene, current, skinName) {
+ZOR.PlayerController = function ZORPlayerController(model, scene, current) {
     this.model = new ZOR.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
-        model.sphere.scale, model.sphere.velocity);
+        model.sphere.scale, model.sphere.velocity, model.sphere.skin);
     this.isDead = false;
     this.is_current_player = current || false;
-    this.skinName = skinName;
 
     this.move_forward_v = new THREE.Vector3();
     this.move_backward_v = new THREE.Vector3();

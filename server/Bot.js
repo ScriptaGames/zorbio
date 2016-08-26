@@ -11,6 +11,7 @@ var Bot = function (scale, model) {
 
     // initialized player properties
     self.colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
+    self.skin_name = config.SKINS[UTIL.getRandomIntInclusive(0, config.SKINS.length - 1)];
     self.id = Zorbio.IdGenerator.get_next_id();
     self.name = "AI_" + self.id;
     self.scale = scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);
@@ -18,7 +19,7 @@ var Bot = function (scale, model) {
     var position = UTIL.safePlayerPosition();
 
     // Create the player model
-    self.player = new Zorbio.Player(self.id, self.name, self.colorCode, Zorbio.PlayerTypes.BOT, position, self.scale);
+    self.player = new Zorbio.Player(self.id, self.name, self.colorCode, Zorbio.PlayerTypes.BOT, position, self.scale, null, self.skin_name);
 
     self.movementPaterns = {
 

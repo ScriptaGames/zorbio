@@ -23,9 +23,9 @@ function connectToServer() {
     };
 }
 
-function sendEnterGame(playerType, playerName, color, key) {
+function sendEnterGame(playerType, playerName, color, skinName, key) {
     if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({op: 'enter_game', type: playerType, name: playerName, color: color, key: key}));
+        ws.send(JSON.stringify({op: 'enter_game', type: playerType, name: playerName, color: color, skin: skinName, key: key}));
     }
 }
 
@@ -132,7 +132,7 @@ function setupSocket(ws) {
     function handle_msg_welcome(msg) {
         var playerModel = msg.currentPlayer;
 
-        player = new ZOR.PlayerController(playerModel, null, true, localStorage.getItem('skin'));
+        player = new ZOR.PlayerController(playerModel, null, true);
         ZOR.UI.engine.set('player', player.model);
 
         ws.send(JSON.stringify({op: 'player_ready'}));

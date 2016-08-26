@@ -59,6 +59,7 @@ var AppServer = function (wss, app) {
         var type;
         var name;
         var color;
+        var skin;
         var key;
 
         ws.on('message', function wsMessage(msg) {
@@ -105,6 +106,7 @@ var AppServer = function (wss, app) {
             type  = msg.type;
             name  = msg.name;
             color = msg.color;
+            skin  = msg.skin;
             key   = msg.key;
 
             // Sanitize player name
@@ -115,7 +117,7 @@ var AppServer = function (wss, app) {
                 name = name.substr(0, config.MAX_PLAYER_NAME_LENGTH);
             }
 
-            console.log("Player enter request: ", player_id, type, name, color, key);
+            console.log("Player enter request: ", player_id, type, name, color, skin, key);
 
             // spawn the player
             handle_msg_respawn();
@@ -132,7 +134,7 @@ var AppServer = function (wss, app) {
             }
 
             // Create the Player
-            currentPlayer = new ServerPlayer(player_id, name, color, type, position, ws);
+            currentPlayer = new ServerPlayer(player_id, name, color, skin, type, position, ws);
             currentPlayer.headers = headers;
 
             ws.send(JSON.stringify({op: 'welcome', currentPlayer: currentPlayer}));
