@@ -627,15 +627,17 @@ var AppServer = function (wss, app) {
             // Add players to leaders array in sorted order by score
             var score = player.getScore();
             var leader = {
-                name: player.name,
-                score: score,
-                color: player.sphere.color
+                player_id: id,
+                score: score
             };
             UTIL.sortedObjectPush(self.model.leaders, leader, 'score');
         });
 
         // Prepare leaders array
         self.model.leaders.reverse();  // reverse for descending order
+        if (self.model.leaders.length > config.LEADERS_LENGTH) {
+            self.model.leaders.length = config.LEADERS_LENGTH;
+        }
     };
 
     /**
@@ -643,11 +645,15 @@ var AppServer = function (wss, app) {
      */
     self.sendServerTickData = function appSendServerTickData() {
         var serverTickData = {
-            "fr": self.model.food_respawn_ready_queue,
-            "sm": self.serverRestartMsg,
-            "leaders": self.model.leaders
+            fr: self.model.food_respawn_ready_queue,
+            sm: self.serverRestartMsg,
+            leaders: self.model.leaders
         };
-        self.wss.broadcast(JSON.stringify({op: 'server_tick_slow', serverTickData: serverTickData}));
+
+        var tickSlowMessage = {0: Schemas.ops.TICK_SLOW, tick_data: serverTickData};
+        var buffer = Schemas.tickSlowSchema.encode(tickSlowMessage);
+        self.wss.broadcast(buffer);
+
         self.model.food_respawn_ready_queue = [];
     };
 
