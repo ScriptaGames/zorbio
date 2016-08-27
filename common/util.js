@@ -550,5 +550,9 @@ UTIL.readFirstByte = function UTILReadFirstByte(arrayBuffer) {
     return view[0];
 };
 
+UTIL.logTime = function UTILLogTime(msg, start, end) {
+    console.log(msg, (end - start).toFixed(3));
+};
+
 // if we're in nodejs, export the root UTIL object
 if (NODEJS) module.exports = UTIL;
