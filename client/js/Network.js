@@ -92,6 +92,9 @@ function setupSocket(ws) {
                 case ZOR.Schemas.ops.ACTOR_UPDATES:
                     handle_msg_actor_updates( ZOR.Schemas.actorUpdatesSchema.decode(msg.data) );
                     break;
+                case ZOR.Schemas.ops.TICK_SLOW:
+                    handle_msg_server_tick_slow( ZOR.Schemas.tickSlowSchema.decode(msg.data) );
+                    break;
                 default:
                     console.error("Error: Unknown binary op code: ", op);
             }
@@ -260,7 +263,8 @@ function setupSocket(ws) {
 
     function handle_msg_server_tick_slow(msg) {
         if (!gameStart) return;
-        handleServerTick(msg.serverTickData);
+
+        handleServerTick(msg.tick_data);
     }
 
     function handle_msg_kick(msg) {

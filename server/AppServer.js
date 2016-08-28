@@ -14,7 +14,7 @@ var WebSocket     = require('ws');
 var BotController = require('./BotController.js');
 var ServerPlayer  = require('./ServerPlayer.js');
 var Schemas       = require('../common/schemas.js');
-var sp            = require('schemapack');
+var perfNow       = require("performance-now");
 
 /**
  * This module contains all of the app logic and state,
@@ -47,9 +47,9 @@ var AppServer = function (wss, app) {
     self.api = new ZorApi(self.app, self.model, self.sockets);
 
     self.wss.on('connection', function wssConnection(ws) {
-        var headers = ws.upgradeReq.headers;
+        var headers = JSON.stringify(ws.upgradeReq.headers);
 
-        console.log('Client connection headers:', JSON.stringify(headers));
+        console.log('Client connection headers:', headers);
 
         self.sendInitGame(ws);
 
@@ -266,15 +266,20 @@ var AppServer = function (wss, app) {
         }
 
         function handle_close() {
-            console.log('Player connection closed for player_id:', player_id);
+            if (player_id) {
+                console.log('Player connection closed for player_id:', player_id);
 
-            // notify other clients to remove this player
-            self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: player_id}));
+                // notify other clients to remove this player
+                self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: player_id}));
 
-            self.removePlayerFromModel(player_id);
-            self.removePlayerSocket(player_id);
+                self.removePlayerFromModel(player_id);
+                self.removePlayerSocket(player_id);
 
-            self.replenishBot();
+                self.replenishBot();
+            }
+            else {
+                console.log("Menu socket connection closed: ", headers);
+            }
         }
 
         function handle_msg_speed_boost_start() {
@@ -622,15 +627,17 @@ var AppServer = function (wss, app) {
             // Add players to leaders array in sorted order by score
             var score = player.getScore();
             var leader = {
-                name: player.name,
-                score: score,
-                color: player.sphere.color
+                player_id: id,
+                score: score
             };
             UTIL.sortedObjectPush(self.model.leaders, leader, 'score');
         });
 
         // Prepare leaders array
         self.model.leaders.reverse();  // reverse for descending order
+        if (self.model.leaders.length > config.LEADERS_LENGTH) {
+            self.model.leaders.length = config.LEADERS_LENGTH;
+        }
     };
 
     /**
@@ -638,24 +645,32 @@ var AppServer = function (wss, app) {
      */
     self.sendServerTickData = function appSendServerTickData() {
         var serverTickData = {
-            "fr": self.model.food_respawn_ready_queue,
-            "sm": self.serverRestartMsg,
-            "leaders": self.model.leaders
+            fr: self.model.food_respawn_ready_queue,
+            sm: self.serverRestartMsg,
+            leaders: self.model.leaders
         };
-        self.wss.broadcast(JSON.stringify({op: 'server_tick_slow', serverTickData: serverTickData}));
+
+        var tickSlowMessage = {0: Schemas.ops.TICK_SLOW, tick_data: serverTickData};
+        var buffer = Schemas.tickSlowSchema.encode(tickSlowMessage);
+        self.wss.broadcast(buffer);
+
         self.model.food_respawn_ready_queue = [];
     };
+
+    var logTickTime = UTIL.nth(UTIL.logTime, 40);
 
     /**
      * Main server loop for general updates to the client that should be as fast as
      * possible, eg movement and player capture.
      */
     self.serverTickFast = function appServerTickFast() {
+        var start = perfNow();
         self.playerUpdates();
         self.botController.update();
         self.updatePlayerCaptures();
         self.updateActorDrains( Drain.findAll( self.model.players ) );
         self.sendActorUpdates();
+        logTickTime('Tick fast Time:', start, perfNow());
     };
 
     /**

@@ -1,9 +1,10 @@
 #!/bin/env node
 
+//TODO: Figure out how to turn this on without losing stack trace logging
 // initialize sentry error capturing
-var Raven = require('raven');
-var raven = new Raven.Client('https://1c4c71e0f3874af3a6ac2893d6531db5:8b37517edbeb46eab534ba15f35c0713@app.getsentry.com/94116');
-raven.patchGlobal();
+// var Raven = require('raven');
+// var raven = new Raven.Client('https://1c4c71e0f3874af3a6ac2893d6531db5:8b37517edbeb46eab534ba15f35c0713@app.getsentry.com/94116');
+// raven.patchGlobal();
 
 //  Sample Node.js WebSocket Client-Server application
 var http            = require('http');

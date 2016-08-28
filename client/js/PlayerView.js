@@ -70,7 +70,7 @@ ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
     this.trailEmitter.position._spreadClamp.setX( scale );
     this.trailEmitter.position._spread.setX( scale );
     this.trailEmitter.position._radius = scale;
-    this.trailEmitter.size._value =  [scale, scale*2/3, scale*1/3, 0];
+    this.trailEmitter.size._value =  [scale/3, scale*2/6, scale*1/9, 0];
 
     var boosting = this.model.abilities.speed_boost.isActive();
 
@@ -102,8 +102,16 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
-    // this.updateTrail();
     this.updateCaptureAnimation();
+    this.updateSpin();
+    this.updateTrail();
+};
+
+ZOR.PlayerView.prototype.updateSpin = function ZORPlayerViewUpdateSpin() {
+    var spin_y = _.get(this, 'skin.geometry.spin.y');
+    if (spin_y) {
+        this.geometry.rotateY(spin_y * ZOR.LagScale.get());
+    }
 };
 
 ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {

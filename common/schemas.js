@@ -47,6 +47,17 @@ ZOR.Schemas = function ZORSchemas() {
         food_respawning_indexes: ["varuint"]
     };
 
+    var leader = {
+        player_id: "varuint",
+        score: "varuint",
+    };
+
+    var tick_slow_data =  {
+        fr: ["varuint"],
+        sm: "string",
+        leaders: [leader],
+    };
+
     var recent_position = {
         position: vector3,
         radius: "float32",
@@ -83,10 +94,16 @@ ZOR.Schemas = function ZORSchemas() {
         food_capture_queue: [food_capture_entry],
     };
 
+    var op_tick_slow = {
+        0: "uint8",
+        tick_data: tick_slow_data,
+    };
+
     var ops = {
         INIT_GAME: 1,
         ACTOR_UPDATES: 2,
         PLAYER_UPDATE: 3,
+        TICK_SLOW: 4,
     };
 
     return {
@@ -94,6 +111,7 @@ ZOR.Schemas = function ZORSchemas() {
         initGameSchema: schemapack.build(op_init_game),
         actorUpdatesSchema: schemapack.build(op_actor_updates),
         playerUdateSchema: schemapack.build(op_player_update),
+        tickSlowSchema: schemapack.build(op_tick_slow),
     }
 }();
 

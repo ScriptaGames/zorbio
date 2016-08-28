@@ -501,7 +501,14 @@ function removePlayerFromGame(playerId) {
 function handleServerTick(serverTickData) {
     if (!gameStart) return;
 
-    // ZOR.UI.engine.set( 'leaders', serverTickData.leaders );
+    serverTickData.leaders.forEach(function eachLeader(leader) {
+        // get leader name and color
+        var clientPlayer = ZOR.Game.players[leader.player_id];
+        leader.name = clientPlayer.model.name;
+        leader.color = clientPlayer.model.sphere.color;
+    });
+
+    ZOR.UI.engine.set( 'leaders', serverTickData.leaders );
     ZOR.UI.data.leaders = serverTickData.leaders;
 
     // handle food respawns
