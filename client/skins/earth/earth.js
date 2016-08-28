@@ -8,7 +8,11 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
     var color = new THREE.Color('#ffffff');
 
     return {
-        geometry: {},
+        geometry: {
+            spin: {
+                y: 0.001,
+            },
+        },
         material: {
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },
