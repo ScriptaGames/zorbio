@@ -56,23 +56,12 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
                 opacity: {
                     value: [opacity, 0],
                 },
-                angle: {
-                    value: [0],
-                    spread: [8, 0],
-                },
-
-                drag: {
-                    value: 8.0,
-                },
-
                 color: {
                     value: new THREE.Color('#B9D5EB'),
                 },
-
                 size: {
                     value: [100, 0],
                 },
-
                 particleCount: 800,
                 activeMultiplier: 0.1,
             },

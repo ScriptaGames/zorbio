@@ -70,7 +70,7 @@ ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
     this.trailEmitter.position._spreadClamp.setX( scale );
     this.trailEmitter.position._spread.setX( scale );
     this.trailEmitter.position._radius = scale;
-    this.trailEmitter.size._value =  [scale, scale*2/3, scale*1/3, 0];
+    this.trailEmitter.size._value =  [scale/3, scale*2/6, scale*1/9, 0];
 
     var boosting = this.model.abilities.speed_boost.isActive();
 
