@@ -6,7 +6,6 @@ var request       = require('request');
 var gameloop      = require('node-gameloop');
 var Zorbio        = require('../common/zorbio.js');
 var Validators    = require('./Validators.js');
-var ZorApi        = require('./ZorApi.js');
 var UTIL          = require('../common/util.js');
 var Drain         = require('../common/Drain.js');
 var WebSocket     = require('ws');
@@ -64,10 +63,6 @@ var AppServer = function (id, app) {
     self.socket_uuid_map = {};
     self.clients = {};
     self.serverRestartMsg = '';
-
-    // Api
-    //TODO: make api unique path per game instance
-    // self.api = new ZorApi(self.app, self.model, self.clients);
 
     self.addClient = function appAddClient(ws) {
         var headers = JSON.stringify(ws.upgradeReq.headers);
@@ -729,6 +724,10 @@ var AppServer = function (id, app) {
 
     self.getClientCount = function appGetClientCount() {
         return Object.getOwnPropertyNames(self.clients).length;
+    };
+
+    self.getPlayerCount = function appGetPlayerCount() {
+        return self.model.players.length;
     };
 
     self.isFull = function appIsFull() {

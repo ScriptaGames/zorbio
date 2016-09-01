@@ -9,10 +9,9 @@ var basicAuth  = require('basic-auth');
  * @param sockets
  * @constructor
  */
-var ZorApi = function zorApi (app, model, sockets) {
+var ZorApi = function zorApi (app, instances) {
     self.app = app;
-    self.model = model;
-    self.sockets = sockets;
+    self.instances = instances;
 
     ///////////////////////////////////////////////////////////////////
     // API
@@ -41,50 +40,98 @@ var ZorApi = function zorApi (app, model, sockets) {
     /**
      * API to return the current count of players on this server
      */
-    self.app.get('/api/players/count', function (req, res) {
-        var count = self.model.players.length;
+    self.app.get('/api/games', function (req, res) {
+        var response = [];
+        self.instances.forEach(function eachInstance(instance) {
+            var instance_info = {
+                id: instance.id,
+                clients: instance.getClientCount(),
+                players: instance.getPlayerCount()
+            };
+            response.push(instance_info);
+        });
+
         res.setHeader('content-type', 'application/json');
-        res.send( "{\"count\": " + count + "}" );
+        res.send( JSON.stringify(response) );
+    });
+
+    /**
+     * API to return the current count of players on this server
+     */
+    self.app.get('/api/games/:game_id/players/count', function (req, res) {
+        var instance = self.instances[req.params.game_id - 1];
+        if (instance) {
+            var count = instance.model.players.length;
+            res.setHeader('content-type', 'application/json');
+            res.send( "{\"count\": " + count + "}" );
+        }
+        else {
+            res.sendStatus(406);
+        }
     });
 
     /**
      * API to return all the player objects on this server
      */
-    self.app.get('/api/players', function (req, res) {
-        res.setHeader('content-type', 'application/json');
-        res.send( JSON.stringify(self.model.players) );
+    self.app.get('/api/games/:game_id/players', function (req, res) {
+        var instance = self.instances[req.params.game_id - 1];
+        if (instance) {
+            res.setHeader('content-type', 'application/json');
+            res.send( JSON.stringify(instance.model.players) );
+        }
+        else {
+            res.sendStatus(406);
+        }
     });
 
     /**
      * API to return all the actor objects on this server
      */
-    self.app.get('/api/actors', function (req, res) {
-        res.setHeader('content-type', 'application/json');
-        res.send( JSON.stringify(self.model.actors) );
+    self.app.get('/api/games/:game_id/actors', function (req, res) {
+        var instance = self.instances[req.params.game_id - 1];
+        if (instance) {
+            res.setHeader('content-type', 'application/json');
+            res.send( JSON.stringify(instance.model.actors) );
+        }
+        else {
+            res.sendStatus(406);
+        }
     });
 
     /**
      * API to return all the actor objects on this server
      */
-    self.app.get('/api/food', function (req, res) {
-        var foodModel = {};
-        foodModel.foodDensity = self.model.foodDensity;
-        foodModel.foodCount = self.model.foodCount;
-        foodModel.food_respawning_indexes = self.model.food_respawning_indexes;
-        foodModel.food_respawn_ready_queue = self.model.food_respawn_ready_queue;
+    self.app.get('/api/games/:game_id/food', function (req, res) {
+        var instance = self.instances[req.params.game_id - 1];
+        if (instance) {
+            var foodModel = {};
+            foodModel.foodDensity = instance.model.foodDensity;
+            foodModel.foodCount = instance.model.foodCount;
+            foodModel.food_respawning_indexes = instance.model.food_respawning_indexes;
+            foodModel.food_respawn_ready_queue = instance.model.food_respawn_ready_queue;
 
-        res.setHeader('content-type', 'application/json');
-        res.send( JSON.stringify(foodModel) );
+            res.setHeader('content-type', 'application/json');
+            res.send( JSON.stringify(foodModel) );
+        }
+        else {
+            res.sendStatus(406);
+        }
     });
 
     /**
      * API to number of socket connections
      */
-    self.app.get('/api/sockets/count', function (req, res) {
-        var socketIds = Object.getOwnPropertyNames(self.sockets);
-        var count = typeof socketIds.length !== 'undefined' ? socketIds.length : 0;
-        res.setHeader('content-type', 'application/json');
-        res.send( "{\"count\": " + count + "}" );
+    self.app.get('/api/games/:game_id/clients/count', function (req, res) {
+        var instance = self.instances[req.params.game_id - 1];
+        if (instance) {
+            var clientIds = Object.getOwnPropertyNames(instance.clients);
+            var count = typeof clientIds.length !== 'undefined' ? clientIds.length : 0;
+            res.setHeader('content-type', 'application/json');
+            res.send( "{\"count\": " + count + "}" );
+        }
+        else {
+            res.sendStatus(406);
+        }
     });
 };
 

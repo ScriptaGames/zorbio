@@ -1,6 +1,7 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
 var config    = require('../common/config.js');
+var ZorApi    = require('./ZorApi.js');
 var AppServer = require('./AppServer.js');
 
 var AppProxy = function (wss, app) {
@@ -14,6 +15,8 @@ var AppProxy = function (wss, app) {
     for (var i = 0; i < config.NUM_GAME_INSTANCES; i++) {
         self.gameInstances.push(new AppServer(i + 1, self.app));
     }
+
+    self.api = new ZorApi(self.app, self.gameInstances);
 
     self.wss.on('connection', function wssConnection(ws) {
         for (var i = 0; i < self.gameInstances.length; i++) {
