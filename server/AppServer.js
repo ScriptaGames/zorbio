@@ -15,6 +15,7 @@ var BotController = require('./BotController.js');
 var ServerPlayer  = require('./ServerPlayer.js');
 var Schemas       = require('../common/schemas.js');
 var perfNow       = require("performance-now");
+var uuid          = require("node-uuid");
 
 /**
  * This module contains all of the app logic and state,
@@ -27,12 +28,20 @@ var AppServer = function (wss, app) {
     var self = this;
 
     self.wss = wss;
-    self.wss.broadcast = function broadcast(data) {
-        self.wss.clients.forEach(function each(client) {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(data);
+
+    /**
+     * Send message to all connected clients
+     * @param data
+     */
+    self.broadcast = function appBroadcast(data) {
+        var propNames = Object.getOwnPropertyNames(self.clients);
+        for (var i = 0, l = propNames.length; i < l; i++) {
+            var socket_uuid = propNames[i];
+            var ws = self.clients[socket_uuid];
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(data);
             }
-        });
+        }
     };
 
     self.app = app; // express
@@ -40,16 +49,20 @@ var AppServer = function (wss, app) {
     // Game state
     self.model = new Zorbio.Model();
     self.model.init(config.WORLD_SIZE, config.FOOD_DENSITY);
-    self.sockets = {};
+    self.socket_uuid_map = {};
+    self.clients = {};
     self.serverRestartMsg = '';
 
     // Api
-    self.api = new ZorApi(self.app, self.model, self.sockets);
+    self.api = new ZorApi(self.app, self.model, self.clients);
 
     self.wss.on('connection', function wssConnection(ws) {
         var headers = JSON.stringify(ws.upgradeReq.headers);
+        var socket_uuid = uuid.v4();
+        self.clients[socket_uuid] = ws;
 
         console.log('Client connection headers:', headers);
+        console.log('Socket UUID: ', socket_uuid);
 
         self.sendInitGame(ws);
 
@@ -136,6 +149,7 @@ var AppServer = function (wss, app) {
             // Create the Player
             currentPlayer = new ServerPlayer(player_id, name, color, skin, type, position, ws);
             currentPlayer.headers = headers;
+            currentPlayer.socket_uuid = socket_uuid;
 
             ws.send(JSON.stringify({op: 'welcome', currentPlayer: currentPlayer}));
 
@@ -156,7 +170,10 @@ var AppServer = function (wss, app) {
                 ws.close();
             }
             else {
-                self.sockets[currentPlayer.id] = ws;
+                // Save mapping of player_id to socket uuid
+                self.socket_uuid_map[currentPlayer.id] = socket_uuid;
+
+                // Set initial times
                 currentPlayer.lastHeartbeat = Date.now();
                 currentPlayer.spawnTime = Date.now();
 
@@ -171,7 +188,7 @@ var AppServer = function (wss, app) {
                 // give the client player time to load the game before notifying other players to add them
                 setTimeout(function playerJoinDelay() {
                     // Notify other clients that player has joined
-                    self.wss.broadcast(JSON.stringify({op: 'player_join', player: currentPlayer}));
+                    self.broadcast(JSON.stringify({op: 'player_join', player: currentPlayer}));
 
                     // Add the player to the model
                     self.model.players.push(currentPlayer);
@@ -186,7 +203,7 @@ var AppServer = function (wss, app) {
                         var bot = self.botController.removeBot();
 
                         // notify other players that this bot was removed
-                        self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: bot.player.id}));
+                        self.broadcast(JSON.stringify({op: 'remove_player', playerId: bot.player.id}));
                     }
                 }, 200);
             }
@@ -266,14 +283,20 @@ var AppServer = function (wss, app) {
         }
 
         function handle_close() {
+            self.removePlayerSocket(socket_uuid);
+
             if (player_id) {
                 console.log('Player connection closed for player_id:', player_id);
 
                 // notify other clients to remove this player
-                self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: player_id}));
+                self.broadcast(JSON.stringify({op: 'remove_player', playerId: player_id}));
 
                 self.removePlayerFromModel(player_id);
-                self.removePlayerSocket(player_id);
+
+                // remove the map of the player id to the socket uuid
+                if (self.socket_uuid_map[player_id]) {
+                    delete self.socket_uuid_map[player_id];
+                }
 
                 self.replenishBot();
             }
@@ -370,7 +393,7 @@ var AppServer = function (wss, app) {
         var tinyActors = self.model.reduceActors(true);
         var actorUpdatesMessage = {0: Schemas.ops.ACTOR_UPDATES, actors: tinyActors};
         var buffer = Schemas.actorUpdatesSchema.encode(actorUpdatesMessage);
-        self.wss.broadcast(buffer);
+        self.broadcast(buffer);
     };
 
     self.foodCapture = function appFoodCapture (player, fi, actor, origRadius) {
@@ -390,7 +413,7 @@ var AppServer = function (wss, app) {
 
             // notify clients of food capture so they can update their food view
             // TODO: queue this into the actorUpdate message from the server
-            self.wss.broadcast(JSON.stringify({op: 'food_captured', fi: fi}));
+            self.broadcast(JSON.stringify({op: 'food_captured', fi: fi}));
         } else {
             switch (err) {
                 case Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR:
@@ -511,7 +534,7 @@ var AppServer = function (wss, app) {
 
         if (attackingPlayer.type != Zorbio.PlayerTypes.BOT) {
             // Inform the attacking player that they captured target player
-            self.sockets[attackingPlayerId].send(JSON.stringify({op: 'captured_player', targetPlayerId: targetPlayerId}));
+            self.clients[self.socket_uuid_map[attackingPlayerId]].send(JSON.stringify({op: 'captured_player', targetPlayerId: targetPlayerId}));
         }
 
         self.removePlayerFromModel(targetPlayerId);
@@ -521,7 +544,7 @@ var AppServer = function (wss, app) {
             targetPlayer.deathTime = Date.now();
             targetPlayer.score = config.PLAYER_GET_SCORE( targetPlayer.sphere.scale );
             var msgObj = {op: 'you_died', attackingPlayerId: attackingPlayerId, targetPlayer: targetPlayer};
-            self.sockets[targetPlayerId].send(JSON.stringify(msgObj));
+            self.clients[self.socket_uuid_map[targetPlayerId]].send(JSON.stringify(msgObj));
         }
         else {
             self.replenishBot();
@@ -529,23 +552,23 @@ var AppServer = function (wss, app) {
 
         // Inform other clients that target player died
         msgObj = {op: "player_died", attackingPlayerId: attackingPlayerId, targetPlayerId: targetPlayerId};
-        self.wss.broadcast(JSON.stringify(msgObj));
+        self.broadcast(JSON.stringify(msgObj));
     };
 
     self.isPlayerInGame = function appIsPlayerInGame(player_id) {
-        return (self.model.getPlayerById(player_id) && self.sockets[player_id]);
+        return (self.model.getPlayerById(player_id) && self.clients[self.socket_uuid_map[player_id]]);
     };
 
     self.kickPlayer = function appKickPlayer(playerId, reason) {
         console.log('kicking player: ', playerId, reason);
 
         // notify player
-        if (self.sockets[playerId]) {
-            self.sockets[playerId].send(JSON.stringify({op: 'kick', reason: reason}));
+        if (self.clients[self.socket_uuid_map[playerId]]) {
+            self.clients[self.socket_uuid_map[playerId]].send(JSON.stringify({op: 'kick', reason: reason}));
         }
 
         // notify other clients
-        self.wss.broadcast(JSON.stringify({op: 'remove_player', playerId: playerId}));
+        self.broadcast(JSON.stringify({op: 'remove_player', playerId: playerId}));
 
         self.removePlayerFromModel(playerId);
     };
@@ -555,12 +578,13 @@ var AppServer = function (wss, app) {
         console.log('Removed player:', playerId);
     };
 
-    self.removePlayerSocket = function appRemovePlayerSocket(playerId) {
-        if (self.sockets[playerId]) {
-            if (self.sockets[playerId].readyState === WebSocket.OPEN) {
-                self.sockets[playerId].close();
+    self.removePlayerSocket = function appRemovePlayerSocket(uuid) {
+        if (self.clients[uuid]) {
+            if (self.clients[uuid].readyState === WebSocket.OPEN) {
+                self.clients[uuid].close();
             }
-            delete self.sockets[playerId];
+            delete self.clients[uuid];
+            console.log("Deleted client socket: ", uuid);
         }
     };
 
@@ -652,12 +676,17 @@ var AppServer = function (wss, app) {
 
         var tickSlowMessage = {0: Schemas.ops.TICK_SLOW, tick_data: serverTickData};
         var buffer = Schemas.tickSlowSchema.encode(tickSlowMessage);
-        self.wss.broadcast(buffer);
+        self.broadcast(buffer);
 
         self.model.food_respawn_ready_queue = [];
     };
 
-    var logTickTime = UTIL.nth(UTIL.logTime, 40);
+    function logServerStatus(start) {
+        var tick_time = perfNow() - start;
+        console.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + Object.getOwnPropertyNames(self.clients).length + ', Players: ' + self.model.players.length + ', socket_uuid_map: ' + Object.getOwnPropertyNames(self.socket_uuid_map).length);
+    }
+
+    var logServerStatusNth = UTIL.nth(logServerStatus, 40);
 
     /**
      * Main server loop for general updates to the client that should be as fast as
@@ -670,7 +699,7 @@ var AppServer = function (wss, app) {
         self.updatePlayerCaptures();
         self.updateActorDrains( Drain.findAll( self.model.players ) );
         self.sendActorUpdates();
-        logTickTime('Tick fast Time:', start, perfNow());
+        logServerStatusNth(start);
     };
 
     /**
@@ -716,7 +745,7 @@ var AppServer = function (wss, app) {
             var bot = self.botController.spawnBot();
 
             // Notify other clients that bot has joined
-            self.wss.broadcast(JSON.stringify({op: 'player_join', player: bot.player}));
+            self.broadcast(JSON.stringify({op: 'player_join', player: bot.player}));
         }
     };
 
