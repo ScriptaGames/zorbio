@@ -12,7 +12,7 @@ var AppProxy = function (wss, app) {
     self.gameInstances = [];
 
     for (var i = 0; i < config.NUM_GAME_INSTANCES; i++) {
-        self.gameInstances.push(new AppServer(self.app));
+        self.gameInstances.push(new AppServer(i + 1, self.app));
     }
 
     self.wss.on('connection', function wssConnection(ws) {

@@ -21,13 +21,13 @@ var uuid          = require("node-uuid");
  * @param app
  * @constructor
  */
-var AppServer = function (app) {
+var AppServer = function (id, app) {
     //  Scope
     var self = this;
 
-    self.uuid = uuid.v4();
+    self.id = id;
 
-    console.log("Creating game instance with uuid: ", self.uuid);
+    console.log("Creating game instance with ID: ", self.id);
 
     /**
      * Send message to all connected clients
@@ -684,7 +684,7 @@ var AppServer = function (app) {
 
     function logServerStatus(start) {
         var tick_time = perfNow() - start;
-        console.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.getClientCount() + ', Players: ' + self.model.players.length + ', socket_uuid_map: ' + Object.getOwnPropertyNames(self.socket_uuid_map).length + ', uuid: ' + self.uuid);
+        console.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.getClientCount() + ', Players: ' + self.model.players.length + ', socket_uuid_map: ' + Object.getOwnPropertyNames(self.socket_uuid_map).length + ', Instance ID: ' + self.id);
     }
 
     var logServerStatusNth = UTIL.nth(logServerStatus, 40);
