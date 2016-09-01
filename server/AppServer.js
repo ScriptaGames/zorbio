@@ -696,7 +696,7 @@ var AppServer = function (id, app) {
 
     function logServerStatus(start) {
         var tick_time = perfNow() - start;
-        self.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.getClientCount() + ', Players: ' + self.model.players.length + ', socket_uuid_map: ' + Object.getOwnPropertyNames(self.socket_uuid_map).length + ', Instance ID: ' + self.id);
+        self.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.getClientCount() + ', Players: ' + self.model.players.length + ', socket_uuid_map: ' + Object.getOwnPropertyNames(self.socket_uuid_map).length);
     }
 
     var logServerStatusNth = UTIL.nth(logServerStatus, 40);
