@@ -10,7 +10,7 @@
 var http            = require('http');
 var express         = require('express');
 var WebSocketServer = require('ws').Server;
-var AppServer       = require('./AppServer.js');
+var AppProxy        = require('./AppProxy.js');
 var config          = require('../common/config.js');
 var packageJson     = require('../package.json');
 
@@ -97,7 +97,7 @@ var MainServer = function () {
         self.app.use(express.static(__dirname + '/../' + (process.argv[2] || 'client')));
 
         // The app server contains all the logic and state of the WebSocket app
-        self.appServer = new AppServer(self.wss, self.app);
+        self.appProxy = new AppProxy(self.wss, self.app);
     };
 
 

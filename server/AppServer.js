@@ -4,7 +4,6 @@ var config        = require('../common/config.js');
 var pjson         = require('../package.json');
 var request       = require('request');
 var gameloop      = require('node-gameloop');
-var _             = require('lodash');
 var Zorbio        = require('../common/zorbio.js');
 var Validators    = require('./Validators.js');
 var ZorApi        = require('./ZorApi.js');
@@ -19,15 +18,16 @@ var uuid          = require("node-uuid");
 
 /**
  * This module contains all of the app logic and state,
- * @param wss
  * @param app
  * @constructor
  */
-var AppServer = function (wss, app) {
+var AppServer = function (app) {
     //  Scope
     var self = this;
 
-    self.wss = wss;
+    self.uuid = uuid.v4();
+
+    console.log("Creating game instance with uuid: ", self.uuid);
 
     /**
      * Send message to all connected clients
@@ -54,9 +54,10 @@ var AppServer = function (wss, app) {
     self.serverRestartMsg = '';
 
     // Api
-    self.api = new ZorApi(self.app, self.model, self.clients);
+    //TODO: make api unique path per game instance
+    // self.api = new ZorApi(self.app, self.model, self.clients);
 
-    self.wss.on('connection', function wssConnection(ws) {
+    self.addClient = function appAddClient(ws) {
         var headers = JSON.stringify(ws.upgradeReq.headers);
         var socket_uuid = uuid.v4();
         self.clients[socket_uuid] = ws;
@@ -323,7 +324,7 @@ var AppServer = function (wss, app) {
 
             currentPlayer.abilities.speed_boost.deactivate();
         }
-    });
+    };
 
     self.updateActorDrains = function appUpdateActorDrains(drainers) {
         // update drains
@@ -683,7 +684,7 @@ var AppServer = function (wss, app) {
 
     function logServerStatus(start) {
         var tick_time = perfNow() - start;
-        console.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + Object.getOwnPropertyNames(self.clients).length + ', Players: ' + self.model.players.length + ', socket_uuid_map: ' + Object.getOwnPropertyNames(self.socket_uuid_map).length);
+        console.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.getClientCount() + ', Players: ' + self.model.players.length + ', socket_uuid_map: ' + Object.getOwnPropertyNames(self.socket_uuid_map).length + ', uuid: ' + self.uuid);
     }
 
     var logServerStatusNth = UTIL.nth(logServerStatus, 40);
@@ -712,6 +713,14 @@ var AppServer = function (wss, app) {
         self.playersChecks();
         self.sendServerTickData();
         Zorbio.expireLocks();
+    };
+
+    self.getClientCount = function appGetClientCount() {
+        return Object.getOwnPropertyNames(self.clients).length;
+    };
+
+    self.isFull = function appIsFull() {
+        return self.getClientCount() >= config.MAX_PLAYERS_PER_INSTANCE;
     };
 
     self.versionCheck = function appVersionCheck() {
