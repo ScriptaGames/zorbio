@@ -2,7 +2,7 @@ var config = require('../common/config.js');
 var _ = require('lodash');
 var alphakeys = require('./alphakeys');
 var UTIL = require('../common/util');
-var profanity = require('profanity-censor');
+var profanity = require('./profanity');
 
 var Validators = {};
 
