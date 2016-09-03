@@ -525,6 +525,7 @@ function handleServerTick(serverTickData) {
 
 function handleSuccessfulPlayerCapture(targetPlayer) {
     player.grow( config.PLAYER_CAPTURE_VALUE( targetPlayer.radius() ) );
+    ZOR.Sounds.sfx.player_capture.play();
 }
 
 function handlePlayerKick(msg) {

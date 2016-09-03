@@ -44,6 +44,10 @@ ZOR.Sounds = (function ZORSounds() {
                     release: 0.1
                 },
             }),
+            player_capture: new Wad({
+                volume: config.VOLUME_SFX_INITIAL,
+                source: 'sfx/player_capture.wav',
+            }),
         },
     };
 
