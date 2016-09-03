@@ -12,11 +12,6 @@ var actorUpdateGap = 0;
 var interval_id_heartbeat;
 
 function connectToServer() {
-    var linode_location = linodeNearLocation();
-
-    console.log("Nearest linode location: ", linode_location);
-
-    //TODO: use the linode location to determine which balancer location to use below
     var uri = new URI(config.BALANCER + ':' + config.PORT);
 
     ws = new WebSocket( uri.toString() );

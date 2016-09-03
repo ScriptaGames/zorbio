@@ -48,13 +48,47 @@ config.ORIGIN                   = 'http://zor.bio'; // the origin that's allowed
 config.RECENT_CLIENT_DATA_LENGTH = 100;   // how many recent data points to keep from the client like pings
 config.CLOSE_NO_RESTART         = 4000;    // 4000-4999 application reserved close code in WebSocket spec
 
-config.BALANCERS = Object.freeze({
-    LOCAL: 'ws://localhost',
-    NA:    'ws://na.zor.bio',
-    EU:    'ws://eu.zor.bio',
-    APAC:  'ws://apac.zor.bio'
-});
-config.BALANCER = 'NA';
+if (!NODEJS) {
+    // Gets the name of the nearest load balancer
+    config.GET_NEAR_BALANCER = function getNearBalancer() {
+        // allow local storage to override, in case me make this a user setting in the future
+        var balancer = localStorage.getItem('balancer');
+
+        if (balancer) {
+            return balancer;  // local storage is set return it
+        }
+
+        var linode_location = linodeNearLocation();
+
+        console.log("Nearest linode location: ", linode_location);
+
+        switch (linode_location) {
+            //TODO: Send to seprate balancer when they are available
+            case 'london':
+            case 'frankfurt':
+            case 'singapore':
+            case 'fremont':
+            case 'newark':
+            case 'dallas':
+                balancer = 'dallas'; // For now dallas is the only balancer for dev
+                break;
+            default:
+                balancer = 'dallas';
+        }
+
+        return balancer;
+    };
+    config.BALANCER = config.GET_NEAR_BALANCER();
+    config.BALANCERS = Object.freeze({
+        LOCAL:     'ws://localhost',
+        fremont:   'ws://fremont.zor.bio',
+        dallas:    'ws://na.zor.bio',
+        newark:    'ws://newark.zor.bio',
+        london:    'ws://london.zor.bio',
+        frankfurt: 'ws://frankfurt.zor.bio',
+        singapore: 'ws://singapore.zor.bio',
+    });
+}
 
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
@@ -241,12 +275,14 @@ config.BROWSER_FORCE_DISABLED_FEATURES = []; // these items will be forcibly set
 
 // Merge environment-specific settings into config
 _.assign(config, ZOR.Env);
-config.BALANCER = config.BALANCERS[ config.BALANCER ];
 
 if (NODEJS) {
     module.exports = config;
 }
 else {
+    // balancer is only used on the client
+    config.BALANCER = config.BALANCERS[ config.BALANCER ];
+
     // Disable console.log on the client, in production.  This should really go
     // into a client init function, but it's here for now.
     if (!config.DEBUG) {
