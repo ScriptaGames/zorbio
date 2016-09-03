@@ -32,6 +32,18 @@ ZOR.Sounds = (function ZORSounds() {
                     q: 1.0
                 },
             }),
+            state_change: new Wad({
+                source: 'sine',
+                volume: config.VOLUME_SFX_INITIAL,
+                pitch: config.SFX_FOOD_CAPTURE_TONES[2],
+                env: {
+                    attack: 0.1,
+                    decay: 0.001,
+                    sustain: 0.1,
+                    hold: 0.1,
+                    release: 0.1
+                },
+            }),
         },
     };
 

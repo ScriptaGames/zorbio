@@ -138,6 +138,9 @@ ZOR.UI = function ZORUI() {
 
     function state( newstate ) {
         if (!newstate) return uidata.state;
+        if (newstate !== state()) {
+            ZOR.Sounds.sfx.state_change.play();
+        }
         if (newstate !== uidata.prev_state) {
             uidata.prev_state = uidata.state;
         }
