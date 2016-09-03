@@ -32,6 +32,7 @@
     "Wad": "wad#^2.4.1",
     "three.js": "threejs#*",
     "ShaderParticleEngine": "https://github.com/squarefeet/ShaderParticleEngine.git#^1.0.5",
-    "raven-js": "^3.5.1"
+    "raven-js": "^3.5.1",
+    "linode-near-location": "^0.1.0"
   }
 }
