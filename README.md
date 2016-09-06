@@ -55,5 +55,5 @@ Here's the command:
 
  1. Update package.json version number and/or build number.
  2. Build and upload the rpm with: `npm run build-upload`
- 3. Update puppet repo to match desired version and build number https://github.com/Jared-Sprague/scripta_env/edit/master/manifests/zorbio.pp
+ 3. Update puppet repo to match desired version and build number hhttps://github.com/ScriptaGames/zorbio-version/edit/master/version.json
 
