@@ -90,5 +90,5 @@ rpmbuild -bb SPECS/zorbio.spec
 if [ "$1" = "--upload" ]; then
     echo "Uploading rpm..."
     scp -P 4460 ~/rpmbuild/RPMS/x86_64/zorbio-$VERSION-$BUILD.fc24.x86_64.rpm mcp.zor.bio:/var/www/html/repo/
-    echo "Done. Repo will be updated within 5 minutes."
+    echo "Done. Repo will be updated within 5 minutes. Edit: https://github.com/ScriptaGames/zorbio-version/blob/master/version.json"
 fi
