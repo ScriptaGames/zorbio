@@ -726,8 +726,19 @@ var AppServer = function (id, app) {
         return Object.getOwnPropertyNames(self.clients).length;
     };
 
-    self.getPlayerCount = function appGetPlayerCount() {
-        return self.model.players.length;
+    /**
+     * Returns the count of players based on type
+     * @param type
+     * @returns {number}
+     */
+    self.getPlayerCount = function appGetPlayerCount(type) {
+        var player_count = 0;
+        self.model.players.forEach(function eachPlayer(player) {
+            if (player.type === type) {
+                player_count++;
+            }
+        });
+        return player_count;
     };
 
     self.isFull = function appIsFull() {
