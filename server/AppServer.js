@@ -1,8 +1,6 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
 var config        = require('../common/config.js');
-var pjson         = require('../package.json');
-var request       = require('request');
 var gameloop      = require('node-gameloop');
 var Zorbio        = require('../common/zorbio.js');
 var Validators    = require('./Validators.js');
@@ -745,26 +743,7 @@ var AppServer = function (id, app) {
         return self.getClientCount() >= config.MAX_PLAYERS_PER_INSTANCE;
     };
 
-    self.versionCheck = function appVersionCheck() {
-        var options = {
-            url: 'https://zoruser:wk-4<a<9ASW!J{ae@mcp.zor.bio/zapi/version',
-            agentOptions: {
-                rejectUnauthorized: false
-            }
-        };
 
-        request(options, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                var res = JSON.parse(body);
-
-                if (pjson.version !== res.version || pjson.build !== res.build) {
-                    self.log("version out of date, old version:", pjson.version, pjson.build);
-                    self.log("version out of date, new version:", res.version, res.build);
-                    self.serverRestartMsg = "Server restart imminent!";
-                }
-            }
-        })
-    };
 
 
     /**
@@ -783,11 +762,6 @@ var AppServer = function (id, app) {
     // Start game loops
     gameloop.setGameLoop(self.serverTickFast, config.TICK_FAST_INTERVAL);
     gameloop.setGameLoop(self.serverTickSlow, config.TICK_SLOW_INTERVAL);
-
-    if (config.CHECK_VERSION) {
-        gameloop.setGameLoop(self.versionCheck, config.CHECK_VERSION_INTERVAL);
-    }
-
 
     self.botController = new BotController(self.model);
 
