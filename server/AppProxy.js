@@ -3,7 +3,6 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 var config    = require('../common/config.js');
 var ZorApi    = require('./ZorApi.js');
 var AppServer = require('./AppServer.js');
-var fs        = require('fs');
 
 var AppProxy = function (wss, app) {
     //  Scope
@@ -28,28 +27,15 @@ var AppProxy = function (wss, app) {
 
             if (i === self.gameInstances.length - 1) {
                 // all game instances full
-                // Procedure for full server:
-                //   1. Log and Send warning notification
-                //   2. Take linode out of rotation from the NodeBalancer
-                //   3. Assign any other connections to lowest population server
+                // Assign any other connections to lowest population server
 
                 console.warn('All game instances full!');
-
-                //TODO: send warning notification
-                //TODO: take linode out of rotation from the NodeBalancer
 
                 var low_pop_index = self.findLowestPopInstanceIndex();
                 self.gameInstances[low_pop_index].addClient(ws);
             }
         }
-
-        fs.writeFile('percent_full.txt', "50", function (err) {
-            if (err) throw err;
-            console.log('File written');
-        });
     });
-
-    //TODO: game loop to check if node is out of rotation, and put it back into rotation when connections levels drop
 
     /**
      * Returns the index of the lowest population game instance
