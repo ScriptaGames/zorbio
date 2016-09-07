@@ -90,7 +90,5 @@ rpmbuild -bb SPECS/zorbio.spec
 if [ "$1" = "--upload" ]; then
     echo "Uploading rpm..."
     scp -P 4460 ~/rpmbuild/RPMS/x86_64/zorbio-$VERSION-$BUILD.fc24.x86_64.rpm mcp.zor.bio:/var/www/html/repo/
-    # Update the rpm repo database
-    echo "Updating the rpm reopdata"
-    ssh -p 4460 mcp.zor.bio 'sudo createrepo --update /var/www/html/repo'
+    echo "Done. Repo will be updated within 5 minutes."
 fi
