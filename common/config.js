@@ -31,8 +31,8 @@ config.MAX_BOT_RADIUS   = 100;
 ////////////////////////////////////////////////////////////////////////
 
 config.PORT                     = 80;
-config.NUM_GAME_INSTANCES       = 1;      // How many game instances to spawn on the server
-config.MAX_PLAYERS_PER_INSTANCE = 4;     // Max players per instance
+config.NUM_GAME_INSTANCES       = 4;      // How many game instances to spawn on the server
+config.MAX_PLAYERS_PER_INSTANCE = 25;     // Max players per instance
 config.HEARTBEAT_ENABLE         = true;
 config.HEARTBEAT_TIMEOUT        = 30000;  // how long before a client is considered disconnected
 config.HEARTBEAT_CHECK_INTERVAL = 1000;   // server heartbeat test interval
