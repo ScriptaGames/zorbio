@@ -1,6 +1,7 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
-var basicAuth  = require('basic-auth');
+var basicAuth = require('basic-auth');
+var config    = require('../common/config.js');
 
 /**
  * Api for accessing and updating game state through http.
@@ -41,15 +42,29 @@ var ZorApi = function zorApi (app, instances) {
      * API to return the current count of players on this server
      */
     self.app.get('/api/games', function (req, res) {
-        var response = [];
+        var total_players = 0;
+        var total_clients = 0;
+        var games = [];
+
         self.instances.forEach(function eachInstance(instance) {
+            var client_count = instance.getClientCount();
+            var player_count = instance.getPlayerCount();
             var instance_info = {
                 id: instance.id,
-                clients: instance.getClientCount(),
-                players: instance.getPlayerCount()
+                clients: client_count,
+                players: player_count,
             };
-            response.push(instance_info);
+            total_clients += client_count;
+            total_players += player_count;
+            games.push(instance_info);
         });
+
+        var response = {
+            total_players: total_players,
+            total_clients: total_clients,
+            percent_full:  (total_players / (config.MAX_PLAYERS_PER_INSTANCE * config.NUM_GAME_INSTANCES)) * 100,
+            games: games,
+        };
 
         res.setHeader('content-type', 'application/json');
         res.send( JSON.stringify(response) );
