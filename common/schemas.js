@@ -86,6 +86,7 @@ ZOR.Schemas = function ZORSchemas() {
         pp_gap: "varuint",
         au_gap: "varuint",
         buffered_mount: "varuint",
+        velocity: vector3,
         latest_position: recent_position,
         prev_position_1: recent_position,
         prev_position_2: recent_position,

@@ -201,7 +201,7 @@ function setupSocket(ws) {
                 clientActor.position.copy(serverActor.position);
                 clientActor.scale = serverActor.scale;
                 clientActor.lastPosition = clientActor.position.clone();
-                clientActor.velocity = clientActor.position.clone().sub(last_pos_update);
+                // clientActor.velocity = clientActor.position.clone().sub(last_pos_update);
 
                 if (clientActor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
                     clientActor.drain_target_id = serverActor.drain_target_id;
@@ -342,6 +342,7 @@ function sendPlayerUpdate() {
         pp_gap: gap,
         au_gap: actorUpdateGap,
         buffered_mount: bufferedAmount,
+        velocity: sphereModel.velocity,
         latest_position: sphereModel.recentPositions[sphereModel.recentPositions.length - 1],
         prev_position_1: sphereModel.recentPositions[sphereModel.recentPositions.length - 2],
         prev_position_2: sphereModel.recentPositions[sphereModel.recentPositions.length - 3],

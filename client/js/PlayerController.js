@@ -134,9 +134,9 @@ ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene
     this.model.abilities.speed_boost.update();
 
     if (config.AUTO_RUN_ENABLED) {
-        this.moveForward(camera); // always move forward
+        this.moveForward(camera, lag_scale); // always move forward
     }
-    this.applyVelocity(lag_scale, camera_controls);
+    this.applyVelocity();
     this.view.adjustCamera(this.radius());
 
     // Update drain
@@ -149,29 +149,25 @@ ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene
     }
 };
 
-ZOR.PlayerController.prototype.applyVelocity = function ZORPlayerControllerApplyVelocity(lag_scale, camera_controls) {
-    this.model.sphere.velocity.sub( camera_controls.velocityRequest );
-    this.model.sphere.velocity.normalize();
-    this.model.sphere.velocity.multiplyScalar( player.getSpeed() * lag_scale );
+ZOR.PlayerController.prototype.applyVelocity = function ZORPlayerControllerApplyVelocity() {
 
-    this.view.mainSphere.position.sub(
-        UTIL.adjustVelocityWallHit(
-            this.view.mainSphere.position,
-            0,
-            this.model.sphere.velocity,
-            zorbioModel.worldSize
-        )
+    var velocity = UTIL.adjustVelocityWallHit(
+        this.view.mainSphere.position,
+        0,
+        this.model.sphere.velocity,
+        zorbioModel.worldSize
     );
+
+    // Set the velocity to be sent to the server on next player update
+    this.model.sphere.velocity.copy( velocity );
+
+    // this.view.mainSphere.position.sub( velocity );
 
     // sync position with model
     this.model.sphere.position.copy(this.view.mainSphere.position);
 
     // Save recent positions for speed validation on the server
     this.addRecentPosition();
-
-    // reset the velocity requested by camera controls.  this should be done
-    // inside the camera controls but I couldn't find a good place to do it.
-    camera_controls.velocityRequest.set( 0, 0, 0 );
 };
 
 ZOR.PlayerController.prototype.addRecentPosition = function ZORPlayerControllerAddRecentPosition() {
@@ -189,14 +185,14 @@ ZOR.PlayerController.prototype.resetVelocity = function ZORPlayerControllerReset
     this.model.sphere.velocity.set( 0, 0, 0 );
 };
 
-ZOR.PlayerController.prototype.moveForward = function ZORPlayerControllerMoveForward(camera) {
+ZOR.PlayerController.prototype.moveForward = function ZORPlayerControllerMoveForward(camera, lag_scale) {
     var v = this.move_forward_v;
     var mainSphere = this.view.mainSphere;
     v.copy( mainSphere.position );
     v.sub( camera.position );
     v.multiplyScalar( -1 );
     v.normalize();
-    v.multiplyScalar( this.getSpeed() );
+    v.multiplyScalar( this.getSpeed() * lag_scale );
     this.model.sphere.velocity.add( v );
 };
 

@@ -222,8 +222,6 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
     if (velocity) {
         this.velocity = velocity;
         UTIL.toVector3(this, 'velocity');
-    } else {
-        this.velocity = {x: 0, y: 0, z: 0};
     }
 
     this.color = color;
@@ -387,6 +385,9 @@ ZOR.Player.prototype.getCaptureRange = function ZORPlayerCaptureRange() {
 };
 
 ZOR.Player.prototype.update = function ZORPlayerUpdate() {
+    // apply the velocity to the players position
+    this.sphere.position.sub( this.sphere.velocity );
+
     // call update on all definied abilities
     var ability_names = Object.getOwnPropertyNames(this.abilities);
     for (var i = 0, l = ability_names.length; i < l; i++) {

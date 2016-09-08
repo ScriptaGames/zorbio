@@ -262,7 +262,10 @@ var AppServer = function (id, app) {
 
             if (!err) {
                 // update the players position in the model
-                actor.position.set( latestPosition.position.x, latestPosition.position.y, latestPosition.position.z);
+                // actor.position.set( latestPosition.position.x, latestPosition.position.y, latestPosition.position.z);
+
+                // Set the velocity from the client
+                actor.velocity.copy( msg.velocity );
 
                 // Recent positions
                 actor.pushRecentPosition(msg.prev_position_3);
