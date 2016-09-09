@@ -129,12 +129,7 @@ var AppServer = function (id, app) {
             key   = msg.key;
 
             // Sanitize player name
-            if (UTIL.isBlank(name)) {
-                name = "Player_" + player_id;
-            }
-            else if (name.length > config.MAX_PLAYER_NAME_LENGTH) {
-                name = name.substr(0, config.MAX_PLAYER_NAME_LENGTH);
-            }
+            name = UTIL.filterName(name);
 
             self.log("Player enter request: ", player_id, type, name, color, skin, key);
 

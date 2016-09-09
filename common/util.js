@@ -2,6 +2,7 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 
 if (NODEJS) var config = require('./config.js');
 if (NODEJS) var _ = require('lodash');
+if (NODEJS) var xssFilters = require('xss-filters');
 
 var UTIL = {};
 
@@ -552,6 +553,19 @@ UTIL.readFirstByte = function UTILReadFirstByte(arrayBuffer) {
 
 UTIL.logTime = function UTILLogTime(msg, start, end) {
     console.log(msg, (end - start).toFixed(3));
+};
+
+UTIL.filterName = function UTILFilterName(name) {
+    var filtered_name = xssFilters.inHTMLData(name);
+
+    if (UTIL.isBlank(filtered_name)) {
+        filtered_name = "Guest";
+    }
+    else if (name.length > config.MAX_PLAYER_NAME_LENGTH) {
+        filtered_name = filtered_name.substr(0, config.MAX_PLAYER_NAME_LENGTH);
+    }
+
+    return filtered_name;
 };
 
 // if we're in nodejs, export the root UTIL object

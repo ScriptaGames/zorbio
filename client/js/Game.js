@@ -84,7 +84,7 @@ function startGame(type) {
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
 
     // save player name and alpha key in storage
-    var playerName = localStorage.player_name = ZOR.UI.engine.get('player_name');
+    var playerName = localStorage.player_name = UTIL.filterName(ZOR.UI.engine.get('player_name'));
     var key        = localStorage.alpha_key   = ZOR.UI.engine.get('alpha_key');
 
     // Enter the game

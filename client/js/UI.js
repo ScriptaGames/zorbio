@@ -312,21 +312,14 @@ ZOR.UI = function ZORUI() {
         });
 
         on( ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
-            // check if the nick is valid
-            if (UTIL.validNick(engine.get('player_name'))) {
-                // send event to google analytics
-                ga('send', {
-                    hitType: 'event',
-                    eventCategory: 'StateChange',
-                    eventAction: 'play',
-                });
-                startGame(ZOR.PlayerTypes.PLAYER);
-            } else {
-                engine.set( 'login_error_msg', 'Nick name must be alphanumeric characters only!' );
-
-            }
+            // send event to google analytics
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'StateChange',
+                eventAction: 'play',
+            });
+            startGame(ZOR.PlayerTypes.PLAYER);
         });
-
 
         config.X_AXIS_MULT = JSON.parse(localStorage.flip_x || "false") ? -1 : 1;
         config.Y_AXIS_MULT = JSON.parse(localStorage.flip_y || "false") ? -1 : 1;
@@ -368,12 +361,8 @@ ZOR.UI = function ZORUI() {
             var KEY_ENTER = 13;
 
             if (key === KEY_ENTER) {
-                if (UTIL.validNick(engine.get('player_name'))) {
-                    if (window.startGame) {
-                        startGame(ZOR.PlayerTypes.PLAYER);
-                    }
-                } else {
-                    engine.set( 'login_error_msg', 'Nick name must be alphanumeric characters only!' );
+                if (window.startGame) {
+                    startGame(ZOR.PlayerTypes.PLAYER);
                 }
             }
         });
