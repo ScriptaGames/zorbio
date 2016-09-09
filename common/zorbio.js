@@ -386,7 +386,7 @@ ZOR.Player.prototype.getCaptureRange = function ZORPlayerCaptureRange() {
 
 ZOR.Player.prototype.update = function ZORPlayerUpdate() {
     // apply the velocity to the players position
-    this.sphere.position.sub( this.sphere.velocity );
+    this.sphere.position.add( this.sphere.velocity.multiplyScalar( this.getSpeed() ) );
 
     // call update on all definied abilities
     var ability_names = Object.getOwnPropertyNames(this.abilities);

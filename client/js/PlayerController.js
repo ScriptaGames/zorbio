@@ -136,6 +136,7 @@ ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene
     if (config.AUTO_RUN_ENABLED) {
         this.moveForward(camera, lag_scale); // always move forward
     }
+
     this.applyVelocity();
     this.view.adjustCamera(this.radius());
 
@@ -150,21 +151,20 @@ ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene
 };
 
 ZOR.PlayerController.prototype.applyVelocity = function ZORPlayerControllerApplyVelocity() {
-
-    var velocity = UTIL.adjustVelocityWallHit(
-        this.view.mainSphere.position,
-        0,
-        this.model.sphere.velocity,
-        zorbioModel.worldSize
-    );
+    // var velocity = UTIL.adjustVelocityWallHit(
+    //     this.view.mainSphere.position,
+    //     0,
+    //     this.model.sphere.velocity,
+    //     zorbioModel.worldSize
+    // );
 
     // Set the velocity to be sent to the server on next player update
-    this.model.sphere.velocity.copy( velocity );
+    // this.model.sphere.velocity.copy( velocity );
 
     // this.view.mainSphere.position.sub( velocity );
 
     // sync position with model
-    this.model.sphere.position.copy(this.view.mainSphere.position);
+    // this.model.sphere.position.copy(this.view.mainSphere.position);
 
     // Save recent positions for speed validation on the server
     this.addRecentPosition();
@@ -186,14 +186,15 @@ ZOR.PlayerController.prototype.resetVelocity = function ZORPlayerControllerReset
 };
 
 ZOR.PlayerController.prototype.moveForward = function ZORPlayerControllerMoveForward(camera, lag_scale) {
-    var v = this.move_forward_v;
-    var mainSphere = this.view.mainSphere;
-    v.copy( mainSphere.position );
-    v.sub( camera.position );
-    v.multiplyScalar( -1 );
-    v.normalize();
-    v.multiplyScalar( this.getSpeed() * lag_scale );
-    this.model.sphere.velocity.add( v );
+    // var v = this.move_forward_v;
+    // var mainSphere = this.view.mainSphere;
+    // v.copy( mainSphere.position );
+    // v.sub( camera.position );
+    // v.multiplyScalar( -1 );
+    // v.normalize();
+    // v.multiplyScalar( this.getSpeed() * lag_scale * (config.TICK_FAST_INTERVAL / (1000/60)) );
+
+    this.model.sphere.velocity.copy( camera.getWorldDirection().normalize() );
 };
 
 ZOR.PlayerController.prototype.moveBackward = function ZORPlayerControllerMoveBackward(camera) {

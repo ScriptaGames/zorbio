@@ -17,6 +17,7 @@ ZOR.Env = {
     REQUIRE_ALPHA_KEY : false,
     AUTO_RUN_ENABLED  : true,
     NUM_GAME_INSTANCES : 2,
+    ENABLE_VALIDATION : true,
 };
 
 if (NODEJS) module.exports = ZOR.Env;
