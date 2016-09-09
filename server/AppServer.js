@@ -243,21 +243,21 @@ var AppServer = function (id, app) {
             currentPlayer.buffered_amount_metric.add(msg.buffered_mount);
 
             // Build the validation object
-            var latestPosition = msg.latest_position;
-            var sphere = {
-                id: msg.sphere_id,
-                oldestPosition: msg.oldest_position,
-                latestPosition: latestPosition,
-                scale: latestPosition.radius,
-            };
+            // var latestPosition = msg.latest_position;
+            // var sphere = {
+            //     id: msg.sphere_id,
+            //     oldestPosition: msg.oldest_position,
+            //     latestPosition: latestPosition,
+            //     scale: latestPosition.radius,
+            // };
 
             // Fixes bug #145 the client may send one last position update before they are removed from the game
             var err;
-            var actor = self.model.getActorById(sphere.id);
+            var actor = self.model.getActorById(msg.sphere_id);
             if (!actor) {
                 err = Validators.ErrorCodes.PLAYER_NOT_IN_MODEL;
             } else {
-                err = Validators.movementSampled(sphere, actor, self.model);
+                // err = Validators.movementSampled(sphere, actor, self.model);
             }
 
             if (!err) {
@@ -268,10 +268,10 @@ var AppServer = function (id, app) {
                 actor.velocity.copy( msg.velocity );
 
                 // Recent positions
-                actor.pushRecentPosition(msg.prev_position_3);
-                actor.pushRecentPosition(msg.prev_position_2);
-                actor.pushRecentPosition(msg.prev_position_1);
-                actor.pushRecentPosition(latestPosition);
+                // actor.pushRecentPosition(msg.prev_position_3);
+                // actor.pushRecentPosition(msg.prev_position_2);
+                // actor.pushRecentPosition(msg.prev_position_1);
+                // actor.pushRecentPosition(latestPosition);
 
                 // Iterate over pending food captures
                 msg.food_capture_queue.forEach(function captureEachFood(food_entry) {
@@ -285,7 +285,7 @@ var AppServer = function (id, app) {
                         self.model.getPlayerById(currentPlayer.id).infractions_speed++;
                         break;
                     case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
-                        self.log("Recieved 'player_update' from player not in model!", sphere.id);
+                        self.log("Recieved 'player_update' from player not in model!", msg.sphere_id);
                         break;
                 }
             }

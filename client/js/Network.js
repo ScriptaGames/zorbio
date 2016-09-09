@@ -343,11 +343,11 @@ function sendPlayerUpdate() {
         au_gap: actorUpdateGap,
         buffered_mount: bufferedAmount,
         velocity: sphereModel.velocity,
-        latest_position: sphereModel.recentPositions[sphereModel.recentPositions.length - 1],
-        prev_position_1: sphereModel.recentPositions[sphereModel.recentPositions.length - 2],
-        prev_position_2: sphereModel.recentPositions[sphereModel.recentPositions.length - 3],
-        prev_position_3: sphereModel.recentPositions[sphereModel.recentPositions.length - 4],
-        oldest_position: sphereModel.recentPositions[0],
+        // latest_position: sphereModel.recentPositions[sphereModel.recentPositions.length - 1],
+        // prev_position_1: sphereModel.recentPositions[sphereModel.recentPositions.length - 2],
+        // prev_position_2: sphereModel.recentPositions[sphereModel.recentPositions.length - 3],
+        // prev_position_3: sphereModel.recentPositions[sphereModel.recentPositions.length - 4],
+        // oldest_position: sphereModel.recentPositions[0],
         food_capture_queue: player.food_capture_queue,
     };
 

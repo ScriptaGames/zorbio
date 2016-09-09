@@ -87,11 +87,11 @@ ZOR.Schemas = function ZORSchemas() {
         au_gap: "varuint",
         buffered_mount: "varuint",
         velocity: vector3,
-        latest_position: recent_position,
-        prev_position_1: recent_position,
-        prev_position_2: recent_position,
-        prev_position_3: recent_position,
-        oldest_position: recent_position,
+        // latest_position: recent_position,
+        // prev_position_1: recent_position,
+        // prev_position_2: recent_position,
+        // prev_position_3: recent_position,
+        // oldest_position: recent_position,
         food_capture_queue: [food_capture_entry],
     };
 
