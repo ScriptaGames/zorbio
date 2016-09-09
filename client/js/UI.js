@@ -254,6 +254,12 @@ ZOR.UI = function ZORUI() {
 
     function stateSetter(newState) {
         return function () {
+            // Send google analytics event
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'StateChange',
+                eventAction: newState,
+            });
             state(newState);
         };
     }
@@ -308,6 +314,12 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
             // check if the nick is valid
             if (UTIL.validNick(engine.get('player_name'))) {
+                // send event to google analytics
+                ga('send', {
+                    hitType: 'event',
+                    eventCategory: 'StateChange',
+                    eventAction: 'play',
+                });
                 startGame(ZOR.PlayerTypes.PLAYER);
             } else {
                 engine.set( 'login_error_msg', 'Nick name must be alphanumeric characters only!' );
@@ -341,6 +353,12 @@ ZOR.UI = function ZORUI() {
 
         on( ACTIONS.PLAYER_RESPAWN, function ZORRespawnButtonHandler() {
             if (window.respawnPlayer) {
+                // send event to google analytics
+                ga('send', {
+                    hitType: 'event',
+                    eventCategory: 'StateChange',
+                    eventAction: 'respawn',
+                });
                 respawnPlayer();
             }
         });

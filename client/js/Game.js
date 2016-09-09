@@ -528,6 +528,30 @@ function handleSuccessfulPlayerCapture(targetPlayer) {
     ZOR.Sounds.sfx.player_capture.play();
 }
 
+function handleDeath(msg) {
+    var targetPlayer = msg.targetPlayer;
+    var attackingPlayerId = msg.attackingPlayerId;
+    var timeAlive = Math.floor((targetPlayer.deathTime - targetPlayer.spawnTime) / 1000);
+
+    console.log("YOU DIED! You were alive for " + timeAlive + " seconds. Killed by: ", attackingPlayerId);
+    setDeadState();
+
+    var attackingPlayer = zorbioModel.getPlayerById(attackingPlayerId);
+    attackingPlayer.score = config.PLAYER_GET_SCORE(attackingPlayer.sphere.scale);
+    targetPlayer.drainAmount = config.PLAYER_GET_SCORE(targetPlayer.drainAmount);
+
+    ZOR.UI.engine.set('attacker', attackingPlayer);
+    ZOR.UI.engine.set('player', targetPlayer);
+    ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
+
+    // Send google google analytics event
+    ga('send', {
+        hitType: 'event',
+        eventCategory: 'StateChange',
+        eventAction: 'death',
+    });
+}
+
 function handlePlayerKick(msg) {
     ZOR.UI.state( ZOR.UI.STATES.KICKED_SCREEN );
 

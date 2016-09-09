@@ -228,20 +228,7 @@ function setupSocket(ws) {
     function handle_msg_you_died(msg) {
         if (!gameStart) return;
 
-        var targetPlayer = msg.targetPlayer;
-        var attackingPlayerId = msg.attackingPlayerId;
-        var timeAlive = Math.floor((targetPlayer.deathTime - targetPlayer.spawnTime) / 1000);
-
-        console.log("YOU DIED! You were alive for " + timeAlive + " seconds. Killed by: ", attackingPlayerId);
-        setDeadState();
-
-        var attackingPlayer = zorbioModel.getPlayerById(attackingPlayerId);
-        attackingPlayer.score = config.PLAYER_GET_SCORE(attackingPlayer.sphere.scale);
-        targetPlayer.drainAmount = config.PLAYER_GET_SCORE(targetPlayer.drainAmount);
-
-        ZOR.UI.engine.set('attacker', attackingPlayer);
-        ZOR.UI.engine.set('player', targetPlayer);
-        ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
+        handleDeath(msg);
     }
 
     function handle_msg_player_died(msg) {
