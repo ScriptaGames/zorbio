@@ -130,7 +130,6 @@ function setupSocket(ws) {
         var playerModel = msg.currentPlayer;
 
         player = new ZOR.PlayerController(playerModel, null, true);
-        ZOR.UI.engine.set('player', player.model);
 
         ws.send(JSON.stringify({op: 'player_ready'}));
     }

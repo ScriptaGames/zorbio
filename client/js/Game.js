@@ -93,6 +93,9 @@ function startGame(type) {
     document.querySelector("meta[name=theme-color]").content = colorHex;
     console.log('Player color', colorHex);
 
+    // Initialize player size ui element
+    ZOR.UI.engine.set('player_size', {color: colorCode, score: 50});
+
     var skin = localStorage.getItem('skin') || 'default';
     sendEnterGame(playerType, playerName, colorCode, skin, key);
 }
@@ -343,7 +346,7 @@ function updateActors() {
 updateActors.runningActorUpdateGap = config.TICK_FAST_INTERVAL;
 
 function updatePlayerSizeUI() {
-    ZOR.UI.data.player = { score: player.getScore(), color: player.model.sphere.color };
+    ZOR.UI.data.player_size.score = player.getScore();
 }
 
 function updateTargetLock() {
