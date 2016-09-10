@@ -538,18 +538,31 @@ var AppServer = function (id, app) {
             self.clients[self.socket_uuid_map[attackingPlayerId]].send(JSON.stringify({op: 'captured_player', targetPlayerId: targetPlayerId}));
         }
 
-        self.removePlayerFromModel(targetPlayerId);
-
         if (targetPlayer.type != Zorbio.PlayerTypes.BOT) {
             // Inform the target player that they died
-            targetPlayer.deathTime = Date.now();
-            targetPlayer.score = config.PLAYER_GET_SCORE( targetPlayer.sphere.scale );
-            var msgObj = {op: 'you_died', attackingPlayerId: attackingPlayerId, targetPlayer: targetPlayer};
-            self.clients[self.socket_uuid_map[targetPlayerId]].send(JSON.stringify(msgObj));
+            var time_alive = Math.floor((Date.now() - targetPlayer.spawnTime) / 1000);
+            var score = config.PLAYER_GET_SCORE( targetPlayer.sphere.scale );
+            var drain_amount = config.PLAYER_GET_SCORE( targetPlayer.drainAmount );
+
+            var msgObj = {
+                0: Schemas.ops.YOU_DIED,
+                attacking_player_id: attackingPlayerId,
+                food_captures: targetPlayer.foodCaptures,
+                player_captures: targetPlayer.playerCaptures,
+                drain_ammount: drain_amount,
+                time_alive: time_alive,
+                score: score,
+            };
+
+            var buffer = Schemas.youDied.encode(msgObj);
+
+            self.clients[self.socket_uuid_map[targetPlayerId]].send(buffer);
         }
         else {
             self.replenishBot();
         }
+
+        self.removePlayerFromModel(targetPlayerId);
 
         // Inform other clients that target player died
         msgObj = {op: "player_died", attackingPlayerId: attackingPlayerId, targetPlayerId: targetPlayerId};

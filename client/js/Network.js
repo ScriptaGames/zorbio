@@ -35,9 +35,6 @@ function setupSocket(ws) {
             var message = parseJson(msg.data);
 
             switch (message.op) {
-                case 'init_game':
-                    handle_msg_init_game(message);
-                    break;
                 case 'welcome':
                     handle_msg_welcome(message);
                     break;
@@ -53,17 +50,11 @@ function setupSocket(ws) {
                 case 'captured_player':
                     handle_msg_captured_player(message);
                     break;
-                case 'you_died':
-                    handle_msg_you_died(message);
-                    break;
                 case 'player_died':
                     handle_msg_player_died(message);
                     break;
                 case 'food_captured':
                     handle_msg_food_captured(message);
-                    break;
-                case 'server_tick_slow':
-                    handle_msg_server_tick_slow(message);
                     break;
                 case 'kick':
                     handle_msg_kick(message);
@@ -94,6 +85,9 @@ function setupSocket(ws) {
                     break;
                 case ZOR.Schemas.ops.TICK_SLOW:
                     handle_msg_server_tick_slow( ZOR.Schemas.tickSlowSchema.decode(msg.data) );
+                    break;
+                case ZOR.Schemas.ops.YOU_DIED:
+                    handle_msg_you_died( ZOR.Schemas.youDied.decode(msg.data) );
                     break;
                 default:
                     console.error("Error: Unknown binary op code: ", op);

@@ -94,6 +94,16 @@ ZOR.Schemas = function ZORSchemas() {
         food_capture_queue: [food_capture_entry],
     };
 
+    var op_you_died = {
+        0: "uint8",
+        attacking_player_id: "varuint",
+        food_captures: "varuint",
+        player_captures: "varuint",
+        drain_ammount: "varuint",
+        time_alive: "varuint",
+        score: "varuint",
+    };
+
     var op_tick_slow = {
         0: "uint8",
         tick_data: tick_slow_data,
@@ -104,6 +114,7 @@ ZOR.Schemas = function ZORSchemas() {
         ACTOR_UPDATES: 2,
         PLAYER_UPDATE: 3,
         TICK_SLOW: 4,
+        YOU_DIED: 5,
     };
 
     return {
@@ -112,6 +123,7 @@ ZOR.Schemas = function ZORSchemas() {
         actorUpdatesSchema: schemapack.build(op_actor_updates),
         playerUdateSchema: schemapack.build(op_player_update),
         tickSlowSchema: schemapack.build(op_tick_slow),
+        youDied: schemapack.build(op_you_died),
     }
 }();
 

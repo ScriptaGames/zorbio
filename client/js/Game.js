@@ -529,19 +529,24 @@ function handleSuccessfulPlayerCapture(targetPlayer) {
 }
 
 function handleDeath(msg) {
-    var targetPlayer = msg.targetPlayer;
-    var attackingPlayerId = msg.attackingPlayerId;
-    var timeAlive = Math.floor((targetPlayer.deathTime - targetPlayer.spawnTime) / 1000);
+    var attackingPlayerId = msg.attacking_player_id;
 
-    console.log("YOU DIED! You were alive for " + timeAlive + " seconds. Killed by: ", attackingPlayerId);
+    console.log("YOU DIED! You were alive for " + msg.time_alive + " seconds. Killed by: ", attackingPlayerId);
     setDeadState();
 
     var attackingPlayer = zorbioModel.getPlayerById(attackingPlayerId);
     attackingPlayer.score = config.PLAYER_GET_SCORE(attackingPlayer.sphere.scale);
-    targetPlayer.drainAmount = config.PLAYER_GET_SCORE(targetPlayer.drainAmount);
+
+    // Set finaly data about the player from the server
+    var playerStats = {
+        drainAmount: msg.drain_ammount,
+        foodCaptures: msg.food_captures,
+        playerCaptures: msg.player_captures,
+        score: msg.score,
+    };
 
     ZOR.UI.engine.set('attacker', attackingPlayer);
-    ZOR.UI.engine.set('player', targetPlayer);
+    ZOR.UI.engine.set('player', playerStats);
     ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
 
     // Send google google analytics event
