@@ -149,6 +149,14 @@ ZOR.UI = function ZORUI() {
             uidata.state = newstate;
             engine.update();
         }
+
+        // Send google analytics event
+        ga('send', {
+            hitType: 'event',
+            eventCategory: 'StateChange',
+            eventAction: newstate,
+        });
+
         return uidata.state;
     }
 
@@ -263,12 +271,6 @@ ZOR.UI = function ZORUI() {
 
     function stateSetter(newState) {
         return function () {
-            // Send google analytics event
-            ga('send', {
-                hitType: 'event',
-                eventCategory: 'StateChange',
-                eventAction: newState,
-            });
             state(newState);
         };
     }
@@ -318,14 +320,26 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.SET_SKIN, function ZORSetSkin(e) {
             engine.set('selected_skin', e.node.value);
             localStorage.setItem('skin', e.node.value);
+
+            console.log("SET SKIN BUTTON CLICK");
+
+            // send event to google analytics
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'button',
+                eventAction: 'use_skin_button',
+                eventLabel: e.node.value,
+            });
+            startGame(ZOR.PlayerTypes.PLAYER);
         });
 
         on( ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
             // send event to google analytics
             ga('send', {
                 hitType: 'event',
-                eventCategory: 'StateChange',
-                eventAction: 'play',
+                eventCategory: 'button',
+                eventAction: 'play_button',
+                eventLabel: 'mouse_click'
             });
             startGame(ZOR.PlayerTypes.PLAYER);
         });
@@ -358,8 +372,8 @@ ZOR.UI = function ZORUI() {
                 // send event to google analytics
                 ga('send', {
                     hitType: 'event',
-                    eventCategory: 'StateChange',
-                    eventAction: 'respawn',
+                    eventCategory: 'buton',
+                    eventAction: 'respawn_button',
                 });
                 respawnPlayer();
             }
@@ -371,6 +385,13 @@ ZOR.UI = function ZORUI() {
 
             if (key === KEY_ENTER) {
                 if (window.startGame) {
+                    // send event to google analytics
+                    ga('send', {
+                        hitType: 'event',
+                        eventCategory: 'button',
+                        eventAction: 'play_button',
+                        eventLabel: 'enter_key'
+                    });
                     startGame(ZOR.PlayerTypes.PLAYER);
                 }
             }
