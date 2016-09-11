@@ -321,8 +321,6 @@ ZOR.UI = function ZORUI() {
             engine.set('selected_skin', e.node.value);
             localStorage.setItem('skin', e.node.value);
 
-            console.log("SET SKIN BUTTON CLICK");
-
             // send event to google analytics
             ga('send', {
                 hitType: 'event',
