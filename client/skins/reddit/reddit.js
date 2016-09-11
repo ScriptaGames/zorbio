@@ -3,7 +3,7 @@ ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 
 //
 
-ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
+ZOR.PlayerSkins.reddit = function ZORRedditSkin(playerView) {
     var opacity = playerView.is_current_player ? 0.2 : 0.6;
 
     return {
@@ -20,22 +20,17 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
                 mainSpherePos : { type : "v3", value : playerFogCenter },
                 FOG_FAR       : { type : "f",  value : config.FOG_FAR },
                 FOG_ENABLED   : { type : "f",  value : ~~config.FOG_ENABLED },
-                sphereTexture : { type : "t",  value : new THREE.TextureLoader().load( "skins/earth/earth-sphere-map.jpg" ) },
+                sphereTexture : { type : "t",  value : new THREE.TextureLoader().load( "skins/reddit/texture.jpg" ) },
             },
-            vertexShader: document.getElementById('skin-earth-vertex-shader').textContent,
-            fragmentShader: document.getElementById('skin-earth-fragment-shader').textContent,
+            vertexShader: document.getElementById('skin-reddit-vertex-shader').textContent,
+            fragmentShader: document.getElementById('skin-reddit-fragment-shader').textContent,
             transparent: true,
-            // this allows spheres to clip each other nicely, BUT it makes spheres appear on top of the cube boundary. :/
-            // depthFunc      : THREE.LessDepth,
-            // depthTest      : false,
-            // depthWrite     : true,
-            // blending       : THREE.AdditiveBlending,
         },
         trail: {
             group: {
                 scale: Math.max(window.innerWidth, window.innerHeight),
                 texture: {
-                    value:  new THREE.TextureLoader().load( "skins/earth/trail.png" ),
+                    value:  new THREE.TextureLoader().load( "skins/reddit/trail.png" ),
                 },
                 maxParticleCount: 800,
             },
@@ -80,9 +75,10 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
     };
 };
 
-ZOR.PlayerSkins.earth.meta = {
-    friendly_name: 'Planet Earth',
-    name: 'earth',
-    preview: 'skins/earth/thumb.jpg',
-    sort: 2,
+ZOR.PlayerSkins.reddit.meta = {
+    friendly_name: 'Reddit',
+    name: 'reddit',
+    preview: 'skins/reddit/thumb.png',
+    unlock_url: '?reddit',
+    sort: 0,
 };

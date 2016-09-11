@@ -239,6 +239,7 @@ config.SKINS = [
     'default',
     'earth',
     'boing',
+    'reddit',
 ];
 
 

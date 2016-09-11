@@ -241,7 +241,16 @@ ZOR.UI = function ZORUI() {
         _.invokeMap(init_handlers, _.call);
 
         // add active class to UI overlay so it'll show up
-        engine.el.classList.add('active')
+        engine.el.classList.add('active');
+
+        // Strip any hidden skins that don't match unlock url
+        var i = uidata.skins.length;
+        while (i--) {
+            var skin = uidata.skins[i];
+            if (skin.meta.unlock_url && skin.meta.unlock_url != window.location.search) {
+                uidata.skins.splice(i, 1);
+            }
+        }
 
         // mark initialized true so future on('init') handlers will be executed
         // immediately
