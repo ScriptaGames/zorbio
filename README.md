@@ -58,6 +58,6 @@ Here's the command:
  3. Update version repo to match desired version and build number, that will be deployed by ansible: https://github.com/ScriptaGames/zorbio-version/edit/master/version.json
  
 ## Prod architecture
-
+![zorbio-prod-arch](https://cloud.githubusercontent.com/assets/3926730/18444665/31c9302c-78e8-11e6-8147-d7033cd2dd42.png)
 ![zorbio-balancer-arch 1](https://cloud.githubusercontent.com/assets/3926730/18276080/89006160-7417-11e6-8a12-19b891b0f0c5.png)
 
