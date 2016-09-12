@@ -4,8 +4,9 @@ ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 //
 
 ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
-    var opacity = playerView.is_current_player ? 0.4 : 0.8;
+    var opacity = playerView.is_current_player ? 1.0 : 1.0;
     var color = new THREE.Color(playerView.playerColor);
+    var particle_count = 200;
 
     return {
         geometry: {},
@@ -36,27 +37,19 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
                 texture: {
                     value:  new THREE.TextureLoader().load( "skins/default/trail.png" ),
                 },
-                maxParticleCount: 800,
+                maxParticleCount: particle_count,
             },
             emitter: {
                 maxAge: {
-                    value: 20,
+                    value: 2,
                     // spread: 2,
                 },
                 position: {
                     value: new THREE.Vector3(0, 0, 0),
-                    spread: new THREE.Vector3(0, 0, 0),
-                    spreadClamp: new THREE.Vector3(0, 0, 0),
-                    radius: 5,
-                    distribution: SPE.distributions.SPHERE,
                 },
 
                 opacity: {
                     value: [opacity, 0],
-                },
-
-                drag: {
-                    value: 1.0,
                 },
 
                 color: {
@@ -64,11 +57,11 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
                 },
 
                 size: {
-                    value: [90, 60, 30, 0],
+                    value: [90],
                 },
 
-                particleCount: 800,
-                activeMultiplier: 0.1,
+                particleCount: particle_count,
+                activeMultiplier: 1.0,
             },
         },
     };
