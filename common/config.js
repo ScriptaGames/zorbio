@@ -235,12 +235,13 @@ config.COLORS = [
     '#FFF42E',
 ];
 
-config.SKINS = [
-    'default',
-    'earth',
-    'boing',
-    'reddit',
-];
+config.SKINS = {
+    default: 'default',
+    earth: 'earth',
+    boing: 'boing',
+    reddit: 'reddit',
+};
+
 
 
 ////////////////////////////////////////////////////////////////////////

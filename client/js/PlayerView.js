@@ -14,7 +14,7 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.scene = scene;
     this.is_current_player = current || false;
     this.playerColor = config.COLORS[model.sphere.color];
-    this.skinName = config.SKINS[config.SKINS.indexOf(model.sphere.skin)];
+    this.skinName = model.sphere.skin;
 
     this.skin = ZOR.PlayerSkins[this.skinName || 'default'](this);
 

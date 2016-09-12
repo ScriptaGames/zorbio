@@ -125,7 +125,7 @@ var AppServer = function (id, app) {
             type  = msg.type;
             name  = msg.name;
             color = msg.color;
-            skin  = msg.skin;
+            skin  = config.SKINS[msg.skin] ? msg.skin : 'default';  // validate skin name
             key   = msg.key;
 
             // Sanitize player name

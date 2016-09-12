@@ -1,8 +1,9 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
-var config     = require('../common/config.js');
-var Zorbio     = require('../common/zorbio.js');
-var UTIL       = require('../common/util.js');
+var config = require('../common/config.js');
+var Zorbio = require('../common/zorbio.js');
+var UTIL   = require('../common/util.js');
+var _      = require('lodash');
 
 var Bot = function (scale, model) {
     //  Scope
@@ -11,7 +12,8 @@ var Bot = function (scale, model) {
 
     // initialized player properties
     self.colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
-    self.skin_name = config.SKINS[UTIL.getRandomIntInclusive(0, config.SKINS.length - 1)];
+    var skin_names = _.values(config.SKINS);
+    self.skin_name = skin_names[UTIL.getRandomIntInclusive(0, skin_names.length - 1)];
     self.id = Zorbio.IdGenerator.get_next_id();
     self.name = "AI_" + self.id;
     self.scale = scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);
