@@ -152,7 +152,13 @@ var AppServer = function (id, app) {
             currentPlayer.headers = headers;
             currentPlayer.socket_uuid = socket_uuid;
 
-            ws.send(JSON.stringify({op: 'welcome', currentPlayer: currentPlayer}));
+            // Send welcome message
+            var msg = {
+                0: Schemas.ops.WELCOME,
+                player: currentPlayer.reduce(),
+            };
+            var buffer = Schemas.welcomeSchema.encode(msg);
+            ws.send(buffer);
 
             self.log('User ' + currentPlayer.id + ' spawning into the game');
         }

@@ -89,6 +89,9 @@ function setupSocket(ws) {
                 case ZOR.Schemas.ops.YOU_DIED:
                     handle_msg_you_died( ZOR.Schemas.youDied.decode(msg.data) );
                     break;
+                case ZOR.Schemas.ops.WELCOME:
+                    handle_msg_welcome( ZOR.Schemas.welcomeSchema.decode(msg.data) );
+                    break;
                 default:
                     console.error("Error: Unknown binary op code: ", op);
             }
@@ -127,9 +130,8 @@ function setupSocket(ws) {
     }
 
     function handle_msg_welcome(msg) {
-        var playerModel = msg.currentPlayer;
-
-        player = new ZOR.PlayerController(playerModel, null, true);
+        console.log("Welcome: ", msg.player.name);
+        player = new ZOR.PlayerController(msg.player, null, true);
 
         ws.send(JSON.stringify({op: 'player_ready'}));
     }

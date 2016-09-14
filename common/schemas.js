@@ -28,16 +28,16 @@ ZOR.Schemas = function ZORSchemas() {
         speed_boosting: "boolean",
     };
 
+    var player = {
+        id: "varuint",
+        name: "string",
+        type: "string",
+        sphere: actor,
+    };
+
     var model = {
         actors: [actor],
-        players: [
-            {
-                id: "varuint",
-                name: "string",
-                type: "string",
-                sphere: actor,
-            }
-        ],
+        players: [player],
         worldSize: {x: "uint16", y: "uint16", z: "uint16"},
         food: ["int16"],
         foodCount: "uint32",
@@ -72,6 +72,11 @@ ZOR.Schemas = function ZORSchemas() {
     var op_init_game = {
         0: "uint8",
         model: model,
+    };
+
+    var op_welcome = {
+        0: "uint8",
+        player: player,
     };
 
     var op_actor_updates = {
@@ -115,6 +120,7 @@ ZOR.Schemas = function ZORSchemas() {
         PLAYER_UPDATE: 3,
         TICK_SLOW: 4,
         YOU_DIED: 5,
+        WELCOME: 6,
     };
 
     return {
@@ -124,6 +130,7 @@ ZOR.Schemas = function ZORSchemas() {
         playerUdateSchema: schemapack.build(op_player_update),
         tickSlowSchema: schemapack.build(op_tick_slow),
         youDied: schemapack.build(op_you_died),
+        welcomeSchema: schemapack.build(op_welcome),
     }
 }();
 
