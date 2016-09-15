@@ -12,7 +12,7 @@ var actorUpdateGap = 0;
 var interval_id_heartbeat;
 
 function connectToServer() {
-    var uri = new URI(config.BALANCER + ':' + config.PORT);
+    var uri = new URI(config.BALANCER + ':' + config.WSS_PORT);
 
     ws = new WebSocket( uri.toString() );
     ws.binaryType = 'arraybuffer';

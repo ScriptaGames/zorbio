@@ -12,7 +12,7 @@ ZOR.Env = {
     DEBUG             : true,
     HEARTBEAT_ENABLE  : false,
     BALANCER          : "LOCAL",
-    ORIGIN            : "http://localhost:3000",
+    CHECK_ORIGIN      : false,
     CHECK_VERSION     : false,
     REQUIRE_ALPHA_KEY : false,
     AUTO_RUN_ENABLED  : true,

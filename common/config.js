@@ -30,7 +30,8 @@ config.MAX_BOT_RADIUS   = 100;
 //                          NETWORK SETTINGS                          //
 ////////////////////////////////////////////////////////////////////////
 
-config.PORT                     = 80;
+config.PORT                     = 80;     // http server port
+config.WSS_PORT                 = 31000;  // websocket server port
 config.NUM_GAME_INSTANCES       = 4;      // How many game instances to spawn on the server
 config.MAX_PLAYERS_PER_INSTANCE = 25;     // Max players per instance
 config.HEARTBEAT_ENABLE         = true;
@@ -44,6 +45,7 @@ config.CHECK_VERSION            = true;   // check for latest version of the gam
 config.CHECK_VERSION_INTERVAL   = 60000;  // how often to check for new version
 config.LEADERS_LENGTH           = 10;     // How many players to include in the leaders array
 config.BIN_PP_POSITIONS_LENGTH  = 29;
+config.CHECK_ORIGIN             = true;
 config.ORIGIN                   = 'http://zor.bio'; // the origin that's allowed to connect to websocket server
 config.RECENT_CLIENT_DATA_LENGTH = 100;   // how many recent data points to keep from the client like pings
 config.CLOSE_NO_RESTART         = 4000;    // 4000-4999 application reserved close code in WebSocket spec

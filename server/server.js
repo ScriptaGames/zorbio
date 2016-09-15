@@ -81,16 +81,20 @@ var MainServer = function () {
 
         // Set up WebSocket Server
         var options = {
-            server: self.httpServer
+            port: process.env.WSS_PORT || config.WSS_PORT,
         };
-        options.verifyClient = function wssVerifyClient(info, callback) {
-            if (info.origin === config.ORIGIN) {
-                callback(true);
-                return true;
-            }
-            callback(false);
-            return false;
-        };
+
+        if (config.CHECK_ORIGIN) {
+            options.verifyClient = function wssVerifyClient(info, callback) {
+                if (info.origin === config.ORIGIN) {
+                    callback(true);
+                    return true;
+                }
+                callback(false);
+                return false;
+            };
+        }
+
         self.wss = new WebSocketServer(options);
 
         // Set up express static content root
