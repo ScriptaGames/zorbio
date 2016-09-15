@@ -30,8 +30,8 @@ config.MAX_BOT_RADIUS   = 100;
 //                          NETWORK SETTINGS                          //
 ////////////////////////////////////////////////////////////////////////
 
-config.PORT                     = 80;     // http server port
-config.WSS_PORT                 = 31000;  // websocket server port
+config.PORT                     = 8080;     // http server port
+config.WSS_PORT                 = 31001;  // websocket server port
 config.NUM_GAME_INSTANCES       = 4;      // How many game instances to spawn on the server
 config.MAX_PLAYERS_PER_INSTANCE = 25;     // Max players per instance
 config.HEARTBEAT_ENABLE         = true;
