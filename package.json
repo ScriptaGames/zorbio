@@ -1,7 +1,7 @@
 {
   "name": "zorbio",
   "version": "0.1.29",
-  "build": "2",
+  "build": "3",
   "description": "Absorb the Orbs!",
   "main": "server/server.js",
   "scripts": {
