@@ -60,4 +60,4 @@ Here's the command:
 ## Prod architecture
 ![zorbio-prod-arch](https://cloud.githubusercontent.com/assets/3926730/18444665/31c9302c-78e8-11e6-8147-d7033cd2dd42.png)
 ![zorbio-balancer-arch 1](https://cloud.githubusercontent.com/assets/3926730/18276080/89006160-7417-11e6-8a12-19b891b0f0c5.png)
-
+![multi-process](https://cloud.githubusercontent.com/assets/3926730/18602090/cb485666-7c34-11e6-9f18-eb91f733bc45.png)
