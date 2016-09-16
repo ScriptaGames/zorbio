@@ -8,9 +8,6 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
 
     return {
         geometry: {
-            spin: {
-                y: 0.001,
-            },
         },
         material: {
             uniforms: {

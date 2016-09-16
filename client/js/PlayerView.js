@@ -102,15 +102,7 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
-    this.updateSpin();
     this.updateTrail();
-};
-
-ZOR.PlayerView.prototype.updateSpin = function ZORPlayerViewUpdateSpin() {
-    var spin_y = _.get(this, 'skin.geometry.spin.y');
-    if (spin_y) {
-        this.geometry.rotateY(spin_y * ZOR.LagScale.get());
-    }
 };
 
 ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {
