@@ -1,6 +1,13 @@
+[Unit]
+Description=Zorbio game server
+
 [Service]
-ExecStart=/usr/bin/node /usr/share/games/zorbio/server/server.js dist
-Restart=always
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=/etc/zorbio.env
+ExecStart=/usr/share/games/zorbio/zorbio.sh start
+ExecStop=/usr/share/games/zorbio/zorbio.sh stop
+ExecReload=/usr/share/games/zorbio/zorbio.sh restart
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=zorbio
