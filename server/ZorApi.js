@@ -80,7 +80,7 @@ var ZorApi = function zorApi (app, instances) {
      * API to return the current count of players on this server
      */
     self.app.get('/api/games/:game_id/players/count', function (req, res) {
-        var instance = self.instances[req.params.game_id - 1];
+        var instance = self.instances[req.params.game_id];
         if (instance) {
             var count = instance.model.players.length;
             res.setHeader('content-type', 'application/json');
@@ -95,7 +95,7 @@ var ZorApi = function zorApi (app, instances) {
      * API to return all the player objects on this server
      */
     self.app.get('/api/games/:game_id/players', function (req, res) {
-        var instance = self.instances[req.params.game_id - 1];
+        var instance = self.instances[req.params.game_id];
         if (instance) {
             res.setHeader('content-type', 'application/json');
             res.send( JSON.stringify(instance.model.players) );
@@ -109,7 +109,7 @@ var ZorApi = function zorApi (app, instances) {
      * API to return all the actor objects on this server
      */
     self.app.get('/api/games/:game_id/actors', function (req, res) {
-        var instance = self.instances[req.params.game_id - 1];
+        var instance = self.instances[req.params.game_id];
         if (instance) {
             res.setHeader('content-type', 'application/json');
             res.send( JSON.stringify(instance.model.actors) );
@@ -123,7 +123,7 @@ var ZorApi = function zorApi (app, instances) {
      * API to return all the actor objects on this server
      */
     self.app.get('/api/games/:game_id/food', function (req, res) {
-        var instance = self.instances[req.params.game_id - 1];
+        var instance = self.instances[req.params.game_id];
         if (instance) {
             var foodModel = {};
             foodModel.foodDensity = instance.model.foodDensity;
@@ -143,7 +143,7 @@ var ZorApi = function zorApi (app, instances) {
      * API to number of socket connections
      */
     self.app.get('/api/games/:game_id/clients/count', function (req, res) {
-        var instance = self.instances[req.params.game_id - 1];
+        var instance = self.instances[req.params.game_id];
         if (instance) {
             var clientIds = Object.getOwnPropertyNames(instance.clients);
             var count = typeof clientIds.length !== 'undefined' ? clientIds.length : 0;
