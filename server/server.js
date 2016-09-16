@@ -36,7 +36,6 @@ var MainServer = function () {
     self.setupVariables = function () {
         //  Set the environment variables we need.
         self.port = process.env.PORT || config.PORT;
-        self.wss_port = process.env.WSS_PORT || config.WSS_PORT;
     };
 
 
@@ -82,7 +81,7 @@ var MainServer = function () {
 
         // Set up WebSocket Server
         var options = {
-            port: self.wss_port,
+            server: self.httpServer,
         };
 
         if (config.CHECK_ORIGIN) {

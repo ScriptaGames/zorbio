@@ -8,7 +8,7 @@ ZOR.Env = {
     FOOD_DENSITY      : 9,
     INITIAL_PLAYER_RADIUS: 5,
     FOOD_VALUE        : 5,
-    PORT              : 8080,
+    PORT              : 3000,
     DEBUG             : true,
     HEARTBEAT_ENABLE  : false,
     BALANCER          : "LOCAL",
