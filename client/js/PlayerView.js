@@ -41,9 +41,9 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.mainSphere.player_id = this.model.id;
     ZOR.Game.player_meshes.push(this.mainSphere);  // store mesh for raycaster search
 
-    scene.add( this.mainSphere );
-
     this.initTrail();
+
+    scene.add( this.mainSphere );
 };
 
 ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
@@ -57,44 +57,49 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
     this.trail.mesh.frustumCulled = false;
     this.trail.addEmitter( this.trailEmitter1 );
     this.trail.addEmitter( this.trailEmitter2 );
-    this.scene.add( this.trail.mesh );
+    this.mainSphere.add( this.trail.mesh );
+    // this.scene.add( this.trail.mesh );
 };
 
 ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
     var cameraDistance = this.camera_controls ? this.camera_controls.maxDistance : 100;
-    var leftTrailPos = camera.localToWorld(new THREE.Vector3( -this.mainSphere.scale.x, 0, cameraDistance ));
-    var rightTrailPos = camera.localToWorld(new THREE.Vector3( this.mainSphere.scale.x, 0, cameraDistance ));
+    var leftTrailPos = camera.localToWorld(new THREE.Vector3( -this.mainSphere.scale.x, 0, -cameraDistance ));
+    var rightTrailPos = camera.localToWorld(new THREE.Vector3( this.mainSphere.scale.x, 0, -cameraDistance ));
 
     // update trail orientation
-    this.trail.mesh.up.copy(camera.up);
+    // this.trail.mesh.up.copy(camera.up);
+    // this.trail.mesh.lookAt(camera.position);
 
-    this.trailEmitter1.position._value.x = leftTrailPos.x;
-    this.trailEmitter1.position._value.y = leftTrailPos.y;
-    this.trailEmitter1.position._value.z = leftTrailPos.z;
+    // this.trailEmitter1.position._value.x = leftTrailPos.x;
+    // this.trailEmitter1.position._value.y = leftTrailPos.y;
+    // this.trailEmitter1.position._value.z = leftTrailPos.z;
 
-    this.trailEmitter2.position._value.x = rightTrailPos.x;
-    this.trailEmitter2.position._value.y = rightTrailPos.y;
-    this.trailEmitter2.position._value.z = rightTrailPos.z;
+    // this.trailEmitter2.position._value.x = rightTrailPos.x;
+    // this.trailEmitter2.position._value.y = rightTrailPos.y;
+    // this.trailEmitter2.position._value.z = rightTrailPos.z;
 
     var scale = this.mainSphere.scale.x * (this.skin.trail.customScale || 1);
     // this.trailEmitter1.position._spreadClamp.setX( scale );
     // this.trailEmitter1.position._spread.setX( scale );
-    this.trailEmitter1.position._radius = scale;
     this.trailEmitter1.size._value =  [scale/3];
+    this.trailEmitter2.size._value =  [scale/3];
 
     var boosting = this.model.abilities.speed_boost.isActive();
 
     if (boosting) {
         this.trailEmitter1.activeMultiplier = 1;
+        this.trailEmitter2.activeMultiplier = 1;
     }
     else {
         // this.trailEmitter1.activeMultiplier = 0.1;
-        this.trailEmitter1.activeMultiplier = 1;
+        this.trailEmitter1.activeMultiplier = 0.1;
+        this.trailEmitter2.activeMultiplier = 0.1;
     }
 
     this.trailEmitter1.updateFlags.position = true;
-    // this.trailEmitter1.updateFlags.velocity = true;
+    this.trailEmitter2.updateFlags.position = true;
     this.trailEmitter1.updateFlags.size = true;
+    this.trailEmitter2.updateFlags.size = true;
 
     this.trail.tick( this.trailClock.getDelta() );
 };
