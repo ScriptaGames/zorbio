@@ -5,6 +5,7 @@ Description=Zorbio game server
 Type=oneshot
 RemainAfterExit=yes
 EnvironmentFile=/etc/zorbio.env
+ExecStartPre=/usr/bin/pm2 --version
 ExecStart=/usr/share/games/zorbio/zorbio.sh start
 ExecStop=/usr/share/games/zorbio/zorbio.sh stop
 ExecReload=/usr/share/games/zorbio/zorbio.sh restart
