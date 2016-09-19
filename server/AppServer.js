@@ -83,7 +83,16 @@ var AppServer = function (id, app) {
 
         ws.on('message', function wsMessage(msg) {
             if (typeof msg === "string") {
-                var message = JSON.parse(msg);
+                var message;
+
+                try {
+                    message = JSON.parse(msg);
+                } catch(e) {
+                    if (config.DEBUG) {
+                        console.error("error parsing json on message in wss: ", e);
+                    }
+                    return;  // ignore
+                }
 
                 switch (message.op) {
                     case 'enter_game':
@@ -227,7 +236,9 @@ var AppServer = function (id, app) {
         }
 
         function handle_msg_player_update(buffer) {
-            if (currentPlayer) currentPlayer.lastHeartbeat = Date.now();
+            if (!currentPlayer) return;
+
+            currentPlayer.lastHeartbeat = Date.now();
 
             // record timing
             var nowTime = Date.now();
