@@ -91,6 +91,7 @@ config.BALANCERS = Object.freeze({
     london:    'uk.zor.bio',
     frankfurt: 'eu.zor.bio',
     singapore: 'apac.zor.bio',
+    prod:      'zor.bio',
 });
 
 ////////////////////////////////////////////////////////////////////////
