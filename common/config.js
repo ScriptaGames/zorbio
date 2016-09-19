@@ -46,7 +46,6 @@ config.CHECK_VERSION_INTERVAL   = 60000;  // how often to check for new version
 config.LEADERS_LENGTH           = 10;     // How many players to include in the leaders array
 config.BIN_PP_POSITIONS_LENGTH  = 29;
 config.CHECK_ORIGIN             = true;
-config.ORIGIN                   = 'http://zor.bio'; // the origin that's allowed to connect to websocket server
 config.RECENT_CLIENT_DATA_LENGTH = 100;   // how many recent data points to keep from the client like pings
 config.CLOSE_NO_RESTART         = 4000;    // 4000-4999 application reserved close code in WebSocket spec
 
@@ -64,6 +63,7 @@ if (!NODEJS) {
 
         console.log("Nearest linode location: ", linode_location);
 
+        //TODO: if all locations have active node balancers this switch is not nessicary
         switch (linode_location) {
             //TODO: Send to seprate balancer when they are available
             case 'london':
@@ -81,16 +81,17 @@ if (!NODEJS) {
         return balancer;
     };
     config.BALANCER = config.GET_NEAR_BALANCER();
-    config.BALANCERS = Object.freeze({
-        LOCAL:     'ws://localhost',
-        fremont:   'ws://fremont.zor.bio',
-        dallas:    'ws://na.zor.bio',
-        newark:    'ws://newark.zor.bio',
-        london:    'ws://london.zor.bio',
-        frankfurt: 'ws://frankfurt.zor.bio',
-        singapore: 'ws://singapore.zor.bio',
-    });
 }
+
+config.BALANCERS = Object.freeze({
+    LOCAL:     'localhost',
+    fremont:   'uswest.zor.bio',
+    dallas:    'uscentral.zor.bio',
+    newark:    'useast.zor.bio',
+    london:    'uk.zor.bio',
+    frankfurt: 'eu.zor.bio',
+    singapore: 'apac.zor.bio',
+});
 
 ////////////////////////////////////////////////////////////////////////
 //                          PLAYER SETTINGS                           //
