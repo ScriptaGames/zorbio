@@ -2,11 +2,12 @@
  * Client network related functions
  */
 
+//TODO: encapsulate this file into a class and get rid of these globals
 var ws;
-
 var zorPingStart;
 var zorPingDuration = 0;
 var actorUpdateGap = 0;
+var NB_SRVID = '';
 
 // handles to setInterval methods so we can clear them later
 var interval_id_heartbeat;
@@ -122,6 +123,8 @@ function setupSocket(ws) {
             UTIL.toVector3(actor, 'velocity');
         });
 
+        NB_SRVID = msg.NB_SRVID;  // Linode nodebalancer node id that handled this socket connection
+
         _.assign(zorbioModel, msg.model);
 
         ZOR.UI.on('init', createScene);
@@ -132,7 +135,6 @@ function setupSocket(ws) {
     function handle_msg_welcome(msg) {
         console.log("Welcome: ", msg.player.name);
         player = new ZOR.PlayerController(msg.player, null, true);
-
         ws.send(JSON.stringify({op: 'player_ready'}));
     }
 

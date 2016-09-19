@@ -12,6 +12,7 @@ var ServerPlayer  = require('./ServerPlayer.js');
 var Schemas       = require('../common/schemas.js');
 var perfNow       = require("performance-now");
 var uuid          = require("node-uuid");
+var cookie        = require("cookie");
 
 /**
  * This module contains all of the app logic and state,
@@ -64,13 +65,14 @@ var AppServer = function (id, app) {
 
     self.addClient = function appAddClient(ws) {
         var headers = JSON.stringify(ws.upgradeReq.headers);
+        var NB_SRVID = self.parseNbSrvIdCookie(ws.upgradeReq.headers.cookie);
         var socket_uuid = uuid.v4();
         self.clients[socket_uuid] = ws;
 
         self.log('Client connection headers:', headers);
         self.log('Socket UUID: ', socket_uuid);
 
-        self.sendInitGame(ws);
+        self.sendInitGame(ws, NB_SRVID);
 
         // Player properties
         var currentPlayer;
@@ -343,6 +345,28 @@ var AppServer = function (id, app) {
         }
     };
 
+    /**
+     * Safe method to parse Linode NB_SRVID cookie if it exists.  the NB_SRVID is the id of the nodebalancer node
+     * this client will be routed too.
+     * @param cookie_header
+     * @returns {string}
+     */
+    self.parseNbSrvIdCookie = function appParseNbSrvIdCookie(cookie_header) {
+        var nb_srv_id = '';  // default to empty string
+
+        if (!cookie_header) return nb_srv_id;
+
+        try {
+            var cookies = cookie.parse(cookie_header);
+            //noinspection JSUnresolvedVariable
+            nb_srv_id = cookies.NB_SRVID ? cookies.NB_SRVID : '';
+        } catch (e) {
+            return nb_srv_id;
+        }
+
+        return nb_srv_id;
+    };
+
     self.updateActorDrains = function appUpdateActorDrains(drainers) {
         // update drains
         var drainer;
@@ -400,9 +424,13 @@ var AppServer = function (id, app) {
         });
     };
 
-    self.sendInitGame = function appSendInitGame(ws) {
+    self.sendInitGame = function appSendInitGame(ws, NB_SRVID) {
         var initialModel = self.model.reduce();
-        var initGameMessage = {0: Schemas.ops.INIT_GAME, model: initialModel};
+        var initGameMessage = {
+            0: Schemas.ops.INIT_GAME,
+            NB_SRVID: NB_SRVID,
+            model: initialModel,
+        };
         var buffer = Schemas.initGameSchema.encode(initGameMessage);
         ws.send(buffer);
     };

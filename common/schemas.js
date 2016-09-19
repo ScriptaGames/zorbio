@@ -71,6 +71,7 @@ ZOR.Schemas = function ZORSchemas() {
 
     var op_init_game = {
         0: "uint8",
+        NB_SRVID: "string",
         model: model,
     };
 
