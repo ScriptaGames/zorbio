@@ -5,6 +5,7 @@ var ZorApi    = require('./ZorApi.js');
 var AppServer = require('./AppServer.js');
 var pjson     = require('../package.json');
 var rq        = require('request');
+var cookie    = require('cookie');
 
 
 var AppProxy = function (wss, app) {
@@ -19,7 +20,39 @@ var AppProxy = function (wss, app) {
         self.gameInstances.push(new AppServer(i, self.app));
     }
 
+    // set up api
     self.api = new ZorApi(self.app, self.gameInstances);
+
+    // Route to write sticky session cookie for linode nodebalancer at given location
+    self.app.get('/nbsrv/:nb/:id', function (req, res) {
+        var balancer = req.params.nb;
+        var node_id = req.params.id;
+
+        // Set a new cookie with the name
+        self.setSrvIdCookie(node_id, res);
+
+        // Get the subdomain of the balancer location
+        var balancer_domain = config.BALANCERS[balancer];
+
+        // bounce redirect to balancer subdomain to set the cookie there too
+        res.statusCode = 302;
+        var bounce_url = 'http://' + balancer_domain + '/nbsrv_bounce/' + node_id;
+        res.setHeader('Location', bounce_url);
+        res.end();
+    });
+
+    // Route to set the cookie at the nodebalancer subdomain and bounce back to homepage
+    self.app.get('/nbsrv_bounce/:id', function (req, res) {
+        var node_id = req.params.id;
+
+        // Set a new cookie with the name
+        self.setSrvIdCookie(node_id, res);
+
+        // bounce back to homepage
+        res.statusCode = 302;
+        res.setHeader('Location', 'http://zor.bio/');
+        res.end();
+    });
 
     self.wss.on('connection', function wssConnection(ws) {
         for (var i = 0; i < self.gameInstances.length; i++) {
@@ -75,6 +108,14 @@ var AppProxy = function (wss, app) {
                 }
             }
         })
+    };
+
+    self.setSrvIdCookie = function appSetSrvIdCookie(id, res) {
+        if (id) {
+            res.setHeader('Set-Cookie', cookie.serialize('NB_SRVID', id, {
+                path: '/',
+            }));
+        }
     };
 
     if (config.CHECK_VERSION) {
