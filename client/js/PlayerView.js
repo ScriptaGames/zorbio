@@ -150,6 +150,11 @@ ZOR.PlayerView.prototype.setCameraControls = function ZORPlayerViewSetCameraCont
 };
 
 ZOR.PlayerView.prototype.adjustCamera = function ZORPlayerViewAdjustCamera(scale) {
-    this.camera_controls.minDistance = scale / Math.tan( Math.PI * camera.fov / 360 ) + 100;
-    this.camera_controls.maxDistance = this.camera_controls.minDistance;
+    // var minDistance = scale / Math.tan( Math.PI * camera.fov / 360 ) + 100;
+    // https://www.desmos.com/calculator/83upindgbm
+    var newDist = (Math.ceil(scale / 13) * 30) + 75;
+    var minDistance = UTIL.lerp(this.camera_controls.minDistance, newDist, 0.1);
+    console.log(minDistance);
+    this.camera_controls.minDistance = minDistance;
+    // this.camera_controls.maxDistance = this.camera_controls.minDistance;
 };
