@@ -413,7 +413,8 @@ ZOR.UI = function ZORUI() {
      * from the server.
      */
     function get_updater() {
-        return _.throttle( engine.update.bind(engine), 1000 );
+        // return _.throttle( engine.update.bind(engine), 10000 );
+        return _.noop;
     }
 
     /**

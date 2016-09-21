@@ -142,7 +142,7 @@ ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
 ZOR.PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
     this.mainSphere.scale.set(scale, scale, scale);
     this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
-    this.mainSphere.geometry.computeBoundingSphere();
+    // this.mainSphere.geometry.computeBoundingSphere();
 };
 
 ZOR.PlayerView.prototype.setCameraControls = function ZORPlayerViewSetCameraControls(camera_controls) {

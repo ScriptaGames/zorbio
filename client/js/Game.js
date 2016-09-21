@@ -242,8 +242,6 @@ function createScene() {
         playerFogCenter.copy(fogCenter);
         foodController.update(fogCenter);
 
-        ZOR.UI.update();
-
         render();
     }
 
