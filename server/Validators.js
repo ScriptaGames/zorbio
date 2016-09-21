@@ -247,7 +247,12 @@ Validators.playerSphereScale = function (sphere) {
  */
 Validators.validAlphaKey = function ZORValidatorsValidAlphaKey(key) {
     if (!config.REQUIRE_ALPHA_KEY) return true;
-    return _.includes(alphakeys, key);
+
+    if (key) {
+        return _.includes(alphakeys, key.toUpperCase());
+    }
+
+    return false;
 };
 
 
