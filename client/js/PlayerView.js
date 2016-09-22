@@ -16,6 +16,8 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.playerColor = config.COLORS[model.sphere.color];
     this.skinName = model.sphere.skin;
 
+    this.cameraMinDistance = config.GET_CAMERA_MIN_DISTANCE(model.sphere.scale);
+
     this.skin = ZOR.PlayerSkins[this.skinName || 'default'](this);
 
     this.geometry = new THREE.SphereGeometry(
@@ -151,8 +153,21 @@ ZOR.PlayerView.prototype.setCameraControls = function ZORPlayerViewSetCameraCont
 
 ZOR.PlayerView.prototype.adjustCamera = function ZORPlayerViewAdjustCamera(scale) {
     var newDist = config.GET_CAMERA_MIN_DISTANCE(scale);
-    var minDistance = UTIL.lerp(this.camera_controls.minDistance, newDist, 0.03);
-    console.log(minDistance);
-    this.camera_controls.minDistance = minDistance;
-    // this.camera_controls.maxDistance = this.camera_controls.minDistance;
+
+    this.camera_controls.minDistance = UTIL.lerp(this.camera_controls.minDistance, this.cameraMinDistance, 0.03);
+
+    if (newDist != this.cameraMinDistance) {
+        if (newDist != this.next_min_distance) {
+            // Step point reached, set save size at step point for buffer switch
+            this.next_min_distance = newDist;
+            this.size_at_step_point = scale;
+            console.log("Zoom step point reached size, next distance: ", scale, newDist);
+        }
+
+        if (Math.abs(this.size_at_step_point - scale) >= config.CAMERA_ZOOM_STEP_BUFFER) {
+            // buffer reached, now switch. See: https://github.com/Jared-Sprague/zorbio/issues/273
+            console.log("New camera minDistance: ", newDist);
+            this.cameraMinDistance = newDist;
+        }
+    }
 };

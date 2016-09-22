@@ -207,6 +207,7 @@ config.TITLE_CAMERA_SPIN_SPEED = 0.001;
 config.CAMERA_ZOOM_STEP_SIZE = 0.015;
 config.CAMERA_ZOOM_DISTANCE_INITIAL = 100;
 config.CAMERA_ZOOM_DISTANCE_FINAL = 500;
+config.CAMERA_ZOOM_STEP_BUFFER = 0.5;  // size buffer before zooming out or zooming in to prevent flip-flopping
 config.CAMERA_ZOOM_STEP_S = (config.CAMERA_ZOOM_DISTANCE_FINAL - config.CAMERA_ZOOM_DISTANCE_INITIAL) / (config.MAX_PLAYER_RADIUS - config.INITIAL_PLAYER_RADIUS);
 config.GET_CAMERA_MIN_DISTANCE = function getCameraMinDistance(r) {
     //https://www.desmos.com/calculator/ceeki1bpbk
