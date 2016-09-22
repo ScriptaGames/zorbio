@@ -200,10 +200,24 @@ config.LAG_SCALE_ENABLE        = true;
 config.REQUIRED_WEBGL_EXTENSIONS = ['ANGLE_instanced_arrays'];
 
 ////////////////////////////////////////////////////////////////////////
-//                            UI SETTINGS                             //
+//                            CAMERA SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
 config.TITLE_CAMERA_SPIN_SPEED = 0.001;
+config.CAMERA_ZOOM_STEP_SIZE = 0.015;
+config.CAMERA_ZOOM_DISTANCE_INITIAL = 100;
+config.CAMERA_ZOOM_DISTANCE_FINAL = 500;
+config.CAMERA_ZOOM_STEP_S = (config.CAMERA_ZOOM_DISTANCE_FINAL - config.CAMERA_ZOOM_DISTANCE_INITIAL) / (config.MAX_PLAYER_RADIUS - config.INITIAL_PLAYER_RADIUS);
+config.GET_CAMERA_MIN_DISTANCE = function getCameraMinDistance(r) {
+    //https://www.desmos.com/calculator/ceeki1bpbk
+    return (Math.floor(r * config.CAMERA_ZOOM_STEP_S * config.CAMERA_ZOOM_STEP_SIZE) / config.CAMERA_ZOOM_STEP_SIZE) + config.CAMERA_ZOOM_DISTANCE_INITIAL;
+};
+
+////////////////////////////////////////////////////////////////////////
+//                            UI SETTINGS                             //
+////////////////////////////////////////////////////////////////////////
+
+
 config.COLORS = [
     // new colors
     '#e5353a',
