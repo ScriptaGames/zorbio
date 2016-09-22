@@ -15,7 +15,7 @@ var config = {};
 
 config.DEBUG = false;
 config.AUTO_PLAY = false;
-config.REQUIRE_ALPHA_KEY = false;
+config.REQUIRE_ALPHA_KEY = true;
 
 ////////////////////////////////////////////////////////////////////////
 //                           WORLD SETTINGS                           //
@@ -30,8 +30,8 @@ config.MAX_BOT_RADIUS   = 100;
 //                          NETWORK SETTINGS                          //
 ////////////////////////////////////////////////////////////////////////
 
-config.PORT                     = 31000;  // Port the server will listen on for both http and websocket server
-config.CLIENT_PORT              = 80;     // Port that the WebSocket client will connect to
+config.HTTP_PORT                = 8080;   // Port the server will listen on for both http and websocket server
+config.WS_PORT                  = 31000;  // Port that the WebSocket client will connect to
 config.NUM_GAME_INSTANCES       = 4;      // How many game instances to spawn on the server
 config.MAX_PLAYERS_PER_INSTANCE = 25;     // Max players per instance
 config.HEARTBEAT_ENABLE         = true;

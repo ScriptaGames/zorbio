@@ -37,7 +37,8 @@ var MainServer = function () {
      */
     self.setupVariables = function () {
         //  Set the environment variables we need.
-        self.port = process.env.PORT || config.PORT;
+        self.http_port = process.env.HTTP_PORT || config.HTTP_PORT;
+        self.ws_port = process.env.WS_PORT || config.WS_PORT;
     };
 
 
@@ -83,7 +84,7 @@ var MainServer = function () {
 
         // Set up WebSocket Server
         var options = {
-            server: self.httpServer,
+            port: self.ws_port,
         };
 
         if (config.CHECK_ORIGIN) {
@@ -128,8 +129,8 @@ var MainServer = function () {
      */
     self.start = function () {
         //  Start the app on the specific interface (and port).
-        self.httpServer.listen(self.port, function () {
-            console.log("Zorbio v" + packageJson.version + "-" + packageJson.build + " is listening on http://localhost:" + self.port);
+        self.httpServer.listen(self.http_port, function () {
+            console.log("Zorbio v" + packageJson.version + "-" + packageJson.build + " is listening on http://localhost:" + self.http_port);
         });
     };
 };

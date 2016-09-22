@@ -13,7 +13,7 @@ var NB_SRVID = '';
 var interval_id_heartbeat;
 
 function connectToServer() {
-    var uri = new URI('ws://' + config.BALANCER + ':' + config.CLIENT_PORT);
+    var uri = new URI('ws://' + config.BALANCER + ':' + config.WS_PORT);
 
     ws = new WebSocket( uri.toString() );
     ws.binaryType = 'arraybuffer';
