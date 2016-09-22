@@ -324,12 +324,14 @@ function updateActors() {
             if (!player || (actor.id !== player.getSphereId())) {
                 var otherPlayer = ZOR.Game.players[actor.playerId];
                 if (otherPlayer && otherPlayer.view) {
+                    // TODO: predictive movement being iterated on via possible server movement
+                    // updateActors.runningActorUpdateGap = 0.99 * updateActors.runningActorUpdateGap + 0.01 * (actorUpdateGap || config.TICK_FAST_INTERVAL);
+                    // //console.log(updateActors.runningActorUpdateGap, actorUpdateGap);
+                    // var latency = (updateActors.runningActorUpdateGap); // use ping or assume a latency if ping not available
+                    // var velocityScale = 16.66667 * ZOR.LagScale.get() / latency;
+                    // actor.position.add(actor.velocity.clone().multiplyScalar(velocityScale));
+
                     // update actor
-                    updateActors.runningActorUpdateGap = 0.99 * updateActors.runningActorUpdateGap + 0.01 * (actorUpdateGap || config.TICK_FAST_INTERVAL);
-                    //console.log(updateActors.runningActorUpdateGap, actorUpdateGap);
-                    var latency = (updateActors.runningActorUpdateGap); // use ping or assume a latency if ping not available
-                    var velocityScale = 16.66667 * ZOR.LagScale.get() / latency;
-                    actor.position.add(actor.velocity.clone().multiplyScalar(velocityScale));
                     otherPlayer.updatePosition(actor.position);
                     otherPlayer.updateScale(actor.scale);
                     otherPlayer.updateDrain(actor.drain_target_id);

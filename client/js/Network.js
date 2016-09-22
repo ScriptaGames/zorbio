@@ -194,11 +194,13 @@ function setupSocket(ws) {
             var clientActor = zorbioModel.getActorById(serverActor.id);
 
             if (clientActor) {
-                var last_pos_update = (clientActor.lastPosition || clientActor.position).clone();
+                //TODO: working on server movement, or other alternatives to predictive movement
+                // var last_pos_update = (clientActor.lastPosition || clientActor.position).clone();
+                // clientActor.lastPosition = clientActor.position.clone();
+                // clientActor.velocity = clientActor.position.clone().sub(last_pos_update);
+
                 clientActor.position.copy(serverActor.position);
                 clientActor.scale = serverActor.scale;
-                clientActor.lastPosition = clientActor.position.clone();
-                clientActor.velocity = clientActor.position.clone().sub(last_pos_update);
 
                 if (clientActor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
                     clientActor.drain_target_id = serverActor.drain_target_id;
