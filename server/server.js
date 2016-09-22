@@ -39,6 +39,8 @@ var MainServer = function () {
         //  Set the environment variables we need.
         self.http_port = process.env.HTTP_PORT || config.HTTP_PORT;
         self.ws_port = process.env.WS_PORT || config.WS_PORT;
+
+        console.log("http_port, ws_port", self.http_port, self.ws_port)
     };
 
 

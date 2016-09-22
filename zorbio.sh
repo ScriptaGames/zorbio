@@ -5,16 +5,22 @@
 #-------------------------------------------------------------------------------
 
 NUM_NODES=1
-PORT=31000
+HTTP_PORT=8080
+WS_PORT=31000
 
 if [ -v BALANCER_NODES ]; then
     echo "Using environment variable BALANCER_NODES: ${BALANCER_NODES}"
     NUM_NODES=${BALANCER_NODES}
 fi
 
-if [ -v NODE_PORT ]; then
-    echo "Using environment variable NODE_PORT: ${NODE_PORT}"
-    PORT=${NODE_PORT}
+if [ -v HTTP_PORT_START ]; then
+    echo "Using environment variable HTTP_PORT_START: ${HTTP_PORT_START}"
+    HTTP_PORT=${HTTP_PORT_START}
+fi
+
+if [ -v WS_PORT_START ]; then
+    echo "Using environment variable WS_PORT_START: ${WS_PORT_START}"
+    WS_PORT=${WS_PORT_START}
 fi
 
 function start {
@@ -22,16 +28,25 @@ function start {
     # Check if environemt variable BALANCER_NODES is greater than 0 if so fork multiple processes
     if [ ${NUM_NODES} -gt 1 ]; then
         BAL_COUNT=0
-        NEXT_PORT=${PORT}
+
+        NEXT_WS_PORT=${WS_PORT}
+        NEXT_HTTP_PORT=${HTTP_PORT}
+
         while [ ${BAL_COUNT} -lt ${NUM_NODES} ]; do
-            let NEXT_PORT=PORT+BAL_COUNT
-            echo "Starting next zorbio process on port: ${NEXT_PORT}"
-            PORT=${NEXT_PORT} /usr/bin/pm2 start --name="zorbio-$BAL_COUNT" /usr/share/games/zorbio/server/server.js -- dist
+            let NEXT_HTTP_PORT=HTTP_PORT+BAL_COUNT
+            let NEXT_WS_PORT=WS_PORT+BAL_COUNT
+
+            echo "Starting next zorbio process on http_port: ${NEXT_HTTP_PORT}"
+            echo "Starting next zorbio process on ws_port: ${NEXT_WS_PORT}"
+
+            HTTP_PORT=${NEXT_HTTP_PORT} WS_PORT=${NEXT_WS_PORT} /usr/bin/pm2 start --name="zorbio-$BAL_COUNT" /usr/share/games/zorbio/server/server.js -- dist
+
             let BAL_COUNT=BAL_COUNT+1
         done
     else
-        echo "Starting single zorbio process on port ${PORT}"
-        PORT=${PORT} /usr/bin/pm2 start --name="zorbio-0" /usr/share/games/zorbio/server/server.js -- dist
+        echo "Starting next zorbio process on http_port: ${HTTP_PORT}"
+        echo "Starting single zorbio process on ws port: ${WS_PORT}"
+        HTTP_PORT=${HTTP_PORT} WS_PORT=${WS_PORT} /usr/bin/pm2 start --name="zorbio-0" /usr/share/games/zorbio/server/server.js -- dist
     fi
 }
 
