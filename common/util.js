@@ -568,5 +568,16 @@ UTIL.filterName = function UTILFilterName(name) {
     return filtered_name;
 };
 
+/**
+ * Lerp two values
+ * @param v0
+ * @param v1
+ * @param t
+ * @returns {number}
+ */
+UTIL.lerp = function UTILLerp(v0, v1, t) {
+    return (1-t)*v0 + t*v1;
+};
+
 // if we're in nodejs, export the root UTIL object
 if (NODEJS) module.exports = UTIL;
