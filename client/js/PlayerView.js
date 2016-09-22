@@ -15,6 +15,7 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.is_current_player = current || false;
     this.playerColor = config.COLORS[model.sphere.color];
     this.skinName = config.SKINS[config.SKINS.indexOf(model.sphere.skin)];
+    this.boostedLastFrame = false;
 
     this.skin = ZOR.PlayerSkins[this.skinName || 'default'](this);
 
@@ -57,43 +58,46 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
     this.trail.mesh.frustumCulled = false;
     this.trail.addEmitter( this.trailEmitter1 );
     this.trail.addEmitter( this.trailEmitter2 );
-    this.mainSphere.add( this.trail.mesh );
-    // this.scene.add( this.trail.mesh );
+    this.scene.add( this.trail.mesh );
 };
 
 ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
+    var scale          = this.mainSphere.scale.x;
     var cameraDistance = this.camera_controls ? this.camera_controls.maxDistance : 100;
-    var leftTrailPos = camera.localToWorld(new THREE.Vector3( -this.mainSphere.scale.x, 0, -cameraDistance ));
-    var rightTrailPos = camera.localToWorld(new THREE.Vector3( this.mainSphere.scale.x, 0, -cameraDistance ));
+    var leftTrailPos   = camera.localToWorld(new THREE.Vector3( -scale, 0, -cameraDistance ));
+    var rightTrailPos  = camera.localToWorld(new THREE.Vector3(  scale, 0, -cameraDistance ));
 
     // update trail orientation
-    // this.trail.mesh.up.copy(camera.up);
+    this.trail.mesh.up.copy(camera.up);
     // this.trail.mesh.lookAt(camera.position);
 
-    // this.trailEmitter1.position._value.x = leftTrailPos.x;
-    // this.trailEmitter1.position._value.y = leftTrailPos.y;
-    // this.trailEmitter1.position._value.z = leftTrailPos.z;
+    this.trailEmitter1.position._value.x = leftTrailPos.x;
+    this.trailEmitter1.position._value.y = leftTrailPos.y;
+    this.trailEmitter1.position._value.z = leftTrailPos.z;
 
-    // this.trailEmitter2.position._value.x = rightTrailPos.x;
-    // this.trailEmitter2.position._value.y = rightTrailPos.y;
-    // this.trailEmitter2.position._value.z = rightTrailPos.z;
+    this.trailEmitter2.position._value.x = rightTrailPos.x;
+    this.trailEmitter2.position._value.y = rightTrailPos.y;
+    this.trailEmitter2.position._value.z = rightTrailPos.z;
 
-    var scale = this.mainSphere.scale.x * (this.skin.trail.customScale || 1);
-    // this.trailEmitter1.position._spreadClamp.setX( scale );
-    // this.trailEmitter1.position._spread.setX( scale );
     this.trailEmitter1.size._value =  [scale/3];
     this.trailEmitter2.size._value =  [scale/3];
 
     var boosting = this.model.abilities.speed_boost.isActive();
 
     if (boosting) {
-        this.trailEmitter1.activeMultiplier = 1;
-        this.trailEmitter2.activeMultiplier = 1;
+        this.trailEmitter1.opacity._value =  [1.0];
+        this.trailEmitter2.opacity._value =  [1.0];
+        this.boostedLastFrame = true;
     }
     else {
-        // this.trailEmitter1.activeMultiplier = 0.1;
-        this.trailEmitter1.activeMultiplier = 0.1;
-        this.trailEmitter2.activeMultiplier = 0.1;
+        this.trailEmitter1.opacity._value =  [0.35];
+        this.trailEmitter2.opacity._value =  [0.35];
+        this.boostedLastFrame = false;
+    }
+
+    if (this.boostedLastFrame) {
+        this.trailEmitter1.updateFlags.position = true;
+        this.trailEmitter2.updateFlags.position = true;
     }
 
     this.trailEmitter1.updateFlags.position = true;

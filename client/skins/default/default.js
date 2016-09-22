@@ -31,7 +31,6 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
             // blending       : THREE.AdditiveBlending,
         },
         trail: {
-            customScale: 0.5,
             group: {
                 scale: Math.max(window.innerWidth, window.innerHeight),
                 texture: {
