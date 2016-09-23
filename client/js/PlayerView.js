@@ -43,22 +43,37 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     ZOR.Game.player_meshes.push(this.mainSphere);  // store mesh for raycaster search
 
     this.initTrail();
+    this.drawTrail(this.mainSphere.position);
 
     scene.add( this.mainSphere );
 };
 
 ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
-    this.trail = particleGroup = new SPE.Group(this.skin.trail.group);
+    this.trail = {
+        positions    : [],
+        subdivisions : 20,
+        geometry     : new THREE.Geometry(),
+    };
 
-    this.trailEmitter1 = new SPE.Emitter(this.skin.trail.emitter);
-    this.trailEmitter2 = new SPE.Emitter(this.skin.trail.emitter);
+    // create some starting points for the trail
+    var i = 30;
+    while(i--) {
+        this.trail.positions.push(new THREE.Vector3(0,0,0));
+    }
 
-    this.trailClock = new THREE.Clock();
-    this.trail.mesh.renderOrder = 1;
-    this.trail.mesh.frustumCulled = false;
-    this.trail.addEmitter( this.trailEmitter1 );
-    this.trail.addEmitter( this.trailEmitter2 );
-    this.scene.add( this.trail.mesh );
+    this.trail.curve = new THREE.SplineCurve3([
+        position
+    ]);
+};
+
+ZOR.PlayerView.prototype.drawTrail = function ZORPlayerDrawTrail(position) {
+    this.trail = {};
+    this.trail.geometry.vertices = this.trail.curve.getPoints( SUBDIVISIONS );
+
+    this.trail.material = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 2 } );
+    this.trail.line = new THREE.Line(this.trail.geometry, this.trail.material);
+    window.trail = this.trail;
+    this.scene.add(this.trail.line);
 };
 
 ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
@@ -67,45 +82,6 @@ ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
     var leftTrailPos   = camera.localToWorld(new THREE.Vector3( -scale, 0, -cameraDistance ));
     var rightTrailPos  = camera.localToWorld(new THREE.Vector3(  scale, 0, -cameraDistance ));
 
-    // update trail orientation
-    this.trail.mesh.up.copy(camera.up);
-    // this.trail.mesh.lookAt(camera.position);
-
-    this.trailEmitter1.position._value.x = leftTrailPos.x;
-    this.trailEmitter1.position._value.y = leftTrailPos.y;
-    this.trailEmitter1.position._value.z = leftTrailPos.z;
-
-    this.trailEmitter2.position._value.x = rightTrailPos.x;
-    this.trailEmitter2.position._value.y = rightTrailPos.y;
-    this.trailEmitter2.position._value.z = rightTrailPos.z;
-
-    this.trailEmitter1.size._value =  [scale/3];
-    this.trailEmitter2.size._value =  [scale/3];
-
-    var boosting = this.model.abilities.speed_boost.isActive();
-
-    if (boosting) {
-        this.trailEmitter1.opacity._value =  [1.0];
-        this.trailEmitter2.opacity._value =  [1.0];
-        this.boostedLastFrame = true;
-    }
-    else {
-        this.trailEmitter1.opacity._value =  [0.35];
-        this.trailEmitter2.opacity._value =  [0.35];
-        this.boostedLastFrame = false;
-    }
-
-    if (this.boostedLastFrame) {
-        this.trailEmitter1.updateFlags.position = true;
-        this.trailEmitter2.updateFlags.position = true;
-    }
-
-    this.trailEmitter1.updateFlags.position = true;
-    this.trailEmitter2.updateFlags.position = true;
-    this.trailEmitter1.updateFlags.size = true;
-    this.trailEmitter2.updateFlags.size = true;
-
-    this.trail.tick( this.trailClock.getDelta() );
 };
 
 ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
