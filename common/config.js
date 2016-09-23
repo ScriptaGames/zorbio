@@ -204,7 +204,7 @@ config.REQUIRED_WEBGL_EXTENSIONS = ['ANGLE_instanced_arrays'];
 ////////////////////////////////////////////////////////////////////////
 
 config.TITLE_CAMERA_SPIN_SPEED = 0.001;
-config.CAMERA_ZOOM_STEP_SIZE = 0.015;
+config.CAMERA_ZOOM_STEP_SIZE = 0.0175;
 config.CAMERA_ZOOM_DISTANCE_INITIAL = 100;
 config.CAMERA_ZOOM_DISTANCE_FINAL = 500;
 config.CAMERA_ZOOM_STEP_BUFFER = 0.5;  // size buffer before zooming out or zooming in to prevent flip-flopping
