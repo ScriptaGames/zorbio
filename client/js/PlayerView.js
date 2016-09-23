@@ -157,17 +157,36 @@ ZOR.PlayerView.prototype.adjustCamera = function ZORPlayerViewAdjustCamera(scale
     this.camera_controls.minDistance = UTIL.lerp(this.camera_controls.minDistance, this.cameraMinDistance, 0.03);
 
     if (newDist != this.cameraMinDistance) {
-        if (newDist != this.next_min_distance) {
-            // Step point reached, set save size at step point for buffer switch
-            this.next_min_distance = newDist;
-            this.size_at_step_point = scale;
-            console.log("Zoom step point reached size, next distance: ", scale, newDist);
-        }
-
-        if (Math.abs(this.size_at_step_point - scale) >= config.CAMERA_ZOOM_STEP_BUFFER) {
+        if (this.shouldChangeMinDist(newDist)) {
             // buffer reached, now switch. See: https://github.com/Jared-Sprague/zorbio/issues/273
             console.log("New camera minDistance: ", newDist);
             this.cameraMinDistance = newDist;
         }
     }
+};
+
+/**
+ * Returns true if the camera min distance should change
+ * @param calulatedDist
+ * @returns {boolean}
+ */
+ZOR.PlayerView.prototype.shouldChangeMinDist = function ZORPlayerViewShouldChangeMinDist(calulatedDist) {
+    var curDist = this.cameraMinDistance;
+    var curScale = this.model.sphere.scale;
+    var currentDistanceStepRange = config.CAMERA_ZOOM_STEPS[Math.floor(curDist)];
+
+    if (curDist > calulatedDist) {
+        // Zoom in if buffer dist met
+        if (currentDistanceStepRange.min - curScale >= config.CAMERA_ZOOM_STEP_BUFFER) {
+            return true;
+        }
+    }
+    else if (curDist < calulatedDist) {
+        // Zoom out if buffer dist met
+        if (curScale - currentDistanceStepRange.max >= config.CAMERA_ZOOM_STEP_BUFFER) {
+            return true;
+        }
+    }
+
+    return false;
 };

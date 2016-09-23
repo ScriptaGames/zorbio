@@ -213,6 +213,38 @@ config.GET_CAMERA_MIN_DISTANCE = function getCameraMinDistance(r) {
     //https://www.desmos.com/calculator/ceeki1bpbk
     return (Math.floor(r * config.CAMERA_ZOOM_STEP_S * config.CAMERA_ZOOM_STEP_SIZE) / config.CAMERA_ZOOM_STEP_SIZE) + config.CAMERA_ZOOM_DISTANCE_INITIAL;
 };
+config.CAMERA_ZOOM_STEPS = {};
+function generateCameraZoomSteps() {
+    var scale = config.INITIAL_PLAYER_RADIUS;
+    var min_scale = 0;
+    var cur_distance = config.GET_CAMERA_MIN_DISTANCE(scale);
+    var new_dist = 0;
+
+    while(scale <= config.MAX_PLAYER_RADIUS) {
+        new_dist = config.GET_CAMERA_MIN_DISTANCE(scale);
+
+        if (new_dist > cur_distance) {
+            var dist = Math.floor(cur_distance);
+
+            config.CAMERA_ZOOM_STEPS[dist] = {
+                min: min_scale,
+                max: scale,
+            };
+
+            min_scale = scale;
+            cur_distance = new_dist;
+        }
+
+        scale += 0.1;
+    }
+
+    // final step
+    config.CAMERA_ZOOM_STEPS[Math.floor(new_dist)] = {
+        min: min_scale,
+        max: Infinity,
+    };
+}
+generateCameraZoomSteps();
 
 ////////////////////////////////////////////////////////////////////////
 //                            UI SETTINGS                             //
