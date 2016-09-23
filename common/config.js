@@ -48,6 +48,7 @@ config.BIN_PP_POSITIONS_LENGTH  = 29;
 config.CHECK_ORIGIN             = true;
 config.RECENT_CLIENT_DATA_LENGTH = 100;   // how many recent data points to keep from the client like pings
 config.CLOSE_NO_RESTART         = 4000;    // 4000-4999 application reserved close code in WebSocket spec
+config.STATUS_LOG_DELAY         = 10000;  // how many milliseconds to wait between status log output
 
 if (!NODEJS) {
     // Gets the name of the nearest load balancer

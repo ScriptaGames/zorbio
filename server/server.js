@@ -15,6 +15,7 @@ var config          = require('../common/config.js');
 var packageJson     = require('../package.json');
 var _               = require('lodash');
 var url             = require('url');
+var validUrl        = require('valid-url');
 
 // Patch console.x methods in order to add timestamp information
 require("console-stamp")(console, {pattern: "mm/dd/yyyy HH:MM:ss.l"});
@@ -92,13 +93,16 @@ var MainServer = function () {
         if (config.CHECK_ORIGIN) {
             options.verifyClient = function wssVerifyClient(info, callback) {
                 // make sure the origin is one of the approved origins
-                var origin_values = _.values(config.BALANCERS);
-                var hostname = url.parse(info.origin).hostname;
-                var index = origin_values.indexOf(hostname);
-                if (index != -1 && hostname != 'localhost') {
-                    callback(true);  // valid origin
-                    return true;
+                if (validUrl.is_web_uri(info.origin)) {
+                    var origin_values = _.values(config.BALANCERS);
+                    var hostname = url.parse(info.origin).hostname;
+                    var index = origin_values.indexOf(hostname);
+                    if (index != -1 && hostname != 'localhost') {
+                        callback(true);  // valid origin
+                        return true;
+                    }
                 }
+                console.warn("Invalid origin: ", info.origin);
                 callback(false);
                 return false;
             };

@@ -745,7 +745,7 @@ var AppServer = function (id, app) {
         self.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.getClientCount() + ', Players: ' + self.model.players.length + ', socket_uuid_map: ' + Object.getOwnPropertyNames(self.socket_uuid_map).length);
     }
 
-    var logServerStatusNth = UTIL.nth(logServerStatus, 40);
+    var logServerStatusNth = UTIL.nth(logServerStatus, Math.floor(config.STATUS_LOG_DELAY / config.TICK_FAST_INTERVAL));
 
     /**
      * Main server loop for general updates to the client that should be as fast as
@@ -795,9 +795,6 @@ var AppServer = function (id, app) {
     self.isFull = function appIsFull() {
         return self.getClientCount() >= config.MAX_PLAYERS_PER_INSTANCE;
     };
-
-
-
 
     /**
      * Adds a bot to the game if the population is to low
