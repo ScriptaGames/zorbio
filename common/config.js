@@ -1,14 +1,15 @@
+var ZOR = ZOR || {};
+
 // Configuration values.  Values defined here are available to both the client and
 // the server.
 
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
-
 if (NODEJS) {
     global.self = {}; // threejs expects there to be a global named 'self'... for some reason..
     global.THREE = require('three');
-    var _ = require('lodash');
-    var ZOR = { Env: require('../common/environment.js') };
+    var _ = _ || require('lodash');
+    ZOR.Env = require('../common/environment.js');
 }
 
 var config = {};
@@ -60,7 +61,7 @@ if (!NODEJS) {
             return balancer;  // local storage is set return it
         }
 
-        var linode_location = linodeNearLocation();
+        var linode_location = window.linodeNearLocation();
 
         console.log("Nearest linode location: ", linode_location);
 
