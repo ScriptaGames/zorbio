@@ -221,7 +221,7 @@ function generateCameraZoomSteps() {
     var cur_distance = config.GET_CAMERA_MIN_DISTANCE(scale);
     var new_dist = 0;
 
-    while(scale <= config.MAX_PLAYER_RADIUS) {
+    while(scale <= config.MAX_PLAYER_RADIUS * 2) {
         new_dist = config.GET_CAMERA_MIN_DISTANCE(scale);
 
         if (new_dist > cur_distance) {
@@ -238,12 +238,6 @@ function generateCameraZoomSteps() {
 
         scale += 0.1;
     }
-
-    // final step
-    config.CAMERA_ZOOM_STEPS[Math.floor(new_dist)] = {
-        min: min_scale,
-        max: Infinity,
-    };
 }
 generateCameraZoomSteps();
 
