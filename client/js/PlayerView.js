@@ -68,7 +68,7 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
 
     // Create the line mesh
     this.trail_line = new THREE.MeshLine();
-    this.trail_line.setGeometry( this.trail_geometry, function( p ) { return 1 - p; } ); // makes width taper
+    this.trail_line.setGeometry( this.trail_geometry, function( p ) { return p; } ); // makes width taper
 
     // Create the line material
     this.trail_material = new THREE.MeshLineMaterial( {
