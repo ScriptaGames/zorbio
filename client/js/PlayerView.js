@@ -49,15 +49,17 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 };
 
 ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
-    this.trail = particleGroup = new SPE.Group(this.skin.trail.group);
-
-    this.trailEmitter = new SPE.Emitter(this.skin.trail.emitter);
-
-    this.trailClock = new THREE.Clock();
-    this.trail.mesh.renderOrder = 1;
-    this.trail.mesh.frustumCulled = false;
-    this.trail.addEmitter( this.trailEmitter );
-    this.scene.add( this.trail.mesh );
+    // if (this.is_current_player) return;
+    //
+    // this.trail = particleGroup = new SPE.Group(this.skin.trail.group);
+    //
+    // this.trailEmitter = new SPE.Emitter(this.skin.trail.emitter);
+    //
+    // this.trailClock = new THREE.Clock();
+    // this.trail.mesh.renderOrder = 1;
+    // this.trail.mesh.frustumCulled = false;
+    // this.trail.addEmitter( this.trailEmitter );
+    // this.scene.add( this.trail.mesh );
 
     // Create the line geometry used for storing verticies
     this.trail_geometry = new THREE.Geometry();
@@ -74,15 +76,15 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
     this.trail_material = new THREE.MeshLineMaterial( {
         useMap: 0,
         color: new THREE.Color( this.playerColor ),
-        opacity: 1,
+        opacity: 0.25,
         resolution: new THREE.Vector2( window.innerWidth, window.innerHeight ),
         sizeAttenuation: 1,
         lineWidth: 2,
         near: camera.near,
         far: camera.far,
-        depthTest: true,
+        depthTest: false,
         blending: THREE.AdditiveBlending,
-        transparent: false,
+        transparent: true,
         side: THREE.DoubleSide
     });
 
@@ -93,48 +95,45 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
 
 ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
     this.trail_geometry.vertices.push(this.mainSphere.position.clone());
-
-    if (this.trail_geometry.vertices.length > config.TRAIL_LINE_LENGTH) {
-        this.trail_geometry.vertices.shift();  // remove oldest position
-    }
+    this.trail_geometry.vertices.shift();  // remove oldest position
 
     this.trail_line.setGeometry(this.trail_geometry, function(p) {
         return p;  // makes width taper
     });
 
-    var oldPos = this.trailEmitter.position._value.clone();
-    var newPos = this.mainSphere.position.clone();
-
-    this.trailEmitter.position._value.x = newPos.x;
-    this.trailEmitter.position._value.y = newPos.y;
-    this.trailEmitter.position._value.z = newPos.z;
-
-    var scale = this.mainSphere.scale.x * (this.skin.trail.customScale || 1);
-    this.trailEmitter.position._spreadClamp.setX( scale );
-    this.trailEmitter.position._spread.setX( scale );
-    this.trailEmitter.position._radius = scale;
-    this.trailEmitter.size._value =  [scale/3, scale*2/6, scale*1/9, 0];
-
-    var boosting = this.model.abilities.speed_boost.isActive();
-
-    if (boosting) {
-        this.trailEmitter.activeMultiplier = 1;
-    }
-    else {
-        this.trailEmitter.activeMultiplier = 0.1;
-    }
-
-    // var speed = oldPos.clone().sub(newPos).length();
-    // var diffPos = newPos.sub(oldPos).multiplyScalar(speed);
-
-    // this.trailEmitter.velocity._value.x = diffPos.x;
-    // this.trailEmitter.velocity._value.y = diffPos.y;
-
-    this.trailEmitter.updateFlags.position = true;
-    this.trailEmitter.updateFlags.velocity = true;
-    this.trailEmitter.updateFlags.size = true;
-
-    this.trail.tick( this.trailClock.getDelta() );
+    // var oldPos = this.trailEmitter.position._value.clone();
+    // var newPos = this.mainSphere.position.clone();
+    //
+    // this.trailEmitter.position._value.x = newPos.x;
+    // this.trailEmitter.position._value.y = newPos.y;
+    // this.trailEmitter.position._value.z = newPos.z;
+    //
+    // var scale = this.mainSphere.scale.x * (this.skin.trail.customScale || 1);
+    // this.trailEmitter.position._spreadClamp.setX( scale );
+    // this.trailEmitter.position._spread.setX( scale );
+    // this.trailEmitter.position._radius = scale;
+    // this.trailEmitter.size._value =  [scale/3, scale*2/6, scale*1/9, 0];
+    //
+    // var boosting = this.model.abilities.speed_boost.isActive();
+    //
+    // if (boosting) {
+    //     this.trailEmitter.activeMultiplier = 1;
+    // }
+    // else {
+    //     this.trailEmitter.activeMultiplier = 0.1;
+    // }
+    //
+    // // var speed = oldPos.clone().sub(newPos).length();
+    // // var diffPos = newPos.sub(oldPos).multiplyScalar(speed);
+    //
+    // // this.trailEmitter.velocity._value.x = diffPos.x;
+    // // this.trailEmitter.velocity._value.y = diffPos.y;
+    //
+    // this.trailEmitter.updateFlags.position = true;
+    // this.trailEmitter.updateFlags.velocity = true;
+    // this.trailEmitter.updateFlags.size = true;
+    //
+    // this.trail.tick( this.trailClock.getDelta() );
 };
 
 ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
@@ -166,8 +165,8 @@ ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(p
 
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
     this.drainView.dispose();
-    this.trail.emitters.forEach(function (emitter) { emitter.remove(); });
-    this.trail.dispose();
+    // this.trail.emitters.forEach(function (emitter) { emitter.remove(); });
+    // this.trail.dispose();
     scene.remove(this.trail_mesh);
     scene.remove(this.mainSphere);
 
@@ -186,7 +185,10 @@ ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
 ZOR.PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
     this.mainSphere.scale.set(scale, scale, scale);
     this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
-    this.mainSphere.geometry.computeBoundingSphere();
+
+    // Don't know if we need to do this every frame or at all
+    // It is very expensive, accounts for 50% of the time spent in animate()
+    // this.mainSphere.geometry.computeBoundingSphere();
 };
 
 ZOR.PlayerView.prototype.setCameraControls = function ZORPlayerViewSetCameraControls(camera_controls) {
