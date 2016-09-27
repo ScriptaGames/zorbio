@@ -58,9 +58,50 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
     this.trail.mesh.frustumCulled = false;
     this.trail.addEmitter( this.trailEmitter );
     this.scene.add( this.trail.mesh );
+
+    // Create the line geometry used for storing verticies
+    this.trail_geometry = new THREE.Geometry();
+    for (var i = 0; i < config.TRAIL_LINE_LENGTH; i++) {
+        // must initialize it to the number of positions it will keep or it will throw an error
+        this.trail_geometry.vertices.push(this.mainSphere.position.clone());
+    }
+
+    // Create the line mesh
+    this.trail_line = new THREE.MeshLine();
+    this.trail_line.setGeometry( this.trail_geometry, function( p ) { return 1 - p; } ); // makes width taper
+
+    // Create the line material
+    this.trail_material = new THREE.MeshLineMaterial( {
+        useMap: 0,
+        color: new THREE.Color( this.playerColor ),
+        opacity: 1,
+        resolution: new THREE.Vector2( window.innerWidth, window.innerHeight ),
+        sizeAttenuation: 1,
+        lineWidth: 2,
+        near: camera.near,
+        far: camera.far,
+        depthTest: true,
+        blending: THREE.AdditiveBlending,
+        transparent: false,
+        side: THREE.DoubleSide
+    });
+
+    this.trail_mesh = new THREE.Mesh( this.trail_line.geometry, this.trail_material ); // this syntax could definitely be improved!
+    this.trail_mesh.frustumCulled = false;
+    this.scene.add( this.trail_mesh );
 };
 
 ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
+    this.trail_geometry.vertices.push(this.mainSphere.position.clone());
+
+    if (this.trail_geometry.vertices.length > config.TRAIL_LINE_LENGTH) {
+        this.trail_geometry.vertices.shift();  // remove oldest position
+    }
+
+    this.trail_line.setGeometry(this.trail_geometry, function(p) {
+        return p;  // makes width taper
+    });
+
     var oldPos = this.trailEmitter.position._value.clone();
     var newPos = this.mainSphere.position.clone();
 
@@ -127,6 +168,7 @@ ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
     this.drainView.dispose();
     this.trail.emitters.forEach(function (emitter) { emitter.remove(); });
     this.trail.dispose();
+    scene.remove(this.trail_mesh);
     scene.remove(this.mainSphere);
 
     // find the player mesh used for raycasting and remove it
