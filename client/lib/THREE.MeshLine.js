@@ -10,7 +10,7 @@ THREE.MeshLine = function() {
 	this.uvs = [];
 	this.counters = [];
 	this.geometry = new THREE.BufferGeometry();
-	
+
 	this.widthCallback = null;
 
 }
@@ -109,7 +109,7 @@ THREE.MeshLine.prototype.process = function() {
 		this.previous.push( v[ 0 ], v[ 1 ], v[ 2 ] );
 	}
 
-	for( var j = 1; j < l; j++ ) {	
+	for( var j = 1; j < l; j++ ) {
 		v = this.copyV3( j );
 		this.next.push( v[ 0 ], v[ 1 ], v[ 2 ] );
 		this.next.push( v[ 0 ], v[ 1 ], v[ 2 ] );
@@ -153,7 +153,7 @@ THREE.MeshLine.prototype.process = function() {
 		this.attributes.width.needsUpdate = true;
 		this.attributes.uv.copyArray(new Float32Array(this.uvs));
 		this.attributes.uv.needsUpdate = true;
-		this.attributes.index.copyArray(new Uint16Array(this.index));
+		this.attributes.index.copyArray(new Uint16Array(this.indices_array));
 		this.attributes.index.needsUpdate = true;
     }
 
@@ -280,7 +280,7 @@ THREE.MeshLineMaterial = function ( parameters ) {
 '	 	 ',
 '	 }',
 '    gl_FragColor = c;',
-'	 gl_FragColor.a = step(vCounters,visibility);',   
+'	 gl_FragColor.a = step(vCounters,visibility);',
 '}' ];
 
 	function check( v, d ) {
@@ -304,8 +304,8 @@ THREE.MeshLineMaterial = function ( parameters ) {
 	this.dashArray = check( parameters.dashArray, [] );
 	this.useDash = ( this.dashArray !== [] ) ? 1 : 0;
 	this.visibility = check( parameters.visibility, 1 );
-  
-	var material = new THREE.RawShaderMaterial( { 
+
+	var material = new THREE.RawShaderMaterial( {
 		uniforms:{
 			lineWidth: { type: 'f', value: this.lineWidth },
 			map: { type: 't', value: this.map },
@@ -335,7 +335,7 @@ THREE.MeshLineMaterial = function ( parameters ) {
 	delete parameters.far;
 	delete parameters.dashArray;
     delete parameters.visibility;
-  
+
 	material.type = 'MeshLineMaterial';
 
 	material.setValues( parameters );
