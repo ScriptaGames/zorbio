@@ -20,6 +20,7 @@ THREE.MeshLine.prototype.setGeometry = function( g, c ) {
 	this.widthCallback = c;
 
 	this.positions = [];
+    this.counters = [];
 
 	if( g instanceof THREE.Geometry ) {
 		for( var j = 0; j < g.vertices.length; j++ ) {
@@ -168,6 +169,51 @@ THREE.MeshLine.prototype.process = function() {
 	this.geometry.setIndex( this.attributes.index );
 
 }
+
+THREE.MeshLine.prototype.addPosition = function(position) {
+    // POSITIONS
+    this.positions.push( position.x, position.y, position.z );
+    this.positions.push( position.x, position.y, position.z );
+    for (var i = 0; i < 6; i++) {
+        // remove the oldest position pair
+        this.positions.shift();
+    }
+
+    // PREVIOUS
+    for (i = 0; i < 12; i++) {
+        // remove the oldest two position pairs
+        this.previous.shift();
+    }
+    var l = this.positions.length;
+    this.previous.unshift(this.positions[ 0 ], this.positions[ 1 ], this.positions[ 2 ]);
+    this.previous.unshift(this.positions[ 0 ], this.positions[ 1 ], this.positions[ 2 ]);
+    this.previous.push(this.positions[ l - 9 ], this.positions[ l - 8 ], this.positions[ l - 7 ]);
+    this.previous.push(this.positions[ l - 9 ], this.positions[ l - 8 ], this.positions[ l - 7 ]);
+
+    // NEXT
+    for (i = 0; i < 6; i++) {
+        // remove the oldest position pair
+        this.next.shift();
+    }
+    for (i = 0; i < 6; i++) {
+        // remove the position pair at the end
+        this.next.pop();
+    }
+    for (i = 0; i < 4; i++) {
+        this.next.push( position.x, position.y, position.z );
+    }
+
+    this.attributes.position.copyArray(new Float32Array(this.positions));
+    this.attributes.position.needsUpdate = true;
+    this.attributes.previous.copyArray(new Float32Array(this.previous));
+    this.attributes.previous.needsUpdate = true;
+    this.attributes.next.copyArray(new Float32Array(this.next));
+    this.attributes.next.needsUpdate = true;
+
+    this.geometry.addAttribute('position', this.attributes.position);
+    this.geometry.addAttribute('previous', this.attributes.previous);
+    this.geometry.addAttribute('next', this.attributes.next);
+};
 
 THREE.MeshLineMaterial = function ( parameters ) {
 
