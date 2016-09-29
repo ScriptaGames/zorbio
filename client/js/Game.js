@@ -531,8 +531,7 @@ function handleServerTick(serverTickData) {
     ZOR.expireLocks();
 }
 
-function handleSuccessfulPlayerCapture(targetPlayer) {
-    player.grow( config.PLAYER_CAPTURE_VALUE( targetPlayer.radius() ) );
+function handleSuccessfulPlayerCapture() {
     ZOR.Sounds.sfx.player_capture.play();
 }
 

@@ -181,7 +181,10 @@ ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
 ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
     this.mainSphere.scale.addScalar( amount );
     this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
-    this.mainSphere.geometry.computeBoundingSphere(); // compute the new bounding sphere after resizing
+
+    // Don't know if we need to do this every frame or at all
+    // It is very expensive, accounts for 50% of the time spent in animate()
+    // this.mainSphere.geometry.computeBoundingSphere(); // compute the new bounding sphere after resizing
 };
 
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {

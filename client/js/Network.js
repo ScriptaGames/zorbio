@@ -219,8 +219,7 @@ function setupSocket(ws) {
         var targetPlayerId = msg.targetPlayerId;
 
         console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
-        var targetPlayer = ZOR.Game.players[targetPlayerId];
-        handleSuccessfulPlayerCapture(targetPlayer);
+        handleSuccessfulPlayerCapture();
         removePlayerFromGame(targetPlayerId);
     }
 
