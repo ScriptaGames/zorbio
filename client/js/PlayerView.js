@@ -94,12 +94,13 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
 };
 
 ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
-    this.trail_geometry.vertices.push(this.mainSphere.position.clone());
-    this.trail_geometry.vertices.shift();  // remove oldest position
+    this.trail_line.addPosition(this.mainSphere.position);
+    // this.trail_geometry.vertices.push(this.mainSphere.position.clone());
+    // this.trail_geometry.vertices.shift();  // remove oldest position
 
-    this.trail_line.setGeometry(this.trail_geometry, function(p) {
-        return p;  // makes width taper
-    });
+    // this.trail_line.setGeometry(this.trail_geometry, function(p) {
+    //     return p;  // makes width taper
+    // });
 
     // var oldPos = this.trailEmitter.position._value.clone();
     // var newPos = this.mainSphere.position.clone();
