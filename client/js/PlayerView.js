@@ -210,6 +210,7 @@ ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
     // this.trail.emitters.forEach(function (emitter) { emitter.remove(); });
     // this.trail.dispose();
     scene.remove(this.trail_mesh);
+    scene.remove(this.trail_mesh2);
     scene.remove(this.mainSphere);
 
     // find the player mesh used for raycasting and remove it
