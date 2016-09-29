@@ -171,24 +171,37 @@ THREE.MeshLine.prototype.process = function() {
 }
 
 THREE.MeshLine.prototype.addPosition = function(position) {
+
+    var positions = this.attributes.position.array;
+    var previous = this.attributes.previous.array;
+    var next = this.attributes.next.array;
+
     // POSITIONS
-    this.positions.push( position.x, position.y, position.z );
-    this.positions.push( position.x, position.y, position.z );
-    for (var i = 0; i < 6; i++) {
-        // remove the oldest position pair
-        this.positions.shift();
+    for(var i = 0; i < positions.length - 6; i += 6) {
+        positions[i]   = positions[i + 6];
+        positions[i+1] = positions[i + 7];
+        positions[i+2] = positions[i + 8];
+        positions[i+3] = positions[i + 9];
+        positions[i+4] = positions[i + 10];
+        positions[i+5] = positions[i + 11];
     }
+    positions[positions.length - 6] = position.x;
+    positions[positions.length - 5] = position.y;
+    positions[positions.length - 4] = position.z;
+    positions[positions.length - 3] = position.x;
+    positions[positions.length - 2] = position.y;
+    positions[positions.length - 1] = position.z;
 
     // PREVIOUS
     for (i = 0; i < 12; i++) {
         // remove the oldest two position pairs
         this.previous.shift();
     }
-    var l = this.positions.length;
-    this.previous.unshift(this.positions[ 0 ], this.positions[ 1 ], this.positions[ 2 ]);
-    this.previous.unshift(this.positions[ 0 ], this.positions[ 1 ], this.positions[ 2 ]);
-    this.previous.push(this.positions[ l - 9 ], this.positions[ l - 8 ], this.positions[ l - 7 ]);
-    this.previous.push(this.positions[ l - 9 ], this.positions[ l - 8 ], this.positions[ l - 7 ]);
+    var l = positions.length;
+    this.previous.unshift(positions[ 0 ], positions[ 1 ], positions[ 2 ]);
+    this.previous.unshift(positions[ 0 ], positions[ 1 ], positions[ 2 ]);
+    this.previous.push(positions[ l - 9 ], positions[ l - 8 ], positions[ l - 7 ]);
+    this.previous.push(positions[ l - 9 ], positions[ l - 8 ], positions[ l - 7 ]);
 
     // NEXT
     for (i = 0; i < 6; i++) {
@@ -203,7 +216,7 @@ THREE.MeshLine.prototype.addPosition = function(position) {
         this.next.push( position.x, position.y, position.z );
     }
 
-    this.attributes.position.copyArray(new Float32Array(this.positions));
+    // this.attributes.position.copyArray(new Float32Array(positions));
     this.attributes.position.needsUpdate = true;
     this.attributes.previous.copyArray(new Float32Array(this.previous));
     this.attributes.previous.needsUpdate = true;
