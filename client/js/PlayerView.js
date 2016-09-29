@@ -76,31 +76,72 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
     this.trail_material = new THREE.MeshLineMaterial( {
         useMap: 0,
         color: new THREE.Color( this.playerColor ),
-        opacity: 0.25,
+        opacity: 1,
         resolution: new THREE.Vector2( window.innerWidth, window.innerHeight ),
         sizeAttenuation: 1,
         lineWidth: 2,
         near: camera.near,
         far: camera.far,
-        depthTest: false,
+        depthTest: true,
         blending: THREE.AdditiveBlending,
-        transparent: true,
+        transparent: false,
         side: THREE.DoubleSide
     });
 
     this.trail_mesh = new THREE.Mesh( this.trail_line.geometry, this.trail_material ); // this syntax could definitely be improved!
     this.trail_mesh.frustumCulled = false;
     this.scene.add( this.trail_mesh );
+
+    // trail 2
+    this.trail_geometry2 = new THREE.Geometry();
+    for (var i = 0; i < config.TRAIL_LINE_LENGTH; i++) {
+        // must initialize it to the number of positions it will keep or it will throw an error
+        this.trail_geometry2.vertices.push(this.mainSphere.position.clone());
+    }
+
+    // Create the line mesh
+    this.trail_line2 = new THREE.MeshLine();
+    this.trail_line2.setGeometry( this.trail_geometry2, function( p ) { return p; } ); // makes width taper
+
+
+    this.trail_mesh2 = new THREE.Mesh( this.trail_line2.geometry, this.trail_material ); // this syntax could definitely be improved!
+    this.trail_mesh2.frustumCulled = false;
+    this.scene.add( this.trail_mesh2 );
 };
 
-ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
-    this.trail_line.addPosition(this.mainSphere.position);
-    // this.trail_geometry.vertices.push(this.mainSphere.position.clone());
-    // this.trail_geometry.vertices.shift();  // remove oldest position
+var total_frames = 0;
+var sum_time = 0;
 
+ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
+    var start = performance.now();
+    var leftPosition = new THREE.Vector3(-0.9, 0, 0);
+    leftPosition = this.mainSphere.localToWorld(leftPosition);
+    var rightPosition = new THREE.Vector3(0.9, 0, 0);
+    rightPosition = this.mainSphere.localToWorld(rightPosition);
+
+    // this.trail_geometry.vertices.push(leftPosition);
+    // this.trail_geometry.vertices.shift();  // remove oldest position
+    //
     // this.trail_line.setGeometry(this.trail_geometry, function(p) {
     //     return p;  // makes width taper
     // });
+    //
+    // this.trail_geometry2.vertices.push(rightPosition);
+    // this.trail_geometry2.vertices.shift();  // remove oldest position
+    //
+    // this.trail_line2.setGeometry(this.trail_geometry2, function(p) {
+    //     return p;  // makes width taper
+    // });
+
+    this.trail_line.addPosition(leftPosition);
+    this.trail_line2.addPosition(rightPosition);
+
+    var number = performance.now() - start;
+    sum_time += number;
+    total_frames++;
+
+    // console.log("time: ", number, sum_time / total_frames);
+
 
     // var oldPos = this.trailEmitter.position._value.clone();
     // var newPos = this.mainSphere.position.clone();

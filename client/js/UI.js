@@ -370,7 +370,7 @@ ZOR.UI = function ZORUI() {
                 // send event to google analytics
                 ga('send', {
                     hitType: 'event',
-                    eventCategory: 'buton',
+                    eventCategory: 'button',
                     eventAction: 'respawn_button',
                 });
                 respawnPlayer();

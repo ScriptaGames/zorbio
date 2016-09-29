@@ -229,6 +229,9 @@ function createScene() {
             updatePlayerSizeUI();
 
             updateTargetLock();
+
+            player.view.mainSphere.lookAt(camera.position);
+            player.view.mainSphere.up.copy(camera.up);
         }
         else if (ZOR.UI.state().indexOf('menu') === 0) {
             fogCenter = camera.position;
