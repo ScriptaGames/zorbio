@@ -190,6 +190,14 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
     this.updateTrail();
+    if (this.is_current_player || this.skin.behavior.faceCamera) {
+        this.updateDirection();
+    }
+};
+
+ZOR.PlayerView.prototype.updateDirection = function ZORPlayerViewUpdateDirection() {
+    this.mainSphere.lookAt(camera.position);
+    this.mainSphere.up.copy(camera.up);
 };
 
 ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {

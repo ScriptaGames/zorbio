@@ -29,6 +29,9 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
             // depthWrite     : true,
             // blending       : THREE.AdditiveBlending,
         },
+        behavior: {
+            faceCamera: false, // should OTHER player's spheres face the camera?
+        },
         trail: {
             customScale: 0.5,
             group: {
