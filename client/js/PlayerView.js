@@ -79,7 +79,7 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
         opacity: 1,
         resolution: new THREE.Vector2( window.innerWidth, window.innerHeight ),
         sizeAttenuation: 1,
-        lineWidth: 2,
+        lineWidth: config.TRAIL_LINE_WIDTH,
         near: camera.near,
         far: camera.far,
         depthTest: true,
