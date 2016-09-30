@@ -21,9 +21,9 @@ config.REQUIRE_ALPHA_KEY = true;
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE       = 1600;
+config.WORLD_SIZE       = 2000;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
-config.MAX_BOTS         = 12;
+config.MAX_BOTS         = 25;
 config.MAX_BOT_RADIUS   = 100;
 
 ////////////////////////////////////////////////////////////////////////
@@ -151,7 +151,7 @@ config.DRAIN_RADIO_FREQUENCY = 65; // how quickly the radio waves flow down the 
 //                           FOOD SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOOD_DENSITY                = 25;    // How much food there is, total food = this number cubed
+config.FOOD_DENSITY                = 33;    // How much food there is, total food = this number cubed
 config.FOOD_VALUE                  = 0.5;   // amount to increase sphere by when food is consumed
 config.FOOD_RESPAWN_TIME           = 30000; // Respawn time for food in milliseconds
 config.FOOD_RESPAWN_ANIM_DURATION  = 60;    // frames
