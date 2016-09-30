@@ -72,7 +72,6 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerViewInitTrail() {
     // Create the line mesh
     this.trail_line = new THREE.MeshLine();
     this.trail_line.setGeometry( this.trail_geometry, function( p ) { return p; } ); // makes width taper
-    this.trail_line.setGeometry( this.trail_geometry, function( p ) { return p * (1 + (self.mainSphere.scale.x  / 100)); } ); // makes width taper
 
 
     // Create the line material
@@ -104,7 +103,7 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerViewInitTrail() {
 
     // Create the line mesh
     this.trail_line2 = new THREE.MeshLine();
-    this.trail_line2.setGeometry( this.trail_geometry2, function( p ) { return p * (1 + (self.mainSphere.scale.x  / 100)); } ); // makes width taper
+    this.trail_line2.setGeometry( this.trail_geometry2, function( p ) { return p; } ); // makes width taper
 
 
     this.trail_mesh2 = new THREE.Mesh( this.trail_line2.geometry, this.trail_material ); // this syntax could definitely be improved!
@@ -116,7 +115,9 @@ var total_frames = 0;
 var sum_time = 0;
 
 ZOR.PlayerView.prototype.updateTrail = function ZORPlayerViewUpdateTrail() {
-    this.trail_material.uniforms.lineWidth.value = this.mainSphere.scale.x * config.TRAIL_RELATIVE_WIDTH;
+    // Increase trail width based on sphere scale but prevent giant width trails
+    this.trail_material.uniforms.lineWidth.value = config.TRAIL_LINE_WIDTH * (1 + (this.mainSphere.scale.x  / 10));
+
     var start = performance.now();
     var leftPosition = new THREE.Vector3(-0.9, 0, 0);
     leftPosition = this.mainSphere.localToWorld(leftPosition);
