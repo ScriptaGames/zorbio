@@ -31,6 +31,8 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
             // depthWrite     : true,
             // blending       : THREE.AdditiveBlending,
         },
+        behavior: {
+        },
         trail: {
             group: {
                 scale: Math.max(window.innerWidth, window.innerHeight),

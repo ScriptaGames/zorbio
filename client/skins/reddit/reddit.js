@@ -26,6 +26,8 @@ ZOR.PlayerSkins.reddit = function ZORRedditSkin(playerView) {
             fragmentShader: document.getElementById('skin-reddit-fragment-shader').textContent,
             transparent: true,
         },
+        behavior: {
+        },
         trail: {
             group: {
                 scale: Math.max(window.innerWidth, window.innerHeight),
