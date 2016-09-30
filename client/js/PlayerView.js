@@ -48,7 +48,8 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.initTrail();
 };
 
-ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
+ZOR.PlayerView.prototype.initTrail = function ZORPlayerViewInitTrail() {
+    var self = this;
     // if (this.is_current_player) return;
     //
     // this.trail = particleGroup = new SPE.Group(this.skin.trail.group);
@@ -70,7 +71,7 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
 
     // Create the line mesh
     this.trail_line = new THREE.MeshLine();
-    this.trail_line.setGeometry( this.trail_geometry, function( p ) { return p; } ); // makes width taper
+    this.trail_line.setGeometry( this.trail_geometry, function( p ) { return p * self.mainSphere.scale.x; } ); // makes width taper
 
     // Create the line material
     this.trail_material = new THREE.MeshLineMaterial( {
@@ -85,7 +86,7 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
         depthTest: true,
         blending: THREE.AdditiveBlending,
         transparent: false,
-        side: THREE.DoubleSide
+        side: THREE.DoubleSide,
     });
 
     this.trail_mesh = new THREE.Mesh( this.trail_line.geometry, this.trail_material ); // this syntax could definitely be improved!
@@ -101,7 +102,7 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
 
     // Create the line mesh
     this.trail_line2 = new THREE.MeshLine();
-    this.trail_line2.setGeometry( this.trail_geometry2, function( p ) { return p; } ); // makes width taper
+    this.trail_line2.setGeometry( this.trail_geometry2, function( p ) { return p * self.mainSphere.scale.x; } ); // makes width taper
 
 
     this.trail_mesh2 = new THREE.Mesh( this.trail_line2.geometry, this.trail_material ); // this syntax could definitely be improved!
@@ -112,7 +113,7 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerInitTrail() {
 var total_frames = 0;
 var sum_time = 0;
 
-ZOR.PlayerView.prototype.updateTrail = function ZORPlayerUpdateTrail() {
+ZOR.PlayerView.prototype.updateTrail = function ZORPlayerViewUpdateTrail() {
     var start = performance.now();
     var leftPosition = new THREE.Vector3(-0.9, 0, 0);
     leftPosition = this.mainSphere.localToWorld(leftPosition);
