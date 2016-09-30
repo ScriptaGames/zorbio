@@ -170,7 +170,7 @@ THREE.MeshLine.prototype.process = function() {
 
 }
 
-THREE.MeshLine.prototype.addPosition = function(position) {
+THREE.MeshLine.prototype.advance = function(position) {
 
     var positions = this.attributes.position.array;
     var previous = this.attributes.previous.array;
@@ -188,7 +188,7 @@ THREE.MeshLine.prototype.addPosition = function(position) {
     }
 
     // POSITIONS
-    for(var i = 0; i < positions.length - 6; i += 6) {
+    for(var i = 0; i < l - 6; i += 6) {
         positions[i + 0] = positions[i + 6];
         positions[i + 1] = positions[i + 7];
         positions[i + 2] = positions[i + 8];
@@ -204,20 +204,14 @@ THREE.MeshLine.prototype.addPosition = function(position) {
     positions[l - 1] = position.z;
 
     // NEXT
-    for(i = 6; i < l - 6; i += 6) {
-        next[i + 0 - 6] = positions[i + 0];
-        next[i + 1 - 6] = positions[i + 1];
-        next[i + 2 - 6] = positions[i + 2];
-        next[i + 3 - 6] = positions[i + 3];
-        next[i + 4 - 6] = positions[i + 4];
-        next[i + 5 - 6] = positions[i + 5];
+    for(i = 0; i < l - 6; i += 6) {
+        next[i + 0] = positions[i + 6];
+        next[i + 1] = positions[i + 7];
+        next[i + 2] = positions[i + 8];
+        next[i + 3] = positions[i + 9];
+        next[i + 4] = positions[i + 10];
+        next[i + 5] = positions[i + 11];
     }
-    next[l - 12] = position.x;
-    next[l - 11] = position.y;
-    next[l - 10] = position.z;
-    next[l - 9]  = position.x;
-    next[l - 8]  = position.y;
-    next[l - 7]  = position.z;
     next[l - 6]  = position.x;
     next[l - 5]  = position.y;
     next[l - 4]  = position.z;

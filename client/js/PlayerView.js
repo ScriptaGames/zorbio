@@ -134,8 +134,8 @@ ZOR.PlayerView.prototype.updateTrail = function ZORPlayerViewUpdateTrail() {
     //     return p;  // makes width taper
     // });
 
-    this.trail_line.addPosition(leftPosition);
-    this.trail_line2.addPosition(rightPosition);
+    this.trail_line.advance(leftPosition);
+    this.trail_line2.advance(rightPosition);
 
     var number = performance.now() - start;
     sum_time += number;
