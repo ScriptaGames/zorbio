@@ -22,6 +22,7 @@ void main() {
 
     vec4 fragColor = texture2D(sphereTexture, vUv);
     /* fragColor.a = strength; */
+    fragColor.a = 0.5; // TODO fix center tapering transparency
     gl_FragColor = fragColor;
 }
 
