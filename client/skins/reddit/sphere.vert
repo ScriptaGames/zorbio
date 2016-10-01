@@ -16,7 +16,8 @@ varying vec2 vUv;
 
 void main() {
     vUv = uv;
-    vec3 viewVector = cameraPosition - spherePos;
+    /* vec3 viewVector = cameraPosition - spherePos; */
+    vec3 viewVector = vec3(0.0, 0.0, 1.0);
     vec3 vNormal = normalize( normalMatrix * normal );
     vec3 vNormel = normalize( normalMatrix * viewVector );
     vDot = dot(vNormal, vNormel);

@@ -41,7 +41,6 @@ void main() {
     }
 
     float strength = vIntensity * fogp; // min( fogp, vIntensity );
-    strength = 0.5 * fogp; // TODO fix center tapering transparency
 
     gl_FragColor = vec4( mColor, strength );
 }
