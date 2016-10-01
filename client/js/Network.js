@@ -94,7 +94,14 @@ function setupSocket(ws) {
                     handle_msg_welcome( ZOR.Schemas.welcomeSchema.decode(msg.data) );
                     break;
                 default:
-                    console.error("Error: Unknown binary op code: ", op);
+                    // // see if this is a player fast update
+                    var msgView = new Float32Array(msg.data);
+                    if (msgView[0] === ZOR.Schemas.ops.CLIENT_POSITION_RAPID) {
+                        handle_msg_client_position_rapid(msgView);
+                    }
+                    else {
+                        console.error("Error: Unknown binary op code: ", op);
+                    }
             }
         }
     };
@@ -182,6 +189,15 @@ function setupSocket(ws) {
         console.log('Ping: ' + zorPingDuration + 'ms');
     }
 
+    function handle_msg_client_position_rapid(messageView) {
+        //TODO: cache getActorById() for speed so we don't have to search each time
+        var clientActor = zorbioModel.getActorById(messageView[1]);
+
+        if (clientActor) {
+            clientActor.position.set(messageView[2], messageView[3], messageView[4]);
+        }
+    }
+
     function handle_msg_actor_updates(msg) {
         if (player) {
             // Record gap since last actor update was received
@@ -194,11 +210,6 @@ function setupSocket(ws) {
             var clientActor = zorbioModel.getActorById(serverActor.id);
 
             if (clientActor) {
-                //TODO: working on server movement, or other alternatives to predictive movement
-                // var last_pos_update = (clientActor.lastPosition || clientActor.position).clone();
-                // clientActor.lastPosition = clientActor.position.clone();
-                // clientActor.velocity = clientActor.position.clone().sub(last_pos_update);
-
                 clientActor.position.copy(serverActor.position);
                 clientActor.scale = serverActor.scale;
 
@@ -342,6 +353,25 @@ function sendPlayerUpdate() {
 
     // Send player update data
     ws.send(buffer);
+}
+
+var rapidSendBuffer = new ArrayBuffer(20);
+var rapidSendView = new Float32Array(rapidSendBuffer);
+function sendClientPositionRapid(actor_id, position) {
+    if (!config.ENABLE_RAPID_UPDATES) return;
+
+    //first byte op code
+    rapidSendView[0] = ZOR.Schemas.ops.CLIENT_POSITION_RAPID;
+
+    // actor id
+    rapidSendView[1] = actor_id;
+
+    // position
+    rapidSendView[2] = position.x;
+    rapidSendView[3] = position.y;
+    rapidSendView[4] = position.z;
+
+    ws.send(rapidSendBuffer);
 }
 
 function sendSpeedBoostStart() {

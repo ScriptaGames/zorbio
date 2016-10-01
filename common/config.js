@@ -39,7 +39,7 @@ config.HEARTBEAT_TIMEOUT        = 30000;  // how long before a client is conside
 config.HEARTBEAT_CHECK_INTERVAL = 1000;   // server heartbeat test interval
 config.HEARTBEAT_PULSE_INTERVAL = 5000;   // client heartbeat pulse
 config.TICK_SLOW_INTERVAL       = 200;    // General server updates in milliseconds
-config.TICK_FAST_INTERVAL       = 40;     // How often actors update their position in milliseconds
+config.TICK_FAST_INTERVAL       = 50;     // How often actors update their position in milliseconds
 config.PENDING_PLAYER_CAPTURE_TTL = 3000; // how long pending player capture lives before it expires in milliseconds
 config.CHECK_VERSION            = true;   // check for latest version of the game through the zapi
 config.CHECK_VERSION_INTERVAL   = 60000;  // how often to check for new version
@@ -47,8 +47,9 @@ config.LEADERS_LENGTH           = 10;     // How many players to include in the 
 config.BIN_PP_POSITIONS_LENGTH  = 29;
 config.CHECK_ORIGIN             = true;
 config.RECENT_CLIENT_DATA_LENGTH = 100;   // how many recent data points to keep from the client like pings
-config.CLOSE_NO_RESTART         = 4000;    // 4000-4999 application reserved close code in WebSocket spec
+config.CLOSE_NO_RESTART         = 4000;   // 4000-4999 application reserved close code in WebSocket spec
 config.STATUS_LOG_DELAY         = 10000;  // how many milliseconds to wait between status log output
+config.ENABLE_RAPID_UPDATES     = true;   // If enabled will send and broadcast player position updates every frame
 
 if (!NODEJS) {
     // Gets the name of the nearest load balancer
@@ -71,9 +72,9 @@ if (!NODEJS) {
             case 'frankfurt':
             case 'singapore':
             case 'fremont':
-            case 'newark':
             case 'dallas':
-                balancer = 'dallas'; // For now dallas is the only balancer for dev
+            case 'newark':
+                balancer = 'newark';
                 break;
             default:
                 balancer = 'dallas';
@@ -194,12 +195,12 @@ config.FOG_COLOR               = THREE.ColorKeywords.black;
 config.INITIAL_CAMERA_DISTANCE = 50;
 config.WALL_GRID_SEGMENTS      = 20;
 config.INITIAL_FOV             = 50;
-config.PLAYER_MOVE_LERP_WEIGHT = 0.2;
+config.PLAYER_MOVE_LERP_WEIGHT = 0.3;
 config.PLAYER_SPHERE_POLYCOUNT = 64; // height and width segments of the spheres
 config.FOOD_ALPHA_ENABLED      = false;
 config.LAG_SCALE_ENABLE        = true;
 config.REQUIRED_WEBGL_EXTENSIONS = ['ANGLE_instanced_arrays'];
-config.TRAIL_LINE_LENGTH       = 40;
+config.TRAIL_LINE_LENGTH       = 50;
 config.TRAIL_LINE_WIDTH        = 0.3;
 
 ////////////////////////////////////////////////////////////////////////

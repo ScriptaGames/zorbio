@@ -210,8 +210,6 @@ function createScene() {
         if (gameStart && !player.isDead) {
             fogCenter = player.view.mainSphere.position;
 
-            throttledSendPlayerUpdate();
-
             player.resetVelocity();
 
             handleKeysDown();
@@ -219,6 +217,10 @@ function createScene() {
             ZOR.LagScale.update();
 
             player.update(scene, camera, camera_controls, ZOR.LagScale.get());
+
+            throttledSendPlayerUpdate();
+
+            sendClientPositionRapid(player.model.sphere.id, player.view.mainSphere.position);
 
             foodController.checkFoodCaptures(player, captureFood);
 
@@ -324,13 +326,6 @@ function updateActors() {
             if (!player || (actor.id !== player.getSphereId())) {
                 var otherPlayer = ZOR.Game.players[actor.playerId];
                 if (otherPlayer && otherPlayer.view) {
-                    // TODO: predictive movement being iterated on via possible server movement
-                    // updateActors.runningActorUpdateGap = 0.99 * updateActors.runningActorUpdateGap + 0.01 * (actorUpdateGap || config.TICK_FAST_INTERVAL);
-                    // //console.log(updateActors.runningActorUpdateGap, actorUpdateGap);
-                    // var latency = (updateActors.runningActorUpdateGap); // use ping or assume a latency if ping not available
-                    // var velocityScale = 16.66667 * ZOR.LagScale.get() / latency;
-                    // actor.position.add(actor.velocity.clone().multiplyScalar(velocityScale));
-
                     // update actor
                     otherPlayer.updatePosition(actor.position);
                     otherPlayer.updateScale(actor.scale);
