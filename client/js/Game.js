@@ -210,8 +210,6 @@ function createScene() {
         if (gameStart && !player.isDead) {
             fogCenter = player.view.mainSphere.position;
 
-            throttledSendPlayerUpdate();
-
             player.resetVelocity();
 
             handleKeysDown();
@@ -219,6 +217,10 @@ function createScene() {
             ZOR.LagScale.update();
 
             player.update(scene, camera, camera_controls, ZOR.LagScale.get());
+
+            throttledSendPlayerUpdate();
+
+            sendClientPositionFast(player.model.sphere.id, player.view.mainSphere.position);
 
             foodController.checkFoodCaptures(player, captureFood);
 

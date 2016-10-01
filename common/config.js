@@ -39,7 +39,7 @@ config.HEARTBEAT_TIMEOUT        = 30000;  // how long before a client is conside
 config.HEARTBEAT_CHECK_INTERVAL = 1000;   // server heartbeat test interval
 config.HEARTBEAT_PULSE_INTERVAL = 5000;   // client heartbeat pulse
 config.TICK_SLOW_INTERVAL       = 200;    // General server updates in milliseconds
-config.TICK_FAST_INTERVAL       = 40;     // How often actors update their position in milliseconds
+config.TICK_FAST_INTERVAL       = 50;     // How often actors update their position in milliseconds
 config.PENDING_PLAYER_CAPTURE_TTL = 3000; // how long pending player capture lives before it expires in milliseconds
 config.CHECK_VERSION            = true;   // check for latest version of the game through the zapi
 config.CHECK_VERSION_INTERVAL   = 60000;  // how often to check for new version
@@ -72,8 +72,10 @@ if (!NODEJS) {
             case 'singapore':
             case 'fremont':
             case 'newark':
+                balancer = 'newark';
+                break;
             case 'dallas':
-                balancer = 'dallas'; // For now dallas is the only balancer for dev
+                balancer = 'dallas';
                 break;
             default:
                 balancer = 'dallas';
@@ -88,7 +90,7 @@ config.BALANCERS = Object.freeze({
     LOCAL:     'localhost',
     fremont:   'uswest.zor.bio',
     dallas:    'uscentral.zor.bio',
-    newark:    'useast.zor.bio',
+    newark:    '69.164.223.154',
     london:    'uk.zor.bio',
     frankfurt: 'eu.zor.bio',
     singapore: 'apac.zor.bio',
@@ -194,12 +196,12 @@ config.FOG_COLOR               = THREE.ColorKeywords.black;
 config.INITIAL_CAMERA_DISTANCE = 50;
 config.WALL_GRID_SEGMENTS      = 20;
 config.INITIAL_FOV             = 50;
-config.PLAYER_MOVE_LERP_WEIGHT = 0.2;
+config.PLAYER_MOVE_LERP_WEIGHT = 0.3;
 config.PLAYER_SPHERE_POLYCOUNT = 64; // height and width segments of the spheres
 config.FOOD_ALPHA_ENABLED      = false;
 config.LAG_SCALE_ENABLE        = true;
 config.REQUIRED_WEBGL_EXTENSIONS = ['ANGLE_instanced_arrays'];
-config.TRAIL_LINE_LENGTH       = 40;
+config.TRAIL_LINE_LENGTH       = 50;
 config.TRAIL_LINE_WIDTH        = 0.3;
 
 ////////////////////////////////////////////////////////////////////////

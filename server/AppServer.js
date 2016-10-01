@@ -118,8 +118,15 @@ var AppServer = function (id, app) {
                 }
             }
             else {
-                // Route binary message
-                handle_msg_player_update(msg);
+                // Read binary data
+                var op = msg.readFloatLE(0);
+                if (op === Schemas.ops.CLIENT_POSITION_FAST) {
+                    handle_client_position_fast(msg);
+                }
+                else {
+                    // Route binary message
+                    handle_msg_player_update(msg);
+                }
             }
         });
 
@@ -235,6 +242,30 @@ var AppServer = function (id, app) {
             currentPlayer.fps_metric.add(msg.fps);
 
             ws.send(JSON.stringify({op: "zor_pong"}));
+        }
+
+        // var totalframes = 0;
+        // var sumtime = 0;
+        function handle_client_position_fast(buffer) {
+            // var start = perfNow();
+            var bufArr  = new ArrayBuffer(20);
+            var bufView = new Float32Array(bufArr);
+            var viewIndex = 0;
+            for (var bufferIndex = 0, l = buffer.length; bufferIndex < l; bufferIndex += 4) {
+                bufView[viewIndex] = buffer.readFloatLE(bufferIndex);
+                viewIndex++;
+            }
+
+            var actor = self.model.getActorById(bufView[1]);
+            if (actor) {
+                actor.position.set(bufView[2], bufView[3], bufView[4]);
+                self.broadcast(bufArr);
+            }
+
+            // var number = perfNow() - start;
+            // totalframes++;
+            // sumtime += number;
+            // console.log("time: ", number, sumtime / totalframes);
         }
 
         function handle_msg_player_update(buffer) {

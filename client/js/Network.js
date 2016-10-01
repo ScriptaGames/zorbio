@@ -94,7 +94,14 @@ function setupSocket(ws) {
                     handle_msg_welcome( ZOR.Schemas.welcomeSchema.decode(msg.data) );
                     break;
                 default:
-                    console.error("Error: Unknown binary op code: ", op);
+                    // // see if this is a player fast update
+                    var msgView = new Float32Array(msg.data);
+                    if (msgView[0] === ZOR.Schemas.ops.CLIENT_POSITION_FAST) {
+                        handle_msg_client_position_fast(msgView);
+                    }
+                    else {
+                        console.error("Error: Unknown binary op code: ", op);
+                    }
             }
         }
     };
@@ -180,6 +187,14 @@ function setupSocket(ws) {
     function handle_msg_zor_pong() {
         zorPingDuration = Date.now() - zorPingStart;
         console.log('Ping: ' + zorPingDuration + 'ms');
+    }
+
+    function handle_msg_client_position_fast(messageView) {
+        var clientActor = zorbioModel.getActorById(messageView[1]);
+
+        if (clientActor) {
+            clientActor.position.set(messageView[2], messageView[3], messageView[4]);
+        }
     }
 
     function handle_msg_actor_updates(msg) {
@@ -342,6 +357,32 @@ function sendPlayerUpdate() {
 
     // Send player update data
     ws.send(buffer);
+}
+
+var fastBuffer = new ArrayBuffer(20);
+// var totalframes = 0;
+// var sumtime = 0;
+function sendClientPositionFast(actor_id, position) {
+    // var start = performance.now();
+    var messageView = new Float32Array(fastBuffer, 0, 5);
+
+    //first byte op code
+    messageView[0] = ZOR.Schemas.ops.CLIENT_POSITION_FAST;
+
+    // actor id
+    messageView[1] = actor_id;
+
+    // position
+    messageView[2] = position.x;
+    messageView[3] = position.y;
+    messageView[4] = position.z;
+
+    ws.send(fastBuffer);
+
+    // var number = performance.now() - start;
+    // totalframes++;
+    // sumtime += number;
+    // console.log("time: ", number, sumtime / totalframes);
 }
 
 function sendSpeedBoostStart() {

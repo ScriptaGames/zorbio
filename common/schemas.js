@@ -122,6 +122,7 @@ ZOR.Schemas = function ZORSchemas() {
         TICK_SLOW: 4,
         YOU_DIED: 5,
         WELCOME: 6,
+        CLIENT_POSITION_FAST: 7,
     };
 
     return {

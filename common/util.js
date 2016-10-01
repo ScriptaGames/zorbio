@@ -551,6 +551,16 @@ UTIL.readFirstByte = function UTILReadFirstByte(arrayBuffer) {
     return view[0];
 };
 
+/**
+ * Returns the first float of an array buffer
+ * @param arrayBuffer
+ * @returns {float}
+ */
+UTIL.readFirstFloat = function UTILReadFirstByte(arrayBuffer) {
+    var view = new Float32Array(arrayBuffer);
+    return view[0];
+};
+
 UTIL.logTime = function UTILLogTime(msg, start, end) {
     console.log(msg, (end - start).toFixed(3));
 };
