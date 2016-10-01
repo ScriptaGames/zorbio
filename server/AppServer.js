@@ -83,6 +83,10 @@ var AppServer = function (id, app) {
         var skin;
         var key;
 
+        // Pool variables for speed
+        var rapidBuffer  = new ArrayBuffer(20);
+        var rapidView = new Float32Array(rapidBuffer);
+
         ws.on('message', function wsMessage(msg) {
             if (typeof msg === "string") {
                 var message;
@@ -120,8 +124,8 @@ var AppServer = function (id, app) {
             else {
                 // Read binary data
                 var op = msg.readFloatLE(0);
-                if (op === Schemas.ops.CLIENT_POSITION_FAST) {
-                    handle_client_position_fast(msg);
+                if (op === Schemas.ops.CLIENT_POSITION_RAPID) {
+                    handle_client_position_rapid(msg);
                 }
                 else {
                     // Route binary message
@@ -244,28 +248,21 @@ var AppServer = function (id, app) {
             ws.send(JSON.stringify({op: "zor_pong"}));
         }
 
-        // var totalframes = 0;
-        // var sumtime = 0;
-        function handle_client_position_fast(buffer) {
-            // var start = perfNow();
-            var bufArr  = new ArrayBuffer(20);
-            var bufView = new Float32Array(bufArr);
+        function handle_client_position_rapid(buffer) {
+            if (!config.ENABLE_RAPID_UPDATES) return;
+
             var viewIndex = 0;
             for (var bufferIndex = 0, l = buffer.length; bufferIndex < l; bufferIndex += 4) {
-                bufView[viewIndex] = buffer.readFloatLE(bufferIndex);
+                rapidView[viewIndex] = buffer.readFloatLE(bufferIndex);
                 viewIndex++;
             }
 
-            var actor = self.model.getActorById(bufView[1]);
+            //TODO: implement caching for getActorById()
+            var actor = self.model.getActorById(rapidView[1]);
             if (actor) {
-                actor.position.set(bufView[2], bufView[3], bufView[4]);
-                self.broadcast(bufArr);
+                actor.position.set(rapidView[2], rapidView[3], rapidView[4]);
+                self.broadcast(rapidBuffer);
             }
-
-            // var number = perfNow() - start;
-            // totalframes++;
-            // sumtime += number;
-            // console.log("time: ", number, sumtime / totalframes);
         }
 
         function handle_msg_player_update(buffer) {

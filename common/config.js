@@ -47,8 +47,9 @@ config.LEADERS_LENGTH           = 10;     // How many players to include in the 
 config.BIN_PP_POSITIONS_LENGTH  = 29;
 config.CHECK_ORIGIN             = true;
 config.RECENT_CLIENT_DATA_LENGTH = 100;   // how many recent data points to keep from the client like pings
-config.CLOSE_NO_RESTART         = 4000;    // 4000-4999 application reserved close code in WebSocket spec
+config.CLOSE_NO_RESTART         = 4000;   // 4000-4999 application reserved close code in WebSocket spec
 config.STATUS_LOG_DELAY         = 10000;  // how many milliseconds to wait between status log output
+config.ENABLE_RAPID_UPDATES     = true;   // If enabled will send and broadcast player position updates every frame
 
 if (!NODEJS) {
     // Gets the name of the nearest load balancer
@@ -71,11 +72,9 @@ if (!NODEJS) {
             case 'frankfurt':
             case 'singapore':
             case 'fremont':
+            case 'dallas':
             case 'newark':
                 balancer = 'newark';
-                break;
-            case 'dallas':
-                balancer = 'dallas';
                 break;
             default:
                 balancer = 'dallas';
@@ -90,7 +89,7 @@ config.BALANCERS = Object.freeze({
     LOCAL:     'localhost',
     fremont:   'uswest.zor.bio',
     dallas:    'uscentral.zor.bio',
-    newark:    '69.164.223.154',
+    newark:    'useast.zor.bio',
     london:    'uk.zor.bio',
     frankfurt: 'eu.zor.bio',
     singapore: 'apac.zor.bio',
