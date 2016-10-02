@@ -356,12 +356,16 @@ function updateTargetLock() {
         var playerMesh     = intersects[0].object;
         var targeting_self = playerMesh.player_id === player.model.id;
         var target_changed = player.getTargetLock() !== playerMesh.player_id;
-        if (target_changed && !targeting_self) {
-            player.setTargetLock(playerMesh.player_id);
+        if (!targeting_self) {
+            if (target_changed) {
+                player.setTargetLock(playerMesh.player_id);
+                clearTimeout(ZOR.UI.target_clear_timeout_id);
+                console.log("Set target lock: ", ZOR.UI.data.target);
+            }
+
+            // Update target locked UI
             var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
             ZOR.UI.engine.set('target', { name: pointedPlayer.model.name, score: pointedPlayer.model.getScore(), color: pointedPlayer.model.sphere.color });
-            clearTimeout(ZOR.UI.target_clear_timeout_id);
-            console.log("Set target lock: ", ZOR.UI.data.target);
         }
     }
     else if (player.getTargetLock()) {
