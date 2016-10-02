@@ -59,8 +59,8 @@ var AppServer = function (id, app) {
     // Game state
     self.model = new Zorbio.Model();
     self.model.init(config.WORLD_SIZE, config.FOOD_DENSITY);
-    self.socket_uuid_map = {};
-    self.clients = {};
+    self.socket_uuid_map = {};  // Maps a player ID to a socket uuid
+    self.clients = {};  // Client websockets with a uuid key
     self.serverRestartMsg = '';
 
     self.addClient = function appAddClient(ws) {

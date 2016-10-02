@@ -10,11 +10,13 @@ var ZOR = ZOR || {};
  */
 
 ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
+    var self = this;
     this.model = model;
     this.scene = scene;
     this.is_current_player = current || false;
     this.playerColor = config.COLORS[model.sphere.color];
     this.skinName = model.sphere.skin;
+    this.trails_initialized = false;
 
     this.cameraMinDistance = config.GET_CAMERA_MIN_DISTANCE(model.sphere.scale);
 
@@ -45,11 +47,15 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 
     scene.add( this.mainSphere );
 
-    this.initTrail();
+    // give the meshes time to render before drawing trails
+    // also adds a nice fade in effect for trails
+    setTimeout(function() {
+        self.initTrails();
+    }, 250);
 };
 
-ZOR.PlayerView.prototype.initTrail = function ZORPlayerViewInitTrail() {
-    var self = this;
+ZOR.PlayerView.prototype.initTrails = function ZORPlayerViewInitTrail() {
+
     // if (this.is_current_player) return;
     //
     // this.trail = particleGroup = new SPE.Group(this.skin.trail.group);
@@ -62,11 +68,18 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerViewInitTrail() {
     // this.trail.addEmitter( this.trailEmitter );
     // this.scene.add( this.trail.mesh );
 
+
+    // calculate initial positions
+    var leftPosition = new THREE.Vector3(-0.9, 0, 0);
+    leftPosition = this.mainSphere.localToWorld(leftPosition);
+    var rightPosition = new THREE.Vector3(0.9, 0, 0);
+    rightPosition = this.mainSphere.localToWorld(rightPosition);
+
     // Create the line geometry used for storing verticies
     this.trail_geometry = new THREE.Geometry();
     for (var i = 0; i < config.TRAIL_LINE_LENGTH; i++) {
         // must initialize it to the number of positions it will keep or it will throw an error
-        this.trail_geometry.vertices.push(this.mainSphere.position.clone());
+        this.trail_geometry.vertices.push(leftPosition);
     }
 
     // Create the line mesh
@@ -98,7 +111,7 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerViewInitTrail() {
     this.trail_geometry2 = new THREE.Geometry();
     for (var i = 0; i < config.TRAIL_LINE_LENGTH; i++) {
         // must initialize it to the number of positions it will keep or it will throw an error
-        this.trail_geometry2.vertices.push(this.mainSphere.position.clone());
+        this.trail_geometry2.vertices.push(rightPosition);
     }
 
     // Create the line mesh
@@ -109,12 +122,16 @@ ZOR.PlayerView.prototype.initTrail = function ZORPlayerViewInitTrail() {
     this.trail_mesh2 = new THREE.Mesh( this.trail_line2.geometry, this.trail_material ); // this syntax could definitely be improved!
     this.trail_mesh2.frustumCulled = false;
     this.scene.add( this.trail_mesh2 );
+
+    this.trails_initialized = true;
 };
 
 var total_frames = 0;
 var sum_time = 0;
 
-ZOR.PlayerView.prototype.updateTrail = function ZORPlayerViewUpdateTrail() {
+ZOR.PlayerView.prototype.updateTrails = function ZORPlayerViewUpdateTrail() {
+    if (!this.trails_initialized) return;
+
     // Increase trail width based on sphere scale but prevent giant width trails
     this.trail_material.uniforms.lineWidth.value = config.TRAIL_LINE_WIDTH * (1 + (this.mainSphere.scale.x  / 10));
 
@@ -194,7 +211,7 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
-    this.updateTrail();
+    this.updateTrails();
     if (this.is_current_player || this.skin.behavior.faceCamera) {
         this.updateDirection();
     }
