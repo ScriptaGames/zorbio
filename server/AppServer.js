@@ -61,7 +61,7 @@ var AppServer = function (id, app) {
     self.model.init(config.WORLD_SIZE, config.FOOD_DENSITY);
     self.socket_uuid_map = {};  // Maps a player ID to a socket uuid
     self.clients = {};  // Client websockets with a uuid key
-    self.serverRestartMsg = '';
+    self.serverMsg = '';
 
     self.addClient = function appAddClient(ws) {
         var headers = JSON.stringify(ws.upgradeReq.headers);
@@ -757,7 +757,7 @@ var AppServer = function (id, app) {
     self.sendServerTickData = function appSendServerTickData() {
         var serverTickData = {
             fr: self.model.food_respawn_ready_queue,
-            sm: self.serverRestartMsg,
+            sm: self.serverMsg,
             leaders: self.model.leaders
         };
 
@@ -835,6 +835,11 @@ var AppServer = function (id, app) {
             // Notify other clients that bot has joined
             self.broadcast(JSON.stringify({op: 'player_join', player: bot.player}));
         }
+    };
+
+    self.setServerMessage = function appSetServerMessage(msg) {
+        self.log("Setting server message: ", msg);
+        self.serverMsg = msg;
     };
 
     // Start game loops

@@ -104,10 +104,14 @@ var AppProxy = function (wss, app) {
                 if (local_version !== res.version) {
                     console.log("version out of date, local  version:", local_version);
                     console.log("version out of date, remote version:", res.version);
-                    self.serverRestartMsg = "Server restart imminent!";
+
+                    // notify all game instances that the version is out of date
+                    for (var i = 0; i < self.gameInstances.length; i++) {
+                        self.gameInstances[i].setServerMessage("Server restart imminent!");
+                    }
                 }
             }
-        })
+        });
     };
 
     self.setSrvIdCookie = function appSetSrvIdCookie(id, res) {
