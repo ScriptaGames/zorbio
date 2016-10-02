@@ -94,7 +94,8 @@ function startGame(type) {
     console.log('Player color', colorHex);
 
     // Initialize player size ui element
-    ZOR.UI.engine.set('player_size', {color: colorCode, score: 50});
+    ZOR.UI.engine.set('player_color', colorCode);
+    ZOR.UI.engine.set('player_size', config.PLAYER_GET_SCORE(config.INITIAL_PLAYER_RADIUS));
 
     var skin = localStorage.getItem('skin') || 'default';
     sendEnterGame(playerType, playerName, colorCode, skin, key);
@@ -343,7 +344,7 @@ function updateActors() {
 updateActors.runningActorUpdateGap = config.TICK_FAST_INTERVAL;
 
 function updatePlayerSizeUI() {
-    ZOR.UI.data.player_size.score = player.getScore();
+    ZOR.UI.engine.set('player_size', player.getScore());
 }
 
 function updateTargetLock() {
