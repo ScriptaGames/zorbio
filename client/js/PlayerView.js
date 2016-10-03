@@ -17,6 +17,8 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.playerColor = config.COLORS[model.sphere.color];
     this.skinName = model.sphere.skin;
     this.trails_initialized = false;
+    this.trail_total_frames = 0;
+    this.trail_sum_time = 0;
 
     this.cameraMinDistance = config.GET_CAMERA_MIN_DISTANCE(model.sphere.scale);
 
@@ -126,9 +128,6 @@ ZOR.PlayerView.prototype.initTrails = function ZORPlayerViewInitTrail() {
     this.trails_initialized = true;
 };
 
-var total_frames = 0;
-var sum_time = 0;
-
 ZOR.PlayerView.prototype.updateTrails = function ZORPlayerViewUpdateTrail() {
     if (!this.trails_initialized) return;
 
@@ -159,8 +158,8 @@ ZOR.PlayerView.prototype.updateTrails = function ZORPlayerViewUpdateTrail() {
     this.trail_line2.advance(rightPosition);
 
     var number = performance.now() - start;
-    sum_time += number;
-    total_frames++;
+    this.trail_sum_time += number;
+    this.trail_total_frames++;
 
     // console.log("time: ", number, sum_time / total_frames);
 
