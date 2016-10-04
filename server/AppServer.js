@@ -63,6 +63,14 @@ var AppServer = function (id, app) {
     self.clients = {};  // Client websockets with a uuid key
     self.serverMsg = '';
 
+    self.out = {
+        clients: 0,
+        players: 0,
+        socket_uuid_map: 0,
+        tick_time_metric: new Zorbio.PlayerMetric(50),
+        au_send_metric: new Zorbio.PlayerMetric(100),
+    };
+
     self.addClient = function appAddClient(ws) {
         var headers = JSON.stringify(ws.upgradeReq.headers);
         var NB_SRVID = self.parseNbSrvIdCookie(ws.upgradeReq.headers.cookie);
@@ -468,6 +476,12 @@ var AppServer = function (id, app) {
         var actorUpdatesMessage = {0: Schemas.ops.ACTOR_UPDATES, actors: tinyActors};
         var buffer = Schemas.actorUpdatesSchema.encode(actorUpdatesMessage);
         self.broadcast(buffer);
+
+        // record timing
+        var nowTime = Date.now();
+        var send_gap = nowTime - self.out.au_send_metric.last_time;
+        self.out.au_send_metric.last_time = nowTime;
+        self.out.au_send_metric.add(send_gap);
     };
 
     self.foodCapture = function appFoodCapture (player, fi, actor, origRadius) {
@@ -770,7 +784,12 @@ var AppServer = function (id, app) {
 
     function logServerStatus(start) {
         var tick_time = perfNow() - start;
-        self.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.getClientCount() + ', Players: ' + self.model.players.length + ', socket_uuid_map: ' + Object.getOwnPropertyNames(self.socket_uuid_map).length);
+        self.out.tick_time_metric.add(tick_time);
+        self.out.clients = self.getClientCount();
+        self.out.players = self.model.players.length;
+        self.out.socket_uuid_map = Object.getOwnPropertyNames(self.socket_uuid_map).length;
+
+        self.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.out.clients + ', Players: ' + self.out.players + ', socket_uuid_map: ' + self.out.socket_uuid_map);
     }
 
     var logServerStatusNth = UTIL.nth(logServerStatus, Math.floor(config.STATUS_LOG_DELAY / config.TICK_FAST_INTERVAL));

@@ -106,6 +106,20 @@ var ZorApi = function zorApi (app, instances) {
     });
 
     /**
+     * API to return all the player objects on this server
+     */
+    self.app.get('/api/games/:game_id/out', function (req, res) {
+        var instance = self.instances[req.params.game_id];
+        if (instance) {
+            res.setHeader('content-type', 'application/json');
+            res.send( JSON.stringify(instance.out) );
+        }
+        else {
+            res.sendStatus(406);
+        }
+    });
+
+    /**
      * API to return all the actor objects on this server
      */
     self.app.get('/api/games/:game_id/actors', function (req, res) {
