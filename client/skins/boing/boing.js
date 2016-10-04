@@ -34,39 +34,14 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
         behavior: {
         },
         trail: {
-            group: {
-                scale: Math.max(window.innerWidth, window.innerHeight),
-                texture: {
-                    value:  new THREE.TextureLoader().load( "skins/boing/trail.png" ),
-                    frames: new THREE.Vector2(2, 1),
-                    loop: 4,
-                },
-                maxParticleCount: 800,
-            },
-            emitter: {
-                maxAge: {
-                    value: 8,
-                    // spread: 2,
-                },
-                position: {
-                    value: new THREE.Vector3(0, 0, 0),
-                    spread: new THREE.Vector3(0, 0, 0),
-                    spreadClamp: new THREE.Vector3(0, 0, 0),
-                    radius: 5,
-                    distribution: SPE.distributions.SPHERE,
-                },
-                opacity: {
-                    value: [opacity, 0],
-                },
-                color: {
-                    value: new THREE.Color('#B9D5EB'),
-                },
-                size: {
-                    value: [100, 0],
-                },
-                particleCount: 800,
-                activeMultiplier: 0.1,
-            },
+            type: 'line',
+            customScale: 1.0,
+            lineWidth: function lineWidth( p ) { return p; },
+            origins: [
+                new THREE.Vector3(0.9, 0, 0),
+                new THREE.Vector3(-0.9, 0, 0),
+            ],
+            color: new THREE.Color('#D71C26'),
         },
     };
 };

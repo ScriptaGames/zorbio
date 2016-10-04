@@ -31,6 +31,7 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
         behavior: {
         },
         trail: {
+            type: 'particle',
             group: {
                 scale: Math.max(window.innerWidth, window.innerHeight),
                 texture: {

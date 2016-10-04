@@ -33,46 +33,14 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
             faceCamera: false, // should OTHER player's spheres face the camera?
         },
         trail: {
-            customScale: 0.5,
-            group: {
-                scale: Math.max(window.innerWidth, window.innerHeight),
-                texture: {
-                    value:  new THREE.TextureLoader().load( "skins/default/trail.png" ),
-                },
-                maxParticleCount: 800,
-            },
-            emitter: {
-                maxAge: {
-                    value: 20,
-                    // spread: 2,
-                },
-                position: {
-                    value: new THREE.Vector3(0, 0, 0),
-                    spread: new THREE.Vector3(0, 0, 0),
-                    spreadClamp: new THREE.Vector3(0, 0, 0),
-                    radius: 5,
-                    distribution: SPE.distributions.SPHERE,
-                },
-
-                opacity: {
-                    value: [opacity, 0],
-                },
-
-                drag: {
-                    value: 1.0,
-                },
-
-                color: {
-                    value: new THREE.Color(playerView.playerColor),
-                },
-
-                size: {
-                    value: [90, 60, 30, 0],
-                },
-
-                particleCount: 800,
-                activeMultiplier: 0.1,
-            },
+            type: 'line',
+            customScale: 1.0,
+            lineWidth: function lineWidth( p ) { return p; },
+            origins: [
+                new THREE.Vector3(0.9, 0, 0),
+                new THREE.Vector3(-0.9, 0, 0),
+            ],
+            color: color,
         },
     };
 };
