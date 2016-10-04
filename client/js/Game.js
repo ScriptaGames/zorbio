@@ -229,9 +229,9 @@ function createScene() {
 
             raycaster.set(player.view.mainSphere.position, camera.getWorldDirection().normalize());
 
-            updatePlayerSizeUI();
+            throttledUpdatePlayerSizeUI();
 
-            updateTargetLock();
+            throttledUpdateTargetLock();
         }
         else if (ZOR.UI.state().indexOf('menu') === 0) {
             fogCenter = camera.position;
@@ -344,8 +344,10 @@ function updateActors() {
 updateActors.runningActorUpdateGap = config.TICK_FAST_INTERVAL;
 
 function updatePlayerSizeUI() {
+    //TODO: only set this if the size has changed
     ZOR.UI.engine.set('player_size', player.getScore());
 }
+var throttledUpdatePlayerSizeUI = _.throttle(updatePlayerSizeUI, 50);
 
 function updateTargetLock() {
     // calculate objects intersecting the ray
@@ -364,6 +366,7 @@ function updateTargetLock() {
             }
 
             // Update target locked UI
+            //TODO: only change this if the size has changed
             var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
             ZOR.UI.engine.set('target', { name: pointedPlayer.model.name, score: pointedPlayer.model.getScore(), color: pointedPlayer.model.sphere.color });
         }
@@ -375,6 +378,7 @@ function updateTargetLock() {
         console.log("clearing target lock");
     }
 }
+var throttledUpdateTargetLock = _.throttle(updateTargetLock, 100);
 
 function captureFood(fi) {
     player.queueFoodCapture(fi);
