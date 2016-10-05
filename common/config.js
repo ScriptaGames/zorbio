@@ -73,6 +73,8 @@ if (!NODEJS) {
             case 'singapore':
             case 'fremont':
             case 'dallas':
+                balancer = 'dallas';
+                break;
             case 'newark':
                 balancer = 'newark';
                 break;
