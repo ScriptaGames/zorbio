@@ -7,6 +7,18 @@ if (NODEJS) var xssFilters = require('xss-filters');
 var UTIL = {};
 
 /**
+ * Clamps a number to a given range.
+ *
+ * @param {Number} n the number to clamp
+ * @param {Number} min the range's lower bound
+ * @param {Number} max the range's upper bound
+ */
+UTIL.clamp = function UTILClamp(n, min, max) {
+    if (min > max) throw new Error('invalid clamp, min is greater than max');
+    return Math.min(Math.max(n, min), max);
+};
+
+/**
  * Returns a random integer between min (included) and max (included) Using
  * Math.round() will give you a non-uniform distribution!
  *

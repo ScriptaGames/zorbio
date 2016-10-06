@@ -252,6 +252,7 @@ function setupSocket(ws) {
     }
 
     function handle_msg_food_captured(msg) {
+        // TODO add food capture sound here
         if (foodController && foodController.isInitialized()) {
             foodController.hideFood( msg.fi );
         }
