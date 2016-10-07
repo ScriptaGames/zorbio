@@ -73,13 +73,11 @@ if (!NODEJS) {
             case 'singapore':
             case 'fremont':
             case 'dallas':
-                balancer = 'dallas';
-                break;
             case 'newark':
                 balancer = 'newark';
                 break;
             default:
-                balancer = 'dallas';
+                balancer = 'newark';
         }
 
         return balancer;
@@ -96,6 +94,7 @@ config.BALANCERS = Object.freeze({
     frankfurt: 'eu.zor.bio',
     singapore: 'apac.zor.bio',
     prod:      'zor.bio',
+    prodwww:   'www.zor.bio',
 });
 
 ////////////////////////////////////////////////////////////////////////
