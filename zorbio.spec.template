@@ -36,7 +36,6 @@ cp zorbio.service %{buildroot}%{_unitdir}/
 %files
 %{_datarootdir}/games/%{name}
 %attr(644,root,root) %{_unitdir}/zorbio.service
-%attr(744,root,root) %{_datarootdir}/games/%{name}/zorbio.sh
 
 %post
 systemctl daemon-reload
