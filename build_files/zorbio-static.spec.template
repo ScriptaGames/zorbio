@@ -1,0 +1,56 @@
+%global debug_package %{nil}
+
+Name:           zorbio
+Version:        VERSION
+Release:        BUILD%{?dist}
+Summary:        A multiplayer webgl game
+
+License:        Proprietary
+URL:            http://zor.bio/
+Source0:        zorbio.tar.gz
+
+BuildRequires:  systemd
+Requires:       nodejs
+
+%description
+An awesome multiplayer webgl game writen by Jared Sprague & Michael Clayton
+
+%prep
+%autosetup -n %{name}
+
+%build
+# Empty build section, nothing to build
+
+%install
+rm -rf %{buildroot}
+mkdir -p -m 0755 %{buildroot}%{_datarootdir}/games/%{name}
+mkdir -p -m 0755 %{buildroot}%{_unitdir}
+cp -pr common %{buildroot}%{_datarootdir}/games/%{name}/common
+cp -pr dist %{buildroot}%{_datarootdir}/games/%{name}/dist
+cp -pr server %{buildroot}%{_datarootdir}/games/%{name}/server
+cp -pr node_modules %{buildroot}%{_datarootdir}/games/%{name}/node_modules
+cp package.json %{buildroot}%{_datarootdir}/games/%{name}/
+cp zorbio.sh %{buildroot}%{_datarootdir}/games/%{name}/
+cp zorbio.service %{buildroot}%{_unitdir}/
+
+%files
+%{_datarootdir}/games/%{name}
+%attr(644,root,root) %{_unitdir}/zorbio.service
+
+%post
+systemctl daemon-reload
+systemctl enable zorbio.service
+systemctl daemon-reload
+systemctl restart zorbio.service >/dev/null 2>&1
+
+%preun
+systemctl stop zorbio.service >/dev/null 2>&1
+systemctl disable zorbio.service
+systemctl daemon-reload
+
+%clean
+rm -rf %{buildroot}
+
+%changelog
+* Wed Feb  3 2016 Jared Sprague <jared@scripta.co> VERSION-BUILD
+- Initial build
