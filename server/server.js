@@ -135,9 +135,11 @@ var MainServer = function () {
      */
     self.start = function () {
         //  Start the app on the specific interface (and port).
-        self.httpServer.listen(self.http_port, function () {
-            console.log("Zorbio v" + packageJson.version + "-" + packageJson.build + " is listening on http://localhost:" + self.http_port);
-        });
+        if (config.ENABLE_HTTP_SERVER) {
+            self.httpServer.listen(self.http_port, function () {
+                console.log("Zorbio v" + packageJson.version + "-" + packageJson.build + " is listening on http://localhost:" + self.http_port);
+            });
+        }
     };
 };
 
