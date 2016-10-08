@@ -157,9 +157,13 @@ input:focus {
 }
 #ui-overlay #menu #menu-content {
   position: absolute;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
   pointer-events: auto;
   overflow: auto;
   height: 100%;
+  max-width: 800px;
   width: 100%;
 }
 #ui-overlay #menu #start-button,
@@ -171,6 +175,7 @@ input:focus {
   box-sizing: border-box;
 }
 #ui-overlay #tabs {
+  font-size: 4vw;
   text-align: center;
 }
 #ui-overlay #copy {
