@@ -1,6 +1,6 @@
-<input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" placeholder="Player name" value="{{ player_name }}" autofocus />
+<input id="input-name" on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" placeholder="Player name" value="{{ player_name }}" autofocus />
 {{ #if REQUIRE_ALPHA_KEY }}
-<input on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" placeholder="Alpha key" value="{{ alpha_key }}"/>
+<input id="input-alphakey" on-keypress="{{ ACTIONS.PLAYER_LOGIN_KEYPRESS }}" type="text" placeholder="Alpha key" value="{{ alpha_key }}"/>
 {{ /if }}
 {{ #if login_error_msg }}
 <b class="error-text">{{ login_error_msg }}</b>
@@ -10,3 +10,4 @@
 <!-- <button on-click="{{ ACTIONS.SHOW_TUTORIAL }}" class="secondary" id="tutorial-button">Tutorial</button> -->
 
 {{ > social }}
+{{ > ad }}

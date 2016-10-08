@@ -56,6 +56,10 @@ body {
   padding: 0;
   background-color: #171717;
 }
+* {
+  margin: 0;
+  padding: 0;
+}
 input,
 textarea,
 select,
@@ -78,33 +82,6 @@ a {
 img {
   max-width: 100%;
 }
-#render-canvas {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin: 0;
-  padding: 0;
-  -ms-touch-action: none;
-      touch-action: none;
-  z-index: 10;
-  cursor: url('../images/cursor.png') -4 -4, crosshair;
-}
-#render-canvas,
-#ui-overlay {
-  opacity: 0.01;
-  -webkit-transition: opacity 0.618s ease-in-out;
-  transition: opacity 0.618s ease-in-out;
-}
-#render-canvas.active,
-#ui-overlay.active {
-  opacity: 1;
-}
-#render-canvas > *,
-#ui-overlay > * {
-  color: #f7f7f7;
-}
 input {
   padding: 20px;
   background: #dedede;
@@ -118,6 +95,33 @@ input[type=range] {
 input:focus {
   background: #ffffff;
 }
+#render-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  -ms-touch-action: none;
+      touch-action: none;
+  z-index: 10;
+  cursor: url('../images/cursor.png') -4 -4, crosshair;
+}
+#render-canvas,
+#ui-overlay {
+  height: 100%;
+  width: 100%;
+  opacity: 0.01;
+  -webkit-transition: opacity 0.618s ease-in-out;
+  transition: opacity 0.618s ease-in-out;
+}
+#render-canvas.active,
+#ui-overlay.active {
+  opacity: 1;
+}
+#render-canvas > *,
+#ui-overlay > * {
+  color: #f7f7f7;
+}
 .error-text {
   color: #0B7BF4;
   font-size: 21px;
@@ -128,43 +132,132 @@ input:focus {
   font-size: 30px;
   font-weight: bold;
   letter-spacing: 1px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  display: -ms-grid;
+  display: grid;
   pointer-events: none;
   position: absolute;
   z-index: 20;
   top: 0;
   left: 0;
-  height: 100%;
-  width: 100%;
   padding: 0;
   margin: 0;
 }
+#ui-overlay #title {
+  position: relative;
+}
+#ui-overlay #title h1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+#ui-overlay #menu {
+  overflow: hidden;
+}
+#ui-overlay #menu #menu-content {
+  position: absolute;
+  pointer-events: auto;
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+}
+#ui-overlay #menu #start-button,
+#ui-overlay #menu #input-name,
+#ui-overlay #menu #input-alphakey,
+#ui-overlay #menu .button-use-skin {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+#ui-overlay #tabs {
+  text-align: center;
+}
+#ui-overlay #copy {
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  background: none;
+  color: #404040;
+}
+#ui-overlay #copy a {
+  color: #404040;
+  text-decoration: underline;
+  pointer-events: auto;
+}
+@media (max-height: 450px), (orientation: landscape) {
+  #ui-overlay {
+    grid-definition-columns: 1fr 150px;
+    -ms-grid-columns: 1fr 150px;
+        grid-template-columns: 1fr 150px;
+    grid-definition-rows: 150px 1fr 14px;
+    -ms-grid-rows: 150px 1fr 14px;
+        grid-template-rows: 150px 1fr 14px;
+  }
+  #ui-overlay #title {
+    -ms-grid-column: 1;
+        grid-column: 1;
+    -ms-grid-row: 1;
+        grid-row: 1;
+  }
+  #ui-overlay #menu {
+    -ms-grid-column: 1;
+        grid-column: 1;
+    -ms-grid-row: 2;
+        grid-row: 2;
+  }
+  #ui-overlay #tabs {
+    -ms-grid-column: 2;
+        grid-column: 2;
+    -ms-grid-row-span: 2;
+    -ms-grid-row: 1;
+        grid-row: 1 / span 2;
+  }
+  #ui-overlay #copy {
+    -ms-grid-column: 1;
+        grid-column: 1;
+    -ms-grid-row: 3;
+        grid-row: 3;
+  }
+}
+@media (min-height: 451px), (orientation: portrait) {
+  #ui-overlay {
+    grid-definition-columns: 1fr;
+    -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr;
+    grid-definition-rows: 100px 1fr 100px 14px;
+    -ms-grid-rows: 100px 1fr 100px 14px;
+        grid-template-rows: 100px 1fr 100px 14px;
+  }
+  #ui-overlay #title {
+    -ms-grid-column: 1;
+        grid-column: 1;
+    -ms-grid-row: 1;
+        grid-row: 1;
+  }
+  #ui-overlay #menu {
+    -ms-grid-column: 1;
+        grid-column: 1;
+    -ms-grid-row: 2;
+        grid-row: 2;
+  }
+  #ui-overlay #tabs {
+    -ms-grid-column: 1;
+        grid-column: 1;
+    -ms-grid-row: 3;
+        grid-row: 3;
+  }
+  #ui-overlay #copy {
+    -ms-grid-column: 1;
+        grid-column: 1;
+    -ms-grid-row: 4;
+        grid-row: 4;
+  }
+}
 #ui-overlay .greybox {
   max-width: calc(100% - 10px);
-  overflow-y: auto;
   pointer-events: auto;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  overflow-y: auto;
   border-radius: 12px;
   color: #f7f7f7;
   background: rgba(0, 0, 0, 0.5) none repeat scroll 0% 0%;
@@ -226,12 +319,6 @@ button {
   background: #0B7BF4;
   border: none;
   color: #f7f7f7;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
   overflow: hidden;
   padding: 20px;
   position: relative;
@@ -257,19 +344,11 @@ button:active {
   background: none;
   pointer-events: none;
   border-radius: 0;
-  -ms-flex-item-align: start;
-      align-self: flex-start;
   margin-right: auto;
   padding: 0;
   margin: 0 auto 0 0;
   font-size: 14px;
   max-height: none;
-}
-#leaderboard-playing ul li,
-#leaderboard-playing #leaders {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
 }
 #leaderboard-playing ul li div,
 #leaderboard-playing #leaders div {
@@ -289,24 +368,6 @@ button:active {
   top: 15vh;
   color: #f7f7f7;
   font-size: 18px;
-}
-#copy {
-  display: block;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  font-size: 12px;
-  background: none;
-  color: #404040;
-  padding: 0;
-  margin: 2px;
-}
-#copy a {
-  color: #404040;
-  text-decoration: underline;
-  pointer-events: auto;
 }
 #gear-btn {
   position: absolute;
@@ -347,29 +408,11 @@ button:active {
   top: 1vh;
 }
 #title {
-  margin: 4vh;
   color: white;
   font-size: 4rem;
   text-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
 }
-#tabs {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -ms-flex-pack: distribute;
-      justify-content: space-around;
-}
 #tabs button {
-  border-radius: 50% 50%;
-  width: 16vw;
-  height: 16vw;
-  max-height: 200px;
-  max-width: 200px;
-  margin: 1vw 1vw 5vh;
   -webkit-transition: opacity ease-out 0.2s, -webkit-transform ease-out 0.2s;
   transition: opacity ease-out 0.2s, -webkit-transform ease-out 0.2s;
   transition: opacity ease-out 0.2s, transform ease-out 0.2s;

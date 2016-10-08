@@ -4,7 +4,7 @@
         <h1>{{ skins[i].meta.friendly_name }}</h1>
         <img src="{{ skins[i].meta.preview }}" alt="thumbnail image for {{ skins[i].meta.friendly_name }}">
         <button
-            {{ selected_skin == skins[i].meta.name ? 'class=\'selected\'' : '' }}
+            class="button-use-skin {{ selected_skin == skins[i].meta.name ? 'selected' : '' }}"
             on-click="{{ ACTIONS.SET_SKIN }}"
             value="{{ skins[i].meta.name }}">Use!</button>
     </li>

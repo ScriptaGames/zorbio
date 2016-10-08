@@ -29,6 +29,11 @@ html, body {
     background-color : @secondary-color;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+}
+
 input, textarea, select, button {
     font-family: inherit;
     font-size: inherit;
@@ -50,37 +55,6 @@ img {
     max-width: 100%;
 }
 
-#render-canvas {
-
-    // TODO: show canvas again!
-    // visibility: hidden;
-    // TODO: show canvas again!
-
-    width        : 100%;
-    height       : 100%;
-    position     : absolute;
-    top          : 0;
-    left         : 0;
-    margin       : 0;
-    padding      : 0;
-    touch-action : none;
-    z-index      : 10;
-    cursor       : url('../images/cursor.png') -4 -4, crosshair;
-}
-
-// fade in the canvas and the UI, when they become active
-#render-canvas,
-#ui-overlay {
-    opacity      : 0.01;
-    transition: opacity 0.618s ease-in-out;
-    &.active {
-        opacity: 1;
-    }
-    & > * {
-        color: @primary-color;
-    }
-}
-
 input {
     padding    : @default-padding;
     background : darken(@primary-color, 10%);
@@ -98,10 +72,55 @@ input {
     }
 }
 
+#render-canvas {
+    position     : absolute;
+    top          : 0;
+    left         : 0;
+    margin       : 0;
+    padding      : 0;
+    touch-action : none;
+    z-index      : 10;
+    cursor       : url('../images/cursor.png') -4 -4, crosshair;
+}
+
+// fade in the canvas and the UI, when they become active
+#render-canvas,
+#ui-overlay {
+    height     : 100%;
+    width      : 100%;
+    opacity    : 0.01;
+    transition : opacity 0.618s ease-in-out;
+    &.active {
+        opacity: 1;
+    }
+    & > * {
+        color: @primary-color;
+    }
+}
+
 .error-text {
     color      : @accent-color;
     font-size  : @font-size-base * 0.7;
     text-align : center;
+}
+
+.center-abs-h() {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.center-abs-v() {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.center-abs() {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 // UI overlay.  all UI components are placed within this element.
@@ -112,10 +131,7 @@ input {
     font-weight    : bold;
     letter-spacing : 1px;
 
-    display         : flex;
-    justify-content : space-between;
-    align-items     : center;
-    flex-direction  : column;
+    display         : grid;
 
     pointer-events  : none; // disable click/touch events for the overlay itself
 
@@ -123,20 +139,104 @@ input {
     z-index         : 20;
     top             : 0;
     left            : 0;
-    height          : 100%;
-    width           : 100%;
     padding         : 0;
     margin          : 0;
+
+    #title {
+        position: relative;
+        h1 {
+            .center-abs();
+        }
+    }
+    #menu {
+        overflow: hidden;
+        #menu-content {
+            position: absolute;
+            pointer-events: auto;
+            overflow: auto;
+            height: 100%;
+            width: 100%;
+        }
+        #start-button,
+        #input-name,
+        #input-alphakey,
+        .button-use-skin {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    }
+    #tabs {
+        text-align: center;
+    }
+    #copy {
+        display: block;
+        text-align: center;
+        font-size: 12px;
+        background: none;
+        color: lighten(@secondary-color, 16%);
+        a {
+            color: lighten(@secondary-color, 16%);
+            text-decoration: underline;
+            pointer-events: auto;
+        }
+    }
+
+    @media (max-height: 450px), (orientation: landscape) {
+        & {
+            // TODO variablize these fixed px sizes
+            grid-definition-columns: 1fr 150px;
+            grid-template-columns: 1fr 150px;
+            grid-definition-rows: 150px 1fr 14px;
+            grid-template-rows: 150px 1fr 14px;
+        }
+        #title {
+            grid-column: 1;
+            grid-row: 1;
+        }
+        #menu {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        #tabs {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+        }
+        #copy {
+            grid-column: 1;
+            grid-row: 3;
+        }
+    }
+    @media (min-height: 451px), (orientation: portrait) {
+        & {
+            grid-definition-columns: 1fr;
+            grid-template-columns: 1fr;
+            grid-definition-rows: 100px 1fr 100px 14px;
+            grid-template-rows: 100px 1fr 100px 14px;
+        }
+        #title {
+            grid-column: 1;
+            grid-row: 1;
+        }
+        #menu {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        #tabs {
+            grid-column: 1;
+            grid-row: 3;
+        }
+        #copy {
+            grid-column: 1;
+            grid-row: 4;
+        }
+    }
 
     .greybox {
         max-width       : calc(~"100% - 10px");
 
-        overflow-y      : auto; // scroll if ya gotta
-
         pointer-events  : auto; // enable click/touch events on UI elements
-        display         : flex;
-        flex-direction  : column;
-        justify-content : space-between;
+        overflow-y      : auto; // scroll if ya gotta
 
         border-radius   : 12px;
 
@@ -212,8 +312,6 @@ button {
     background                  : @accent-color;
     border                      : none;
     color                       : @primary-color;
-    display                     : flex;
-    justify-content             : center;
     overflow                    : hidden;
     padding                     : @default-padding;
     position                    : relative;
@@ -240,7 +338,6 @@ button {
     border-radius  : 0; // override
 
     // position top left
-    align-self   : flex-start;
     margin-right : auto;
     padding      : 0;
     margin       : 0 auto 0 0;
@@ -250,7 +347,6 @@ button {
 
     ul li,
     #leaders {
-        display    : flex;
         div {
             margin    : 3px;
             font-size : @font-size-base * 0.35;
@@ -272,24 +368,6 @@ button {
     font-size : @font-size-base * 0.6;
 }
 
-#copy {
-    display: block;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    font-size: 12px;
-    background: none;
-    color: lighten(@secondary-color, 16%);
-    padding: 0;
-    margin: 2px;
-    a {
-        color: lighten(@secondary-color, 16%);
-        text-decoration: underline;
-        pointer-events: auto;
-    }
-}
 
 #gear-btn {
     position   : absolute;
@@ -330,24 +408,13 @@ button {
 }
 
 #title {
-    margin: 4vh;
     color: white;
     font-size: 4rem;
     text-shadow: 0 0 40px rgba(255,255,255,0.5);
 }
 
-.circle(@radius: 15vw, @max-radius: 200px) {
-    border-radius : 50% 50%;
-    width         : 16vw;
-    height        : 16vw;
-    max-height    : 200px;
-    max-width     : 200px;
-}
-
 #tabs {
     button {
-        .circle(16vw, 200px);
-        margin: 1vw 1vw 5vh;
         transition:
             opacity ease-out 0.2s,
             transform ease-out 0.2s;
@@ -358,9 +425,6 @@ button {
             box-shadow: inset 0 0 0 0.8vw rgba(255,255,255,0.2);
         }
     }
-    display         : flex;
-    flex-direction  : row;
-    justify-content : space-around;
 }
 
 * {
