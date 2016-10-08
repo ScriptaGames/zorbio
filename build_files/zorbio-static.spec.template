@@ -1,56 +1,39 @@
 %global debug_package %{nil}
 
-Name:           zorbio
+Name:           zorbio-static
 Version:        VERSION
 Release:        BUILD%{?dist}
-Summary:        A multiplayer webgl game
+Summary:        Static http files for Zorbio a multiplayer webgl game
 
 License:        Proprietary
 URL:            http://zor.bio/
 Source0:        zorbio.tar.gz
 
-BuildRequires:  systemd
-Requires:       nodejs
+Requires:       httpd
 
 %description
-An awesome multiplayer webgl game writen by Jared Sprague & Michael Clayton
+Static http files for Zorbio an awesome multiplayer webgl game writen by Jared Sprague & Michael Clayton
 
 %prep
-%autosetup -n %{name}
+%autosetup -n zorbio
 
 %build
 # Empty build section, nothing to build
 
 %install
 rm -rf %{buildroot}
-mkdir -p -m 0755 %{buildroot}%{_datarootdir}/games/%{name}
-mkdir -p -m 0755 %{buildroot}%{_unitdir}
-cp -pr common %{buildroot}%{_datarootdir}/games/%{name}/common
-cp -pr dist %{buildroot}%{_datarootdir}/games/%{name}/dist
-cp -pr server %{buildroot}%{_datarootdir}/games/%{name}/server
-cp -pr node_modules %{buildroot}%{_datarootdir}/games/%{name}/node_modules
-cp package.json %{buildroot}%{_datarootdir}/games/%{name}/
-cp zorbio.sh %{buildroot}%{_datarootdir}/games/%{name}/
-cp zorbio.service %{buildroot}%{_unitdir}/
+mkdir -p -m 0755 %{buildroot}%{_localstatedir}/www/%{name}
+mkdir -p -m 0755 %{buildroot}%{_sysconfdir}/httpd/conf.d
+cp -pr dist/* %{buildroot}%{_localstatedir}/www/%{name}/
+cp build_files/zorbio.conf %{buildroot}%{_sysconfdir}/httpd/conf.d/
 
 %files
-%{_datarootdir}/games/%{name}
-%attr(644,root,root) %{_unitdir}/zorbio.service
-
-%post
-systemctl daemon-reload
-systemctl enable zorbio.service
-systemctl daemon-reload
-systemctl restart zorbio.service >/dev/null 2>&1
-
-%preun
-systemctl stop zorbio.service >/dev/null 2>&1
-systemctl disable zorbio.service
-systemctl daemon-reload
+%{_localstatedir}/www/%{name}
+%attr(644,root,root) %{_sysconfdir}/httpd/conf.d/zorbio.conf
 
 %clean
 rm -rf %{buildroot}
 
 %changelog
-* Wed Feb  3 2016 Jared Sprague <jared@scripta.co> VERSION-BUILD
+* Wed Oct 7 2016 Jared Sprague <jared@scripta.co> VERSION-BUILD
 - Initial build

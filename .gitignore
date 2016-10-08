@@ -10,4 +10,4 @@ client/css/.sass-cache
 
 dist
 
-zorbio.spec
+build_files/*.spec

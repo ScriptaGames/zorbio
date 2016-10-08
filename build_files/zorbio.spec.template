@@ -3,7 +3,7 @@
 Name:           zorbio
 Version:        VERSION
 Release:        BUILD%{?dist}
-Summary:        A multiplayer webgl game
+Summary:        Server files for Zorbio a multiplayer webgl game
 
 License:        Proprietary
 URL:            http://zor.bio/
@@ -13,7 +13,7 @@ BuildRequires:  systemd
 Requires:       nodejs
 
 %description
-An awesome multiplayer webgl game writen by Jared Sprague & Michael Clayton
+Server files for Zorbio an awesome multiplayer webgl game writen by Jared Sprague & Michael Clayton
 
 %prep
 %autosetup -n %{name}
@@ -30,8 +30,8 @@ cp -pr dist %{buildroot}%{_datarootdir}/games/%{name}/dist
 cp -pr server %{buildroot}%{_datarootdir}/games/%{name}/server
 cp -pr node_modules %{buildroot}%{_datarootdir}/games/%{name}/node_modules
 cp package.json %{buildroot}%{_datarootdir}/games/%{name}/
-cp zorbio.sh %{buildroot}%{_datarootdir}/games/%{name}/
-cp zorbio.service %{buildroot}%{_unitdir}/
+cp build_files/zorbio.sh %{buildroot}%{_datarootdir}/games/%{name}/
+cp build_files/zorbio.service %{buildroot}%{_unitdir}/
 
 %files
 %{_datarootdir}/games/%{name}

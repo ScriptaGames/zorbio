@@ -41,20 +41,25 @@ echo "dist/index.html written"
 
 
 ###############################################
-# Generate the RPM spec file
+# Generate the RPM spec files
 ###############################################
 echo "Generating RPM spec file: zorbio.spec"
-rm -f zorbio.spec
+cd build_files
+rm -f *.spec
 cp zorbio.spec.template zorbio.spec
+cp zorbio-static.spec.template zorbio-static.spec
 sed -i "s/VERSION/$VERSION/g" zorbio.spec
 sed -i "s/BUILD/$BUILD/g" zorbio.spec
+sed -i "s/VERSION/$VERSION/g" zorbio-static.spec
+sed -i "s/BUILD/$BUILD/g" zorbio-static.spec
+cp *.spec ~/rpmbuild/SPECS/
+cd ..
 
 
 ###############################################
-# Build the rpm
+# Build the rpms
 ###############################################
-echo "Building the rpm"
-cp zorbio.spec ~/rpmbuild/SPECS/
+echo "Building the rpms"
 # save a copy of the current node_modules
 mv node_modules node_modules_orig
 
@@ -79,16 +84,18 @@ cd common/
 ln -f -s ./environment_dev.js ./environment.js
 
 # Finally build the rpm
-echo "bulding the rpm"
 cd ~/rpmbuild
+echo "Building the server rpm"
 rpmbuild -bb SPECS/zorbio.spec
-
+echo "Building the static rpm"
+rpmbuild -bb SPECS/zorbio-static.spec
 
 ###############################################
 # Upload the rpm and update yum repo database
 ###############################################
 if [ "$1" = "--upload" ]; then
-    echo "Uploading rpm..."
+    echo "Uploading rpms..."
     scp -P 4460 ~/rpmbuild/RPMS/x86_64/zorbio-$VERSION-$BUILD.fc24.x86_64.rpm mcp.zor.bio:/var/www/html/repo/
+    scp -P 4460 ~/rpmbuild/RPMS/x86_64/zorbio-static-$VERSION-$BUILD.fc24.x86_64.rpm mcp.zor.bio:/var/www/html/repo/
     echo "Done. Repo will be updated within 5 minutes. Edit: https://github.com/ScriptaGames/zorbio-version/edit/master/version.json"
 fi
