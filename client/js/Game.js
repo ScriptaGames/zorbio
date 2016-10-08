@@ -344,10 +344,13 @@ function updateActors() {
 updateActors.runningActorUpdateGap = config.TICK_FAST_INTERVAL;
 
 function updatePlayerSizeUI() {
-    //TODO: only set this if the size has changed
-    ZOR.UI.engine.set('player_size', player.getScore());
+    var currentScore = player.getScore();
+    if (currentScore != player.lastScore) {
+        ZOR.UI.engine.set('player_size', currentScore);
+        player.lastScore = currentScore;
+    }
 }
-var throttledUpdatePlayerSizeUI = _.throttle(updatePlayerSizeUI, 50);
+var throttledUpdatePlayerSizeUI = _.throttle(updatePlayerSizeUI, 70);
 
 function updateTargetLock() {
     // calculate objects intersecting the ray
@@ -366,9 +369,12 @@ function updateTargetLock() {
             }
 
             // Update target locked UI
-            //TODO: only change this if the size has changed
             var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
-            ZOR.UI.engine.set('target', { name: pointedPlayer.model.name, score: pointedPlayer.model.getScore(), color: pointedPlayer.model.sphere.color });
+            var currentScore = pointedPlayer.getScore();
+            if (currentScore != pointedPlayer.lastScore) {
+                ZOR.UI.engine.set('target', { name: pointedPlayer.model.name, score: currentScore, color: pointedPlayer.model.sphere.color });
+                pointedPlayer.lastScore = currentScore;
+            }
         }
     }
     else if (player.getTargetLock()) {

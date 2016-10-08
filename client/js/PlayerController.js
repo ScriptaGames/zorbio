@@ -13,6 +13,7 @@ ZOR.PlayerController = function ZORPlayerController(model, scene, current) {
         model.sphere.scale, model.sphere.velocity, model.sphere.skin);
     this.isDead = false;
     this.is_current_player = current || false;
+    this.lastScore = 0;  // last reported score, used to only update UI when there is a change
 
     this.move_forward_v = new THREE.Vector3();
     this.move_backward_v = new THREE.Vector3();
