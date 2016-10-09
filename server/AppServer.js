@@ -231,7 +231,7 @@ var AppServer = function (id, app) {
                     self.model.players.push(currentPlayer);
                     self.model.addActor(currentPlayer.sphere);
 
-                    var playerCount = self.model.players.length;
+                    var playerCount = self.model.getRealPlayers().length;
                     self.log('Player ' + currentPlayer.id + ' joined game!');
                     self.log('Total players: ' + playerCount);
 
@@ -787,10 +787,10 @@ var AppServer = function (id, app) {
         var tick_time = perfNow() - start;
         self.out.tick_time_metric.add(tick_time);
         self.out.clients = self.getClientCount();
-        self.out.players = self.model.players.length;
+        self.out.players = self.model.getRealPlayers();
         self.out.socket_uuid_map = Object.getOwnPropertyNames(self.socket_uuid_map).length;
 
-        self.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.out.clients + ', Players: ' + self.out.players + ', socket_uuid_map: ' + self.out.socket_uuid_map);
+        self.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.out.clients + ', Players: ' + self.out.players.length + ', socket_uuid_map: ' + self.out.socket_uuid_map);
     }
 
     var logServerStatusNth = UTIL.nth(logServerStatus, Math.floor(config.STATUS_LOG_DELAY / config.TICK_FAST_INTERVAL));

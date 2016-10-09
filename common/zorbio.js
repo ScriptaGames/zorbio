@@ -130,6 +130,23 @@ ZOR.Model.prototype.getPlayerById = function ZORModelGetPlayersById(id) {
     return this.players[UTIL.findIndexById(this.players, id)];
 };
 
+/**
+ * Return an array of non-bot players
+ * @param id
+ */
+ZOR.Model.prototype.getRealPlayers = function ZORModelGetRealPlayers() {
+    var real_players = [];
+
+    for (var i = 0, l = this.players.length; i < l; i++) {
+        var player = this.players[i];
+        if (player.type === ZOR.PlayerTypes.PLAYER) {
+            real_players.push( player );
+        }
+    }
+
+    return real_players;
+};
+
 ZOR.Model.prototype.removePlayer = function ZORModelRemovePlayer(id) {
     var playerIndex = UTIL.findIndexById(this.players, id);
     var player = this.players[playerIndex];
