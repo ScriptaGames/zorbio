@@ -54,9 +54,6 @@ function setupSocket(ws) {
                 case 'player_died':
                     handle_msg_player_died(message);
                     break;
-                case 'food_captured':
-                    handle_msg_food_captured(message);
-                    break;
                 case 'kick':
                     handle_msg_kick(message);
                     break;
@@ -248,13 +245,6 @@ function setupSocket(ws) {
             // someone else killed another player, lets remove it
             console.log("Player died:  ", targetPlayerId);
             removePlayerFromGame(targetPlayerId);
-        }
-    }
-
-    function handle_msg_food_captured(msg) {
-        // TODO add food capture sound here
-        if (foodController && foodController.isInitialized()) {
-            foodController.hideFood( msg.fi );
         }
     }
 

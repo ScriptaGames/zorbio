@@ -15,6 +15,8 @@ Validators.ErrorCodes = {
     PLAYER_SCALE_TO_BIG: 6
 };
 
+Validators.v3 = new THREE.Vector3();
+
 Validators.is_profane = function (str) {
     return profanity.filter(str).indexOf('*') >= 0;
 };
@@ -144,7 +146,8 @@ Validators.foodCapture = function (model, fi, sphere, radius) {
     var food_z = model.food[food_index + 2];
 
     // calculate dist and tolerance
-    var foodPosition = new THREE.Vector3(food_x, food_y, food_z);
+    Validators.v3.set(food_x, food_y, food_z);
+    var foodPosition = Validators.v3;
     var vdist = foodPosition.distanceTo(sphere.position);
     var tolerance = radius + config.FOOD_CAPTURE_ASSIST + config.FOOD_CAPTURE_EXTRA_TOLERANCE;
 

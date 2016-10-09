@@ -45,6 +45,12 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
     this.food_respawning_indexes = [];
 
     /**
+     * Food that has been captured that should be hidden, sent to client
+     * @type {Array}
+     */
+    this.food_captured_queue = [];
+
+    /**
      * Queue of food indexes that are ready to respawn, to be sent to the client
      * @type {Array}
      */

@@ -485,7 +485,6 @@ var AppServer = function (id, app) {
     };
 
     self.foodCapture = function appFoodCapture (player, fi, actor, origRadius) {
-        //TODO: Refactor this to use the current radius of the player on the server not what is sent from the client
         var food_value = config.FOOD_GET_VALUE(origRadius);
 
         var err = Validators.foodCapture(self.model, fi, actor, origRadius);
@@ -499,9 +498,8 @@ var AppServer = function (id, app) {
             // grow player on the server to track growth validation
             player.sphere.growExpected( food_value );
 
-            // notify clients of food capture so they can update their food view
-            // TODO: queue this into the actorUpdate message from the server
-            self.broadcast(JSON.stringify({op: 'food_captured', fi: fi}));
+            // Queue to notify clients of food capture so they can update their food view
+            self.model.food_captured_queue.push(fi);
         } else {
             switch (err) {
                 case Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR:
@@ -771,6 +769,7 @@ var AppServer = function (id, app) {
     self.sendServerTickData = function appSendServerTickData() {
         var serverTickData = {
             fr: self.model.food_respawn_ready_queue,
+            fc: self.model.food_captured_queue,
             sm: self.serverMsg,
             leaders: self.model.leaders
         };
@@ -779,7 +778,9 @@ var AppServer = function (id, app) {
         var buffer = Schemas.tickSlowSchema.encode(tickSlowMessage);
         self.broadcast(buffer);
 
+        // Reset queues
         self.model.food_respawn_ready_queue = [];
+        self.model.food_captured_queue = [];
     };
 
     function logServerStatus(start) {
