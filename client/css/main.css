@@ -181,7 +181,7 @@ input:focus {
 #ui-overlay #copy {
   display: block;
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   background: none;
   color: #404040;
 }
