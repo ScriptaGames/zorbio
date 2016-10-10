@@ -4,9 +4,11 @@
 # Script used for systemd start, restart, stop control of pm2 processes
 #-------------------------------------------------------------------------------
 
+#defaults
 NUM_NODES=1
 HTTP_PORT=8080
 WS_PORT=31000
+LABEL=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 KEY=0
 SECRET=0
 
@@ -23,6 +25,11 @@ fi
 if [ -v WS_PORT_START ]; then
     echo "Using environment variable WS_PORT_START: ${WS_PORT_START}"
     WS_PORT=${WS_PORT_START}
+fi
+
+if [ -v LOCAL_LINODE_LABEL ]; then
+    echo "Using environment variable APP42_API_KEY"
+    LABEL=${LOCAL_LINODE_LABEL}
 fi
 
 if [ -v API_KEY ]; then
@@ -51,14 +58,14 @@ function start {
             echo "Starting next zorbio process on http_port: ${NEXT_HTTP_PORT}"
             echo "Starting next zorbio process on ws_port: ${NEXT_WS_PORT}"
 
-            HTTP_PORT=${NEXT_HTTP_PORT} WS_PORT=${NEXT_WS_PORT} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-$BAL_COUNT" /usr/share/games/zorbio/server/server.js -- dist
+            HTTP_PORT=${NEXT_HTTP_PORT} WS_PORT=${NEXT_WS_PORT} SERVER_LABEL=${LABEL} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-$BAL_COUNT" /usr/share/games/zorbio/server/server.js -- dist
 
             let BAL_COUNT=BAL_COUNT+1
         done
     else
         echo "Starting next zorbio process on http_port: ${HTTP_PORT}"
         echo "Starting single zorbio process on ws port: ${WS_PORT}"
-        HTTP_PORT=${HTTP_PORT} WS_PORT=${WS_PORT} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-0" /usr/share/games/zorbio/server/server.js -- dist
+        HTTP_PORT=${HTTP_PORT} WS_PORT=${WS_PORT} SERVER_LABEL=${LABEL} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-0" /usr/share/games/zorbio/server/server.js -- dist
     fi
 }
 
