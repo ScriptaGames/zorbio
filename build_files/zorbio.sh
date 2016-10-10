@@ -8,7 +8,7 @@
 NUM_NODES=1
 HTTP_PORT=8080
 WS_PORT=31000
-LABEL=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+LABEL='server'
 KEY=0
 SECRET=0
 
@@ -28,7 +28,7 @@ if [ -v WS_PORT_START ]; then
 fi
 
 if [ -v LOCAL_LINODE_LABEL ]; then
-    echo "Using environment variable APP42_API_KEY"
+    echo "Using environment variable LOCAL_LINODE_LABEL: ${LOCAL_LINODE_LABEL}"
     LABEL=${LOCAL_LINODE_LABEL}
 fi
 
