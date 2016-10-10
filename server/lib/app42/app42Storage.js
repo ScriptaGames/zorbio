@@ -43,7 +43,6 @@ module.exports = {
 		signParams.body = JSON.stringify(jsonBody);
 		var signature = App42Util.signature(App42.secretKey,signParams)
 		headerParams.signature = signature
-		console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 		App42Connection.executePut(requestURL, queryParams,headerParams,JSON.stringify(jsonBody),callback);
 	},
 	addOrUpdateKeys : function (dbName,collectionName,docId,json,callback) {
@@ -304,9 +303,9 @@ module.exports = {
 		App42Log.debug("signature is : " + signature)
 		App42Connection.executeDelete(requestURL, queryParams,headerParams,callback);
 	},
-	
-	
-	
+
+
+
 grantAccessOnDoc : function(dbName, collectionName, docId,aclList,callback) {
         var requestURL = App42.URL("storage/grantAccessOnDoc/"+dbName+"/"+collectionName+"/"+docId);
         var queryParams = {};
@@ -321,7 +320,7 @@ grantAccessOnDoc : function(dbName, collectionName, docId,aclList,callback) {
             for (var i=0;  i<aclList.length; i++){
                 var userInArray = aclList[i].user;
                 var permissionInArray;
-                
+
                 permissionInArray = aclList[i].permission;
                 var arrayInArray={
                     user:userInArray,
@@ -365,7 +364,7 @@ grantAccessOnDoc : function(dbName, collectionName, docId,aclList,callback) {
             for (var i=0;  i<aclList.length; i++){
                 var userInArray = aclList[i].user;
                 var permissionInArray;
-                
+
                 permissionInArray = aclList[i].permission;
                 var arrayInArray={
                     user:userInArray,

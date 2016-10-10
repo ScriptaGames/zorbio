@@ -13,7 +13,7 @@ var Schemas       = require('../common/schemas.js');
 var perfNow       = require("performance-now");
 var uuid          = require("node-uuid");
 var cookie        = require("cookie");
-var App42         = require("./lib/app42/app42.js");
+var Backend       = require("./Backend.js");
 
 /**
  * This module contains all of the app logic and state,
@@ -34,24 +34,7 @@ var AppServer = function (id, app, server_label, port) {
     self.port = port;
     self.uuid = self.server_label + ':' + self.port + '-' + self.id;
 
-
-    App42.initialize(apikey, apisecret);
-    self.storageService = App42.buildStorageService();
-    self.onStorageOperationCompleted = function(object){
-        var result_JSON = JSON.parse( object );
-        if(result_JSON.app42){
-            var storage = result_JSON.app42.response.storage
-            console.log("Data base Name is : ",storage.dbName)
-            console.log("Collection Name is : ",storage.collectionName)
-            // console.log("Doc Id is : ",storage.jsonDoc._id.$oid)
-            // console.log("Created At is : ",storage.jsonDoc._$createdAt)
-            // console.log("Updated At is : ",storage.jsonDoc._$updatedAt)
-        }else{
-            console.log("Error Message is: ", result_JSON.app42Fault.message)
-            console.log("Error Detail is: ", result_JSON.app42Fault.details)
-            console.log("Error Code is: ", result_JSON.app42Fault.appErrorCode)
-        }
-    };
+    self.backend = new Backend();
 
     /**
      * Console.log wrapper so we can include instance id for filtering
@@ -829,9 +812,8 @@ var AppServer = function (id, app, server_label, port) {
             self.status.players_metrics.push( realPlayers[i].getMetrics() );
         }
 
-        //TODO: send to data store
-        // self.storageService.insertJSONDocument('zorbio', 'game_instances', self.status, self.onStorageOperationCompleted);
-        self.storageService.saveOrUpdateDocumentByKeyValue('zorbio', 'game_instances', 'uuid', self.uuid, self.status, self.onStorageOperationCompleted);
+        // Save game status to remote data store
+        self.backend.saveGameInstanceStatus(self.uuid, self.status);
 
         self.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.status.clients + ', Players: ' + self.status.real_player_count + ', socket_uuid_map: ' + self.status.socket_uuid_map);
     }
