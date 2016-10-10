@@ -8,7 +8,7 @@ var rq        = require('request');
 var cookie    = require('cookie');
 
 
-var AppProxy = function (wss, app) {
+var AppProxy = function (wss, app, server_label, port) {
     //  Scope
     var self = this;
     self.wss = wss;
@@ -17,7 +17,7 @@ var AppProxy = function (wss, app) {
     self.gameInstances = [];
 
     for (var i = 0; i < config.NUM_GAME_INSTANCES; i++) {
-        self.gameInstances.push(new AppServer(i, self.app));
+        self.gameInstances.push(new AppServer(i, self.app, server_label, port));
     }
 
     // set up api
