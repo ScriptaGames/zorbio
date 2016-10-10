@@ -48,7 +48,7 @@ config.BIN_PP_POSITIONS_LENGTH  = 29;
 config.CHECK_ORIGIN             = true;
 config.RECENT_CLIENT_DATA_LENGTH = 100;   // how many recent data points to keep from the client like pings
 config.CLOSE_NO_RESTART         = 4000;   // 4000-4999 application reserved close code in WebSocket spec
-config.STATUS_LOG_DELAY         = 10000;  // how many milliseconds to wait between status log output
+config.STATUS_LOG_DELAY         = 15000;  // how many milliseconds to wait between status log output
 config.ENABLE_RAPID_UPDATES     = true;   // If enabled will send and broadcast player position updates every frame
 config.ENABLE_BACKEND_SERVICE   = true;   // Enable communication with a remote api (currently app42)
 
