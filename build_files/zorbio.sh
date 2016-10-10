@@ -7,6 +7,8 @@
 NUM_NODES=1
 HTTP_PORT=8080
 WS_PORT=31000
+KEY=0
+SECRET=0
 
 if [ -v BALANCER_NODES ]; then
     echo "Using environment variable BALANCER_NODES: ${BALANCER_NODES}"
@@ -21,6 +23,16 @@ fi
 if [ -v WS_PORT_START ]; then
     echo "Using environment variable WS_PORT_START: ${WS_PORT_START}"
     WS_PORT=${WS_PORT_START}
+fi
+
+if [ -v API_KEY ]; then
+    echo "Using environment variable APP42_API_KEY"
+    KEY=${API_KEY}
+fi
+
+if [ -v API_SECRET ]; then
+    echo "Using environment variable APP42_API_SECRET"
+    SECRET=${API_SECRET}
 fi
 
 function start {
@@ -39,7 +51,7 @@ function start {
             echo "Starting next zorbio process on http_port: ${NEXT_HTTP_PORT}"
             echo "Starting next zorbio process on ws_port: ${NEXT_WS_PORT}"
 
-            HTTP_PORT=${NEXT_HTTP_PORT} WS_PORT=${NEXT_WS_PORT} /usr/bin/pm2 start --name="zorbio-$BAL_COUNT" /usr/share/games/zorbio/server/server.js -- dist
+            HTTP_PORT=${NEXT_HTTP_PORT} WS_PORT=${NEXT_WS_PORT} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-$BAL_COUNT" /usr/share/games/zorbio/server/server.js -- dist
 
             let BAL_COUNT=BAL_COUNT+1
         done
