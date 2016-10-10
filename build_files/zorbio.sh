@@ -58,7 +58,7 @@ function start {
     else
         echo "Starting next zorbio process on http_port: ${HTTP_PORT}"
         echo "Starting single zorbio process on ws port: ${WS_PORT}"
-        HTTP_PORT=${HTTP_PORT} WS_PORT=${WS_PORT} /usr/bin/pm2 start --name="zorbio-0" /usr/share/games/zorbio/server/server.js -- dist
+        HTTP_PORT=${HTTP_PORT} WS_PORT=${WS_PORT} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-0" /usr/share/games/zorbio/server/server.js -- dist
     fi
 }
 
