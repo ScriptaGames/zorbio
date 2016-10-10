@@ -17,6 +17,7 @@ ZOR.Env = {
     AUTO_RUN_ENABLED  : true,
     NUM_GAME_INSTANCES : 1,
     ENABLE_HTTP_SERVER : true,
+    ENABLE_BACKEND_SERVICE : false,
 };
 
 if (NODEJS) module.exports = ZOR.Env;

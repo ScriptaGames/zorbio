@@ -16,6 +16,7 @@ var packageJson     = require('../package.json');
 var _               = require('lodash');
 var url             = require('url');
 var validUrl        = require('valid-url');
+var uuid            = require("node-uuid");
 
 // Patch console.x methods in order to add timestamp information
 require("console-stamp")(console, {pattern: "mm/dd/yyyy HH:MM:ss.l"});
@@ -40,8 +41,9 @@ var MainServer = function () {
         //  Set the environment variables we need.
         self.http_port = process.env.HTTP_PORT || config.HTTP_PORT;
         self.ws_port = process.env.WS_PORT || config.WS_PORT;
+        self.server_label = process.env.SERVER_LABEL || uuid.v4();
 
-        console.log("http_port, ws_port", self.http_port, self.ws_port)
+        console.log("http_port, ws_port, server_label", self.http_port, self.ws_port, self.server_label)
     };
 
 
@@ -114,7 +116,7 @@ var MainServer = function () {
         self.app.use(express.static(__dirname + '/../' + (process.argv[2] || 'client')));
 
         // The app server contains all the logic and state of the WebSocket app
-        self.appProxy = new AppProxy(self.wss, self.app);
+        self.appProxy = new AppProxy(self.wss, self.app, self.server_label, self.ws_port);
     };
 
 

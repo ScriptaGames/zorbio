@@ -54,6 +54,7 @@ ZOR.Schemas = function ZORSchemas() {
 
     var tick_slow_data =  {
         fr: ["varuint"],
+        fc: ["varuint"],
         sm: "string",
         leaders: [leader],
     };

@@ -526,9 +526,16 @@ function handleServerTick(serverTickData) {
     ZOR.UI.engine.set( 'leaders', serverTickData.leaders );
     ZOR.UI.data.leaders = serverTickData.leaders;
 
-    // handle food respawns
-    for(var i = 0, l = serverTickData.fr.length; i < l; ++i) {
-        foodController.showFood(serverTickData.fr[i]);  // Show the food index
+    if (foodController && foodController.isInitialized()) {
+        // handle food respawns
+        for (var i = 0, l = serverTickData.fr.length; i < l; ++i) {
+            foodController.showFood( serverTickData.fr[i] );  // Show the food index
+        }
+
+        // handle food captures
+        for (i = 0, l = serverTickData.fc.length; i < l; ++i) {
+            foodController.hideFood( serverTickData.fc[i] );
+        }
     }
 
     // Send server message to the UI (either real message, or undefined)

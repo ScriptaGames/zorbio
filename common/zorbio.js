@@ -45,6 +45,12 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
     this.food_respawning_indexes = [];
 
     /**
+     * Food that has been captured that should be hidden, sent to client
+     * @type {Array}
+     */
+    this.food_captured_queue = [];
+
+    /**
      * Queue of food indexes that are ready to respawn, to be sent to the client
      * @type {Array}
      */
@@ -122,6 +128,23 @@ ZOR.Model.prototype.getActorById = function ZORModelGetActorById(id) {
  */
 ZOR.Model.prototype.getPlayerById = function ZORModelGetPlayersById(id) {
     return this.players[UTIL.findIndexById(this.players, id)];
+};
+
+/**
+ * Return an array of non-bot players
+ * @param id
+ */
+ZOR.Model.prototype.getRealPlayers = function ZORModelGetRealPlayers() {
+    var real_players = [];
+
+    for (var i = 0, l = this.players.length; i < l; i++) {
+        var player = this.players[i];
+        if (player.type === ZOR.PlayerTypes.PLAYER) {
+            real_players.push( player );
+        }
+    }
+
+    return real_players;
 };
 
 ZOR.Model.prototype.removePlayer = function ZORModelRemovePlayer(id) {
@@ -340,12 +363,12 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     this.infractions_scale = 0;
 
     // Client Metrics
-    this.ping_metric = new ZOR.PlayerMetric(100);
-    this.fps_metric = new ZOR.PlayerMetric(20, true);
-    this.pp_send_metric = new ZOR.PlayerMetric(200);
-    this.pp_receive_metric = new ZOR.PlayerMetric(200);
-    this.au_receive_metric = new ZOR.PlayerMetric(200);
-    this.buffered_amount_metric = new ZOR.PlayerMetric(320);
+    this.ping_metric = new ZOR.Metric(100);
+    this.fps_metric = new ZOR.Metric(20, true);
+    this.pp_send_metric = new ZOR.Metric(200);
+    this.pp_receive_metric = new ZOR.Metric(200);
+    this.au_receive_metric = new ZOR.Metric(200);
+    this.buffered_amount_metric = new ZOR.Metric(320);
 };
 
 /**
@@ -358,6 +381,21 @@ ZOR.Player.prototype.reduce = function ZORPlayerReduce() {
         type: this.type,
         sphere: this.sphere.reduce(),
     }
+};
+
+/**
+ * Reduce the player to the bare minimum needed to sync between client and server
+ */
+ZOR.Player.prototype.getMetrics = function ZORPlayerGetMetrics() {
+    var metrics = this.reduce();
+    metrics.ping = this.ping_metric;
+    metrics.fps = this.fps_metric;
+    metrics.pp_send = this.pp_send_metric;
+    metrics.pp_receive = this.pp_receive_metric;
+    metrics.au_receive = this.au_receive_metric;
+    metrics.buffered_amount = this.buffered_amount_metric;
+
+    return metrics;
 };
 
 ZOR.Player.prototype.getScore = function ZORPlayerGetScore() {
@@ -395,7 +433,7 @@ ZOR.Player.prototype.update = function ZORPlayerUpdate() {
     }
 };
 
-ZOR.PlayerMetric = function ZORPlayerMetric(threshold, reverse_threshold) {
+ZOR.Metric = function ZORMetric(threshold, reverse_threshold) {
     this.threshold = threshold;
     this.reverse_threshold = reverse_threshold || false;
     this.last_time = Date.now();
@@ -406,7 +444,7 @@ ZOR.PlayerMetric = function ZORPlayerMetric(threshold, reverse_threshold) {
     this.threshold_exceeded_count = 0;
 };
 
-ZOR.PlayerMetric.prototype.add = function ZORPlayerMetricAdd(value) {
+ZOR.Metric.prototype.add = function ZORMetricAdd(value) {
     value = +value; // make sure it's an int
 
     UTIL.pushShift(this.series, value, config.RECENT_CLIENT_DATA_LENGTH);

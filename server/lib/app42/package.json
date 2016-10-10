@@ -1,0 +1,14 @@
+{
+  "name": "App42_Node_SDK",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ShepHertz",
+  "license": "ISC",
+  "dependencies": {
+	"http": "*"
+  }
+}
