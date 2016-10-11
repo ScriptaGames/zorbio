@@ -58,6 +58,7 @@ ZOR.UI = function ZORUI() {
 
         TOGGLE_Y_AXIS            : 'toggle-y-axis',
         TOGGLE_X_AXIS            : 'toggle-x-axis',
+        TOGGLE_OWN_TRAIL         : 'toggle-own-trail',
         VOLUME_MUSIC             : 'volume-music',
         VOLUME_SFX               : 'volume-sfx',
 
@@ -86,6 +87,7 @@ ZOR.UI = function ZORUI() {
         screen_y         : 0,
         flip_x           : JSON.parse(localStorage.flip_x || "false"),
         flip_y           : JSON.parse(localStorage.flip_y || "false"),
+        hide_own_trail   : JSON.parse(localStorage.hide_own_trail || "false"),
         music_enabled    : config.MUSIC_ENABLED,
         volume           : {
             music : config.VOLUME_MUSIC_INITIAL,
@@ -101,6 +103,7 @@ ZOR.UI = function ZORUI() {
         state       : state,
         on          : on,
         clearTarget : clearTarget,
+        setAndSave  : setAndSave,
     };
 
     // array of registered on-init handlers
@@ -111,6 +114,16 @@ ZOR.UI = function ZORUI() {
 
     function clearTarget() {
         uidata.target = undefined;
+    }
+
+    /**
+     * Sets UI data and saves to local storage
+     * @param key
+     * @param value
+     */
+    function setAndSave(key, value) {
+        engine.set(key, value);
+        localStorage.setItem(key, value);
     }
 
     /**
@@ -344,6 +357,8 @@ ZOR.UI = function ZORUI() {
             });
             startGame(ZOR.PlayerTypes.PLAYER);
         });
+
+        config.HIDE_OWN_TRAIL = JSON.parse(localStorage.hide_own_trail || "false") ? true : false;
 
         config.X_AXIS_MULT = JSON.parse(localStorage.flip_x || "false") ? -1 : 1;
         config.Y_AXIS_MULT = JSON.parse(localStorage.flip_y || "false") ? -1 : 1;
