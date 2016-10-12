@@ -16,12 +16,29 @@ var Bot = function (scale, model) {
     self.skin_name = skin_names[UTIL.getRandomIntInclusive(0, skin_names.length - 1)];
     self.id = Zorbio.IdGenerator.get_next_id();
     self.name = "AI_" + self.id;
-    self.scale = scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);
+    self.scale = 5; //scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);
 
     var position = UTIL.safePlayerPosition();
 
+    self.counter = 0;
+
     // Create the player model
     self.player = new Zorbio.Player(self.id, self.name, self.colorCode, Zorbio.PlayerTypes.BOT, position, self.scale, null, self.skin_name);
+
+    self.sampleClosedSpline = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0, -40, -40),
+        new THREE.Vector3(0, 40, -40),
+        new THREE.Vector3(0, 140, -40),
+        new THREE.Vector3(0, 40, 40),
+        new THREE.Vector3(0, -40, 40),
+    ]);
+    self.sampleClosedSpline.type = 'catmullrom';
+    self.sampleClosedSpline.closed = true;
+
+    self.pipeSpline = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0, 10, -10), new THREE.Vector3(10, 0, -10), new THREE.Vector3(20, 0, 0), new THREE.Vector3(30, 0, 10), new THREE.Vector3(30, 0, 20), new THREE.Vector3(20, 0, 30), new THREE.Vector3(10, 0, 30), new THREE.Vector3(0, 0, 30), new THREE.Vector3(-10, 10, 30), new THREE.Vector3(-10, 20, 30), new THREE.Vector3(0, 30, 30), new THREE.Vector3(10, 30, 30), new THREE.Vector3(20, 30, 15), new THREE.Vector3(10, 30, 10), new THREE.Vector3(0, 30, 10), new THREE.Vector3(-10, 20, 10), new THREE.Vector3(-10, 10, 10), new THREE.Vector3(0, 0, 10), new THREE.Vector3(10, -10, 10), new THREE.Vector3(20, -15, 10), new THREE.Vector3(30, -15, 10), new THREE.Vector3(40, -15, 10), new THREE.Vector3(50, -15, 10), new THREE.Vector3(60, 0, 10), new THREE.Vector3(70, 0, 0), new THREE.Vector3(80, 0, 0), new THREE.Vector3(90, 0, 0), new THREE.Vector3(100, 0, 0)]);
+    self.pipeSpline.type = 'catmullrom';
+    self.pipeSpline.closed = true;
 
     self.movementPaterns = {
 
@@ -92,6 +109,20 @@ var Bot = function (scale, model) {
             sphere.position.add(targetPos);
 
             sphere.pushRecentPosition({position: sphere.position, radius: sphere.scale, time: Date.now()});
+        },
+
+        splineCurve: function moveSplineCurve() {
+            var sphere = self.player.sphere;
+
+            if ( self.counter <= 1 ) {
+                // sphere.position = self.sampleClosedSpline.getPointAt( self.counter );
+                sphere.position = self.pipeSpline.getPointAt( self.counter );
+                sphere.position.multiplyScalar(3);
+                sphere.pushRecentPosition({position: sphere.position, radius: sphere.scale, time: Date.now()});
+                self.counter += 0.002
+            } else {
+                self.counter = 0;
+            }
         }
     };
 
@@ -99,7 +130,7 @@ var Bot = function (scale, model) {
         self.chaseTarget = self.model.getActorById(actor_id);
     };
 
-    self.move = self.movementPaterns.randomPoint;
+    self.move = self.movementPaterns.splineCurve;
 };
 
 if (NODEJS) module.exports = Bot;
