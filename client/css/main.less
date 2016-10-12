@@ -38,6 +38,7 @@ input, textarea, select, button {
     font-family: inherit;
     font-size: inherit;
     font-weight: inherit;
+    border-radius : 8px;
 }
 
 a {
@@ -203,9 +204,6 @@ input {
         #tabs {
             grid-column: 2;
             grid-row: 1 / span 2;
-            button {
-                width: 100%;
-            }
         }
         #copy {
             grid-column: 1;
@@ -326,13 +324,13 @@ button {
         padding-left   : 0.75em;
     }
 
-    transition: box-shadow 0.08s linear, transform 0.04s ease-out;
+    transition: transform 0.01s ease-out;
     &:hover {
         box-shadow: inset 0 0 0 0.8vw rgba(255,255,255,0.2);
     }
     &:active {
         box-shadow: inset 0 0 0 0.8vw rgba(255,255,255,0.2);
-        transform: scale3d(0.97, 0.97, 1);
+        transform: scale3d(0.94, 0.94, 1);
     }
 }
 
@@ -422,13 +420,13 @@ button {
     button {
         position: relative;
         top: 15px;
+        margin: 6px;
         transition:
             opacity ease-out 0.2s,
             transform ease-out 0.2s;
         opacity: 0.8;
         &.active {
             opacity: 0.95;
-            transform: scale3d(1.1, 1.1, 1);
             box-shadow: inset 0 0 0 0.8vw rgba(255,255,255,0.2);
         }
     }

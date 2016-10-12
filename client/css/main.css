@@ -67,6 +67,7 @@ button {
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
+  border-radius: 8px;
 }
 a {
   font-size: 1em;
@@ -218,9 +219,6 @@ input:focus {
     -ms-grid-row: 1;
         grid-row: 1 / span 2;
   }
-  #ui-overlay #tabs button {
-    width: 100%;
-  }
   #ui-overlay #copy {
     -ms-grid-column: 1;
         grid-column: 1;
@@ -331,10 +329,10 @@ button {
   padding: 20px;
   position: relative;
   z-index: 1;
-  -webkit-transition: box-shadow 0.08s linear, -webkit-transform 0.04s ease-out;
-  transition: box-shadow 0.08s linear, -webkit-transform 0.04s ease-out;
-  transition: box-shadow 0.08s linear, transform 0.04s ease-out;
-  transition: box-shadow 0.08s linear, transform 0.04s ease-out, -webkit-transform 0.04s ease-out;
+  -webkit-transition: -webkit-transform 0.01s ease-out;
+  transition: -webkit-transform 0.01s ease-out;
+  transition: transform 0.01s ease-out;
+  transition: transform 0.01s ease-out, -webkit-transform 0.01s ease-out;
 }
 button > span {
   vertical-align: middle;
@@ -345,8 +343,8 @@ button:hover {
 }
 button:active {
   box-shadow: inset 0 0 0 0.8vw rgba(255, 255, 255, 0.2);
-  -webkit-transform: scale3d(0.97, 0.97, 1);
-          transform: scale3d(0.97, 0.97, 1);
+  -webkit-transform: scale3d(0.94, 0.94, 1);
+          transform: scale3d(0.94, 0.94, 1);
 }
 #leaderboard-playing {
   background: none;
@@ -423,6 +421,7 @@ button:active {
 #tabs button {
   position: relative;
   top: 15px;
+  margin: 6px;
   -webkit-transition: opacity ease-out 0.2s, -webkit-transform ease-out 0.2s;
   transition: opacity ease-out 0.2s, -webkit-transform ease-out 0.2s;
   transition: opacity ease-out 0.2s, transform ease-out 0.2s;
@@ -431,8 +430,6 @@ button:active {
 }
 #tabs button.active {
   opacity: 0.95;
-  -webkit-transform: scale3d(1.1, 1.1, 1);
-          transform: scale3d(1.1, 1.1, 1);
   box-shadow: inset 0 0 0 0.8vw rgba(255, 255, 255, 0.2);
 }
 * {
