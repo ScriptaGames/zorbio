@@ -174,6 +174,7 @@ input {
         display: block;
         text-align: center;
         font-size: 10px;
+        line-height: 1.5;
         background: none;
         color: lighten(@secondary-color, 16%);
         a {
@@ -188,8 +189,8 @@ input {
             // TODO variablize these fixed px sizes
             grid-definition-columns: 1fr 150px;
             grid-template-columns: 1fr 150px;
-            grid-definition-rows: 150px 1fr 14px;
-            grid-template-rows: 150px 1fr 14px;
+            grid-definition-rows: 75px 1fr 14px;
+            grid-template-rows: 75px 1fr 14px;
         }
         #title {
             grid-column: 1;
@@ -202,6 +203,9 @@ input {
         #tabs {
             grid-column: 2;
             grid-row: 1 / span 2;
+            button {
+                width: 100%;
+            }
         }
         #copy {
             grid-column: 1;
@@ -416,6 +420,8 @@ button {
 
 #tabs {
     button {
+        position: relative;
+        top: 15px;
         transition:
             opacity ease-out 0.2s,
             transform ease-out 0.2s;

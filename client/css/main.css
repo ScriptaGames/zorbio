@@ -181,6 +181,7 @@ input:focus {
   display: block;
   text-align: center;
   font-size: 10px;
+  line-height: 1.5;
   background: none;
   color: #404040;
 }
@@ -194,9 +195,9 @@ input:focus {
     grid-definition-columns: 1fr 150px;
     -ms-grid-columns: 1fr 150px;
         grid-template-columns: 1fr 150px;
-    grid-definition-rows: 150px 1fr 14px;
-    -ms-grid-rows: 150px 1fr 14px;
-        grid-template-rows: 150px 1fr 14px;
+    grid-definition-rows: 75px 1fr 14px;
+    -ms-grid-rows: 75px 1fr 14px;
+        grid-template-rows: 75px 1fr 14px;
   }
   #ui-overlay #title {
     -ms-grid-column: 1;
@@ -216,6 +217,9 @@ input:focus {
     -ms-grid-row-span: 2;
     -ms-grid-row: 1;
         grid-row: 1 / span 2;
+  }
+  #ui-overlay #tabs button {
+    width: 100%;
   }
   #ui-overlay #copy {
     -ms-grid-column: 1;
@@ -417,6 +421,8 @@ button:active {
   text-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
 }
 #tabs button {
+  position: relative;
+  top: 15px;
   -webkit-transition: opacity ease-out 0.2s, -webkit-transform ease-out 0.2s;
   transition: opacity ease-out 0.2s, -webkit-transform ease-out 0.2s;
   transition: opacity ease-out 0.2s, transform ease-out 0.2s;
