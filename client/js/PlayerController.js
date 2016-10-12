@@ -100,6 +100,10 @@ ZOR.PlayerController.prototype.refreshSphereModel = function ZORPlayerController
     this.model.sphere.position.copy(this.view.mainSphere.position);
 };
 
+ZOR.PlayerController.prototype.handleCapture = function ZORPlayerControllerHandleCapture(capturedPlayer) {
+    this.view.handleCapture(capturedPlayer);
+};
+
 ZOR.PlayerController.prototype.updateScale = function ZORPlayerControllerUpdateScale(scale) {
     this.setScale(scale);
     this.view.update(scale);

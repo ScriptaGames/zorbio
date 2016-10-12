@@ -547,7 +547,7 @@ function handleServerTick(serverTickData) {
 
 function handleSuccessfulPlayerCapture(targetPlayerId) {
     var targetPlayer = ZOR.Game.players[targetPlayerId];
-    player.view.particleGroup.triggerPoolEmitter( 1, targetPlayer.model.sphere.position );
+    player.handleCapture(targetPlayer);
     ZOR.Sounds.sfx.player_capture.play();
 }
 

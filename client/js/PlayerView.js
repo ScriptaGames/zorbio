@@ -50,45 +50,16 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.mainSphere.player_id = this.model.id;
     ZOR.Game.player_meshes.push(this.mainSphere);  // store mesh for raycaster search
 
+
     // Player capture animation emitter
-    this.captureEmitterSettings = {
-        type: SPE.distributions.SPHERE,
-        position: {
-            spread: new THREE.Vector3(5),
-            radius: 10,
-        },
-        velocity: {
-            spread: new THREE.Vector3( 100 ),
-        },
-        size: {
-            value: [ 30, 0 ]
-        },
-        opacity: {
-            value: [1, 0]
-        },
-        color: {
-            value: [new THREE.Color('yellow'),new THREE.Color('red')]
-        },
-        particleCount: 100,
-        alive: true,
-        duration: .05,
-        maxAge: {
-            value: .5
-        }
-    };
-    this.particleGroup = new SPE.Group({
-        maxParticleCount: 1000,
-        texture: {
-            value: new THREE.TextureLoader().load( "textures/smokeparticle.png" ),
-        },
-        blending: THREE.AdditiveBlending
-    });
-    this.particleGroup.addPool( 10, this.captureEmitterSettings, false );
-    this.particleGroup.mesh.frustumCulled = false;
-    this.particleGroup.mesh.renderOrder = -1;
+    this.capture = {};
+    this.capture.group = new SPE.Group(this.skin.capture.group);
+    this.capture.group.addPool( 4, this.skin.capture.emitter, false );
+    this.capture.group.mesh.frustumCulled = false;
+    this.capture.group.mesh.renderOrder = -1;
 
     // Add particle group to scene.
-    scene.add( this.particleGroup.mesh );
+    scene.add( this.capture.group.mesh );
 
     scene.add( this.mainSphere );
 
@@ -134,7 +105,6 @@ ZOR.PlayerView.prototype.initParticleTrails = function ZORPlayerViewInitParticle
 
     this.trail.emitter = new SPE.Emitter(this.skin.trail.emitter);
 
-    this.trail.clock = new THREE.Clock();
     this.trail.group.mesh.renderOrder = 1;
     this.trail.group.mesh.frustumCulled = false;
     this.trail.group.addEmitter( this.trail.emitter );
@@ -278,7 +248,7 @@ ZOR.PlayerView.prototype.updateParticleTrails = function ZORPlayerViewupdatePart
     this.trail.emitter.updateFlags.velocity = true;
     this.trail.emitter.updateFlags.size = true;
 
-    this.trail.group.tick( this.trail.clock.getDelta() );
+    this.trail.group.tick( this.clock.getDelta() );
 };
 
 ZOR.PlayerView.prototype.updateLineTrails = function ZORPlayerViewupdateLineTrails() {
@@ -301,14 +271,47 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
     // this.mainSphere.geometry.computeBoundingSphere(); // compute the new bounding sphere after resizing
 };
 
+ZOR.PlayerView.prototype.handleCapture = function ZORPlayerViewHandleCapture(capturedPlayer) {
+    this.capture.group.triggerPoolEmitter( 1, capturedPlayer.model.sphere.position );
+};
+
+ZOR.PlayerView.prototype.attractCaptureParticles = function ZORPlayerViewAttractCaptureParticles() {
+    var emitter;
+    var i;
+
+    // attract all living emitters
+    for (i = 0; i < this.capture.group.emitters.length; ++i) {
+        // TODO see if there's a way to skip emitters that aren't running.
+        // checking if they are .alive did NOT work
+        this.attractCaptureEmitter(this.capture.group.emitters[i]);
+    }
+};
+
+ZOR.PlayerView.prototype.attractCaptureEmitter = function ZORPlayerViewAttractCaptureEmitter(emitter) {
+    // player's position, scaled down for tweening
+    var scaledDest = this.mainSphere.position.clone().multiplyScalar(1 - config.CAPTURE_PARTICLE_ATTRACTION_SPEED);
+    var i;
+    // tween each particle position toward the player's opsition
+    for(i = 0; i < emitter.attributes.position.bufferAttribute.array.length; i+=3) {
+        emitter.attributes.position.bufferAttribute.array[i  ] *= config.CAPTURE_PARTICLE_ATTRACTION_SPEED;
+        emitter.attributes.position.bufferAttribute.array[i+1] *= config.CAPTURE_PARTICLE_ATTRACTION_SPEED;
+        emitter.attributes.position.bufferAttribute.array[i+2] *= config.CAPTURE_PARTICLE_ATTRACTION_SPEED;
+
+        emitter.attributes.position.bufferAttribute.array[i  ] += scaledDest.x;
+        emitter.attributes.position.bufferAttribute.array[i+1] += scaledDest.y;
+        emitter.attributes.position.bufferAttribute.array[i+2] += scaledDest.z;
+    }
+    emitter.attributes.position.forceUpdateAll();
+};
+
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
     this.updateTrails();
     if (this.is_current_player || this.skin.behavior.faceCamera) {
         this.updateDirection();
     }
-
-    this.particleGroup.tick( this.clock.getDelta() );
+    this.attractCaptureParticles();
+    this.capture.group.tick( this.clock.getDelta() );
 };
 
 ZOR.PlayerView.prototype.updateDirection = function ZORPlayerViewUpdateDirection() {
@@ -333,23 +336,31 @@ ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(p
 };
 
 ZOR.PlayerView.prototype.removeTrail = function ZORPlayerViewRemoveTrail() {
-    switch (this.skin.trail.type) {
-        case 'line':
-            this.trail.origins = [];
-            this.trail.geometries = [];
-            this.trail.lines = [];
-            this.trail.meshes.forEach(this.scene.remove.bind(scene));
-            break;
-        case 'particle':
-            this.trail.group.emitters.forEach(function (emitter) { emitter.remove(); });
-            this.trail.group.dispose();
-            break;
+    if (this.trail.initialized) {
+        switch (this.skin.trail.type) {
+            case 'line':
+                this.trail.origins = [];
+                this.trail.geometries = [];
+                this.trail.lines = [];
+                this.trail.meshes.forEach(this.scene.remove.bind(scene));
+                break;
+            case 'particle':
+                this.trail.group.emitters.forEach(function (emitter) { emitter.remove(); });
+                this.trail.group.dispose();
+                break;
+        }
     }
 
 };
 
+ZOR.PlayerView.prototype.removeCaptureParticles = function ZORPlayerViewRemoveCaptureParticles() {
+    this.capture.group.emitters.forEach(function (emitter) { emitter.remove(); });
+    this.capture.group.dispose();
+};
+
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
     this.removeTrail();
+    this.removeCaptureParticles();
     this.drainView.dispose();
     scene.remove(this.mainSphere);
 

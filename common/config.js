@@ -206,6 +206,7 @@ config.LAG_SCALE_ENABLE        = true;
 config.REQUIRED_WEBGL_EXTENSIONS = ['ANGLE_instanced_arrays'];
 config.TRAIL_LINE_LENGTH       = 40;
 config.TRAIL_LINE_WIDTH        = 0.3;
+config.CAPTURE_PARTICLE_ATTRACTION_SPEED = 0.994;
 
 ////////////////////////////////////////////////////////////////////////
 //                            CAMERA SETTINGS                            //
