@@ -17,6 +17,8 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.playerColor = config.COLORS[model.sphere.color];
     this.skinName = model.sphere.skin;
 
+    this.clock = new THREE.Clock();
+
     this.trail = {
         initialized: false,
     };
@@ -47,6 +49,46 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 
     this.mainSphere.player_id = this.model.id;
     ZOR.Game.player_meshes.push(this.mainSphere);  // store mesh for raycaster search
+
+    // Player capture animation emitter
+    this.captureEmitterSettings = {
+        type: SPE.distributions.SPHERE,
+        position: {
+            spread: new THREE.Vector3(5),
+            radius: 10,
+        },
+        velocity: {
+            spread: new THREE.Vector3( 100 ),
+        },
+        size: {
+            value: [ 30, 0 ]
+        },
+        opacity: {
+            value: [1, 0]
+        },
+        color: {
+            value: [new THREE.Color('yellow'),new THREE.Color('red')]
+        },
+        particleCount: 100,
+        alive: true,
+        duration: .05,
+        maxAge: {
+            value: .5
+        }
+    };
+    this.particleGroup = new SPE.Group({
+        maxParticleCount: 1000,
+        texture: {
+            value: new THREE.TextureLoader().load( "textures/smokeparticle.png" ),
+        },
+        blending: THREE.AdditiveBlending
+    });
+    this.particleGroup.addPool( 10, this.captureEmitterSettings, false );
+    this.particleGroup.mesh.frustumCulled = false;
+    this.particleGroup.mesh.renderOrder = -1;
+
+    // Add particle group to scene.
+    scene.add( this.particleGroup.mesh );
 
     scene.add( this.mainSphere );
 
@@ -211,7 +253,6 @@ ZOR.PlayerView.prototype.updateTrails = function ZORPlayerViewUpdateTrail() {
 ZOR.PlayerView.prototype.updateParticleTrails = function ZORPlayerViewupdateParticleTrails() {
     if (!this.trail.initialized) return;
 
-    var oldPos = this.trail.emitter.position._value.clone();
     var newPos = this.mainSphere.position.clone();
 
     this.trail.emitter.position._value.x = newPos.x;
@@ -222,7 +263,7 @@ ZOR.PlayerView.prototype.updateParticleTrails = function ZORPlayerViewupdatePart
     this.trail.emitter.position._spreadClamp.setX( scale );
     this.trail.emitter.position._spread.setX( scale );
     this.trail.emitter.position._radius = scale;
-    this.trail.emitter.size._value =  [scale/3, scale*2/6, scale*1/9, 0];
+    this.trail.emitter.size._value =  [scale/3, scale*2/6, scale/9, 0];
 
     var boosting = this.model.abilities.speed_boost.isActive();
 
@@ -232,12 +273,6 @@ ZOR.PlayerView.prototype.updateParticleTrails = function ZORPlayerViewupdatePart
     else {
         this.trail.emitter.activeMultiplier = 0.1 * this.trail.visible;
     }
-
-    // var speed = oldPos.clone().sub(newPos).length();
-    // var diffPos = newPos.sub(oldPos).multiplyScalar(speed);
-
-    // this.trail.emitter.velocity._value.x = diffPos.x;
-    // this.trail.emitter.velocity._value.y = diffPos.y;
 
     this.trail.emitter.updateFlags.position = true;
     this.trail.emitter.updateFlags.velocity = true;
@@ -272,6 +307,8 @@ ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     if (this.is_current_player || this.skin.behavior.faceCamera) {
         this.updateDirection();
     }
+
+    this.particleGroup.tick( this.clock.getDelta() );
 };
 
 ZOR.PlayerView.prototype.updateDirection = function ZORPlayerViewUpdateDirection() {

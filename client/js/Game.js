@@ -545,7 +545,9 @@ function handleServerTick(serverTickData) {
     ZOR.expireLocks();
 }
 
-function handleSuccessfulPlayerCapture() {
+function handleSuccessfulPlayerCapture(targetPlayerId) {
+    var targetPlayer = ZOR.Game.players[targetPlayerId];
+    player.view.particleGroup.triggerPoolEmitter( 1, targetPlayer.model.sphere.position );
     ZOR.Sounds.sfx.player_capture.play();
 }
 
