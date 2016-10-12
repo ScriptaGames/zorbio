@@ -175,7 +175,6 @@ input:focus {
   box-sizing: border-box;
 }
 #ui-overlay #tabs {
-  font-size: 4vw;
   text-align: center;
 }
 #ui-overlay #copy {
