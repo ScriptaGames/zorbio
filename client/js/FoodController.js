@@ -108,11 +108,8 @@ var FoodController = function ZORFoodController(model, fogCenterPosition) {
                 dist = octreeObj.position.distanceTo( mainSphere.position );
                 if ( dist <= ( sphere_radius + config.FOOD_CAPTURE_ASSIST ) ) {
                     callback( fi );
-                    var dist = player.view.mainSphere.position.distanceTo(octreeObj.position);
-                    var pos = player.view.mainSphere.worldToLocal(octreeObj.position.clone()).normalize().multiplyScalar(dist/config.VOLUME_FALLOFF_RATE);
                     var sound = _.sample(ZOR.Sounds.sfx.food_capture);
-                    var id = sound.play();
-                    sound.pos(pos.x, pos.y, pos.z, id);
+                    ZOR.Sounds.playFromPos(sound, player.view.mainSphere, octreeObj.position.clone());
                 }
             }
         }

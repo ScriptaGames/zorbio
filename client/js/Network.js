@@ -227,7 +227,7 @@ function setupSocket(ws) {
         var targetPlayerId = msg.targetPlayerId;
 
         console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
-        handleSuccessfulPlayerCapture();
+        handleSuccessfulPlayerCapture(targetPlayerId);
         removePlayerFromGame(targetPlayerId);
     }
 

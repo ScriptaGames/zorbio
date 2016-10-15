@@ -545,8 +545,13 @@ function handleServerTick(serverTickData) {
     ZOR.expireLocks();
 }
 
-function handleSuccessfulPlayerCapture() {
-    ZOR.Sounds.sfx.player_capture.play();
+/**
+ * Current player has captured someone.
+ */
+function handleSuccessfulPlayerCapture(capturedPlayerID) {
+    var sound = ZOR.Sounds.sfx.player_capture;
+    var capturedPlayerPosition = ZOR.Game.players[capturedPlayerID].model.sphere.position;
+    ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayerPosition);
 }
 
 function handleDeath(msg) {
