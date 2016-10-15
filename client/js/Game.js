@@ -554,6 +554,18 @@ function handleSuccessfulPlayerCapture(capturedPlayerID) {
     ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayerPosition);
 }
 
+/**
+ * A player captured another player.  Current playre not involved.
+ */
+function handleOtherPlayercapture(playerID, capturedPlayerID) {
+    var sound = ZOR.Sounds.sfx.player_capture;
+    var player = ZOR.Game.players[capturedPlayerID];
+    if (player) {
+        var capturedPlayerPosition = ZOR.Game.players[capturedPlayerID].model.sphere.position;
+        ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayerPosition);
+    }
+}
+
 function handleDeath(msg) {
     var attackingPlayerId = msg.attacking_player_id;
 
