@@ -108,13 +108,11 @@ var FoodController = function ZORFoodController(model, fogCenterPosition) {
                 dist = octreeObj.position.distanceTo( mainSphere.position );
                 if ( dist <= ( sphere_radius + config.FOOD_CAPTURE_ASSIST ) ) {
                     callback( fi );
-                    // var pitch = _.sample(config.SFX_FOOD_CAPTURE_TONES);
-                    // var xpos = octreeObj.position.clone().applyProjection( camera.matrixWorldInverse ).x / 32;
-                    // var pan = UTIL.clamp(xpos, -1, 1);
-                    // TODO re-enable panning and orientation with Howler.
-
-                    _.sample(ZOR.Sounds.sfx.food_capture).play();
-
+                    var dist = player.view.mainSphere.position.distanceTo(octreeObj.position);
+                    var pos = player.view.mainSphere.worldToLocal(octreeObj.position.clone()).normalize().multiplyScalar(dist/config.VOLUME_FALLOFF_RATE);
+                    var sound = _.sample(ZOR.Sounds.sfx.food_capture);
+                    var id = sound.play();
+                    sound.pos(pos.x, pos.y, pos.z, id);
                 }
             }
         }
