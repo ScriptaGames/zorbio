@@ -137,6 +137,8 @@ config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
 config.Y_AXIS_MULT = 1;
 config.X_AXIS_MULT = 1;
 
+config.HIDE_OWN_TRAIL = false;
+
 ////////////////////////////////////////////////////////////////////////
 //                           ABILITY SETTINGS                         //
 ////////////////////////////////////////////////////////////////////////
@@ -302,23 +304,24 @@ config.SKINS = {
 if (!NODEJS) {
     config.VOLUME_MUSIC_INITIAL = localStorage.volume_music || 0.45;
     config.VOLUME_SFX_INITIAL   = localStorage.volume_sfx || 1.0;
-    config.MUSIC_ENABLED        = false;
-    config.SFX_FOOD_CAPTURE_TONES = [
-        'D3',
-        'E3',
-        'G3',
-        'G4',
-        'A3',
-        'A4',
-        'D4',
-        'B3',
-        'B4',
-        'C3',
-        'E4',
-        'Gb3',
-    ];
-    config.VOLUME_FOOD_CAPTURE = 0.05;
 }
+config.MUSIC_ENABLED        = false;
+config.SFX_FOOD_CAPTURE_TONES = [
+    'D3',
+    'E3',
+    'G3',
+    'G4',
+    'A3',
+    'A4',
+    'D4',
+    'B3',
+    'B4',
+    'C3',
+    'E4',
+    'Gb3',
+];
+config.VOLUME_FOOD_CAPTURE = 0.05;
+config.VOLUME_FALLOFF_RATE = 2; // the higher this is, the more quickly volume will decreate with distance
 
 ////////////////////////////////////////////////////////////////////////
 //                      BROWSER FEATURE SETTINGS                      //

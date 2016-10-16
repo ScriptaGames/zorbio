@@ -1,7 +1,7 @@
 {
   "name": "zorbio",
   "version": "0.1.35",
-  "build": "8",
+  "build": "10",
   "description": "Absorb the Orbs!",
   "main": "server/server.js",
   "scripts": {
@@ -16,8 +16,10 @@
   "author": "Scripta Games, Inc.",
   "dependencies": {
     "basic-auth": "^1.0.4",
+    "chance": "^1.0.4",
     "console-stamp": "^0.2.2",
     "cookie": "^0.3.1",
+    "datasets": "^0.1.0",
     "express": "^4.14.0",
     "lodash": "^4.13.1",
     "node-gameloop": "^0.1.0",

@@ -58,6 +58,8 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 };
 
 ZOR.PlayerView.prototype.initTrails = function ZORPlayerViewInitTrails() {
+    var self = this;
+
     switch (this.skin.trail.type) {
         case 'line':
             this.initLineTrails();
@@ -65,6 +67,23 @@ ZOR.PlayerView.prototype.initTrails = function ZORPlayerViewInitTrails() {
         case 'particle':
             this.initParticleTrails();
             break;
+    }
+
+    // Add the config handler
+    ZOR.UI.on( ZOR.UI.ACTIONS.TOGGLE_OWN_TRAIL, function(e) {
+        if ( e.node.checked ) {
+            self.hideTrails();
+            ZOR.UI.setAndSave('hide_own_trail', true);
+        }
+        else {
+            self.showTrails();
+            ZOR.UI.setAndSave('hide_own_trail', false);
+        }
+    });
+
+    // Default visibility from local storage
+    if (config.HIDE_OWN_TRAIL && this.is_current_player) {
+        self.hideTrails();
     }
 };
 
@@ -74,18 +93,15 @@ ZOR.PlayerView.prototype.initParticleTrails = function ZORPlayerViewInitParticle
     this.trail.emitter = new SPE.Emitter(this.skin.trail.emitter);
 
     this.trail.clock = new THREE.Clock();
-    this.trail.group.mesh.renderOrder = 1;
+    this.trail.group.mesh.renderOrder = -1;
     this.trail.group.mesh.frustumCulled = false;
     this.trail.group.addEmitter( this.trail.emitter );
     this.scene.add( this.trail.group.mesh );
     this.trail.initialized = true;
+    this.trail.visible = 1;
 };
 
 ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails() {
-    // var leftPosition = new THREE.Vector3(-0.9, 0, 0);
-    // leftPosition = this.mainSphere.localToWorld(leftPosition);
-    // var rightPosition = new THREE.Vector3(0.9, 0, 0);
-    // rightPosition = this.mainSphere.localToWorld(rightPosition);
     // Create the line material
     this.trail.material = new THREE.MeshLineMaterial( {
         useMap: 0,
@@ -100,6 +116,7 @@ ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails()
         blending: THREE.AdditiveBlending,
         transparent: false,
         side: THREE.DoubleSide,
+        visibility: 1,
     });
 
     this.trail.origins = [];
@@ -132,6 +149,54 @@ ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails()
     this.trail.initialized = true;
 };
 
+ZOR.PlayerView.prototype.hideTrails = function ZORPlayerViewHideTrail() {
+    switch (this.skin.trail.type) {
+        case 'line':
+            this.hideLineTrails();
+            break;
+        case 'particle':
+            this.hideParticleTrails();
+            break;
+    }
+};
+
+ZOR.PlayerView.prototype.showTrails = function ZORPlayerViewShowTrail() {
+    switch (this.skin.trail.type) {
+        case 'line':
+            this.showLineTrails();
+            break;
+        case 'particle':
+            this.showParticleTrails();
+            break;
+    }
+};
+
+ZOR.PlayerView.prototype.hideLineTrails = function ZORPlayerViewHideLineTrails() {
+    // hide line trail
+    this.trail.material.transparent = true;
+    this.trail.material.depthTest = false;
+    this.trail.material.visible = false;
+    this.trail.material.uniforms.opacity.value = 0;
+    this.trail.material.uniforms.visibility.value = 0;
+};
+
+ZOR.PlayerView.prototype.hideParticleTrails = function ZORPlayerViewHideParticleTrails() {
+    this.trail.visible = 0;
+};
+
+ZOR.PlayerView.prototype.showLineTrails = function ZORPlayerViewShowLineTrails() {
+    // hide line trail
+    this.trail.material.transparent = false;
+    this.trail.material.depthTest = true;
+    this.trail.material.visible = true;
+    this.trail.material.uniforms.opacity.value = 1;
+    this.trail.material.uniforms.visibility.value = 1;
+};
+
+ZOR.PlayerView.prototype.showParticleTrails = function ZORPlayerViewShowParticleTrails() {
+    this.trail.visible = 1;
+};
+
 ZOR.PlayerView.prototype.updateTrails = function ZORPlayerViewUpdateTrail() {
     switch (this.skin.trail.type) {
         case 'line':
@@ -162,10 +227,10 @@ ZOR.PlayerView.prototype.updateParticleTrails = function ZORPlayerViewupdatePart
     var boosting = this.model.abilities.speed_boost.isActive();
 
     if (boosting) {
-        this.trail.emitter.activeMultiplier = 1;
+        this.trail.emitter.activeMultiplier = 1 * this.trail.visible;
     }
     else {
-        this.trail.emitter.activeMultiplier = 0.1;
+        this.trail.emitter.activeMultiplier = 0.1 * this.trail.visible;
     }
 
     // var speed = oldPos.clone().sub(newPos).length();

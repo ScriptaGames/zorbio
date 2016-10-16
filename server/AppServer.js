@@ -246,7 +246,7 @@ var AppServer = function (id, app, server_label, port) {
                     self.model.players.push(currentPlayer);
                     self.model.addActor(currentPlayer.sphere);
 
-                    var playerCount = self.model.getRealPlayers().length;
+                    var playerCount = self.model.players.length;
                     self.log('Player ' + currentPlayer.id + ' joined game!');
                     self.log('Total players: ' + playerCount);
 

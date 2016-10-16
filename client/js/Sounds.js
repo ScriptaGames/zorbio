@@ -4,7 +4,7 @@ ZOR.Sounds = (function ZORSounds() {
 
     // A simple helper function to avoid repetition when creating Howl objects
     // for our sfx
-    function howlSfx(path) {
+    function howlSfx(path, volume) {
         return new Howl({
             src: ['../sfx/' + path],
             autoplay: false,
@@ -12,7 +12,7 @@ ZOR.Sounds = (function ZORSounds() {
             volume: config.VOLUME_SFX_INITIAL,
             buffer: false,
             preload: true,
-            volume: 0.1,
+            volume: volume || 0.1,
         })
     }
 
@@ -63,10 +63,13 @@ ZOR.Sounds = (function ZORSounds() {
                 },
             }),
             state_change: howlSfx('food_capture/D3.mp3'),
-            player_capture: new Wad({
-                volume: config.VOLUME_SFX_INITIAL,
-                source: 'sfx/player_capture.wav',
-            }),
+            player_capture: howlSfx('player_capture.wav', 0.8),
+        },
+        playFromPos: function ZORSoundsPlayFromPos(sound, earObject, soundPos) {
+            var dist = earObject.position.distanceTo(soundPos);
+            var pos = earObject.worldToLocal(soundPos).normalize().multiplyScalar(dist/config.VOLUME_FALLOFF_RATE);
+            var id = sound.play();
+            sound.pos(pos.x, pos.y, pos.z, id);
         },
     };
 

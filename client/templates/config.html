@@ -18,6 +18,10 @@
         <input id="sfx-volume" type="range" on-change="volume-sfx" min="0" max="0.5" step="0.01" value="{{ volume.sfx }}">
         <label for="sfx-volume">SFX volume</LABEL>
     </div>
+    <div>
+        <input type="checkbox" {{ hide_own_trail ? 'checked' : '' }} on-click="{{ ACTIONS.TOGGLE_OWN_TRAIL }}" id="hide-own-trail">
+        <label for="hide-own-trail">Hide own trail</label>
+    </div>
     {{ #if state === STATES.PLAYING_CONFIG }}
     <button on-click="{{ ACTIONS.SHOW_PREVIOUS }}">Done</button>
     {{ /if }}
