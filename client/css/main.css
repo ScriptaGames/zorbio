@@ -181,8 +181,8 @@ input:focus {
 #ui-overlay #copy {
   display: block;
   text-align: center;
-  font-size: 10px;
-  line-height: 1.5;
+  font-size: 12px;
+  line-height: 2.2;
   background: none;
   color: #404040;
 }
@@ -193,9 +193,9 @@ input:focus {
 }
 @media (max-height: 450px), (orientation: landscape) {
   #ui-overlay {
-    grid-definition-columns: 1fr 150px;
-    -ms-grid-columns: 1fr 150px;
-        grid-template-columns: 1fr 150px;
+    grid-definition-columns: 0.8fr 0.2fr;
+    -ms-grid-columns: 0.81fr 0.2fr;
+        grid-template-columns: 0.81fr 0.2fr;
     grid-definition-rows: 75px 1fr 14px;
     -ms-grid-rows: 75px 1fr 14px;
         grid-template-rows: 75px 1fr 14px;
@@ -231,9 +231,9 @@ input:focus {
     grid-definition-columns: 1fr;
     -ms-grid-columns: 1fr;
         grid-template-columns: 1fr;
-    grid-definition-rows: 100px 1fr 100px 14px;
-    -ms-grid-rows: 100px 1fr 100px 14px;
-        grid-template-rows: 100px 1fr 100px 14px;
+    grid-definition-rows: 100px 1fr 100px 22px;
+    -ms-grid-rows: 100px 1fr 100px 22px;
+        grid-template-rows: 100px 1fr 100px 22px;
   }
   #ui-overlay #title {
     -ms-grid-column: 1;

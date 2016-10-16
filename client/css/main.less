@@ -174,8 +174,8 @@ input {
     #copy {
         display: block;
         text-align: center;
-        font-size: 10px;
-        line-height: 1.5;
+        font-size: 12px;
+        line-height: 2.2;
         background: none;
         color: lighten(@secondary-color, 16%);
         a {
@@ -188,8 +188,8 @@ input {
     @media (max-height: 450px), (orientation: landscape) {
         & {
             // TODO variablize these fixed px sizes
-            grid-definition-columns: 1fr 150px;
-            grid-template-columns: 1fr 150px;
+            grid-definition-columns: 0.8fr 0.2fr;
+            grid-template-columns: 0.81fr 0.2fr;
             grid-definition-rows: 75px 1fr 14px;
             grid-template-rows: 75px 1fr 14px;
         }
@@ -214,8 +214,8 @@ input {
         & {
             grid-definition-columns: 1fr;
             grid-template-columns: 1fr;
-            grid-definition-rows: 100px 1fr 100px 14px;
-            grid-template-rows: 100px 1fr 100px 14px;
+            grid-definition-rows: 100px 1fr 100px 22px;
+            grid-template-rows: 100px 1fr 100px 22px;
         }
         #title {
             grid-column: 1;
