@@ -583,13 +583,6 @@ function handleDeath(msg) {
     ZOR.UI.engine.set('attacker', attackingPlayer);
     ZOR.UI.engine.set('player', playerStats);
     ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
-
-    // Send google google analytics event
-    ga('send', {
-        hitType: 'event',
-        eventCategory: 'StateChange',
-        eventAction: 'death',
-    });
 }
 
 function handlePlayerKick(msg) {
