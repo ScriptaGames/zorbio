@@ -151,14 +151,6 @@ input {
     }
     #menu {
         overflow: hidden;
-        #menu-content {
-            .center-abs-h;
-            pointer-events: auto;
-            overflow: auto;
-            height: 100%;
-            max-width: 800px;
-            width: 100%;
-        }
         #start-button,
         #input-name,
         #input-alphakey,
@@ -235,52 +227,60 @@ input {
         }
     }
 
-    .greybox {
-        max-width       : calc(~"100% - 10px");
+    .greybox-wrapper {
+        .center-abs-h;
+        pointer-events: auto;
+        overflow: auto;
+        height: 100%;
+        max-width: 800px;
+        width: 100%;
+        .greybox {
+            max-width       : calc(~"100% - 10px");
 
-        pointer-events  : auto; // enable click/touch events on UI elements
-        overflow-y      : auto; // scroll if ya gotta
+            pointer-events  : auto; // enable click/touch events on UI elements
+            overflow-y      : auto; // scroll if ya gotta
 
-        border-radius   : 12px;
+            border-radius   : 12px;
 
-        color           : @primary-color;
-        background      : fade(@modal-background, 50%) none repeat scroll 0% 0%;
-        padding         : @default-padding;
-        margin          : @default-padding;
+            color           : @primary-color;
+            background      : fade(@modal-background, 50%) none repeat scroll 0% 0%;
+            padding         : @default-padding;
+            margin          : @default-padding;
 
-        & > * {
-            margin-bottom : @default-padding;
-            border-radius : 8px;
-        }
-
-        & > *:first-child:not(input) {
-            margin-top  : 0;
-            padding-top : 0;
-        }
-
-        & > *:last-child {
-            margin-bottom: 0;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: @font-size-base * 2;
-            small {
-                float: right;
-                clear: both;
+            & > * {
+                margin-bottom : @default-padding;
+                border-radius : 8px;
             }
-        }
 
-        h2 {
-            text-align: center;
-            font-size: @font-size-base;
-        }
+            & > *:first-child:not(input) {
+                margin-top  : 0;
+                padding-top : 0;
+            }
 
-        p {
-            text-align: center;
-            font-size: @font-size-base * 0.5;
-        }
+            & > *:last-child {
+                margin-bottom: 0;
+            }
 
+            h1 {
+                text-align: center;
+                font-size: @font-size-base * 2;
+                small {
+                    float: right;
+                    clear: both;
+                }
+            }
+
+            h2 {
+                text-align: center;
+                font-size: @font-size-base;
+            }
+
+            p {
+                text-align: center;
+                font-size: @font-size-base * 0.5;
+            }
+
+        }
     }
 
     #skin-list {
@@ -321,7 +321,6 @@ button {
     z-index                     : 1;
     & > span {
         vertical-align : middle;
-        padding-left   : 0.75em;
     }
 
     transition: transform 0.01s ease-out;

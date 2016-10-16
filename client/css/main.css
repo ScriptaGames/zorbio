@@ -156,17 +156,6 @@ input:focus {
 #ui-overlay #menu {
   overflow: hidden;
 }
-#ui-overlay #menu #menu-content {
-  position: absolute;
-  left: 50%;
-  -webkit-transform: translateX(-50%);
-          transform: translateX(-50%);
-  pointer-events: auto;
-  overflow: auto;
-  height: 100%;
-  max-width: 800px;
-  width: 100%;
-}
 #ui-overlay #menu #start-button,
 #ui-overlay #menu #input-name,
 #ui-overlay #menu #input-alphakey,
@@ -260,7 +249,18 @@ input:focus {
         grid-row: 4;
   }
 }
-#ui-overlay .greybox {
+#ui-overlay .greybox-wrapper {
+  position: absolute;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  pointer-events: auto;
+  overflow: auto;
+  height: 100%;
+  max-width: 800px;
+  width: 100%;
+}
+#ui-overlay .greybox-wrapper .greybox {
   max-width: calc(100% - 10px);
   pointer-events: auto;
   overflow-y: auto;
@@ -270,30 +270,30 @@ input:focus {
   padding: 20px;
   margin: 20px;
 }
-#ui-overlay .greybox > * {
+#ui-overlay .greybox-wrapper .greybox > * {
   margin-bottom: 20px;
   border-radius: 8px;
 }
-#ui-overlay .greybox > *:first-child:not(input) {
+#ui-overlay .greybox-wrapper .greybox > *:first-child:not(input) {
   margin-top: 0;
   padding-top: 0;
 }
-#ui-overlay .greybox > *:last-child {
+#ui-overlay .greybox-wrapper .greybox > *:last-child {
   margin-bottom: 0;
 }
-#ui-overlay .greybox h1 {
+#ui-overlay .greybox-wrapper .greybox h1 {
   text-align: center;
   font-size: 60px;
 }
-#ui-overlay .greybox h1 small {
+#ui-overlay .greybox-wrapper .greybox h1 small {
   float: right;
   clear: both;
 }
-#ui-overlay .greybox h2 {
+#ui-overlay .greybox-wrapper .greybox h2 {
   text-align: center;
   font-size: 30px;
 }
-#ui-overlay .greybox p {
+#ui-overlay .greybox-wrapper .greybox p {
   text-align: center;
   font-size: 15px;
 }
@@ -336,7 +336,6 @@ button {
 }
 button > span {
   vertical-align: middle;
-  padding-left: 0.75em;
 }
 button:hover {
   box-shadow: inset 0 0 0 0.8vw rgba(255, 255, 255, 0.2);
