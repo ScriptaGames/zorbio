@@ -4,7 +4,6 @@ var config = require('../common/config.js');
 var Zorbio = require('../common/zorbio.js');
 var UTIL   = require('../common/util.js');
 var _      = require('lodash');
-var Chance   = require('chance');
 var datasets = require('datasets');
 
 var Bot = function (scale, model) {
@@ -12,14 +11,12 @@ var Bot = function (scale, model) {
     var self = this;
     self.model = model;
 
-    var chance = new Chance();
-
     // initialized player properties
     self.colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
     var skin_names = _.values(config.SKINS);
     self.skin_name = skin_names[UTIL.getRandomIntInclusive(0, skin_names.length - 1)];
     self.id = Zorbio.IdGenerator.get_next_id();
-    self.name = "AI " + chance.pick(Bot.prototype.names);
+    self.name = "AI " + _.sample(Bot.prototype.names);
     self.scale = scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);
 
     var position = UTIL.safePlayerPosition();

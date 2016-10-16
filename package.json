@@ -16,7 +16,6 @@
   "author": "Scripta Games, Inc.",
   "dependencies": {
     "basic-auth": "^1.0.4",
-    "chance": "^1.0.4",
     "console-stamp": "^0.2.2",
     "cookie": "^0.3.1",
     "datasets": "^0.1.0",
