@@ -545,10 +545,31 @@ function handleServerTick(serverTickData) {
     ZOR.expireLocks();
 }
 
-function handleSuccessfulPlayerCapture(targetPlayerId) {
-    var targetPlayer = ZOR.Game.players[targetPlayerId];
-    player.handleCapture(targetPlayer);
-    ZOR.Sounds.sfx.player_capture.play();
+/**
+ * Current player has captured someone.
+ */
+function handleSuccessfulPlayerCapture(capturedPlayerID) {
+    var sound = ZOR.Sounds.sfx.player_capture;
+    var capturedPlayer = ZOR.Game.players[capturedPlayerID];
+
+    if (capturedPlayer)
+        ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
+}
+
+/**
+ * A player captured another player.  Current playre not involved.
+ */
+function handleOtherPlayercapture(capturedPlayerID) {
+    var sound = ZOR.Sounds.sfx.player_capture;
+    var capturedPlayer = ZOR.Game.players[capturedPlayerID];
+
+    if (capturedPlayer) {
+        ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
+        // capturedPlayer.handleCapture();
+    }
+
+    console.log("Player died:  ", capturedPlayerID);
+    removePlayerFromGame(capturedPlayerID);
 }
 
 function handleDeath(msg) {
@@ -571,13 +592,6 @@ function handleDeath(msg) {
     ZOR.UI.engine.set('attacker', attackingPlayer);
     ZOR.UI.engine.set('player', playerStats);
     ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
-
-    // Send google google analytics event
-    ga('send', {
-        hitType: 'event',
-        eventCategory: 'StateChange',
-        eventAction: 'death',
-    });
 }
 
 function handlePlayerKick(msg) {

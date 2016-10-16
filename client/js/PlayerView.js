@@ -105,12 +105,14 @@ ZOR.PlayerView.prototype.initParticleTrails = function ZORPlayerViewInitParticle
 
     this.trail.emitter = new SPE.Emitter(this.skin.trail.emitter);
 
-    this.trail.group.mesh.renderOrder = 1;
+    this.trail.group.mesh.renderOrder = -1;
     this.trail.group.mesh.frustumCulled = false;
     this.trail.group.addEmitter( this.trail.emitter );
-    this.scene.add( this.trail.group.mesh );
-    this.trail.initialized = true;
     this.trail.visible = 1;
+
+    this.scene.add( this.trail.group.mesh );
+
+    this.trail.initialized = true;
 };
 
 ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails() {

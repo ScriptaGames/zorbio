@@ -242,9 +242,8 @@ function setupSocket(ws) {
         var targetPlayerId = msg.targetPlayerId;
 
         if (!player || (attackingPlayerId !== player.getPlayerId())) {
-            // someone else killed another player, lets remove it
-            console.log("Player died:  ", targetPlayerId);
-            removePlayerFromGame(targetPlayerId);
+            // someone else killed another player
+            handleOtherPlayercapture(targetPlayerId);
         }
     }
 
