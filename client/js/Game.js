@@ -557,10 +557,16 @@ function handleSuccessfulPlayerCapture(capturedPlayerID) {
 /**
  * A player captured another player.  Current playre not involved.
  */
-function handleOtherPlayercapture(playerID, capturedPlayerID) {
+function handleOtherPlayercapture(capturedPlayerID) {
     var sound = ZOR.Sounds.sfx.player_capture;
-    var capturedPlayerPosition = ZOR.Game.players[capturedPlayerID].model.sphere.position;
-    ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayerPosition);
+    var capturedPlayer = ZOR.Game.players[capturedPlayerID];
+
+    if (capturedPlayer) {
+        ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
+    }
+
+    console.log("Player died:  ", capturedPlayerID);
+    removePlayerFromGame(capturedPlayerID);
 }
 
 function handleDeath(msg) {
