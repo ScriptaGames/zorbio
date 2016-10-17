@@ -102,6 +102,7 @@ ZOR.PlayerView.prototype.initCaptureParticles = function ZORPlayerViewInitCaptur
     this.capture.group.addEmitter(this.capture.emitter);
     this.capture.group.mesh.frustumCulled = false;
     this.capture.group.mesh.renderOrder = -1;
+    this.capture.active = false;
 
     this.scene.add( this.capture.group.mesh );
 };
@@ -284,6 +285,8 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 };
 
 ZOR.PlayerView.prototype.handleCapture = function ZORPlayerViewHandleCapture() {
+    this.capture.active = true;
+
     // Hide all view elements except for capture particles
     this.mainSphere.visible = false;
     this.drainView.mesh.visible = false;
@@ -309,7 +312,10 @@ ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     if (this.is_current_player || this.skin.behavior.faceCamera) {
         this.updateDirection();
     }
-    this.capture.group.tick( this.clock.getDelta() );
+
+    if (this.capture.active) {
+        this.capture.group.tick( this.clock.getDelta() );
+    }
 };
 
 ZOR.PlayerView.prototype.updateDirection = function ZORPlayerViewUpdateDirection() {
