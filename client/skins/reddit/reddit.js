@@ -50,7 +50,7 @@ ZOR.PlayerSkins.reddit = function ZORRedditSkin(playerView) {
             emitter: {
                 type: SPE.distributions.SPHERE,
                 position: {
-                    spread: new THREE.Vector3(5),
+                    spread: new THREE.Vector3( 5 ),
                     radius: 10,
                 },
                 velocity: {
@@ -67,9 +67,9 @@ ZOR.PlayerSkins.reddit = function ZORRedditSkin(playerView) {
                 },
                 particleCount: 100,
                 alive: true,
-                duration: .05,
+                duration: 0.05,
                 maxAge: {
-                    value: 5.5,
+                    value: 1,
                 },
             },
         },

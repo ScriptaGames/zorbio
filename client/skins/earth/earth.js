@@ -89,11 +89,11 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
             emitter: {
                 type: SPE.distributions.SPHERE,
                 position: {
-                    spread: new THREE.Vector3(5),
+                    spread: new THREE.Vector3( 5 ),
                     radius: 10,
                 },
                 velocity: {
-                    spread: new THREE.Vector3( 20 ),
+                    spread: new THREE.Vector3( 100 ),
                 },
                 size: {
                     value: [ 30, 0 ]
@@ -104,11 +104,11 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
                 color: {
                     value: [new THREE.Color('yellow'),new THREE.Color('red')],
                 },
-                particleCount: 50,
-                alive: true,
-                duration: .05,
+                particleCount: 100,
+                alive: false,
+                duration: 0.05,
                 maxAge: {
-                    value: 2.0,
+                    value: 1,
                 },
             },
         },

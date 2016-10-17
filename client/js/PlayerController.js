@@ -72,9 +72,19 @@ ZOR.PlayerController.prototype.initView = function ZORPlayerControllerInitView(s
     this.view = new ZOR.PlayerView(this.model, scene, this.is_current_player, this.skinName);
 };
 
-ZOR.PlayerController.prototype.removeView = function ZORPlayerControllerRemoveView(scene) {
-    this.view.remove(scene);
+ZOR.PlayerController.prototype.removeView = function ZORPlayerControllerRemoveView() {
+    this.view.remove();
     this.view = undefined;
+};
+
+ZOR.PlayerController.prototype.getWindDownTime = function ZORPlayerControllerGetWindDownTime() {
+    var time = 0;
+
+    if (this.view) {
+        time = this.view.getCaptureEmitterLifetime();
+    }
+
+    return time;
 };
 
 ZOR.PlayerController.prototype.grow = function ZORPlayerControllerGrow(amount) {
@@ -100,8 +110,8 @@ ZOR.PlayerController.prototype.refreshSphereModel = function ZORPlayerController
     this.model.sphere.position.copy(this.view.mainSphere.position);
 };
 
-ZOR.PlayerController.prototype.handleCapture = function ZORPlayerControllerHandleCapture(capturedPlayer) {
-    this.view.handleCapture(capturedPlayer);
+ZOR.PlayerController.prototype.handleCapture = function ZORPlayerControllerHandleCapture() {
+    this.view.handleCapture();
 };
 
 ZOR.PlayerController.prototype.updateScale = function ZORPlayerControllerUpdateScale(scale) {

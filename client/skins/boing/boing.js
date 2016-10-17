@@ -55,7 +55,7 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
             emitter: {
                 type: SPE.distributions.SPHERE,
                 position: {
-                    spread: new THREE.Vector3(5),
+                    spread: new THREE.Vector3( 5 ),
                     radius: 10,
                 },
                 velocity: {
@@ -71,10 +71,10 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
                     value: [new THREE.Color('yellow'),new THREE.Color('red')],
                 },
                 particleCount: 100,
-                alive: true,
-                duration: .05,
+                alive: false,
+                duration: 0.05,
                 maxAge: {
-                    value: 5.5,
+                    value: 1,
                 },
             },
         },

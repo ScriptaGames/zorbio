@@ -227,8 +227,8 @@ function setupSocket(ws) {
         var targetPlayerId = msg.targetPlayerId;
 
         console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
+
         handleSuccessfulPlayerCapture(targetPlayerId);
-        removePlayerFromGame(targetPlayerId);
     }
 
     function handle_msg_you_died(msg) {
@@ -261,7 +261,7 @@ function setupSocket(ws) {
 
     function handle_msg_remove_player(msg) {
         console.log("received remove_player", msg.playerId);
-        removePlayerFromGame(msg.playerId);
+        removePlayerFromGame(msg.playerId, 0);
     }
 
     function handle_msg_speeding_warning() {
