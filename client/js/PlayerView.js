@@ -290,13 +290,15 @@ ZOR.PlayerView.prototype.handleCapture = function ZORPlayerViewHandleCapture() {
     this.removeTrail();  // must remove trail because particles trails mess up the look of capture particles
 
     // fire particle burst
-    var newPos = this.mainSphere.position.clone();
+    var currentPos = this.mainSphere.position.clone();
 
-    this.capture.emitter.position._value.x = newPos.x;
-    this.capture.emitter.position._value.y = newPos.y;
-    this.capture.emitter.position._value.z = newPos.z;
+    // Set position to current position
+    this.capture.emitter.position.value = currentPos;
 
-    this.capture.emitter.updateFlags.position = true;
+    // Adjust burst size based on sphere scale
+    var scale = this.mainSphere.scale.x * (this.skin.capture.customScale || 1);
+    this.capture.emitter.position.radius = scale;
+    this.capture.emitter.size.value = [scale/3, scale*2/6, scale/9, 0];
 
     this.capture.emitter.enable();
 };

@@ -78,6 +78,7 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
             },
         },
         capture: {
+            customScale: 1.0,
             group: {
                 scale: Math.max(window.innerWidth, window.innerHeight),
                 maxParticleCount: 1000,

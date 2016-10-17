@@ -39,6 +39,7 @@ ZOR.PlayerSkins.reddit = function ZORRedditSkin(playerView) {
             color: new THREE.Color('#FF431D'),
         },
         capture: {
+            customScale: 1.0,
             group: {
                 scale: Math.max(window.innerWidth, window.innerHeight),
                 maxParticleCount: 1000,

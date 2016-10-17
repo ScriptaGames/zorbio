@@ -43,11 +43,12 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
             color: color,
         },
         capture: {
+            customScale: 1.0,
             group: {
                 scale: Math.max(window.innerWidth, window.innerHeight),
                 maxParticleCount: 1000,
                 texture: {
-                    value: new THREE.TextureLoader().load( "textures/smokeparticle.png" ),
+                    value: new THREE.TextureLoader().load( "skins/default/trail.png" ),
                 },
                 blending: THREE.AdditiveBlending,
             },
@@ -61,15 +62,15 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
                     spread: new THREE.Vector3( 100 ),
                 },
                 size: {
-                    value: [ 30, 0 ]
+                    value: [ 60, 0 ]
                 },
                 opacity: {
                     value: [1, 0]
                 },
                 color: {
-                    value: [new THREE.Color('yellow'),new THREE.Color('red')],
+                    value: [color],
                 },
-                particleCount: 100,
+                particleCount: 70,
                 alive: false,
                 duration: 0.05,
                 maxAge: {
