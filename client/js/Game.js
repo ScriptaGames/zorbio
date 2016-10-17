@@ -359,21 +359,35 @@ function updateTargetLock() {
     if (intersects && intersects.length > 0) {
         // looking at a player
         var playerMesh     = intersects[0].object;
-        var targeting_self = playerMesh.player_id === player.model.id;
-        var target_changed = player.getTargetLock() !== playerMesh.player_id;
-        if (!targeting_self) {
-            if (target_changed) {
-                player.setTargetLock(playerMesh.player_id);
-                clearTimeout(ZOR.UI.target_clear_timeout_id);
-                console.log("Set target lock: ", ZOR.UI.data.target);
-            }
 
-            // Update target locked UI
-            var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
-            var currentScore = pointedPlayer.getScore();
-            if (currentScore != pointedPlayer.lastScore) {
-                ZOR.UI.engine.set('target', { name: pointedPlayer.model.name, score: currentScore, color: pointedPlayer.model.sphere.color });
-                pointedPlayer.lastScore = currentScore;
+        if (playerMesh && playerMesh.player_id > 0) {
+
+            var targeting_self = playerMesh.player_id === player.model.id;
+            var target_changed = player.getTargetLock() !== playerMesh.player_id;
+
+            if (!targeting_self) {
+                // Update target locked UI
+                var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
+
+                if (pointedPlayer) {
+                    var currentScore = pointedPlayer.getScore();
+                    var target = {
+                        name: pointedPlayer.model.name,
+                        score: currentScore,
+                        color: pointedPlayer.model.sphere.color
+                    };
+
+                    if (target_changed) {
+                        player.setTargetLock(playerMesh.player_id);
+                        ZOR.UI.engine.set('target', target);
+                        pointedPlayer.lastScore = currentScore;
+                        clearTimeout(ZOR.UI.target_clear_timeout_id);
+                    }
+                    else if (currentScore != pointedPlayer.lastScore) {
+                        ZOR.UI.engine.set('target', { name: pointedPlayer.model.name, score: currentScore, color: pointedPlayer.model.sphere.color });
+                        pointedPlayer.lastScore = currentScore;
+                    }
+                }
             }
         }
     }
