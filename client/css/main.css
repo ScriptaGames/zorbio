@@ -107,6 +107,10 @@ input:focus {
   z-index: 10;
   cursor: url('../images/cursor.png') -4 -4, crosshair;
 }
+#ui-container {
+  height: 100%;
+  width: 100%;
+}
 #render-canvas,
 #ui-overlay {
   height: 100%;
@@ -128,13 +132,11 @@ input:focus {
   font-size: 21px;
   text-align: center;
 }
-#ui-overlay {
+#ui-container {
   font-family: Orbitron, monospace;
   font-size: 30px;
   font-weight: bold;
   letter-spacing: 1px;
-  display: -ms-grid;
-  display: grid;
   pointer-events: none;
   position: absolute;
   z-index: 20;
@@ -143,31 +145,31 @@ input:focus {
   padding: 0;
   margin: 0;
 }
-#ui-overlay #title {
+#ui-container #title {
   position: relative;
 }
-#ui-overlay #title h1 {
+#ui-container #title h1 {
   position: absolute;
   top: 50%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
 }
-#ui-overlay #menu {
+#ui-container #menu {
   overflow: hidden;
 }
-#ui-overlay #menu #start-button,
-#ui-overlay #menu #input-name,
-#ui-overlay #menu #input-alphakey,
-#ui-overlay #menu .button-use-skin {
+#ui-container #menu #start-button,
+#ui-container #menu #input-name,
+#ui-container #menu #input-alphakey,
+#ui-container #menu .button-use-skin {
   display: block;
   width: 100%;
   box-sizing: border-box;
 }
-#ui-overlay #tabs {
+#ui-container #tabs {
   text-align: center;
 }
-#ui-overlay #copy {
+#ui-container #copy {
   display: block;
   text-align: center;
   font-size: 12px;
@@ -175,13 +177,33 @@ input:focus {
   background: none;
   color: #404040;
 }
-#ui-overlay #copy a {
+#ui-container #copy a {
   color: #404040;
   text-decoration: underline;
   pointer-events: auto;
 }
+#ui-container[data-state='menu-game-screen'],
+#ui-container[data-state='menu-store-screen'],
+#ui-container[data-state='menu-config-screen'],
+#ui-container[data-state='respawn-screen'],
+#ui-container[data-state='kicked-screen'],
+#ui-container[data-state='game-init-error'],
+#ui-container[data-state='credits-screen'],
+#ui-container[data-state='playing-config'],
+#ui-container[data-state='tutorial-screen'] {
+  display: -ms-grid;
+  display: grid;
+}
 @media (max-height: 450px), (orientation: landscape) {
-  #ui-overlay {
+  #ui-container[data-state='menu-game-screen'],
+  #ui-container[data-state='menu-store-screen'],
+  #ui-container[data-state='menu-config-screen'],
+  #ui-container[data-state='respawn-screen'],
+  #ui-container[data-state='kicked-screen'],
+  #ui-container[data-state='game-init-error'],
+  #ui-container[data-state='credits-screen'],
+  #ui-container[data-state='playing-config'],
+  #ui-container[data-state='tutorial-screen'] {
     grid-definition-columns: 0.8fr 0.2fr;
     -ms-grid-columns: 0.81fr 0.2fr;
         grid-template-columns: 0.81fr 0.2fr;
@@ -189,26 +211,58 @@ input:focus {
     -ms-grid-rows: 75px 1fr 14px;
         grid-template-rows: 75px 1fr 14px;
   }
-  #ui-overlay #title {
+  #ui-container[data-state='menu-game-screen'] #title,
+  #ui-container[data-state='menu-store-screen'] #title,
+  #ui-container[data-state='menu-config-screen'] #title,
+  #ui-container[data-state='respawn-screen'] #title,
+  #ui-container[data-state='kicked-screen'] #title,
+  #ui-container[data-state='game-init-error'] #title,
+  #ui-container[data-state='credits-screen'] #title,
+  #ui-container[data-state='playing-config'] #title,
+  #ui-container[data-state='tutorial-screen'] #title {
     -ms-grid-column: 1;
         grid-column: 1;
     -ms-grid-row: 1;
         grid-row: 1;
   }
-  #ui-overlay #menu {
+  #ui-container[data-state='menu-game-screen'] #menu,
+  #ui-container[data-state='menu-store-screen'] #menu,
+  #ui-container[data-state='menu-config-screen'] #menu,
+  #ui-container[data-state='respawn-screen'] #menu,
+  #ui-container[data-state='kicked-screen'] #menu,
+  #ui-container[data-state='game-init-error'] #menu,
+  #ui-container[data-state='credits-screen'] #menu,
+  #ui-container[data-state='playing-config'] #menu,
+  #ui-container[data-state='tutorial-screen'] #menu {
     -ms-grid-column: 1;
         grid-column: 1;
     -ms-grid-row: 2;
         grid-row: 2;
   }
-  #ui-overlay #tabs {
+  #ui-container[data-state='menu-game-screen'] #tabs,
+  #ui-container[data-state='menu-store-screen'] #tabs,
+  #ui-container[data-state='menu-config-screen'] #tabs,
+  #ui-container[data-state='respawn-screen'] #tabs,
+  #ui-container[data-state='kicked-screen'] #tabs,
+  #ui-container[data-state='game-init-error'] #tabs,
+  #ui-container[data-state='credits-screen'] #tabs,
+  #ui-container[data-state='playing-config'] #tabs,
+  #ui-container[data-state='tutorial-screen'] #tabs {
     -ms-grid-column: 2;
         grid-column: 2;
     -ms-grid-row-span: 2;
     -ms-grid-row: 1;
         grid-row: 1 / span 2;
   }
-  #ui-overlay #copy {
+  #ui-container[data-state='menu-game-screen'] #copy,
+  #ui-container[data-state='menu-store-screen'] #copy,
+  #ui-container[data-state='menu-config-screen'] #copy,
+  #ui-container[data-state='respawn-screen'] #copy,
+  #ui-container[data-state='kicked-screen'] #copy,
+  #ui-container[data-state='game-init-error'] #copy,
+  #ui-container[data-state='credits-screen'] #copy,
+  #ui-container[data-state='playing-config'] #copy,
+  #ui-container[data-state='tutorial-screen'] #copy {
     -ms-grid-column: 1;
         grid-column: 1;
     -ms-grid-row: 3;
@@ -216,7 +270,15 @@ input:focus {
   }
 }
 @media (min-height: 451px), (orientation: portrait) {
-  #ui-overlay {
+  #ui-container[data-state='menu-game-screen'],
+  #ui-container[data-state='menu-store-screen'],
+  #ui-container[data-state='menu-config-screen'],
+  #ui-container[data-state='respawn-screen'],
+  #ui-container[data-state='kicked-screen'],
+  #ui-container[data-state='game-init-error'],
+  #ui-container[data-state='credits-screen'],
+  #ui-container[data-state='playing-config'],
+  #ui-container[data-state='tutorial-screen'] {
     grid-definition-columns: 1fr;
     -ms-grid-columns: 1fr;
         grid-template-columns: 1fr;
@@ -224,32 +286,68 @@ input:focus {
     -ms-grid-rows: 100px 1fr 100px 22px;
         grid-template-rows: 100px 1fr 100px 22px;
   }
-  #ui-overlay #title {
+  #ui-container[data-state='menu-game-screen'] #title,
+  #ui-container[data-state='menu-store-screen'] #title,
+  #ui-container[data-state='menu-config-screen'] #title,
+  #ui-container[data-state='respawn-screen'] #title,
+  #ui-container[data-state='kicked-screen'] #title,
+  #ui-container[data-state='game-init-error'] #title,
+  #ui-container[data-state='credits-screen'] #title,
+  #ui-container[data-state='playing-config'] #title,
+  #ui-container[data-state='tutorial-screen'] #title {
     -ms-grid-column: 1;
         grid-column: 1;
     -ms-grid-row: 1;
         grid-row: 1;
   }
-  #ui-overlay #menu {
+  #ui-container[data-state='menu-game-screen'] #menu,
+  #ui-container[data-state='menu-store-screen'] #menu,
+  #ui-container[data-state='menu-config-screen'] #menu,
+  #ui-container[data-state='respawn-screen'] #menu,
+  #ui-container[data-state='kicked-screen'] #menu,
+  #ui-container[data-state='game-init-error'] #menu,
+  #ui-container[data-state='credits-screen'] #menu,
+  #ui-container[data-state='playing-config'] #menu,
+  #ui-container[data-state='tutorial-screen'] #menu {
     -ms-grid-column: 1;
         grid-column: 1;
     -ms-grid-row: 2;
         grid-row: 2;
   }
-  #ui-overlay #tabs {
+  #ui-container[data-state='menu-game-screen'] #tabs,
+  #ui-container[data-state='menu-store-screen'] #tabs,
+  #ui-container[data-state='menu-config-screen'] #tabs,
+  #ui-container[data-state='respawn-screen'] #tabs,
+  #ui-container[data-state='kicked-screen'] #tabs,
+  #ui-container[data-state='game-init-error'] #tabs,
+  #ui-container[data-state='credits-screen'] #tabs,
+  #ui-container[data-state='playing-config'] #tabs,
+  #ui-container[data-state='tutorial-screen'] #tabs {
     -ms-grid-column: 1;
         grid-column: 1;
     -ms-grid-row: 3;
         grid-row: 3;
   }
-  #ui-overlay #copy {
+  #ui-container[data-state='menu-game-screen'] #copy,
+  #ui-container[data-state='menu-store-screen'] #copy,
+  #ui-container[data-state='menu-config-screen'] #copy,
+  #ui-container[data-state='respawn-screen'] #copy,
+  #ui-container[data-state='kicked-screen'] #copy,
+  #ui-container[data-state='game-init-error'] #copy,
+  #ui-container[data-state='credits-screen'] #copy,
+  #ui-container[data-state='playing-config'] #copy,
+  #ui-container[data-state='tutorial-screen'] #copy {
     -ms-grid-column: 1;
         grid-column: 1;
     -ms-grid-row: 4;
         grid-row: 4;
   }
 }
-#ui-overlay .greybox-wrapper {
+#ui-container[data-state='playing'],
+#ui-container[data-state='server-msg-screen'] {
+  display: block;
+}
+#ui-container .greybox-wrapper {
   position: absolute;
   left: 50%;
   -webkit-transform: translateX(-50%);
@@ -260,7 +358,7 @@ input:focus {
   max-width: 800px;
   width: 100%;
 }
-#ui-overlay .greybox-wrapper .greybox {
+#ui-container .greybox-wrapper .greybox {
   max-width: calc(100% - 10px);
   pointer-events: auto;
   overflow-y: auto;
@@ -270,49 +368,49 @@ input:focus {
   padding: 20px;
   margin: 20px;
 }
-#ui-overlay .greybox-wrapper .greybox > * {
+#ui-container .greybox-wrapper .greybox > * {
   margin-bottom: 20px;
   border-radius: 8px;
 }
-#ui-overlay .greybox-wrapper .greybox > *:first-child:not(input) {
+#ui-container .greybox-wrapper .greybox > *:first-child:not(input) {
   margin-top: 0;
   padding-top: 0;
 }
-#ui-overlay .greybox-wrapper .greybox > *:last-child {
+#ui-container .greybox-wrapper .greybox > *:last-child {
   margin-bottom: 0;
 }
-#ui-overlay .greybox-wrapper .greybox h1 {
+#ui-container .greybox-wrapper .greybox h1 {
   text-align: center;
   font-size: 60px;
 }
-#ui-overlay .greybox-wrapper .greybox h1 small {
+#ui-container .greybox-wrapper .greybox h1 small {
   float: right;
   clear: both;
 }
-#ui-overlay .greybox-wrapper .greybox h2 {
+#ui-container .greybox-wrapper .greybox h2 {
   text-align: center;
   font-size: 30px;
 }
-#ui-overlay .greybox-wrapper .greybox p {
+#ui-container .greybox-wrapper .greybox p {
   text-align: center;
   font-size: 15px;
 }
-#ui-overlay #skin-list li {
+#ui-container #skin-list li {
   float: left;
   margin: 10px;
   font-size: 15px;
 }
-#ui-overlay #skin-list li h1,
-#ui-overlay #skin-list li button {
+#ui-container #skin-list li h1,
+#ui-container #skin-list li button {
   font-size: inherit;
 }
-#ui-overlay #skin-list li .selected {
+#ui-container #skin-list li .selected {
   background: #7e7f81;
 }
-#ui-overlay #skin-list li img {
+#ui-container #skin-list li img {
   border-radius: 50%;
 }
-#ui-overlay #skin-list li * {
+#ui-container #skin-list li * {
   cursor: pointer;
 }
 button:focus {
