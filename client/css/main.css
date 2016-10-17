@@ -290,6 +290,15 @@ button:active {
   color: #f7f7f7;
   font-size: 18px;
 }
+#capture-message {
+  position: absolute;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  top: 20vh;
+  color: #f7f7f7;
+  font-size: 18px;
+}
 #copy {
   display: block;
   position: absolute;
