@@ -183,7 +183,8 @@ function setupSocket(ws) {
 
     function handle_msg_zor_pong() {
         zorPingDuration = Date.now() - zorPingStart;
-        console.log('Ping: ' + zorPingDuration + 'ms');
+        player.model.ping_metric.add(zorPingDuration);
+        console.log('Ping: ' + zorPingDuration + 'ms, FPS: ' + ZOR.LagScale.get_fps());
     }
 
     function handle_msg_client_position_rapid(messageView) {
@@ -295,6 +296,7 @@ function sendPing() {
 
     // Send ping to track latency, client heartbeat, and fps
     var fps = Math.round(ZOR.LagScale.get_fps());
+    player.model.fps_metric.add(fps);
     ws.send(JSON.stringify({op: 'zor_ping', lastPing: zorPingDuration, fps: fps}));
 }
 

@@ -441,6 +441,7 @@ ZOR.Metric = function ZORMetric(threshold, reverse_threshold) {
     this.mean = 0;
     this.max = 0;
     this.min = 0;
+    this.last = 0;
     this.threshold_exceeded_count = 0;
 };
 
@@ -448,6 +449,8 @@ ZOR.Metric.prototype.add = function ZORMetricAdd(value) {
     value = +value; // make sure it's an int
 
     UTIL.pushShift(this.series, value, config.RECENT_CLIENT_DATA_LENGTH);
+
+    this.last = value;
 
     this.mean = +_.mean(this.series).toFixed(3);
     this.max = _.max(this.series);

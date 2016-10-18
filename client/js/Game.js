@@ -79,17 +79,17 @@ function startGame(type) {
         ZOR.Sounds.music.background.play();
     }
 
-    playerType = type;
 
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
 
-    // save player name and alpha key in storage
+    // Assign player meta data and save to local storage
+    playerType     = type;
     var playerName = localStorage.player_name = UTIL.filterName(ZOR.UI.engine.get('player_name'));
     var key        = localStorage.alpha_key   = ZOR.UI.engine.get('alpha_key');
+    var skin       = localStorage.getItem('skin') || 'default';
+    var colorCode  = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
+    var colorHex   = config.COLORS[colorCode];
 
-    // Enter the game
-    var colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
-    var colorHex = config.COLORS[colorCode];
     document.querySelector("meta[name=theme-color]").content = colorHex;
     console.log('Player color', colorHex);
 
@@ -97,7 +97,9 @@ function startGame(type) {
     ZOR.UI.engine.set('player_color', colorCode);
     ZOR.UI.engine.set('player_size', config.PLAYER_GET_SCORE(config.INITIAL_PLAYER_RADIUS));
 
-    var skin = localStorage.getItem('skin') || 'default';
+    // Schedule one time Google Analytics tracking for Ping and FPS
+    setTimeout(gaPerformanceMetrics, 15000);
+
     sendEnterGame(playerType, playerName, colorCode, skin, key);
 }
 
@@ -363,14 +365,15 @@ function updateTargetLock() {
         if (playerMesh && playerMesh.player_id > 0) {
 
             var targeting_self = playerMesh.player_id === player.model.id;
-            var target_changed = player.getTargetLock() !== playerMesh.player_id;
 
             if (!targeting_self) {
                 // Update target locked UI
                 var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
 
                 if (pointedPlayer) {
+                    var target_changed = player.getTargetLock() !== playerMesh.player_id;
                     var currentScore = pointedPlayer.getScore();
+
                     var target = {
                         name: pointedPlayer.model.name,
                         score: currentScore,
@@ -378,12 +381,14 @@ function updateTargetLock() {
                     };
 
                     if (target_changed) {
+                        // Set new target
                         player.setTargetLock(playerMesh.player_id);
                         ZOR.UI.engine.set('target', target);
                         pointedPlayer.lastScore = currentScore;
                         clearTimeout(ZOR.UI.target_clear_timeout_id);
                     }
                     else if (currentScore != pointedPlayer.lastScore) {
+                        // Update target score
                         ZOR.UI.engine.set('target', { name: pointedPlayer.model.name, score: currentScore, color: pointedPlayer.model.sphere.color });
                         pointedPlayer.lastScore = currentScore;
                     }
@@ -637,4 +642,30 @@ function setDeadState() {
     player.isDead = true;
     clearIntervalMethods();
     KeysDown = {};
+}
+
+function gaPerformanceMetrics() {
+    if (gameStart && !player.isDead) {
+        var ping = player.model.ping_metric.last;
+        var fps = player.model.fps_metric.last;
+
+        if (ping > 0) {
+            ga('send', {
+                hitType: 'timing',
+                timingCategory: 'Performance',
+                timingVar: 'ping',
+                timingValue: ping,
+                timingLabel: linodeNearLocation(),
+            });
+        }
+
+        if (fps > 0) {
+            ga('send', {
+                hitType: 'timing',
+                timingCategory: 'Performance',
+                timingVar: 'fps',
+                timingValue: fps,
+            });
+        }
+    }
 }
