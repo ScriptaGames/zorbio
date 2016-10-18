@@ -652,7 +652,7 @@ function gaPerformanceMetrics() {
         if (ping > 0) {
             ga('send', {
                 hitType: 'timing',
-                timingCategory: 'Performance',
+                timingCategory: 'Ping',
                 timingVar: 'ping',
                 timingValue: ping,
                 timingLabel: linodeNearLocation(),
@@ -662,7 +662,7 @@ function gaPerformanceMetrics() {
         if (fps > 0) {
             ga('send', {
                 hitType: 'timing',
-                timingCategory: 'Performance',
+                timingCategory: 'FPS',
                 timingVar: 'fps',
                 timingValue: fps,
             });
