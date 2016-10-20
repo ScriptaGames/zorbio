@@ -84,10 +84,6 @@ input {
     cursor       : url('../images/cursor.png') -4 -4, crosshair;
 }
 
-#ui-container {
-    height     : 100%;
-    width      : 100%;
-}
 
 // fade in the canvas and the UI, when they become active
 #render-canvas,
@@ -129,22 +125,34 @@ input {
     transform: translate(-50%, -50%);
 }
 
-// UI overlay.  all UI components are placed within this element.
-#ui-container {
+.ui-overlay() {
+    position : absolute;
+    z-index  : 20;
+    top      : 0;
+    left     : 0;
+    padding  : 0;
+    margin   : 0;
+    height   : 100%;
+    width    : 100%;
+    pointer-events  : none; // disable click/touch events for the overlay itself
 
     font-family    : @primary-font;
     font-size      : @font-size-base;
     font-weight    : bold;
     letter-spacing : 1px;
+}
 
-    pointer-events  : none; // disable click/touch events for the overlay itself
+// UI while playing.
+#play-ui-container {
+    .ui-overlay();
+}
 
-    position        : absolute;
-    z-index         : 20;
-    top             : 0;
-    left            : 0;
-    padding         : 0;
-    margin          : 0;
+// UI while in menus.
+#menu-ui-container {
+
+    .ui-overlay();
+
+    display  : grid;
 
     #title {
         position: relative;
@@ -180,69 +188,54 @@ input {
         }
     }
 
-    &[data-state='menu-game-screen'],
-    &[data-state='menu-store-screen'],
-    &[data-state='menu-config-screen'],
-    &[data-state='respawn-screen'],
-    &[data-state='kicked-screen'],
-    &[data-state='game-init-error'],
-    &[data-state='credits-screen'],
-    &[data-state='playing-config'],
-    &[data-state='tutorial-screen'] {
-        display: grid;
-        @media (max-height: 450px), (orientation: landscape) {
-            & {
-                // TODO variablize these fixed px sizes
-                grid-definition-columns: 0.8fr 0.2fr;
-                grid-template-columns: 0.81fr 0.2fr;
-                grid-definition-rows: 75px 1fr 14px;
-                grid-template-rows: 75px 1fr 14px;
-            }
-            & #title {
-                grid-column: 1;
-                grid-row: 1;
-            }
-            & #menu {
-                grid-column: 1;
-                grid-row: 2;
-            }
-            & #tabs {
-                grid-column: 2;
-                grid-row: 1 / span 2;
-            }
-            & #copy {
-                grid-column: 1;
-                grid-row: 3;
-            }
+    @media (max-height: 450px), (orientation: landscape) {
+        & {
+            // TODO variablize these fixed px sizes
+            grid-definition-columns: 0.8fr 0.2fr;
+            grid-template-columns: 0.81fr 0.2fr;
+            grid-definition-rows: 75px 1fr 14px;
+            grid-template-rows: 75px 1fr 14px;
         }
-        @media (min-height: 451px), (orientation: portrait) {
-            & {
-                grid-definition-columns: 1fr;
-                grid-template-columns: 1fr;
-                grid-definition-rows: 100px 1fr 100px 22px;
-                grid-template-rows: 100px 1fr 100px 22px;
-            }
-            & #title {
-                grid-column: 1;
-                grid-row: 1;
-            }
-            & #menu {
-                grid-column: 1;
-                grid-row: 2;
-            }
-            & #tabs {
-                grid-column: 1;
-                grid-row: 3;
-            }
-            & #copy {
-                grid-column: 1;
-                grid-row: 4;
-            }
+        & #title {
+            grid-column: 1;
+            grid-row: 1;
+        }
+        & #menu {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        & #tabs {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+        }
+        & #copy {
+            grid-column: 1;
+            grid-row: 3;
         }
     }
-    &[data-state='playing'],
-    &[data-state='server-msg-screen'] {
-        display: block;
+    @media (min-height: 451px), (orientation: portrait) {
+        & {
+            grid-definition-columns: 1fr;
+            grid-template-columns: 1fr;
+            grid-definition-rows: 100px 1fr 100px 22px;
+            grid-template-rows: 100px 1fr 100px 22px;
+        }
+        & #title {
+            grid-column: 1;
+            grid-row: 1;
+        }
+        & #menu {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        & #tabs {
+            grid-column: 1;
+            grid-row: 3;
+        }
+        & #copy {
+            grid-column: 1;
+            grid-row: 4;
+        }
     }
 
 

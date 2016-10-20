@@ -1,4 +1,5 @@
-<div id="ui-container" data-state="{{ state }}">
+<!-- UI while in menus -->
+<div id="menu-ui-container" data-state="{{ state }}">
     {{ #if state !== STATES.PLAYING }}
         {{ > title }}
     {{ /if }}
@@ -18,11 +19,14 @@
     {{ /if }}
 </div>
 
-{{ #if state.indexOf('playing') === 0 }}
+<!-- UI while playing -->
+{{ #if state === STATES.PLAYING }}
+<div id="play-ui-container" data-state="{{ state }}">
     {{ > leaderboard }}
     {{ > playing     }}
     {{ > player-size }}
     {{ > targets     }}
+</div>
 {{ /if }}
 
 {{ #if server_message }}
