@@ -1,14 +1,10 @@
 <div id="leaderboard-playing">
     <div id="leaders" class="{{ is_mobile ? 'mobile' : '' }}">
-        <div>
-            {{ #each leaders:i }}
-            <div style="color: {{ COLORS[leaders[i].color] }}"> {{ leaders[i].name }} </div>
-            {{ /each }}
+        {{ #each leaders:i }}
+        <div class="leaderboard-leader" style="color: {{ COLORS[leaders[i].color] }}">
+            <span class="leaderboard-score">{{ leaders[i].score }}</span>
+            {{ leaders[i].name }}
         </div>
-        <div>
-            {{ #each leaders:i }}
-            <div style="color: {{ COLORS[leaders[i].color] }}"> {{ leaders[i].score }} </div>
-            {{ /each }}
-        </div>
+        {{ /each }}
     </div>
 </div>

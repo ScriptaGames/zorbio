@@ -359,13 +359,16 @@ button {
     font-size: 14px;
     max-height: none; // override
 
-    ul li,
     #leaders {
-        div {
+        .leaderboard-leader {
             margin    : 3px;
             font-size : @font-size-base * 0.35;
+            .leaderboard-score {
+                width: 50px;
+                display: inline-block;
+            }
         }
-        &.mobile div {
+        &.mobile .leaderboard-leader {
             margin-bottom : 2px;
             font-size : @font-size-base * 0.25;
         }

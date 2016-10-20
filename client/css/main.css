@@ -138,6 +138,10 @@ input:focus {
   height: 100%;
   width: 100%;
   pointer-events: none;
+  font-family: Orbitron, monospace;
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 #menu-ui-container {
   position: absolute;
@@ -368,13 +372,15 @@ button:active {
   font-size: 14px;
   max-height: none;
 }
-#leaderboard-playing ul li div,
-#leaderboard-playing #leaders div {
+#leaderboard-playing #leaders .leaderboard-leader {
   margin: 3px;
   font-size: 10.5px;
 }
-#leaderboard-playing ul li.mobile div,
-#leaderboard-playing #leaders.mobile div {
+#leaderboard-playing #leaders .leaderboard-leader .leaderboard-score {
+  width: 50px;
+  display: inline-block;
+}
+#leaderboard-playing #leaders.mobile .leaderboard-leader {
   margin-bottom: 2px;
   font-size: 7.5px;
 }
