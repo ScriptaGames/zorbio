@@ -7,8 +7,8 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 if (NODEJS) {
     global.self = {}; // threejs expects there to be a global named 'self'... for some reason..
     global.THREE = require('three');
-    var _ = require('lodash');
-    var ZOR = { Env: require('../common/environment.js') };
+    global._ = require('lodash');
+    global.ZOR = { Env: require('../common/environment.js') };
 }
 
 var config = {};

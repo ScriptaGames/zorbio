@@ -109,9 +109,6 @@ ZOR.UI = function ZORUI() {
     // array of registered on-init handlers
     var init_handlers = [];
 
-    // the previous state
-    var previous = STATES.INITIAL;
-
     function clearTarget() {
         uidata.target = undefined;
     }

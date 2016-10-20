@@ -4,7 +4,6 @@ ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 //
 
 ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
-    var opacity = playerView.is_current_player ? 0.4 : 0.8;
     var color = new THREE.Color(playerView.playerColor);
 
     return {

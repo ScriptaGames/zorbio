@@ -4,7 +4,6 @@ ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 //
 
 ZOR.PlayerSkins.reddit = function ZORRedditSkin(playerView) {
-    var opacity = playerView.is_current_player ? 0.2 : 0.6;
 
     return {
         geometry: {
