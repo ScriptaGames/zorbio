@@ -2,10 +2,12 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 
 // if we're running in nodejs, import THREE.  for browser, assume it's
 // already there.
-if (NODEJS) var THREE = require('three');
-if (NODEJS) var UTIL = require('./util.js');
-if (NODEJS) var config = require('./config.js');
-if (NODEJS) var _ = require('lodash');
+if (NODEJS) {
+    global.THREE = require('three');
+    global.UTIL = require('./util.js');
+    global.config = require('./config.js');
+    global._ = require('lodash');
+}
 
 var ZOR = ZOR || {};
 
