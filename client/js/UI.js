@@ -27,13 +27,13 @@ ZOR.UI = function ZORUI() {
         MENU_GAME_SCREEN    : 'menu-game-screen',
         MENU_STORE_SCREEN   : 'menu-store-screen',
         MENU_CONFIG_SCREEN  : 'menu-config-screen',
+        MENU_CREDITS_SCREEN : 'menu-credits-screen',
         PLAYING             : 'playing',
         PLAYING_CONFIG      : 'playing-config',
         RESPAWN_SCREEN      : 'respawn-screen',
         KICKED_SCREEN       : 'kicked-screen',
         GAME_INIT_ERROR     : 'game-init-error',
         SERVER_MSG_SCREEN   : 'server-msg-screen',
-        CREDITS_SCREEN      : 'credits-screen',
         TUTORIAL_SCREEN     : 'tutorial-screen',
     };
 
@@ -46,15 +46,15 @@ ZOR.UI = function ZORUI() {
         PLAYER_LOGIN             : 'player-login',
         PLAYER_RESPAWN           : 'player-respawn',
         PAGE_RELOAD              : 'page-reload',
-        SHOW_CREDITS             : 'show-credits',
         SHOW_MENU                : 'show-menu',
         SHOW_TUTORIAL            : 'show-tutorial',
         SHOW_PLAYING_CONFIG      : 'show-playing-config',
         SHOW_PREVIOUS            : 'show-previous',
 
-        SHOW_MENU_GAME_SCREEN    : 'show-menu-game-screen ',
-        SHOW_MENU_STORE_SCREEN   : 'show-menu-store-screen ',
-        SHOW_MENU_CONFIG_SCREEN  : 'show-menu-config-screen ',
+        SHOW_MENU_GAME_SCREEN    : 'show-menu-game-screen',
+        SHOW_MENU_STORE_SCREEN   : 'show-menu-store-screen',
+        SHOW_MENU_CONFIG_SCREEN  : 'show-menu-config-screen',
+        SHOW_MENU_CREDITS_SCREEN : 'show-menu-credits-screen',
 
         TOGGLE_Y_AXIS            : 'toggle-y-axis',
         TOGGLE_X_AXIS            : 'toggle-x-axis',
@@ -130,9 +130,9 @@ ZOR.UI = function ZORUI() {
      * The Ractive template engine.  Data + Templates = HTML
      */
 
-    function register_partial( el ) {
+    function make_partial( el ) {
         var name = el.id.replace('-template', '');
-        engine.partials[name] = el.textContent;
+        return [name, el.textContent];
     }
 
     /**
@@ -239,24 +239,21 @@ ZOR.UI = function ZORUI() {
 
     function init() {
 
+        var partials = _.map( document.querySelectorAll('script[type="text/ractive"]'), make_partial ); // register all ractive templates as partials
+
         Ractive.DEBUG = config.DEBUG;
         engine = new Ractive({
-            // The `el` option can be a node, an ID, or a CSS selector.
             el: '#ui-overlay',
-
-            // We could pass in a string, but for the sake of convenience
-            // we're passing the ID of the <script> tag above.
-            template: '#ui-template',
-
-            // Here, we're passing in some initial data
             data: uidata,
+            template: '#ui-template',
+            partials: _.fromPairs(partials),
         });
 
         api.engine = engine;
         api.update = get_updater();
 
         validate_browser_features();
-        _.each( document.querySelectorAll('script[type="text/ractive"]'), register_partial ); // register all ractive templates as partials
+
         state( STATES.INITIAL );
 
         init_events();
@@ -287,6 +284,7 @@ ZOR.UI = function ZORUI() {
 
     function stateSetter(newState) {
         return function () {
+            console.log('changing to ' + newState);
             state(newState);
         };
     }
@@ -325,7 +323,7 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.SHOW_MENU_GAME_SCREEN   , stateSetter( STATES.MENU_GAME_SCREEN ) );
         on( ACTIONS.SHOW_MENU_STORE_SCREEN  , stateSetter( STATES.MENU_STORE_SCREEN ) );
         on( ACTIONS.SHOW_MENU_CONFIG_SCREEN , stateSetter( STATES.MENU_CONFIG_SCREEN ) );
-        on( ACTIONS.SHOW_CREDITS            , stateSetter( STATES.CREDITS_SCREEN ) );
+        on( ACTIONS.SHOW_MENU_CREDITS_SCREEN, stateSetter( STATES.MENU_CREDITS_SCREEN ) );
         on( ACTIONS.SHOW_TUTORIAL           , stateSetter( STATES.TUTORIAL_SCREEN ) );
         on( ACTIONS.SHOW_PLAYING_CONFIG     , stateSetter( STATES.PLAYING_CONFIG ) );
         on( ACTIONS.SHOW_MENU               , stateSetter( STATES.MENU_SCREEN ) );

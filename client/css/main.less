@@ -360,6 +360,7 @@ button {
     max-height: none; // override
 
     #leaders {
+        padding-top: 6px;
         .leaderboard-leader {
             margin    : 3px;
             font-size : @font-size-base * 0.35;
@@ -431,6 +432,7 @@ button {
 }
 
 #tabs {
+            pointer-events  : auto; // enable click/touch events on UI elements
     button {
         position: relative;
         top: 15px;
@@ -447,6 +449,5 @@ button {
 }
 
 * {
-    user-select: none;
     cursor: url('../images/cursor.png') -4 -4, crosshair;
 }

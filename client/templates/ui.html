@@ -3,15 +3,15 @@
     {{ #if state !== STATES.PLAYING }}
         {{ > title }}
     {{ /if }}
-    {{ #if state === STATES.MENU_GAME_SCREEN   }} {{ > menu        }} {{ /if }}
-    {{ #if state === STATES.MENU_STORE_SCREEN  }} {{ > menu        }} {{ /if }}
-    {{ #if state === STATES.MENU_CONFIG_SCREEN }} {{ > menu        }} {{ /if }}
-    {{ #if state === STATES.TUTORIAL_SCREEN    }} {{ > tutorial    }} {{ /if }}
-    {{ #if state === STATES.RESPAWN_SCREEN     }} {{ > death       }} {{ /if }}
-    {{ #if state === STATES.KICKED_SCREEN      }} {{ > kicked      }} {{ /if }}
-    {{ #if state === STATES.GAME_INIT_ERROR    }} {{ > initerror   }} {{ /if }}
-    {{ #if state === STATES.CREDITS_SCREEN     }} {{ > credits     }} {{ /if }}
-    {{ #if state === STATES.PLAYING_CONFIG     }} {{ > config-play }} {{ /if }}
+    {{ #if state === STATES.MENU_GAME_SCREEN    }} {{ > menu        }} {{ /if }}
+    {{ #if state === STATES.MENU_STORE_SCREEN   }} {{ > menu        }} {{ /if }}
+    {{ #if state === STATES.MENU_CONFIG_SCREEN  }} {{ > menu        }} {{ /if }}
+    {{ #if state === STATES.MENU_CREDITS_SCREEN }} {{ > menu        }} {{ /if }}
+    {{ #if state === STATES.TUTORIAL_SCREEN     }} {{ > tutorial    }} {{ /if }}
+    {{ #if state === STATES.RESPAWN_SCREEN      }} {{ > death       }} {{ /if }}
+    {{ #if state === STATES.KICKED_SCREEN       }} {{ > kicked      }} {{ /if }}
+    {{ #if state === STATES.GAME_INIT_ERROR     }} {{ > initerror   }} {{ /if }}
+    {{ #if state === STATES.PLAYING_CONFIG      }} {{ > config-play }} {{ /if }}
 
     {{ #if state.indexOf('playing') !== 0 }}
         {{ > tabs }}
