@@ -183,7 +183,8 @@ function setupSocket(ws) {
 
     function handle_msg_zor_pong() {
         zorPingDuration = Date.now() - zorPingStart;
-        console.log('Ping: ' + zorPingDuration + 'ms');
+        player.model.ping_metric.add(zorPingDuration);
+        console.log('Ping: ' + zorPingDuration + 'ms, FPS: ' + ZOR.LagScale.get_fps());
     }
 
     function handle_msg_client_position_rapid(messageView) {
@@ -227,8 +228,8 @@ function setupSocket(ws) {
         var targetPlayerId = msg.targetPlayerId;
 
         console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
+
         handleSuccessfulPlayerCapture(targetPlayerId);
-        removePlayerFromGame(targetPlayerId);
     }
 
     function handle_msg_you_died(msg) {
@@ -241,12 +242,9 @@ function setupSocket(ws) {
         var attackingPlayerId = msg.attackingPlayerId;
         var targetPlayerId = msg.targetPlayerId;
 
-        handleOtherPlayercapture(attackingPlayerId, targetPlayerId);
-
         if (!player || (attackingPlayerId !== player.getPlayerId())) {
-            // someone else killed another player, lets remove it
-            console.log("Player died:  ", targetPlayerId);
-            removePlayerFromGame(targetPlayerId);
+            // someone else killed another player
+            handleOtherPlayercapture(targetPlayerId);
         }
     }
 
@@ -264,7 +262,7 @@ function setupSocket(ws) {
 
     function handle_msg_remove_player(msg) {
         console.log("received remove_player", msg.playerId);
-        removePlayerFromGame(msg.playerId);
+        removePlayerFromGame(msg.playerId, 0);
     }
 
     function handle_msg_speeding_warning() {
@@ -298,6 +296,7 @@ function sendPing() {
 
     // Send ping to track latency, client heartbeat, and fps
     var fps = Math.round(ZOR.LagScale.get_fps());
+    player.model.fps_metric.add(fps);
     ws.send(JSON.stringify({op: 'zor_ping', lastPing: zorPingDuration, fps: fps}));
 }
 

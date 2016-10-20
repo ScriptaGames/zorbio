@@ -4,8 +4,7 @@ ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 //
 
 ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
-    var opacity = playerView.is_current_player ? 0.1 : 0.4;
-    var color = new THREE.Color('#ffffff');
+    var color = new THREE.Color('#D71C26');
 
     return {
         geometry: {
@@ -41,7 +40,43 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
                 new THREE.Vector3(0.9, 0, 0),
                 new THREE.Vector3(-0.9, 0, 0),
             ],
-            color: new THREE.Color('#D71C26'),
+            color: color,
+        },
+        capture: {
+            customScale: 1.0,
+            group: {
+                scale: Math.max(window.innerWidth, window.innerHeight),
+                maxParticleCount: 1000,
+                texture: {
+                    value: new THREE.TextureLoader().load( "skins/boing/trail.png" ),
+                },
+                blending: THREE.AdditiveBlending,
+            },
+            emitter: {
+                type: SPE.distributions.SPHERE,
+                position: {
+                    spread: new THREE.Vector3( 5 ),
+                    radius: 10,
+                },
+                velocity: {
+                    spread: new THREE.Vector3( 100 ),
+                },
+                size: {
+                    value: [ 100, 0 ]
+                },
+                opacity: {
+                    value: [1, 0]
+                },
+                color: {
+                    value: [color],
+                },
+                particleCount: 50,
+                alive: false,
+                duration: 0.05,
+                maxAge: {
+                    value: 1,
+                },
+            },
         },
     };
 };

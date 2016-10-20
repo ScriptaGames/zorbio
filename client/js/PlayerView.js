@@ -17,6 +17,8 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.playerColor = config.COLORS[model.sphere.color];
     this.skinName = model.sphere.skin;
 
+    this.clock = new THREE.Clock();
+
     this.trail = {
         initialized: false,
     };
@@ -48,6 +50,8 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.mainSphere.player_id = this.model.id;
     ZOR.Game.player_meshes.push(this.mainSphere);  // store mesh for raycaster search
 
+    this.initCaptureParticles();
+
     scene.add( this.mainSphere );
 
     // give the meshes time to render before drawing trails
@@ -70,14 +74,16 @@ ZOR.PlayerView.prototype.initTrails = function ZORPlayerViewInitTrails() {
     }
 
     // Add the config handler
-    ZOR.UI.on( ZOR.UI.ACTIONS.TOGGLE_OWN_TRAIL, function(e) {
-        if ( e.node.checked ) {
-            self.hideTrails();
-            ZOR.UI.setAndSave('hide_own_trail', true);
-        }
-        else {
-            self.showTrails();
-            ZOR.UI.setAndSave('hide_own_trail', false);
+    ZOR.UI.on(ZOR.UI.ACTIONS.TOGGLE_OWN_TRAIL, function (e) {
+        if (self.is_current_player) {
+            if (e.node.checked) {
+                self.hideTrails();
+                ZOR.UI.setAndSave('hide_own_trail', true);
+            }
+            else {
+                self.showTrails();
+                ZOR.UI.setAndSave('hide_own_trail', false);
+            }
         }
     });
 
@@ -87,18 +93,33 @@ ZOR.PlayerView.prototype.initTrails = function ZORPlayerViewInitTrails() {
     }
 };
 
+// Player capture animation emitter
+ZOR.PlayerView.prototype.initCaptureParticles = function ZORPlayerViewInitCaptureParticles() {
+    this.capture = {};
+    this.capture.group = new SPE.Group(this.skin.capture.group);
+    this.capture.emitter = new SPE.Emitter(this.skin.capture.emitter);
+    this.capture.emitter.disable();
+    this.capture.group.addEmitter(this.capture.emitter);
+    this.capture.group.mesh.frustumCulled = false;
+    this.capture.group.mesh.renderOrder = -1;
+    this.capture.active = false;
+
+    this.scene.add( this.capture.group.mesh );
+};
+
 ZOR.PlayerView.prototype.initParticleTrails = function ZORPlayerViewInitParticleTrails() {
     this.trail.group = new SPE.Group(this.skin.trail.group);
 
     this.trail.emitter = new SPE.Emitter(this.skin.trail.emitter);
 
-    this.trail.clock = new THREE.Clock();
-    this.trail.group.mesh.renderOrder = -1;
+    this.trail.group.mesh.renderOrder = -2;
     this.trail.group.mesh.frustumCulled = false;
     this.trail.group.addEmitter( this.trail.emitter );
-    this.scene.add( this.trail.group.mesh );
-    this.trail.initialized = true;
     this.trail.visible = 1;
+
+    this.scene.add( this.trail.group.mesh );
+
+    this.trail.initialized = true;
 };
 
 ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails() {
@@ -150,6 +171,8 @@ ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails()
 };
 
 ZOR.PlayerView.prototype.hideTrails = function ZORPlayerViewHideTrail() {
+    if (!this.trail.initialized) return;
+
     switch (this.skin.trail.type) {
         case 'line':
             this.hideLineTrails();
@@ -161,6 +184,8 @@ ZOR.PlayerView.prototype.hideTrails = function ZORPlayerViewHideTrail() {
 };
 
 ZOR.PlayerView.prototype.showTrails = function ZORPlayerViewShowTrail() {
+    if (!this.trail.initialized) return;
+
     switch (this.skin.trail.type) {
         case 'line':
             this.showLineTrails();
@@ -211,7 +236,6 @@ ZOR.PlayerView.prototype.updateTrails = function ZORPlayerViewUpdateTrail() {
 ZOR.PlayerView.prototype.updateParticleTrails = function ZORPlayerViewupdateParticleTrails() {
     if (!this.trail.initialized) return;
 
-    var oldPos = this.trail.emitter.position._value.clone();
     var newPos = this.mainSphere.position.clone();
 
     this.trail.emitter.position._value.x = newPos.x;
@@ -222,7 +246,7 @@ ZOR.PlayerView.prototype.updateParticleTrails = function ZORPlayerViewupdatePart
     this.trail.emitter.position._spreadClamp.setX( scale );
     this.trail.emitter.position._spread.setX( scale );
     this.trail.emitter.position._radius = scale;
-    this.trail.emitter.size._value =  [scale/3, scale*2/6, scale*1/9, 0];
+    this.trail.emitter.size._value =  [scale/3, scale*2/6, scale/9, 0];
 
     var boosting = this.model.abilities.speed_boost.isActive();
 
@@ -233,17 +257,11 @@ ZOR.PlayerView.prototype.updateParticleTrails = function ZORPlayerViewupdatePart
         this.trail.emitter.activeMultiplier = 0.1 * this.trail.visible;
     }
 
-    // var speed = oldPos.clone().sub(newPos).length();
-    // var diffPos = newPos.sub(oldPos).multiplyScalar(speed);
-
-    // this.trail.emitter.velocity._value.x = diffPos.x;
-    // this.trail.emitter.velocity._value.y = diffPos.y;
-
     this.trail.emitter.updateFlags.position = true;
     this.trail.emitter.updateFlags.velocity = true;
     this.trail.emitter.updateFlags.size = true;
 
-    this.trail.group.tick( this.trail.clock.getDelta() );
+    this.trail.group.tick( this.clock.getDelta() );
 };
 
 ZOR.PlayerView.prototype.updateLineTrails = function ZORPlayerViewupdateLineTrails() {
@@ -266,11 +284,37 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
     // this.mainSphere.geometry.computeBoundingSphere(); // compute the new bounding sphere after resizing
 };
 
+ZOR.PlayerView.prototype.handleCapture = function ZORPlayerViewHandleCapture() {
+    this.capture.active = true;
+
+    // Hide all view elements except for capture particles
+    this.mainSphere.visible = false;
+    this.drainView.mesh.visible = false;
+    this.removeTrail();  // must remove trail because particles trails mess up the look of capture particles
+
+    // fire particle burst
+    var currentPos = this.mainSphere.position.clone();
+
+    // Set position to current position
+    this.capture.emitter.position.value = currentPos;
+
+    // Adjust burst size based on sphere scale
+    var scale = this.mainSphere.scale.x * (this.skin.capture.customScale || 1);
+    this.capture.emitter.position.radius = scale;
+    this.capture.emitter.size.value = [scale/3, scale*2/6, scale/9, 0];
+
+    this.capture.emitter.enable();
+};
+
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
     this.updateTrails();
     if (this.is_current_player || this.skin.behavior.faceCamera) {
         this.updateDirection();
+    }
+
+    if (this.capture.active) {
+        this.capture.group.tick( this.clock.getDelta() );
     }
 };
 
@@ -296,25 +340,37 @@ ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(p
 };
 
 ZOR.PlayerView.prototype.removeTrail = function ZORPlayerViewRemoveTrail() {
-    switch (this.skin.trail.type) {
-        case 'line':
-            this.trail.origins = [];
-            this.trail.geometries = [];
-            this.trail.lines = [];
-            this.trail.meshes.forEach(this.scene.remove.bind(scene));
-            break;
-        case 'particle':
-            this.trail.group.emitters.forEach(function (emitter) { emitter.remove(); });
-            this.trail.group.dispose();
-            break;
+    if (this.trail.initialized) {
+        switch (this.skin.trail.type) {
+            case 'line':
+                this.trail.origins = [];
+                this.trail.geometries = [];
+                this.trail.lines = [];
+                this.trail.meshes.forEach(this.scene.remove.bind(scene));
+                break;
+            case 'particle':
+                if (this.trail.emitter.group)
+                    this.trail.emitter.remove();
+                this.trail.group.dispose();
+                this.scene.remove(this.trail.group.mesh);
+                break;
+        }
+        this.trail.initialized = false;
     }
 
 };
 
-ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
+ZOR.PlayerView.prototype.removeCaptureParticles = function ZORPlayerViewRemoveCaptureParticles() {
+    this.capture.emitter.remove();
+    this.capture.group.dispose();
+    this.scene.remove(this.capture.group.mesh);
+};
+
+ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove() {
     this.removeTrail();
+    this.removeCaptureParticles();
     this.drainView.dispose();
-    scene.remove(this.mainSphere);
+    this.scene.remove(this.mainSphere);
 
     // find the player mesh used for raycasting and remove it
     for (var i = 0; i < ZOR.Game.player_meshes.length; i++) {
@@ -326,6 +382,14 @@ ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove(scene) {
             ZOR.Game.player_meshes.splice(i, 1);
         }
     }
+};
+
+/**
+ * Returns the time in ms that the capture emitter particles will be alive
+ * @returns {number}
+ */
+ZOR.PlayerView.prototype.getCaptureEmitterLifetime = function ZORPlayerViewGetCaptureEmitterLifetime() {
+    return Math.floor((this.capture.emitter.maxAge.value + this.capture.emitter.maxAge.spread + this.capture.emitter.duration + 0.1) * 1000);
 };
 
 ZOR.PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {

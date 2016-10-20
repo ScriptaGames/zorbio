@@ -79,17 +79,17 @@ function startGame(type) {
         ZOR.Sounds.music.background.play();
     }
 
-    playerType = type;
 
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
 
-    // save player name and alpha key in storage
+    // Assign player meta data and save to local storage
+    playerType     = type;
     var playerName = localStorage.player_name = UTIL.filterName(ZOR.UI.engine.get('player_name'));
     var key        = localStorage.alpha_key   = ZOR.UI.engine.get('alpha_key');
+    var skin       = localStorage.getItem('skin') || 'default';
+    var colorCode  = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
+    var colorHex   = config.COLORS[colorCode];
 
-    // Enter the game
-    var colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
-    var colorHex = config.COLORS[colorCode];
     document.querySelector("meta[name=theme-color]").content = colorHex;
     console.log('Player color', colorHex);
 
@@ -97,7 +97,9 @@ function startGame(type) {
     ZOR.UI.engine.set('player_color', colorCode);
     ZOR.UI.engine.set('player_size', config.PLAYER_GET_SCORE(config.INITIAL_PLAYER_RADIUS));
 
-    var skin = localStorage.getItem('skin') || 'default';
+    // Schedule one time Google Analytics tracking for Ping and FPS
+    setTimeout(gaPerformanceMetrics, 15000);
+
     sendEnterGame(playerType, playerName, colorCode, skin, key);
 }
 
@@ -174,7 +176,7 @@ function createScene() {
         var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
         var skyboxGeom = new THREE.BoxGeometry( zorbioModel.worldSize.x, zorbioModel.worldSize.y, zorbioModel.worldSize.z, 1, 1, 1 );
         var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
-        skybox.renderOrder = -1;
+        skybox.renderOrder = -10;
         scene.add( skybox );
 
         // lights
@@ -359,21 +361,38 @@ function updateTargetLock() {
     if (intersects && intersects.length > 0) {
         // looking at a player
         var playerMesh     = intersects[0].object;
-        var targeting_self = playerMesh.player_id === player.model.id;
-        var target_changed = player.getTargetLock() !== playerMesh.player_id;
-        if (!targeting_self) {
-            if (target_changed) {
-                player.setTargetLock(playerMesh.player_id);
-                clearTimeout(ZOR.UI.target_clear_timeout_id);
-                console.log("Set target lock: ", ZOR.UI.data.target);
-            }
 
-            // Update target locked UI
-            var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
-            var currentScore = pointedPlayer.getScore();
-            if (currentScore != pointedPlayer.lastScore) {
-                ZOR.UI.engine.set('target', { name: pointedPlayer.model.name, score: currentScore, color: pointedPlayer.model.sphere.color });
-                pointedPlayer.lastScore = currentScore;
+        if (playerMesh && playerMesh.player_id > 0) {
+
+            var targeting_self = playerMesh.player_id === player.model.id;
+
+            if (!targeting_self) {
+                // Update target locked UI
+                var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
+
+                if (pointedPlayer) {
+                    var target_changed = player.getTargetLock() !== playerMesh.player_id;
+                    var currentScore = pointedPlayer.getScore();
+
+                    var target = {
+                        name: pointedPlayer.model.name,
+                        score: currentScore,
+                        color: pointedPlayer.model.sphere.color
+                    };
+
+                    if (target_changed) {
+                        // Set new target
+                        player.setTargetLock(playerMesh.player_id);
+                        ZOR.UI.engine.set('target', target);
+                        pointedPlayer.lastScore = currentScore;
+                        clearTimeout(ZOR.UI.target_clear_timeout_id);
+                    }
+                    else if (currentScore != pointedPlayer.lastScore) {
+                        // Update target score
+                        ZOR.UI.engine.set('target', { name: pointedPlayer.model.name, score: currentScore, color: pointedPlayer.model.sphere.color });
+                        pointedPlayer.lastScore = currentScore;
+                    }
+                }
             }
         }
     }
@@ -495,22 +514,25 @@ function keyReleased(key) {
     }
 }
 
-function removePlayerFromGame(playerId) {
+function removePlayerFromGame(playerId, time) {
     var thePlayer = ZOR.Game.players[playerId];
 
-    // remove player from model
-    zorbioModel.removePlayer(playerId);
+    setTimeout(function removePlayerNow() {
+        // remove player from model
+        zorbioModel.removePlayer(playerId);
 
-    // remove player from scene and client
-    if (thePlayer) {
-        if (thePlayer && thePlayer.view) {
-            // Remove player from the scene
-            thePlayer.removeView(scene);
+        // remove player from scene and client
+        if (thePlayer) {
+            if (thePlayer.view) {
+                // Remove player from the scene
+                thePlayer.removeView();
+            }
+
+            // remove from player controllers
             delete ZOR.Game.players[playerId];
         }
-    }
-
-    console.log('Removed player: ', playerId);
+        console.log('Removed player: ', playerId);
+    }, time);
 }
 
 function handleServerTick(serverTickData) {
@@ -550,17 +572,40 @@ function handleServerTick(serverTickData) {
  */
 function handleSuccessfulPlayerCapture(capturedPlayerID) {
     var sound = ZOR.Sounds.sfx.player_capture;
-    var capturedPlayerPosition = ZOR.Game.players[capturedPlayerID].model.sphere.position;
-    ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayerPosition);
+    var capturedPlayer = ZOR.Game.players[capturedPlayerID];
+    var windDownTime = 0;
+
+    if (capturedPlayer) {
+        ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
+        capturedPlayer.handleCapture();
+        windDownTime = capturedPlayer.getWindDownTime();
+
+        ZOR.UI.engine.set('capture_message', "You captured " + capturedPlayer.model.name);
+
+        setTimeout(function clearCaptureMessage() {
+            ZOR.UI.engine.set('capture_message', '');
+        }, 5000);
+    }
+
+    removePlayerFromGame(capturedPlayerID, windDownTime);
 }
 
 /**
  * A player captured another player.  Current playre not involved.
  */
-function handleOtherPlayercapture(playerID, capturedPlayerID) {
+function handleOtherPlayercapture(capturedPlayerID) {
     var sound = ZOR.Sounds.sfx.player_capture;
-    var capturedPlayerPosition = ZOR.Game.players[capturedPlayerID].model.sphere.position;
-    ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayerPosition);
+    var capturedPlayer = ZOR.Game.players[capturedPlayerID];
+    var windDownTime = 0;
+
+    if (capturedPlayer) {
+        ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
+        capturedPlayer.handleCapture();
+        windDownTime = capturedPlayer.getWindDownTime();
+    }
+
+    console.log("Player died:  ", capturedPlayerID);
+    removePlayerFromGame(capturedPlayerID, windDownTime);
 }
 
 function handleDeath(msg) {
@@ -583,13 +628,6 @@ function handleDeath(msg) {
     ZOR.UI.engine.set('attacker', attackingPlayer);
     ZOR.UI.engine.set('player', playerStats);
     ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
-
-    // Send google google analytics event
-    ga('send', {
-        hitType: 'event',
-        eventCategory: 'StateChange',
-        eventAction: 'death',
-    });
 }
 
 function handlePlayerKick(msg) {
@@ -604,4 +642,30 @@ function setDeadState() {
     player.isDead = true;
     clearIntervalMethods();
     KeysDown = {};
+}
+
+function gaPerformanceMetrics() {
+    if (gameStart && !player.isDead) {
+        var ping = player.model.ping_metric.last;
+        var fps = player.model.fps_metric.last;
+
+        if (ping > 0) {
+            ga('send', {
+                hitType: 'timing',
+                timingCategory: 'Ping',
+                timingVar: 'ping',
+                timingValue: ping,
+                timingLabel: linodeNearLocation(),
+            });
+        }
+
+        if (fps > 0) {
+            ga('send', {
+                hitType: 'timing',
+                timingCategory: 'FPS',
+                timingVar: 'fps',
+                timingValue: fps,
+            });
+        }
+    }
 }

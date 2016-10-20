@@ -1,6 +1,6 @@
 <!-- UI while in menus -->
 <div id="menu-ui-container" data-state="{{ state }}">
-    {{ #if state !== STATES.PLAYING }}
+    {{ #if state.indexOf('playing') !== 0 }}
         {{ > title }}
     {{ /if }}
     {{ #if state === STATES.MENU_GAME_SCREEN    }} {{ > menu        }} {{ /if }}
@@ -11,7 +11,6 @@
     {{ #if state === STATES.RESPAWN_SCREEN      }} {{ > death       }} {{ /if }}
     {{ #if state === STATES.KICKED_SCREEN       }} {{ > kicked      }} {{ /if }}
     {{ #if state === STATES.GAME_INIT_ERROR     }} {{ > initerror   }} {{ /if }}
-    {{ #if state === STATES.PLAYING_CONFIG      }} {{ > config-play }} {{ /if }}
 
     {{ #if state.indexOf('playing') !== 0 }}
         {{ > tabs }}
@@ -20,15 +19,24 @@
 </div>
 
 <!-- UI while playing -->
-{{ #if state === STATES.PLAYING }}
+{{ #if state.indexOf('playing') === 0 }}
 <div id="play-ui-container" data-state="{{ state }}">
-    {{ > leaderboard }}
-    {{ > playing     }}
-    {{ > player-size }}
-    {{ > targets     }}
+    {{ #if state === STATES.PLAYING }}
+        {{ > leaderboard }}
+        {{ > playing     }}
+        {{ > player-size }}
+        {{ > targets     }}
+    {{ /if }}
+    {{ #if state === STATES.PLAYING_CONFIG }}
+        {{ > config-play }}
+    {{ /if }}
 </div>
 {{ /if }}
 
 {{ #if server_message }}
 <div id="server-message"> {{ server_message }} </div>
+{{ /if }}
+
+{{ #if capture_message }}
+<div id="capture-message"> {{ capture_message }} </div>
 {{ /if }}

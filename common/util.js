@@ -1,8 +1,10 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
-if (NODEJS) var config = require('./config.js');
-if (NODEJS) var _ = require('lodash');
-if (NODEJS) var xssFilters = require('xss-filters');
+if (NODEJS) {
+    global.config = require('./config.js');
+    global._ = require('lodash');
+    global.xssFilters = require('xss-filters');
+}
 
 var UTIL = {};
 

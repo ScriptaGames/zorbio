@@ -7,8 +7,8 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 if (NODEJS) {
     global.self = {}; // threejs expects there to be a global named 'self'... for some reason..
     global.THREE = require('three');
-    var _ = require('lodash');
-    var ZOR = { Env: require('../common/environment.js') };
+    global._ = require('lodash');
+    global.ZOR = { Env: require('../common/environment.js') };
 }
 
 var config = {};
@@ -206,6 +206,7 @@ config.LAG_SCALE_ENABLE        = true;
 config.REQUIRED_WEBGL_EXTENSIONS = ['ANGLE_instanced_arrays'];
 config.TRAIL_LINE_LENGTH       = 40;
 config.TRAIL_LINE_WIDTH        = 0.3;
+config.CAPTURE_PARTICLE_ATTRACTION_SPEED = 0.994;
 
 ////////////////////////////////////////////////////////////////////////
 //                            CAMERA SETTINGS                            //

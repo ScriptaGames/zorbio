@@ -77,6 +77,42 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
                 activeMultiplier: 0.1,
             },
         },
+        capture: {
+            customScale: 1.0,
+            group: {
+                scale: Math.max(window.innerWidth, window.innerHeight),
+                maxParticleCount: 1000,
+                texture: {
+                    value: new THREE.TextureLoader().load( "textures/smokeparticle.png" ),
+                },
+                blending: THREE.AdditiveBlending,
+            },
+            emitter: {
+                type: SPE.distributions.SPHERE,
+                position: {
+                    spread: new THREE.Vector3( 5 ),
+                    radius: 10,
+                },
+                velocity: {
+                    spread: new THREE.Vector3( 100 ),
+                },
+                size: {
+                    value: [ 30, 0 ]
+                },
+                opacity: {
+                    value: [1, 0]
+                },
+                color: {
+                    value: [new THREE.Color('yellow'),new THREE.Color('red')],
+                },
+                particleCount: 100,
+                alive: false,
+                duration: 0.05,
+                maxAge: {
+                    value: 1,
+                },
+            },
+        },
     };
 };
 

@@ -1,6 +1,6 @@
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
-if (NODEJS) var schemapack = require('schemapack');
+if (NODEJS) global.schemapack = require('schemapack');
 
 var ZOR = ZOR || {};
 

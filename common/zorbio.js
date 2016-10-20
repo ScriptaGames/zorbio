@@ -2,10 +2,12 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 
 // if we're running in nodejs, import THREE.  for browser, assume it's
 // already there.
-if (NODEJS) var THREE = require('three');
-if (NODEJS) var UTIL = require('./util.js');
-if (NODEJS) var config = require('./config.js');
-if (NODEJS) var _ = require('lodash');
+if (NODEJS) {
+    global.THREE = require('three');
+    global.UTIL = require('./util.js');
+    global.config = require('./config.js');
+    global._ = require('lodash');
+}
 
 var ZOR = ZOR || {};
 
@@ -441,6 +443,7 @@ ZOR.Metric = function ZORMetric(threshold, reverse_threshold) {
     this.mean = 0;
     this.max = 0;
     this.min = 0;
+    this.last = 0;
     this.threshold_exceeded_count = 0;
 };
 
@@ -448,6 +451,8 @@ ZOR.Metric.prototype.add = function ZORMetricAdd(value) {
     value = +value; // make sure it's an int
 
     UTIL.pushShift(this.series, value, config.RECENT_CLIENT_DATA_LENGTH);
+
+    this.last = value;
 
     this.mean = +_.mean(this.series).toFixed(3);
     this.max = _.max(this.series);

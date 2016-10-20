@@ -266,54 +266,6 @@ input:focus {
         grid-row: 4;
   }
 }
-#menu-ui-container .greybox-wrapper {
-  position: absolute;
-  left: 50%;
-  -webkit-transform: translateX(-50%);
-          transform: translateX(-50%);
-  pointer-events: auto;
-  overflow: auto;
-  height: 100%;
-  max-width: 800px;
-  width: 100%;
-}
-#menu-ui-container .greybox-wrapper .greybox {
-  max-width: calc(100% - 10px);
-  pointer-events: auto;
-  overflow-y: auto;
-  border-radius: 12px;
-  color: #f7f7f7;
-  background: rgba(0, 0, 0, 0.5) none repeat scroll 0% 0%;
-  padding: 20px;
-  margin: 20px;
-}
-#menu-ui-container .greybox-wrapper .greybox > * {
-  margin-bottom: 20px;
-  border-radius: 8px;
-}
-#menu-ui-container .greybox-wrapper .greybox > *:first-child:not(input) {
-  margin-top: 0;
-  padding-top: 0;
-}
-#menu-ui-container .greybox-wrapper .greybox > *:last-child {
-  margin-bottom: 0;
-}
-#menu-ui-container .greybox-wrapper .greybox h1 {
-  text-align: center;
-  font-size: 60px;
-}
-#menu-ui-container .greybox-wrapper .greybox h1 small {
-  float: right;
-  clear: both;
-}
-#menu-ui-container .greybox-wrapper .greybox h2 {
-  text-align: center;
-  font-size: 30px;
-}
-#menu-ui-container .greybox-wrapper .greybox p {
-  text-align: center;
-  font-size: 15px;
-}
 #menu-ui-container #skin-list li {
   float: left;
   margin: 10px;
@@ -331,6 +283,54 @@ input:focus {
 }
 #menu-ui-container #skin-list li * {
   cursor: pointer;
+}
+.greybox-wrapper {
+  position: absolute;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  pointer-events: auto;
+  overflow: auto;
+  height: 100%;
+  max-width: 800px;
+  width: 100%;
+}
+.greybox-wrapper .greybox {
+  max-width: calc(100% - 10px);
+  pointer-events: auto;
+  overflow-y: auto;
+  border-radius: 12px;
+  color: #f7f7f7;
+  background: rgba(0, 0, 0, 0.5) none repeat scroll 0% 0%;
+  padding: 20px;
+  margin: 20px;
+}
+.greybox-wrapper .greybox > * {
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+.greybox-wrapper .greybox > *:first-child:not(input) {
+  margin-top: 0;
+  padding-top: 0;
+}
+.greybox-wrapper .greybox > *:last-child {
+  margin-bottom: 0;
+}
+.greybox-wrapper .greybox h1 {
+  text-align: center;
+  font-size: 60px;
+}
+.greybox-wrapper .greybox h1 small {
+  float: right;
+  clear: both;
+}
+.greybox-wrapper .greybox h2 {
+  text-align: center;
+  font-size: 30px;
+}
+.greybox-wrapper .greybox p {
+  text-align: center;
+  font-size: 15px;
 }
 button:focus {
   outline: none;
@@ -396,6 +396,15 @@ button:active {
   color: #f7f7f7;
   font-size: 18px;
 }
+#capture-message {
+  position: absolute;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  top: 20vh;
+  color: #f7f7f7;
+  font-size: 18px;
+}
 #gear-btn {
   position: absolute;
   top: 0;
@@ -455,6 +464,57 @@ button:active {
 #tabs button.active {
   opacity: 0.95;
   box-shadow: inset 0 0 0 0.8vw rgba(255, 255, 255, 0.2);
+}
+#config {
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  pointer-events: auto;
+  overflow: auto;
+  height: 100%;
+  max-width: 800px;
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+#config .greybox {
+  max-width: calc(100% - 10px);
+  pointer-events: auto;
+  overflow-y: auto;
+  border-radius: 12px;
+  color: #f7f7f7;
+  background: rgba(0, 0, 0, 0.5) none repeat scroll 0% 0%;
+  padding: 20px;
+  margin: 20px;
+}
+#config .greybox > * {
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+#config .greybox > *:first-child:not(input) {
+  margin-top: 0;
+  padding-top: 0;
+}
+#config .greybox > *:last-child {
+  margin-bottom: 0;
+}
+#config .greybox h1 {
+  text-align: center;
+  font-size: 60px;
+}
+#config .greybox h1 small {
+  float: right;
+  clear: both;
+}
+#config .greybox h2 {
+  text-align: center;
+  font-size: 30px;
+}
+#config .greybox p {
+  text-align: center;
+  font-size: 15px;
 }
 * {
   cursor: url('../images/cursor.png') -4 -4, crosshair;
