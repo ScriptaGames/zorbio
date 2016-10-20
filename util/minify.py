@@ -1,3 +1,20 @@
+#!/usr/bin/env python
+import subprocess
+from bs4 import BeautifulSoup, Comment
+
+# html = """
+# <html>
+# <body>
+# <p>p tag text</p>
+# <!--UNIQUE COMMENT-->
+# I would like to get this text
+# <!--SECOND UNIQUE COMMENT-->
+# I would also like to find this text
+# </body>
+# </html>
+# """
+
+html = """
 <!DOCTYPE html>
 <html lang="en">
 
@@ -72,8 +89,8 @@
         <script src="skins/reddit/sphere.vert" id="skin-reddit-vertex-shader"   type="x-shader/x-vertex"></script>
         <script src="skins/reddit/sphere.frag" id="skin-reddit-fragment-shader" type="x-shader/x-fragment"></script>
 
-        <!-- START_THIRD_PARTY -->
-        <div id="thrid_party">
+        <!--THIRD PARTY -->
+        <div id="third_party">
             <script src="./lib/schemapack.js"></script>
             <script src="./lib/modernizr.min.js"></script>
             <script src="./bower_components/ractive/ractive.js"></script>
@@ -93,9 +110,8 @@
             <script src="./bower_components/xss-filters/dist/xss-filters.min.js"></script>
             <script src="./bower_components/raven-js/dist/raven.js"></script>
         </div>
-        <!-- END_THIRD_PARTY -->
 
-        <!-- START_FIRST_PARTY -->
+        <!-- FIRST PARTY -->
         <div id="first_party">
             <script src="skins/default/default.js"></script>
             <script src="skins/earth/earth.js"></script>
@@ -120,6 +136,40 @@
             <script src="./js/DrainView.js"></script>
             <script src="./js/Network.js"></script>
         </div>
-        <!-- END_FIRST_PARTY -->
     </body>
 </html>
+"""
+
+soup = BeautifulSoup(html, 'html.parser')
+
+# Get the file paths of third and first party scripts to be minified
+third_party = soup.find(id='third_party')
+first_party = soup.find(id='first_party')
+third_children = third_party.findChildren()
+first_children = first_party.findChildren()
+
+third_party_scripts = ''
+first_party_scripts = ''
+
+for script_tag in third_children:
+    third_party_scripts += ' ' + script_tag['src']
+
+# print('third party scripts: ' + third_party_scripts)
+
+for script_tag in first_children:
+    first_party_scripts += ' ' + script_tag['src']
+
+# print('first party scripts: ' + first_party_scripts)
+
+# Generate the minified files and move them to the right location
+subprocess.call('uglifyjs ' + third_party_scripts + ' -o js/third.min.js', shell=True)
+subprocess.call('uglifyjs ' + first_party_scripts + ' -o js/first.min.js -e -m -c', shell=True)
+
+# Replace the script divs with a single script tag for the minified files
+new_third_tag = soup.new_tag("script", src='js/third.min.js')
+third_party.replace_with(new_third_tag)
+new_first_tag = soup.new_tag("script", src='js/first.min.js')
+first_party.replace_with(new_first_tag)
+
+# Write out the file
+print(soup.prettify())
