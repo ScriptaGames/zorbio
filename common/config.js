@@ -64,8 +64,6 @@ if (!NODEJS) {
 
         var linode_location = linodeNearLocation();
 
-        console.log("Nearest linode location: ", linode_location);
-
         //TODO: if all locations have active node balancers this switch is not nessicary
         switch (linode_location) {
             //TODO: Send to seprate balancer when they are available
