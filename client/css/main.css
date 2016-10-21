@@ -64,6 +64,10 @@ input,
 textarea,
 select,
 button {
+  -webkit-user-select: auto;
+     -moz-user-select: auto;
+      -ms-user-select: auto;
+          user-select: auto;
   font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
@@ -517,5 +521,9 @@ button:active {
   font-size: 15px;
 }
 * {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   cursor: url('../images/cursor.png') -4 -4, crosshair;
 }
