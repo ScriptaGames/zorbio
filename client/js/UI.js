@@ -379,7 +379,7 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.PAGE_RELOAD, location.reload.bind(location) );
 
         on( ACTIONS.PLAYER_RESPAWN, function ZORRespawnButtonHandler() {
-            if (window.respawnPlayer) {
+            if (respawnPlayer) {
                 // send event to google analytics
                 ga('send', {
                     hitType: 'event',
@@ -395,7 +395,7 @@ ZOR.UI = function ZORUI() {
             var KEY_ENTER = 13;
 
             if (key === KEY_ENTER) {
-                if (window.startGame) {
+                if (startGame) {
                     // send event to google analytics
                     ga('send', {
                         hitType: 'event',

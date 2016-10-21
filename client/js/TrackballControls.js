@@ -157,7 +157,6 @@ THREE.TrackballControls = function ( object, domElement ) {
             objectSidewaysDirection = new THREE.Vector3(),
             moveDirection = new THREE.Vector3(),
             spin = new THREE.Vector2(),
-            dist_from_center,
             angle = 0;
 
         return function rotateCamera() {

@@ -21,16 +21,27 @@ cd common/
 ln -f -s ./environment_prod.js ./environment.js
 cd ../
 
-echo "Inlining and minifying content"
+# Minify Javascript
+cd client/
+echo 'Minifing Javascript'
+python ../util/minify.py index.html > index_min.html
+cd ../
+
+echo "Inlining and minify html"
 mkdir -p dist > /dev/null
 cp -r client/textures dist/
 cp -r client/sfx dist/
 cp -r client/images dist/
 cp -r client/skins dist/
 cp client/favicon.ico dist/
-node node_modules/html-inline/bin/cmd.js -i client/index.html > dist/index-inlined.html
-node node_modules/html-minifier/cli.js dist/index-inlined.html --minify-js --collapse-whitespace --remove-comments  --remove-attribute-quotes --remove-script-type-attributes --remove-style-link-type-attributes > dist/index.html
+node node_modules/html-inline/bin/cmd.js -i client/index_min.html > dist/index-inlined.html
+node node_modules/html-minifier/cli.js dist/index-inlined.html --collapse-whitespace --remove-comments --remove-attribute-quotes --remove-script-type-attributes --remove-style-link-type-attributes > dist/index.html
+
+# Cleanup build temp build files
 rm dist/index-inlined.html
+rm client/index_min.html
+rm client/js/third.min.js
+rm client/js/first.min.js
 
 # Add the version and build number to index page
 sed -i "s/{{ VERSION }}/$VERSION/g" dist/index.html
@@ -38,7 +49,6 @@ sed -i "s/{{ BUILD }}/$BUILD/g" dist/index.html
 sed -i "s/{{ GIT_REF }}/$GIT_REF/g" dist/index.html
 
 echo "dist/index.html written"
-
 
 ###############################################
 # Generate the RPM spec files
