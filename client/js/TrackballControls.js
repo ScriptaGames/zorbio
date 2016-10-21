@@ -396,7 +396,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
     }
 
-    function keyup( event ) {
+    function keyup() {
 
         if ( _this.enabled === false ) return;
 
