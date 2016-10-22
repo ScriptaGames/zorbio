@@ -516,6 +516,29 @@ button:active {
   text-align: center;
   font-size: 15px;
 }
+#thanks-list {
+  zoom: 1;
+  text-align: center;
+}
+#thanks-list:before,
+#thanks-list:after {
+  content: "";
+  display: table;
+}
+#thanks-list:after {
+  clear: both;
+}
+#thanks-list li {
+  display: inline;
+}
+#thanks-list li::after {
+  content: '★';
+  margin: auto 4px auto 14px;
+  color: #787878;
+}
+#thanks-list li:last-child::after {
+  content: '';
+}
 * {
   cursor: url('../images/cursor.png') -4 -4, crosshair;
 }
