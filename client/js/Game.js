@@ -29,7 +29,7 @@ var foodController;
 var zorbioModel = new ZOR.Model();
 
 // Game websocket client
-var zorClient = new ZOR.ZORClient();
+var zorClient = new ZOR.ZORClient(zorbioModel, ZOR.MessageHandler);
 
 ZOR.Game.players = {};
 
@@ -424,7 +424,7 @@ window.addEventListener("mousedown", handleMouseDown);
 window.addEventListener("mouseup", handleMouseUp);
 
 window.onload = function homeOnload() {
-    zorClient.z_connectToServer();
+    zorClient.z_connectToServer('ws://' + config.BALANCER + ':' + config.WS_PORT);
 };
 
 var KeysDown = {};

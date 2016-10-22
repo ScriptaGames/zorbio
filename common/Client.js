@@ -3,24 +3,30 @@
  */
 var NODEJS = typeof module !== 'undefined' && module.exports;
 
+var ZOR = ZOR || {};
+
 if (NODEJS) {
     global._ = require('lodash');
     global.UTIL = require('./util.js');
     global.config = require('./config.js');
+    global.WebSocket = require('ws');
+    ZOR.Schemas = require('./schemas');
 }
-
-var ZOR = ZOR || {};
 
 /**
  * Zorbio game client can be used in a browser or headless
+ * @param model
+ * @param handler
  * @constructor
  */
-ZOR.ZORClient = function ZORclient() {
+ZOR.ZORClient = function ZORclient(model, handler) {
     this.z_ws = null;
     this.z_zorPingStart = 0;
     this.z_zorPingDuration = 0;
     this.z_actorUpdateGap = 0;
     this.z_NB_SRVID = '';
+    this.z_model = model;
+    this.z_handler = handler;
 
     // handles to setInterval methods so we can clear them later
     this.z_interval_id_heartbeat = null;
@@ -29,10 +35,10 @@ ZOR.ZORClient = function ZORclient() {
 /**
  * Connect to the game server based on config
  */
-ZOR.ZORClient.prototype.z_connectToServer = function ZORconnectToServer() {
+ZOR.ZORClient.prototype.z_connectToServer = function ZORconnectToServer(uri) {
     var self = this;
 
-    this.z_ws = new WebSocket( 'ws://' + config.BALANCER + ':' + config.WS_PORT );
+    this.z_ws = new WebSocket( uri );
     this.z_ws.binaryType = 'arraybuffer';
 
     this.z_ws.onopen = function wsOpen () {
@@ -73,9 +79,6 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
             var message = parseJson(msg.data);
 
             // switch (message.op) {
-            //     case 'welcome':
-            //         handle_msg_welcome(message);
-            //         break;
             //     case 'game_setup':
             //         handle_msg_game_setup();
             //         break;
@@ -158,18 +161,16 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
 
     function handle_msg_init_game(msg) {
         // iterate over actors and create THREE objects that don't serialize over websockets
-        // msg.model.actors.forEach(function eachActor(actor) {
-        //     UTIL.toVector3(actor, 'position');
-        //     UTIL.toVector3(actor, 'velocity');
-        // });
-        //
-        // NB_SRVID = msg.NB_SRVID;  // Linode nodebalancer node id that handled this socket connection
-        //
-        // _.assign(zorbioModel, msg.model);
-        //
-        // ZOR.UI.on('init', createScene);
+        msg.model.actors.forEach(function eachActor(actor) {
+            UTIL.toVector3(actor, 'position');
+            UTIL.toVector3(actor, 'velocity');
+        });
 
-        console.log('Game initialzed');
+        self.NB_SRVID = msg.NB_SRVID;  // Linode nodebalancer node id that handled this socket connection
+
+        _.assign(self.z_model, msg.model);
+
+        self.z_handler.z_handle_init_game();
     }
     //
     // function handle_msg_welcome(msg) {
