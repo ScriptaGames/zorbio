@@ -1,6 +1,16 @@
 /**
- * Client network related functions
+ * Zorbio Game Client
  */
+var NODEJS = typeof module !== 'undefined' && module.exports;
+
+if (NODEJS) {
+    global._ = require('lodash');
+    global.UTIL = require('./util.js');
+    global.config = require('./config.js');
+}
+
+var ZOR = ZOR || {};
+ZOR.ZORClient = {};
 
 //TODO: encapsulate this file into a class and get rid of these globals
 var ws;
