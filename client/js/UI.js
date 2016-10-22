@@ -85,6 +85,7 @@ ZOR.UI = function ZORUI() {
         is_mobile        : isMobile.any,
         screen_x         : 0,
         screen_y         : 0,
+        showAd           : showAd,
         flip_x           : JSON.parse(localStorage.flip_x || "false"),
         flip_y           : JSON.parse(localStorage.flip_y || "false"),
         hide_own_trail   : JSON.parse(localStorage.hide_own_trail || "false"),
@@ -284,6 +285,11 @@ ZOR.UI = function ZORUI() {
             console.log('changing to ' + newState);
             state(newState);
         };
+    }
+
+    function showAd() {
+        console.log("showing ad");
+        (adsbygoogle = window.adsbygoogle || []).push({});
     }
 
     /**

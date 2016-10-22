@@ -47,6 +47,8 @@ rm client/js/first.min.js
 sed -i "s/{{ VERSION }}/$VERSION/g" dist/index.html
 sed -i "s/{{ BUILD }}/$BUILD/g" dist/index.html
 sed -i "s/{{ GIT_REF }}/$GIT_REF/g" dist/index.html
+GOOGLE_AD_SCRIPT='<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>'
+sed -i "s,</head>,$GOOGLE_AD_SCRIPT</head>,g" dist/index.html
 
 echo "dist/index.html written"
 
