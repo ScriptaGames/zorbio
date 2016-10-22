@@ -15,9 +15,7 @@ if (config.FOG_ENABLED) {
     raycaster.far = config.FOG_FAR;
 }
 
-
 // Player
-var playerType;
 var player;
 
 //TODO: get rid of this globals, refactor into MVC Player and Food controllers
@@ -25,11 +23,13 @@ var playerFogCenter = new THREE.Vector3();
 
 // Game state
 var gameStart = false;
-var disconnected = false;
 var foodController;
 
 // Model that represents the game state shared with server
 var zorbioModel = new ZOR.Model();
+
+// Game websocket client
+var zorClient = new ZOR.ZORClient();
 
 ZOR.Game.players = {};
 
@@ -79,19 +79,25 @@ function startGame(type) {
         ZOR.Sounds.music.background.play();
     }
 
-
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
 
-    // Assign player meta data and save to local storage
-    playerType     = type;
-    var playerName = localStorage.player_name = UTIL.filterName(ZOR.UI.engine.get('player_name'));
-    var key        = localStorage.alpha_key   = ZOR.UI.engine.get('alpha_key');
-    var skin       = localStorage.getItem('skin') || 'default';
-    var colorCode  = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
-    var colorHex   = config.COLORS[colorCode];
 
-    document.querySelector("meta[name=theme-color]").content = colorHex;
-    console.log('Player color', colorHex);
+
+    // Assign player meta data and save to local storage
+    var colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
+    var name = localStorage.player_name = UTIL.filterName(ZOR.UI.engine.get('player_name'));
+    var key = localStorage.alpha_key = ZOR.UI.engine.get('alpha_key');
+    ZOR.Game.playerMeta = {
+        playerType: type,
+        playerName: name,
+        key: key,
+        skin: localStorage.getItem('skin') || 'default',
+        colorCode: colorCode,
+        colorHex: config.COLORS[colorCode],
+    };
+
+    document.querySelector("meta[name=theme-color]").content = ZOR.Game.playerMeta.colorHex;
+    console.log('Player color', ZOR.Game.playerMeta.colorHex);
 
     // Initialize player size ui element
     ZOR.UI.engine.set('player_color', colorCode);
@@ -100,7 +106,9 @@ function startGame(type) {
     // Schedule one time Google Analytics tracking for Ping and FPS
     setTimeout(gaPerformanceMetrics, 15000);
 
-    sendEnterGame(playerType, playerName, colorCode, skin, key);
+    console.log('Player meta: ', ZOR.Game.playerMeta);
+
+    zorClient.z_sendEnterGame(ZOR.Game.playerMeta);
 }
 
 function respawnPlayer() {
@@ -416,7 +424,7 @@ window.addEventListener("mousedown", handleMouseDown);
 window.addEventListener("mouseup", handleMouseUp);
 
 window.onload = function homeOnload() {
-    connectToServer();
+    zorClient.z_connectToServer();
 };
 
 var KeysDown = {};
