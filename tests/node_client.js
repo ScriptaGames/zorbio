@@ -1,9 +1,8 @@
 global.player = null;
-global.players = [];
 
 var ZORClient = require('../common/Client.js');
 var Zorbio    = require('../common/zorbio.js');
-var handler   = require('./HeadlessMessageHandler');
+var handler   = require('./HeadlessHandler.js');
 
 global.zorbioModel = new Zorbio.Model();
 

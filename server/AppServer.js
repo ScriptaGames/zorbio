@@ -229,11 +229,6 @@ var AppServer = function (id, app, server_label, port) {
                 currentPlayer.lastHeartbeat = Date.now();
                 currentPlayer.spawnTime = Date.now();
 
-                if (self.model.getPlayerById(currentPlayer.id)) {
-                    // if current player is already in the players remove them
-                    self.model.removePlayer(currentPlayer.id);
-                }
-
                 // Pass any data to the for final setup
                 ws.send(JSON.stringify({op: 'game_setup'}));
 
@@ -243,8 +238,7 @@ var AppServer = function (id, app, server_label, port) {
                     self.broadcast(JSON.stringify({op: 'player_join', player: currentPlayer}));
 
                     // Add the player to the model
-                    self.model.players.push(currentPlayer);
-                    self.model.addActor(currentPlayer.sphere);
+                    self.model.addPlayer(currentPlayer, true);
 
                     var playerCount = self.model.players.length;
                     self.log('Player ' + currentPlayer.id + ' joined game!');

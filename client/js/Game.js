@@ -228,9 +228,9 @@ function createScene() {
 
             player.update(scene, camera, camera_controls, ZOR.LagScale.get());
 
-            throttledSendPlayerUpdate();
+            // zorClient.z_throttledSendPlayerUpdate();
 
-            sendClientPositionRapid(player.model.sphere.id, player.view.mainSphere.position);
+            // sendClientPositionRapid(player.model.sphere.id, player.view.mainSphere.position);
 
             foodController.checkFoodCaptures(player, captureFood);
 

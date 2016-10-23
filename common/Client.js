@@ -163,15 +163,13 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
 
         self.NB_SRVID = msg.NB_SRVID;  // Linode nodebalancer node id that handled this socket connection
 
-        _.assign(self.z_model, msg.model);
-
-        self.z_handler.z_handle_init_game();
+        self.z_handler.z_handle_init_game(msg.model);
     }
 
     function handle_msg_welcome(msg) {
         console.log("Welcome: ", msg.player.name);
 
-        self.z_handler.z_handle_welcome(msg);
+        self.z_playerModel = self.z_handler.z_handle_welcome(msg);
 
         ws.send(JSON.stringify({op: 'player_ready'}));
     }

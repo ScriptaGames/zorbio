@@ -149,6 +149,28 @@ ZOR.Model.prototype.getRealPlayers = function ZORModelGetRealPlayers() {
     return real_players;
 };
 
+ZOR.Model.prototype.addPlayer = function ZORModelAddPlayer(player, replace) {
+    if (!player.id) {
+        throw 'players must have an ID';
+    }
+
+    var replacePlayer = replace || false;
+
+    // first make sure player is not already in the model
+    if (this.getPlayerById(player.id)) {
+        if (!replacePlayer) {
+            return;  // already there and don't replace
+        }
+
+        // replace what is there
+        this.removePlayer(player.id);
+    }
+
+    // Add the player and the actor to arrays
+    this.players.push(player);
+    this.addActor(player.sphere);
+};
+
 ZOR.Model.prototype.removePlayer = function ZORModelRemovePlayer(id) {
     var playerIndex = UTIL.findIndexById(this.players, id);
     var player = this.players[playerIndex];

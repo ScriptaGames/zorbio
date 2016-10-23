@@ -2,8 +2,11 @@ var ZOR = ZOR || {};
 
 ZOR.MessageHandler = {};
 
-ZOR.MessageHandler.z_handle_init_game = function handleInitGame() {
+ZOR.MessageHandler.z_handle_init_game = function handleInitGame(model) {
+    _.assign(zorbioModel, model);
+
     ZOR.UI.on('init', createScene);
+
     console.log('Game initialzed');
 };
 
@@ -12,13 +15,14 @@ ZOR.MessageHandler.z_handle_welcome = function handleWelcome(msg) {
     player = new ZOR.PlayerController(msg.player, null, true);
 
     console.log('handle welcome');
+
+    return player.model;
 };
 
 ZOR.MessageHandler.z_handle_game_setup = function handleGameSetup() {
-    // add player to players and actors
-    zorbioModel.addActor(player.model.sphere);
-
-    ZOR.Game.players[player.getPlayerId()] = player;
+    // add player to players
+    ZOR.Game.players[player.getPlayerId()] = player;  // Player controller reference
+    zorbioModel.addPlayer(player.model, true);        // Player model
 
     // add player to scene and reset camera
     initCameraAndPlayer();
