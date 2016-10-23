@@ -34,6 +34,7 @@
     "xss-filters": "^1.2.6",
     "three.js": "three#*",
     "howler.js": "^2.0.0",
-    "ractive": "~0.7.3"
-  }
+    "ractive": "^0.8.0"
+  },
+  "devDependencies": {}
 }

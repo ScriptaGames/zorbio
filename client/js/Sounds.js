@@ -12,7 +12,7 @@ ZOR.Sounds = (function ZORSounds() {
             volume: config.VOLUME_SFX_INITIAL,
             buffer: false,
             preload: true,
-            volume: volume || 0.1,
+            volume: volume || 0.3,
         })
     }
 
@@ -76,6 +76,22 @@ ZOR.Sounds = (function ZORSounds() {
     if (!config.MUSIC_ENABLED) {
         sounds.music = {};
     }
+
+    function initSfxHacks() {
+        // The Howler sfx seem to be delayed and sound glitchy the first time
+        // they're played.  This function attempts to fix that by playing them
+        // once, at zero volume.
+        var sound = sounds.sfx.food_capture.A3;
+        var id = sound.play();
+        sound.mute(true, id);
+        sound.volume(0, id);
+        sound.pos(1,1,1,id);
+
+        // woosh sound from wad needs to be started and stopped
+        sounds.sfx.woosh.play();
+        sounds.sfx.woosh.stop();
+    }
+    initSfxHacks();
 
     return sounds;
 

@@ -625,6 +625,9 @@ function handleDeath(msg) {
         score: msg.score,
     };
 
+    // stop woosh in case player was speed boosting
+    ZOR.Sounds.sfx.woosh.stop();
+
     ZOR.UI.engine.set('attacker', attackingPlayer);
     ZOR.UI.engine.set('player', playerStats);
     ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );

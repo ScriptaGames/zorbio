@@ -29,6 +29,12 @@ html, body {
     background-color : @secondary-color;
 }
 
+.clearfix() {
+  zoom:1;
+  &:before, &:after{ content:""; display:table; }
+  &:after{ clear: both; }
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -447,8 +453,8 @@ button {
         top: 15px;
         margin: 6px;
         transition:
-            opacity ease-out 0.2s,
-            transform ease-out 0.2s;
+        opacity ease-out 0.2s,
+        transform ease-out 0.2s;
         opacity: 0.8;
         &.active {
             opacity: 0.95;
@@ -460,6 +466,23 @@ button {
 #config {
     .greybox-wrapper();
     .center-abs();
+}
+
+#thanks-list {
+    .clearfix();
+    text-align: center;
+
+    li {
+        display: inline;
+    }
+    li::after {
+        content: '★';
+        margin: auto 4px auto 14px;
+        color: darken(@primary-color, 50%);
+    }
+    li:last-child::after {
+        content: '';
+    }
 }
 
 * {

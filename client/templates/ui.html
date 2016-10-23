@@ -12,7 +12,9 @@
     {{ #if state === STATES.KICKED_SCREEN       }} {{ > kicked      }} {{ /if }}
     {{ #if state === STATES.GAME_INIT_ERROR     }} {{ > initerror   }} {{ /if }}
 
-    {{ #if state.indexOf('playing') !== 0 }}
+    {{ #if state.indexOf('playing') !== 0
+    && state !== STATES.KICKED_SCREEN
+    && state !== STATES.GAME_INIT_ERROR }}
         {{ > tabs }}
         {{ > copyright }}
     {{ /if }}
