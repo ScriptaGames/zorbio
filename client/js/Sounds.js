@@ -82,15 +82,19 @@ ZOR.Sounds = (function ZORSounds() {
      * they're played.  This function attempts to fix that by playing them
      * once, at zero volume.
      */
-    function playSilent() {
+    function initSfxHacks() {
         // sounds.playFromPos(sounds.sfx.food_capture.A3, new THREE.Object3D(0), new THREE.Vector3(10000));
         var sound = sounds.sfx.food_capture.A3;
         var id = sound.play();
         sound.mute(true, id);
         sound.volume(0, id);
         sound.pos(1,1,1,id);
+
+        // woosh sound from wad needs to be started and stopped
+        sounds.sfx.woosh.play();
+        sounds.sfx.woosh.stop();
     }
-    playSilent();
+    initSfxHacks();
 
     return sounds;
 
