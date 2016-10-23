@@ -1,8 +1,8 @@
 var ZOR = ZOR || {};
 
-ZOR.MessageHandler = {};
+ZOR.ZORMessageHandler = {};
 
-ZOR.MessageHandler.z_handle_init_game = function ZORhandleInitGame(model) {
+ZOR.ZORMessageHandler.z_handle_init_game = function ZORhandleInitGame(model) {
     _.assign(zorbioModel, model);
 
     ZOR.UI.on('init', createScene);
@@ -10,7 +10,7 @@ ZOR.MessageHandler.z_handle_init_game = function ZORhandleInitGame(model) {
     console.log('Game initialzed');
 };
 
-ZOR.MessageHandler.z_handle_welcome = function ZORhandleWelcome(msg) {
+ZOR.ZORMessageHandler.z_handle_welcome = function ZORhandleWelcome(msg) {
     // Create the first person player
     player = new ZOR.PlayerController(msg.player, null, true);
 
@@ -19,7 +19,7 @@ ZOR.MessageHandler.z_handle_welcome = function ZORhandleWelcome(msg) {
     return player.model;
 };
 
-ZOR.MessageHandler.z_handle_game_setup = function ZORhandleGameSetup() {
+ZOR.ZORMessageHandler.z_handle_game_setup = function ZORhandleGameSetup() {
     // add player to players
     ZOR.Game.players[player.getPlayerId()] = player;  // Player controller reference
     zorbioModel.addPlayer(player.model, true);        // Player model
@@ -36,7 +36,7 @@ ZOR.MessageHandler.z_handle_game_setup = function ZORhandleGameSetup() {
  * Returns the players current fps for sending to server
  * @returns {number}
  */
-ZOR.MessageHandler.z_handle_send_ping = function ZORhandleSendPing() {
+ZOR.ZORMessageHandler.z_handle_send_ping = function ZORhandleSendPing() {
     // Send ping to track latency, client heartbeat, and fps
     var fps = Math.round(ZOR.LagScale.get_fps());
 
@@ -45,18 +45,18 @@ ZOR.MessageHandler.z_handle_send_ping = function ZORhandleSendPing() {
     return fps;
 };
 
-ZOR.MessageHandler.z_handle_pong = function ZORhandlePong(duration) {
+ZOR.ZORMessageHandler.z_handle_pong = function ZORhandlePong(duration) {
     player.model.ping_metric.add(duration);
 
     console.log('Ping: ' + duration + 'ms, FPS: ' + Math.floor(ZOR.LagScale.get_fps()));
 };
 
-ZOR.MessageHandler.z_handleNetworkTermination = function ZORhandleNetworkTermination() {
+ZOR.ZORMessageHandler.z_handleNetworkTermination = function ZORhandleNetworkTermination() {
     console.log('Connection terminated');
     setTimeout(location.reload.bind(location), 500);
 };
 
-ZOR.MessageHandler.z_handle_actor_updates = function ZORhandleActorUpdates(actors) {
+ZOR.ZORMessageHandler.z_handle_actor_updates = function ZORhandleActorUpdates(actors) {
     actors.forEach(function updateEachActor(serverActor) {
         var clientActor = zorbioModel.getActorById(serverActor.id);
 
@@ -73,6 +73,20 @@ ZOR.MessageHandler.z_handle_actor_updates = function ZORhandleActorUpdates(actor
             }
         }
     });
+};
+
+ZOR.ZORMessageHandler.z_handle_player_join = function ZORhandlePlayerJoin(newPlayer) {
+    //Add new player if it's already added
+    if (!ZOR.Game.players[newPlayer.id]) {
+        // Create new player controller and add to player controllers array
+        ZOR.Game.players[newPlayer.id] = new ZOR.PlayerController(newPlayer, scene);
+        ZOR.Game.players[newPlayer.id].setAlpha(1);
+    }
+
+    //Keep model in sync with the server
+    zorbioModel.addPlayer(newPlayer);
+
+    console.log('Player joined: ', newPlayer.id, newPlayer.name);
 };
 
 

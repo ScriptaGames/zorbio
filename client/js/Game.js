@@ -29,7 +29,7 @@ var foodController;
 var zorbioModel = new ZOR.Model();
 
 // Game websocket client
-var zorClient = new ZOR.ZORClient(zorbioModel, ZOR.MessageHandler);
+var zorClient = new ZOR.ZORClient(zorbioModel, ZOR.ZORMessageHandler);
 
 ZOR.Game.players = {};
 

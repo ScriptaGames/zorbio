@@ -80,9 +80,9 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
                 case 'zor_pong':
                     handle_msg_zor_pong();
                     break;
-            //     case 'player_join':
-            //         handle_msg_player_join(message);
-            //         break;
+                case 'player_join':
+                    handle_msg_player_join(message);
+                    break;
             //     case 'captured_player':
             //         handle_msg_captured_player(message);
             //         break;
@@ -180,30 +180,20 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
         self.z_setIntervalMethods();
     }
 
-    // function handle_msg_player_join(message) {
-    //     var newPlayer = message.player;
-    //
-    //     if (player && (newPlayer.id === player.getPlayerId())) {
-    //         return; // ignore own join message
-    //     }
-    //
-    //     //Add new player if it's already added
-    //     if (!ZOR.Game.players[newPlayer.id]) {
-    //         ZOR.Game.players[newPlayer.id] = new ZOR.PlayerController(newPlayer, scene);
-    //         ZOR.Game.players[newPlayer.id].setAlpha(1);
-    //
-    //         //Initialize THREE objects
-    //         UTIL.toVector3(newPlayer.sphere, 'position');
-    //         UTIL.toVector3(newPlayer.sphere, 'velocity');
-    //
-    //         //Keep model in sync with the server
-    //         zorbioModel.players.push(newPlayer);
-    //         zorbioModel.addActor(newPlayer.sphere);
-    //     }
-    //
-    //     console.log('Player joined: ', newPlayer.id, newPlayer.name);
-    // }
-    //
+    function handle_msg_player_join(message) {
+        var newPlayer = message.player;
+
+        if (self.z_playerModel && (newPlayer.id === self.z_playerModel.id)) {
+            return; // ignore own join message
+        }
+
+        //Initialize THREE objects
+        UTIL.toVector3(newPlayer.sphere, 'position');
+        UTIL.toVector3(newPlayer.sphere, 'velocity');
+
+        self.z_handler.z_handle_player_join(newPlayer);
+    }
+
     function handle_msg_zor_pong() {
         self.z_zorPingDuration = Date.now() - self.z_zorPingStart;
 

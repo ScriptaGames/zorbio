@@ -2,15 +2,15 @@ var ZOR = {};
 
 var Zorbio = require('../common/zorbio.js');
 
-ZOR.MessageHandler = {};
+ZOR.ZORMessageHandler = {};
 
-ZOR.MessageHandler.z_handle_init_game = function ZORhandleInitGame(model) {
+ZOR.ZORMessageHandler.z_handle_init_game = function ZORhandleInitGame(model) {
     _.assign(global.zorbioModel, model);
 
     console.log('Game initialzed');
 };
 
-ZOR.MessageHandler.z_handle_welcome = function ZORhandleWelcome(msg) {
+ZOR.ZORMessageHandler.z_handle_welcome = function ZORhandleWelcome(msg) {
     var model = msg.player;
 
     global.player = new Zorbio.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
@@ -21,26 +21,35 @@ ZOR.MessageHandler.z_handle_welcome = function ZORhandleWelcome(msg) {
     return global.player;
 };
 
-ZOR.MessageHandler.z_handle_game_setup = function ZORhandleGameSetup() {
+ZOR.ZORMessageHandler.z_handle_game_setup = function ZORhandleGameSetup() {
     global.zorbioModel.addPlayer(global.player);
     console.log('Game Started!');
 };
 
-ZOR.MessageHandler.z_handle_send_ping = function ZORhandleSendPing() {
+/**
+ * @returns {number}
+ */
+ZOR.ZORMessageHandler.z_handle_send_ping = function ZORhandleSendPing() {
     return 60;  // FPS
 };
 
-ZOR.MessageHandler.z_handle_pong = function ZORhandlePong(duration) {
+ZOR.ZORMessageHandler.z_handle_pong = function ZORhandlePong(duration) {
     global.player.ping_metric.add(duration);
     console.log("Ping: ", duration);
 };
 
-ZOR.MessageHandler.z_handleNetworkTermination = function ZORhandleNetworkTermination() {
+ZOR.ZORMessageHandler.z_handleNetworkTermination = function ZORhandleNetworkTermination() {
     console.log('Connection terminated');
 };
 
-ZOR.MessageHandler.z_handle_actor_updates = function ZORhandleActorUpdates(actors) {
+ZOR.ZORMessageHandler.z_handle_actor_updates = function ZORhandleActorUpdates(actors) {
     // Headless don't really care about updating other players positions or size
 };
 
-module.exports = ZOR.MessageHandler;
+ZOR.ZORMessageHandler.z_handle_player_join = function ZORhandlePlayerJoin(newPlayer) {
+    global.zorbioModel.addPlayer(newPlayer);
+
+    console.log('Player joined: ', newPlayer.id, newPlayer.name);
+};
+
+module.exports = ZOR.ZORMessageHandler;
