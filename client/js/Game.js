@@ -85,6 +85,7 @@ function startGame(type) {
 
     // Assign player meta data and save to local storage
     var colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
+    var colorHex = config.COLORS[colorCode];
     var name = localStorage.player_name = UTIL.filterName(ZOR.UI.engine.get('player_name'));
     var key = localStorage.alpha_key = ZOR.UI.engine.get('alpha_key');
     ZOR.Game.playerMeta = {
@@ -92,12 +93,10 @@ function startGame(type) {
         playerName: name,
         key: key,
         skin: localStorage.getItem('skin') || 'default',
-        colorCode: colorCode,
-        colorHex: config.COLORS[colorCode],
+        color: colorCode,
     };
 
-    document.querySelector("meta[name=theme-color]").content = ZOR.Game.playerMeta.colorHex;
-    console.log('Player color', ZOR.Game.playerMeta.colorHex);
+    document.querySelector("meta[name=theme-color]").content = colorHex;
 
     // Initialize player size ui element
     ZOR.UI.engine.set('player_color', colorCode);

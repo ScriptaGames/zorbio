@@ -58,8 +58,8 @@ ZOR.ZORClient.prototype.z_sendEnterGame = function ZORsendEnterGame(meta) {
             op: 'enter_game',
             type: meta.playerType,
             name: meta.playerName,
-            color: meta.color, skin:
-            meta.skinName,
+            color: meta.color,
+            skin: meta.skinName,
             key: meta.key
         }));
 
@@ -118,6 +118,9 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
                 case ZOR.Schemas.ops.INIT_GAME:
                     handle_msg_init_game( ZOR.Schemas.initGameSchema.decode(msg.data) );
                     break;
+                case ZOR.Schemas.ops.WELCOME:
+                    handle_msg_welcome( ZOR.Schemas.welcomeSchema.decode(msg.data) );
+                    break;
                 // case ZOR.Schemas.ops.ACTOR_UPDATES:
                 //     handle_msg_actor_updates( ZOR.Schemas.actorUpdatesSchema.decode(msg.data) );
                 //     break;
@@ -126,9 +129,6 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
                 //     break;
                 // case ZOR.Schemas.ops.YOU_DIED:
                 //     handle_msg_you_died( ZOR.Schemas.youDied.decode(msg.data) );
-                //     break;
-                // case ZOR.Schemas.ops.WELCOME:
-                //     handle_msg_welcome( ZOR.Schemas.welcomeSchema.decode(msg.data) );
                 //     break;
                 // default:
                 //     // // see if this is a player fast update
@@ -172,13 +172,15 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
 
         self.z_handler.z_handle_init_game();
     }
-    //
-    // function handle_msg_welcome(msg) {
-    //     console.log("Welcome: ", msg.player.name);
-    //     player = new ZOR.PlayerController(msg.player, null, true);
-    //     ws.send(JSON.stringify({op: 'player_ready'}));
-    // }
-    //
+
+    function handle_msg_welcome(msg) {
+        console.log("Welcome: ", msg.player.name);
+
+        self.z_handler.z_handle_welcome(msg);
+
+        ws.send(JSON.stringify({op: 'player_ready'}));
+    }
+
     // function handle_msg_game_setup() {
     //     // add player to players and actors
     //     ZOR.Game.players[player.getPlayerId()] = player;
