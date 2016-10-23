@@ -30,4 +30,8 @@ ZOR.MessageHandler.z_handle_pong = function handlePong(duration) {
     console.log("Ping: ", duration);
 };
 
+ZOR.MessageHandler.z_handleNetworkTermination = function handleNetworkTermination() {
+    console.log('Connection terminated');
+};
+
 module.exports = ZOR.MessageHandler;

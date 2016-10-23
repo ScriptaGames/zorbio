@@ -42,3 +42,10 @@ ZOR.MessageHandler.z_handle_pong = function handlePong(duration) {
 
     console.log('Ping: ' + duration + 'ms, FPS: ' + ZOR.LagScale.get_fps());
 };
+
+ZOR.MessageHandler.z_handleNetworkTermination = function handleNetworkTermination() {
+    console.log('Connection terminated');
+    setTimeout(location.reload.bind(location), 500);
+};
+
+

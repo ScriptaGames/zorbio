@@ -140,7 +140,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
 
     ws.onclose = function wsClose(e) {
         if (e.code != config.CLOSE_NO_RESTART) {
-            handleNetworkTermination();
+            self.z_handleNetworkTermination();
         }
         console.log('Connection closed:', e.code, e.reason);
     };
@@ -307,10 +307,11 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     // }
 };
 
-// function handleNetworkTermination() {
-//     setTimeout(location.reload.bind(location), 500);
-// }
-//
+ZOR.ZORClient.prototype.z_handleNetworkTermination = function ZORhandleNetworkTermination() {
+    this.z_clearIntervalMethods();
+    this.z_handler.z_handleNetworkTermination();
+};
+
 // function sendRespawn() {
 //     gameStart = false;
 //     ws.send(JSON.stringify({op: 'respawn'}));
