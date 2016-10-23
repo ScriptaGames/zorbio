@@ -77,13 +77,10 @@ ZOR.Sounds = (function ZORSounds() {
         sounds.music = {};
     }
 
-    /**
-     * The Howler sfx seem to be delayed and sound glitchy the first time
-     * they're played.  This function attempts to fix that by playing them
-     * once, at zero volume.
-     */
     function initSfxHacks() {
-        // sounds.playFromPos(sounds.sfx.food_capture.A3, new THREE.Object3D(0), new THREE.Vector3(10000));
+        // The Howler sfx seem to be delayed and sound glitchy the first time
+        // they're played.  This function attempts to fix that by playing them
+        // once, at zero volume.
         var sound = sounds.sfx.food_capture.A3;
         var id = sound.play();
         sound.mute(true, id);
