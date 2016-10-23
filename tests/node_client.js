@@ -1,12 +1,15 @@
+global.player = null;
+global.players = [];
+
 var ZORClient = require('../common/Client.js');
 var Zorbio    = require('../common/zorbio.js');
-var handler   = require('./MockMessageHandler');
+var handler   = require('./HeadlessMessageHandler');
 
-var model = new Zorbio.Model();
+global.zorbioModel = new Zorbio.Model();
 
 console.log("Starting headless zorbio node client...");
 
-var zorClient = new ZORClient(model, handler);
+var zorClient = new ZORClient(global.zorbioModel, handler);
 
 var playerMeta = {
     color: 3,

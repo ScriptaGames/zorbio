@@ -20,16 +20,11 @@ if (NODEJS) {
  * @constructor
  */
 ZOR.ZORClient = function ZORclient(model, handler) {
-    this.z_ws = null;
-    this.z_zorPingStart = 0;
-    this.z_zorPingDuration = 0;
+    this.z_zorPingDuration = -1;
     this.z_actorUpdateGap = 0;
     this.z_NB_SRVID = '';
     this.z_model = model;
     this.z_handler = handler;
-
-    // handles to setInterval methods so we can clear them later
-    this.z_interval_id_heartbeat = null;
 };
 
 /**
@@ -78,15 +73,15 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
         if (typeof msg.data === "string") {
             var message = parseJson(msg.data);
 
-            // switch (message.op) {
-            //     case 'game_setup':
-            //         handle_msg_game_setup();
-            //         break;
+            switch (message.op) {
+                case 'game_setup':
+                    handle_msg_game_setup();
+                    break;
+                case 'zor_pong':
+                    handle_msg_zor_pong();
+                    break;
             //     case 'player_join':
             //         handle_msg_player_join(message);
-            //         break;
-            //     case 'zor_pong':
-            //         handle_msg_zor_pong();
             //         break;
             //     case 'captured_player':
             //         handle_msg_captured_player(message);
@@ -109,7 +104,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
             //     case 'speed_boost_stop':
             //         handle_msg_speed_boost_stop();
             //         break;
-            // }
+            }
         }
         else {
             var op = UTIL.readFirstByte(msg.data);
@@ -181,21 +176,12 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
         ws.send(JSON.stringify({op: 'player_ready'}));
     }
 
-    // function handle_msg_game_setup() {
-    //     // add player to players and actors
-    //     ZOR.Game.players[player.getPlayerId()] = player;
-    //     zorbioModel.addActor(player.model.sphere);
-    //
-    //     // add player to scene and reset camera
-    //     initCameraAndPlayer();
-    //
-    //     gameStart = true;
-    //
-    //     setIntervalMethods();
-    //
-    //     console.log('Game started!');
-    // }
-    //
+    function handle_msg_game_setup() {
+        console.log('Game setup');
+        self.z_handler.z_handle_game_setup();
+        self.z_setIntervalMethods();
+    }
+
     // function handle_msg_player_join(message) {
     //     var newPlayer = message.player;
     //
@@ -220,11 +206,11 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     //     console.log('Player joined: ', newPlayer.id, newPlayer.name);
     // }
     //
-    // function handle_msg_zor_pong() {
-    //     zorPingDuration = Date.now() - zorPingStart;
-    //     player.model.ping_metric.add(zorPingDuration);
-    //     console.log('Ping: ' + zorPingDuration + 'ms, FPS: ' + ZOR.LagScale.get_fps());
-    // }
+    function handle_msg_zor_pong() {
+        self.z_zorPingDuration = Date.now() - self.z_zorPingStart;
+
+        self.z_handler.z_handle_pong(self.z_zorPingDuration);
+    }
     //
     // function handle_msg_client_position_rapid(messageView) {
     //     //TODO: cache getActorById() for speed so we don't have to search each time
@@ -330,19 +316,25 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
 //     ws.send(JSON.stringify({op: 'respawn'}));
 // }
 //
-// function sendPing() {
-//     zorPingStart = Date.now();
-//
-//     // Send ping to track latency, client heartbeat, and fps
-//     var fps = Math.round(ZOR.LagScale.get_fps());
-//     player.model.fps_metric.add(fps);
-//     ws.send(JSON.stringify({op: 'zor_ping', lastPing: zorPingDuration, fps: fps}));
-// }
-//
-// function setIntervalMethods() {
-//     // start sending heartbeat
-//     interval_id_heartbeat = window.setInterval(sendPing, config.HEARTBEAT_PULSE_INTERVAL);
-// }
+ZOR.ZORClient.prototype.z_sendPing = function sendPing() {
+    this.z_zorPingStart = Date.now();
+
+    var fps = this.z_handler.z_handle_send_ping();
+
+    this.z_ws.send(JSON.stringify({op: 'zor_ping', lastPing: this.z_zorPingDuration, fps: fps}));
+};
+
+
+ZOR.ZORClient.prototype.z_setIntervalMethods = function ZORsetIntervalMethods() {
+    var self = this;
+
+    // start sending heartbeat
+    self.z_interval_id_heartbeat = setInterval(function sendPing() {
+        self.z_sendPing();
+    }, config.HEARTBEAT_PULSE_INTERVAL);
+};
+
+
 //
 // function sendPlayerUpdate() {
 //     // save metrics
@@ -415,9 +407,10 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
 // var throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
 //
 //
-// function clearIntervalMethods() {
-//     window.clearInterval(interval_id_heartbeat);
-// }
+
+ZOR.ZORClient.prototype.z_clearIntervalMethods = function ZORclearIntervalMethods() {
+    clearInterval(this.z_interval_id_heartbeat);
+};
 
 
 if (NODEJS) module.exports = ZOR.ZORClient;

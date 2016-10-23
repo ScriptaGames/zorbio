@@ -265,7 +265,10 @@ var AppServer = function (id, app, server_label, port) {
             currentPlayer.lastHeartbeat = Date.now();
 
             // save recent pings and fps
-            currentPlayer.ping_metric.add(msg.lastPing);
+            if (msg.lastPing >= 0) {
+                currentPlayer.ping_metric.add(msg.lastPing);
+            }
+
             currentPlayer.fps_metric.add(msg.fps);
 
             ws.send(JSON.stringify({op: "zor_pong"}));
