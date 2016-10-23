@@ -116,9 +116,9 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
                 case ZOR.Schemas.ops.WELCOME:
                     handle_msg_welcome( ZOR.Schemas.welcomeSchema.decode(msg.data) );
                     break;
-                // case ZOR.Schemas.ops.ACTOR_UPDATES:
-                //     handle_msg_actor_updates( ZOR.Schemas.actorUpdatesSchema.decode(msg.data) );
-                //     break;
+                case ZOR.Schemas.ops.ACTOR_UPDATES:
+                    handle_msg_actor_updates( ZOR.Schemas.actorUpdatesSchema.decode(msg.data) );
+                    break;
                 // case ZOR.Schemas.ops.TICK_SLOW:
                 //     handle_msg_server_tick_slow( ZOR.Schemas.tickSlowSchema.decode(msg.data) );
                 //     break;
@@ -219,31 +219,16 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     //     }
     // }
     //
-    // function handle_msg_actor_updates(msg) {
-    //     if (player) {
-    //         // Record gap since last actor update was received
-    //         var nowTime = Date.now();
-    //         actorUpdateGap = nowTime - player.model.au_receive_metric.last_time;
-    //         player.model.au_receive_metric.last_time = nowTime;
-    //     }
-    //
-    //     msg.actors.forEach(function updateEachActor(serverActor) {
-    //         var clientActor = zorbioModel.getActorById(serverActor.id);
-    //
-    //         if (clientActor) {
-    //             clientActor.position.copy(serverActor.position);
-    //             clientActor.scale = serverActor.scale;
-    //
-    //             if (clientActor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
-    //                 clientActor.drain_target_id = serverActor.drain_target_id;
-    //                 var playerController = ZOR.Game.players[clientActor.playerId];
-    //                 if (playerController) {
-    //                     playerController.setSpeedBoostActive(serverActor.speed_boosting);
-    //                 }
-    //             }
-    //         }
-    //     });
-    // }
+    function handle_msg_actor_updates(msg) {
+        if (self.z_playerModel) {
+            // Record gap since last actor update was received
+            var nowTime = Date.now();
+            self.z_actorUpdateGap = nowTime - self.z_playerModel.au_receive_metric.last_time;
+            self.z_playerModel.au_receive_metric.last_time = nowTime;
+        }
+
+        self.z_handler.z_handle_actor_updates(msg.actors);
+    }
     //
     // function handle_msg_captured_player(msg) {
     //     if (!gameStart) return;
