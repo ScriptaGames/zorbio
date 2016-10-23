@@ -25,9 +25,10 @@
 <div id="play-ui-container" data-state="{{ state }}">
     {{ #if state === STATES.PLAYING }}
         {{ > leaderboard }}
-        {{ > playing     }}
+        {{ > gear-btn    }}
         {{ > player-size }}
         {{ > targets     }}
+        {{ > size-meter  }}
     {{ /if }}
     {{ #if state === STATES.PLAYING_CONFIG }}
         {{ > config-play }}

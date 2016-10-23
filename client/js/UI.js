@@ -78,6 +78,8 @@ ZOR.UI = function ZORUI() {
         REQUIRE_ALPHA_KEY: config.REQUIRE_ALPHA_KEY,
         DEBUG            : config.DEBUG,
         MISSING_FEATURES : [],
+        MAX_PLAYER_RADIUS: config.MAX_PLAYER_RADIUS,
+        CAMERA_ZOOM_STEPS: _(config.CAMERA_ZOOM_STEPS).map('min').tail().value(),
         AUTHORS          : ['Michael Clayton', 'Jared Sprague'],
         skins            : _(ZOR.PlayerSkins).map(_.partial(_.pick, _, 'meta')).sortBy('meta.sort').value(), // get the meta for every skin and sort them
         selected_skin    : localStorage.skin || 'default',

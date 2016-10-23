@@ -1,0 +1,7 @@
+<div id="size-meter-wrapper">
+    <div id="size-meter" style="clip: rect(0, {{100 * (player_size/10) / MAX_PLAYER_RADIUS}}vw, 1.5vh, 0);">
+    </div>
+    {{ #each CAMERA_ZOOM_STEPS:i }}
+    <div class="milestone" style="left: {{ 100 * CAMERA_ZOOM_STEPS[i] / MAX_PLAYER_RADIUS }}vw"></div>
+    {{ /each }}
+</div>
