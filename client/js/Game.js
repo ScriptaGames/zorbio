@@ -645,7 +645,8 @@ function handleDeath(msg) {
     setDeadState();
 
     var attackingPlayer = zorbioModel.getPlayerById(attackingPlayerId);
-    attackingPlayer.score = config.PLAYER_GET_SCORE(attackingPlayer.sphere.scale);
+    var attackingActor = zorbioModel.getActorById(attackingPlayer.sphere.id);
+    attackingPlayer.score = config.PLAYER_GET_SCORE(attackingActor.scale);
 
     // Set finaly data about the player from the server
     var playerStats = {
@@ -656,8 +657,7 @@ function handleDeath(msg) {
     };
 
     // stop woosh in case player was speed boosting
-    //TODO: fix this
-    // ZOR.Sounds.sfx.woosh.stop();
+    ZOR.Sounds.sfx.woosh.stop();
 
     ZOR.UI.engine.set('attacker', attackingPlayer);
     ZOR.UI.engine.set('player', playerStats);
