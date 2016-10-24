@@ -87,6 +87,7 @@ ZOR.UI = function ZORUI() {
         is_mobile        : isMobile.any,
         screen_x         : 0,
         screen_y         : 0,
+        player_size      : 0,
         showAd           : showAd,
         flip_x           : JSON.parse(localStorage.flip_x || "false"),
         flip_y           : JSON.parse(localStorage.flip_y || "false"),
@@ -387,6 +388,7 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.PAGE_RELOAD, location.reload.bind(location) );
 
         on( ACTIONS.PLAYER_RESPAWN, function ZORRespawnButtonHandler() {
+            engine.set('player_size', 0);
             if (respawnPlayer) {
                 // send event to google analytics
                 ga('send', {
