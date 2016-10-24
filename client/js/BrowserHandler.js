@@ -113,3 +113,7 @@ ZOR.ZORMessageHandler.z_handle_player_died = function ZORHandlePlayerDied(captur
 ZOR.ZORMessageHandler.z_handle_remove_player = function ZORHandleRemovePlayer(playerId) {
     removePlayerFromGame(playerId, 0);
 };
+
+ZOR.ZORMessageHandler.z_handle_kick = function ZORhandleKick(reason) {
+    handlePlayerKick(reason);
+};

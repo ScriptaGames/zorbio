@@ -657,11 +657,15 @@ function handleDeath(msg) {
     ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
 }
 
-function handlePlayerKick(msg) {
+function handlePlayerKick(reason) {
+    setDeadState();
+
     ZOR.UI.state( ZOR.UI.STATES.KICKED_SCREEN );
 
     // Send server message to the UI (either real message, or undefined)
-    ZOR.UI.engine.set('kicked_message', msg);
+    ZOR.UI.engine.set('kicked_message', reason);
+
+    console.log("you were kicked: ", reason);
 }
 
 function setDeadState() {

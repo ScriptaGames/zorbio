@@ -79,4 +79,10 @@ ZOR.ZORMessageHandler.z_handle_remove_player = function ZORHandleRemovePlayer(pl
     console.log('Removed Player: ', playerId);
 };
 
+ZOR.ZORMessageHandler.z_handle_kick = function ZORhandleKick(reason) {
+    console.log("you were kicked: ", reason);
+    global.gameStart = false;
+    global.playerDead = true;
+};
+
 module.exports = ZOR.ZORMessageHandler;

@@ -89,9 +89,9 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
                 case 'player_died':
                     handle_msg_player_died(message);
                     break;
-            //     case 'kick':
-            //         handle_msg_kick(message);
-            //         break;
+                case 'kick':
+                    handle_msg_kick(message);
+                    break;
                 case 'remove_player':
                     handle_msg_remove_player(message);
                     break;
@@ -161,7 +161,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
             UTIL.toVector3(actor, 'velocity');
         });
 
-        self.NB_SRVID = msg.NB_SRVID;  // Linode nodebalancer node id that handled this socket connection
+        self.z_NB_SRVID = msg.NB_SRVID;  // Linode nodebalancer node id that handled this socket connection
 
         self.z_handler.z_handle_init_game(msg.model);
     }
@@ -177,7 +177,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     function handle_msg_game_setup() {
         console.log('Game setup');
         self.z_handler.z_handle_game_setup();
-        self.z_setIntervalMethods();
+        // self.z_setIntervalMethods();
     }
 
     function handle_msg_player_join(message) {
@@ -244,12 +244,10 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
 
         self.z_handler.z_handle_server_tick(msg.tick_data);
     }
-    //
-    // function handle_msg_kick(msg) {
-    //     console.log('Server said: ', msg.reason);
-    //     setDeadState();
-    //     handlePlayerKick(msg.reason);
-    // }
+
+    function handle_msg_kick(msg) {
+        self.z_handler.z_handle_kick(msg.reason);
+    }
 
     function handle_msg_remove_player(msg) {
         self.z_handler.z_handle_remove_player(msg.playerId);
