@@ -277,11 +277,11 @@ var AppServer = function (id, app, server_label, port) {
                 viewIndex++;
             }
 
-            //TODO: implement caching for getActorById()
             var actor = self.model.getActorById(rapidView[1]);
             if (actor) {
                 actor.position.set(rapidView[2], rapidView[3], rapidView[4]);
-                self.broadcast(rapidBuffer);
+                // TODO: figure out something better that's scalable
+                // self.broadcast(rapidBuffer);
             }
         }
 

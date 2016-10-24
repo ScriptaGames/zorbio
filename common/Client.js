@@ -22,9 +22,10 @@ if (NODEJS) {
 ZOR.ZORClient = function ZORclient(model, handler) {
     this.z_zorPingDuration = -1;
     this.z_actorUpdateGap = 0;
-    this.z_NB_SRVID = '';
     this.z_model = model;
     this.z_handler = handler;
+    this.z_rapidSendBuffer = new ArrayBuffer(20);
+    this.z_rapidSendView = new Float32Array(this.z_rapidSendBuffer);
 };
 
 /**
@@ -125,15 +126,15 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
                 case ZOR.Schemas.ops.YOU_DIED:
                     handle_msg_you_died( ZOR.Schemas.youDied.decode(msg.data) );
                     break;
-                // default:
-                //     // // see if this is a player fast update
-                //     var msgView = new Float32Array(msg.data);
-                //     if (msgView[0] === ZOR.Schemas.ops.CLIENT_POSITION_RAPID) {
-                //         handle_msg_client_position_rapid(msgView);
-                //     }
-                //     else {
-                //         console.error("Error: Unknown binary op code: ", op);
-                //     }
+                default:
+                    // // see if this is a player fast update
+                    var msgView = new Float32Array(msg.data);
+                    if (msgView[0] === ZOR.Schemas.ops.CLIENT_POSITION_RAPID) {
+                        handle_msg_client_position_rapid(msgView);
+                    }
+                    else {
+                        console.error("Error: Unknown binary op code: ", op);
+                    }
             }
         }
     };
@@ -199,16 +200,11 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
 
         self.z_handler.z_handle_pong(self.z_zorPingDuration);
     }
-    //
-    // function handle_msg_client_position_rapid(messageView) {
-    //     //TODO: cache getActorById() for speed so we don't have to search each time
-    //     var clientActor = zorbioModel.getActorById(messageView[1]);
-    //
-    //     if (clientActor) {
-    //         clientActor.position.set(messageView[2], messageView[3], messageView[4]);
-    //     }
-    // }
-    //
+
+    function handle_msg_client_position_rapid(messageView) {
+        self.z_handler.z_handle_client_position_rapid(messageView);
+    }
+
     function handle_msg_actor_updates(msg) {
         if (self.z_playerModel) {
             // Record gap since last actor update was received
@@ -325,24 +321,22 @@ ZOR.ZORClient.prototype.z_sendPlayerUpdate = function ZORsendPlayerUpdate(player
     this.z_ws.send(ZOR.Schemas.playerUdateSchema.encode(playerUpdateMessage));
 };
 
-// var rapidSendBuffer = new ArrayBuffer(20);
-// var rapidSendView = new Float32Array(rapidSendBuffer);
-// function sendClientPositionRapid(actor_id, position) {
-//     if (!config.ENABLE_RAPID_UPDATES) return;
-//
-//     //first byte op code
-//     rapidSendView[0] = ZOR.Schemas.ops.CLIENT_POSITION_RAPID;
-//
-//     // actor id
-//     rapidSendView[1] = actor_id;
-//
-//     // position
-//     rapidSendView[2] = position.x;
-//     rapidSendView[3] = position.y;
-//     rapidSendView[4] = position.z;
-//
-//     ws.send(rapidSendBuffer);
-// }
+ZOR.ZORClient.prototype.z_sendClientPositionRapid = function ZORsendClientPositionRapid(actor_id, position) {
+    if (!config.ENABLE_RAPID_UPDATES) return;
+
+    //first byte op code
+    this.z_rapidSendView[0] = ZOR.Schemas.ops.CLIENT_POSITION_RAPID;
+
+    // actor id
+    this.z_rapidSendView[1] = actor_id;
+
+    // position
+    this.z_rapidSendView[2] = position.x;
+    this.z_rapidSendView[3] = position.y;
+    this.z_rapidSendView[4] = position.z;
+
+    this.z_ws.send(this.z_rapidSendBuffer);
+};
 
 ZOR.ZORClient.prototype.z_sendSpeedBoostStart = function ZORsendSpeedBoostStart() {
     this.z_ws.send(JSON.stringify({op: "speed_boost_start"}));
@@ -355,6 +349,5 @@ ZOR.ZORClient.prototype.z_sendSpeedBoostStop = function ZORsendSpeedBoostStop() 
 ZOR.ZORClient.prototype.z_clearIntervalMethods = function ZORclearIntervalMethods() {
     clearInterval(this.z_interval_id_heartbeat);
 };
-
 
 if (NODEJS) module.exports = ZOR.ZORClient;
