@@ -52,4 +52,9 @@ ZOR.ZORMessageHandler.z_handle_player_join = function ZORhandlePlayerJoin(newPla
     console.log('Player joined: ', newPlayer.id, newPlayer.name);
 };
 
+ZOR.ZORMessageHandler.z_handle_server_tick = function ZORHandleServerTick(data) {
+    // don't care about anything in server tick slow
+};
+
+
 module.exports = ZOR.ZORMessageHandler;

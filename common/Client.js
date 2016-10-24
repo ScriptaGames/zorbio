@@ -119,9 +119,9 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
                 case ZOR.Schemas.ops.ACTOR_UPDATES:
                     handle_msg_actor_updates( ZOR.Schemas.actorUpdatesSchema.decode(msg.data) );
                     break;
-                // case ZOR.Schemas.ops.TICK_SLOW:
-                //     handle_msg_server_tick_slow( ZOR.Schemas.tickSlowSchema.decode(msg.data) );
-                //     break;
+                case ZOR.Schemas.ops.TICK_SLOW:
+                    handle_msg_server_tick_slow( ZOR.Schemas.tickSlowSchema.decode(msg.data) );
+                    break;
                 // case ZOR.Schemas.ops.YOU_DIED:
                 //     handle_msg_you_died( ZOR.Schemas.youDied.decode(msg.data) );
                 //     break;
@@ -246,11 +246,11 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     //     }
     // }
     //
-    // function handle_msg_server_tick_slow(msg) {
-    //     if (!gameStart) return;
-    //
-    //     handleServerTick(msg.tick_data);
-    // }
+    function handle_msg_server_tick_slow(msg) {
+        if (!gameStart) return;
+
+        self.z_handler.z_handle_server_tick(msg.tick_data);
+    }
     //
     // function handle_msg_kick(msg) {
     //     console.log('Server said: ', msg.reason);
