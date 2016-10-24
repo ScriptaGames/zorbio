@@ -4,5 +4,5 @@ for i in $(eval echo {1..$1});
 do
     echo "Spawning client $i"
     ( node ./node_client.js & ) > /dev/null
-    sleep 0.5
+    sleep 1
 done

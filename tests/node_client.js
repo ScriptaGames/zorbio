@@ -22,12 +22,12 @@ var playerMeta = {
     skin: "default",
 };
 
-zorClient.z_connectToServer('ws://localhost:31000');
+zorClient.z_connectToServer('ws://useast.zor.bio:31000');
 
 // Give the socket time to connect, then enter the game
 setTimeout(function () {
     zorClient.z_sendEnterGame(playerMeta);
-}, 500);
+}, 6000);
 
 // Simulates animate() loop
 setInterval(function () {

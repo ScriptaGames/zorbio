@@ -134,7 +134,6 @@ ZOR.Model.prototype.getPlayerById = function ZORModelGetPlayersById(id) {
 
 /**
  * Return an array of non-bot players
- * @param id
  */
 ZOR.Model.prototype.getRealPlayers = function ZORModelGetRealPlayers() {
     var real_players = [];
