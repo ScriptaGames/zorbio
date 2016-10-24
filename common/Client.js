@@ -83,18 +83,18 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
                 case 'player_join':
                     handle_msg_player_join(message);
                     break;
-            //     case 'captured_player':
-            //         handle_msg_captured_player(message);
-            //         break;
-            //     case 'player_died':
-            //         handle_msg_player_died(message);
-            //         break;
+                case 'captured_player':
+                    handle_msg_captured_player(message);
+                    break;
+                case 'player_died':
+                    handle_msg_player_died(message);
+                    break;
             //     case 'kick':
             //         handle_msg_kick(message);
             //         break;
-            //     case 'remove_player':
-            //         handle_msg_remove_player(message);
-            //         break;
+                case 'remove_player':
+                    handle_msg_remove_player(message);
+                    break;
             //     case 'speeding_warning':
             //         handle_msg_speeding_warning();
             //         break;
@@ -122,9 +122,9 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
                 case ZOR.Schemas.ops.TICK_SLOW:
                     handle_msg_server_tick_slow( ZOR.Schemas.tickSlowSchema.decode(msg.data) );
                     break;
-                // case ZOR.Schemas.ops.YOU_DIED:
-                //     handle_msg_you_died( ZOR.Schemas.youDied.decode(msg.data) );
-                //     break;
+                case ZOR.Schemas.ops.YOU_DIED:
+                    handle_msg_you_died( ZOR.Schemas.youDied.decode(msg.data) );
+                    break;
                 // default:
                 //     // // see if this is a player fast update
                 //     var msgView = new Float32Array(msg.data);
@@ -219,33 +219,26 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
 
         self.z_handler.z_handle_actor_updates(msg.actors);
     }
-    //
-    // function handle_msg_captured_player(msg) {
-    //     if (!gameStart) return;
-    //
-    //     var targetPlayerId = msg.targetPlayerId;
-    //
-    //     console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
-    //
-    //     handleSuccessfulPlayerCapture(targetPlayerId);
-    // }
-    //
-    // function handle_msg_you_died(msg) {
-    //     if (!gameStart) return;
-    //
-    //     handleDeath(msg);
-    // }
-    //
-    // function handle_msg_player_died(msg) {
-    //     var attackingPlayerId = msg.attackingPlayerId;
-    //     var targetPlayerId = msg.targetPlayerId;
-    //
-    //     if (!player || (attackingPlayerId !== player.getPlayerId())) {
-    //         // someone else killed another player
-    //         handleOtherPlayercapture(targetPlayerId);
-    //     }
-    // }
-    //
+
+    function handle_msg_captured_player(msg) {
+        self.z_handler.z_handle_captured_player(msg.targetPlayerId);
+    }
+
+    function handle_msg_you_died(msg) {
+        self.z_handler.z_handle_you_died(msg);
+        self.z_clearIntervalMethods();
+    }
+
+    function handle_msg_player_died(msg) {
+        var attackingPlayerId = msg.attackingPlayerId;
+        var targetPlayerId = msg.targetPlayerId;
+
+        if (!self.z_playerModel || (attackingPlayerId !== self.z_playerModel.id)) {
+            // someone else killed another player
+            self.z_handler.z_handle_player_died(targetPlayerId);
+        }
+    }
+
     function handle_msg_server_tick_slow(msg) {
         if (!gameStart) return;
 
@@ -257,12 +250,11 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     //     setDeadState();
     //     handlePlayerKick(msg.reason);
     // }
-    //
-    // function handle_msg_remove_player(msg) {
-    //     console.log("received remove_player", msg.playerId);
-    //     removePlayerFromGame(msg.playerId, 0);
-    // }
-    //
+
+    function handle_msg_remove_player(msg) {
+        self.z_handler.z_handle_remove_player(msg.playerId);
+    }
+
     // function handle_msg_speeding_warning() {
     //     if (!gameStart) return;
     //     console.log("WARNING! You are speeding!");
@@ -320,7 +312,7 @@ ZOR.ZORClient.prototype.z_sendPlayerUpdate = function ZORsendPlayerUpdate(player
     // Send oldest position and most recent 4 positions
     var playerUpdateMessage = {
         0: ZOR.Schemas.ops.PLAYER_UPDATE,
-        player_id: player.getPlayerId(),
+        player_id: this.z_playerModel.id,
         sphere_id: playerSphere.id,
         pp_gap: gap,
         au_gap: this.z_actorUpdateGap,

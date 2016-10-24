@@ -93,4 +93,23 @@ ZOR.ZORMessageHandler.z_handle_server_tick = function ZORHandleServerTick(data) 
     handleServerTick(data);
 };
 
+ZOR.ZORMessageHandler.z_handle_captured_player = function ZORHandleCapturePlayer(targetPlayerId) {
+    if (!gameStart) return;
 
+    console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
+
+    handleSuccessfulPlayerCapture(targetPlayerId);
+};
+
+ZOR.ZORMessageHandler.z_handle_you_died = function ZORHandleYouDied(msg) {
+    if (!gameStart) return;
+    handleDeath(msg);
+};
+
+ZOR.ZORMessageHandler.z_handle_player_died = function ZORHandlePlayerDied(capturedPlayerId) {
+    handleOtherPlayercapture(capturedPlayerId);
+};
+
+ZOR.ZORMessageHandler.z_handle_remove_player = function ZORHandleRemovePlayer(playerId) {
+    removePlayerFromGame(playerId, 0);
+};

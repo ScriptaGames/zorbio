@@ -649,7 +649,8 @@ function handleDeath(msg) {
     };
 
     // stop woosh in case player was speed boosting
-    ZOR.Sounds.sfx.woosh.stop();
+    //TODO: fix this
+    // ZOR.Sounds.sfx.woosh.stop();
 
     ZOR.UI.engine.set('attacker', attackingPlayer);
     ZOR.UI.engine.set('player', playerStats);
@@ -666,7 +667,6 @@ function handlePlayerKick(msg) {
 function setDeadState() {
     player.beingCaptured = false;
     player.isDead = true;
-    clearIntervalMethods();
     KeysDown = {};
 }
 
