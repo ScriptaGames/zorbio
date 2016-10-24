@@ -177,7 +177,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     function handle_msg_game_setup() {
         console.log('Game setup');
         self.z_handler.z_handle_game_setup();
-        // self.z_setIntervalMethods();
+        self.z_setIntervalMethods();
     }
 
     function handle_msg_player_join(message) {
@@ -275,11 +275,11 @@ ZOR.ZORClient.prototype.z_handleNetworkTermination = function ZORhandleNetworkTe
     this.z_handler.z_handleNetworkTermination();
 };
 
-// function sendRespawn() {
-//     gameStart = false;
-//     ws.send(JSON.stringify({op: 'respawn'}));
-// }
-//
+ZOR.ZORClient.prototype.z_sendRespawn = function ZORsendRespawn() {
+    gameStart = false;
+    this.z_ws.send(JSON.stringify({op: 'respawn'}));
+};
+
 ZOR.ZORClient.prototype.z_sendPing = function sendPing() {
     this.z_zorPingStart = Date.now();
 

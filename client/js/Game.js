@@ -113,7 +113,8 @@ function startGame(type) {
 function respawnPlayer() {
     console.log("Respawning player: ", player.getPlayerId());
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
-    sendRespawn();
+    gameStart = false;
+    zorClient.z_sendRespawn();
 }
 
 function createScene() {
