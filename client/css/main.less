@@ -17,7 +17,7 @@
 // spacing
 
 @default-padding: 20px;
-@size-meter-height: 1.5vh;
+@size-meter-height: 1.0vh;
 
 //
 
@@ -355,9 +355,6 @@ button {
 
 #leaderboard-playing {
 
-    position: absolute;
-    top: @size-meter-height;
-
     background     : none;
     pointer-events : none;
     border-radius  : 0; // override
@@ -408,7 +405,7 @@ button {
 
 #gear-btn {
     position   : absolute;
-    top        : @size-meter-height;
+    top        : 0;
     right      : 0;
     padding    : 0;
     width      : 40px;
@@ -425,7 +422,7 @@ button {
 
 #targets, #player-size {
     position       : absolute;
-    top            : @size-meter-height + 5vh;
+    top            : 5vh;
     left           : 50%;
     transform      : translateX(-50%);
     padding        : 0;
@@ -441,7 +438,7 @@ button {
 }
 
 #player-size {
-    top : @size-meter-height + 1vh;
+    top : 1vh;
 }
 
 #title {
@@ -494,13 +491,12 @@ button {
 
     &, #size-meter {
         position: absolute;
-        top: 0;
+        bottom: 0;
         left: 0;
         width: 100%;
         height: @size-meter-height;
     }
     #size-meter {
-        border-radius: 0.75vh;
         opacity: 0.9;
         background-color: @accent-color;
         transition: clip 0.2618s ease-in-out;
