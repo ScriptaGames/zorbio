@@ -565,8 +565,14 @@ function handleServerTick(serverTickData) {
     serverTickData.leaders.forEach(function eachLeader(leader) {
         // get leader name and color
         var clientPlayer = ZOR.Game.players[leader.player_id];
-        leader.name = clientPlayer.model.name;
-        leader.color = clientPlayer.model.sphere.color;
+        if (clientPlayer) {
+            leader.name = clientPlayer.model.name;
+            leader.color = clientPlayer.model.sphere.color;
+        }
+        else {
+            leader.name = '';
+            leader.color = 1;
+        }
     });
 
     ZOR.UI.engine.set( 'leaders', serverTickData.leaders );
