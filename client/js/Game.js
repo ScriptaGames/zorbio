@@ -228,7 +228,7 @@ function createScene() {
 
             player.update(scene, camera, camera_controls, ZOR.LagScale.get());
 
-            // zorClient.z_throttledSendPlayerUpdate();
+            throttledSendPlayerUpdate();
 
             // sendClientPositionRapid(player.model.sphere.id, player.view.mainSphere.position);
 
@@ -411,6 +411,22 @@ function updateTargetLock() {
     }
 }
 var throttledUpdateTargetLock = _.throttle(updateTargetLock, 100);
+
+function sendPlayerUpdate() {
+    // Make sure model is synced with view
+    player.refreshSphereModel();
+
+    // make sure we always have at least 4 recent positions
+    while (player.model.sphere.recentPositions.length < 4) {
+        player.addRecentPosition();
+    }
+
+    zorClient.z_sendPlayerUpdate(player.model.sphere, player.food_capture_queue);
+
+    // clear food queue
+    player.food_capture_queue = [];
+}
+var throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
 
 function captureFood(fi) {
     player.queueFoodCapture(fi);

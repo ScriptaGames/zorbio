@@ -309,49 +309,34 @@ ZOR.ZORClient.prototype.z_setIntervalMethods = function ZORsetIntervalMethods() 
 };
 
 
-//
-// function sendPlayerUpdate() {
-//     // save metrics
-//     var nowTime = Date.now();
-//     var gap = nowTime - player.model.pp_send_metric.last_time;
-//     player.model.pp_send_metric.last_time = nowTime;
-//     var bufferedAmount = ws.bufferedAmount;
-//
-//     // Make sure model is synced with view
-//     player.refreshSphereModel();
-//
-//     var sphereModel = player.model.sphere;
-//
-//     // make sure we always have at least 4 recent positions
-//     while (sphereModel.recentPositions.length < 4) {
-//         player.addRecentPosition();
-//     }
-//
-//     // Send oldest position and most recent 4 positions
-//     var playerUpdateMessage = {
-//         0: ZOR.Schemas.ops.PLAYER_UPDATE,
-//         player_id: player.getPlayerId(),
-//         sphere_id: sphereModel.id,
-//         pp_gap: gap,
-//         au_gap: actorUpdateGap,
-//         buffered_mount: bufferedAmount,
-//         latest_position: sphereModel.recentPositions[sphereModel.recentPositions.length - 1],
-//         prev_position_1: sphereModel.recentPositions[sphereModel.recentPositions.length - 2],
-//         prev_position_2: sphereModel.recentPositions[sphereModel.recentPositions.length - 3],
-//         prev_position_3: sphereModel.recentPositions[sphereModel.recentPositions.length - 4],
-//         oldest_position: sphereModel.recentPositions[0],
-//         food_capture_queue: player.food_capture_queue,
-//     };
-//
-//     var buffer = ZOR.Schemas.playerUdateSchema.encode(playerUpdateMessage);
-//
-//     // clear food queue
-//     player.food_capture_queue = [];
-//
-//     // Send player update data
-//     ws.send(buffer);
-// }
-//
+
+ZOR.ZORClient.prototype.z_sendPlayerUpdate = function ZORsendPlayerUpdate(playerSphere, food_capture_queue) {
+    // save metrics
+    var nowTime = Date.now();
+    var gap = nowTime - this.z_playerModel.pp_send_metric.last_time;
+    this.z_playerModel.pp_send_metric.last_time = nowTime;
+    var bufferedAmount = this.z_ws.bufferedAmount;
+
+    // Send oldest position and most recent 4 positions
+    var playerUpdateMessage = {
+        0: ZOR.Schemas.ops.PLAYER_UPDATE,
+        player_id: player.getPlayerId(),
+        sphere_id: playerSphere.id,
+        pp_gap: gap,
+        au_gap: this.z_actorUpdateGap,
+        buffered_mount: bufferedAmount,
+        latest_position: playerSphere.recentPositions[playerSphere.recentPositions.length - 1],
+        prev_position_1: playerSphere.recentPositions[playerSphere.recentPositions.length - 2],
+        prev_position_2: playerSphere.recentPositions[playerSphere.recentPositions.length - 3],
+        prev_position_3: playerSphere.recentPositions[playerSphere.recentPositions.length - 4],
+        oldest_position: playerSphere.recentPositions[0],
+        food_capture_queue: food_capture_queue,
+    };
+
+    // Send player update data
+    this.z_ws.send(ZOR.Schemas.playerUdateSchema.encode(playerUpdateMessage));
+};
+
 // var rapidSendBuffer = new ArrayBuffer(20);
 // var rapidSendView = new Float32Array(rapidSendBuffer);
 // function sendClientPositionRapid(actor_id, position) {
