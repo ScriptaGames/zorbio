@@ -15,9 +15,7 @@ if (config.FOG_ENABLED) {
     raycaster.far = config.FOG_FAR;
 }
 
-
 // Player
-var playerType;
 var player;
 
 //TODO: get rid of this globals, refactor into MVC Player and Food controllers
@@ -25,11 +23,13 @@ var playerFogCenter = new THREE.Vector3();
 
 // Game state
 var gameStart = false;
-var disconnected = false;
 var foodController;
 
 // Model that represents the game state shared with server
 var zorbioModel = new ZOR.Model();
+
+// Game websocket client
+var zorClient = new ZOR.ZORClient(zorbioModel, ZOR.ZORMessageHandler);
 
 ZOR.Game.players = {};
 
@@ -79,19 +79,24 @@ function startGame(type) {
         ZOR.Sounds.music.background.play();
     }
 
-
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
 
+
+
     // Assign player meta data and save to local storage
-    playerType     = type;
-    var playerName = localStorage.player_name = UTIL.filterName(ZOR.UI.engine.get('player_name'));
-    var key        = localStorage.alpha_key   = ZOR.UI.engine.get('alpha_key');
-    var skin       = localStorage.getItem('skin') || 'default';
-    var colorCode  = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
-    var colorHex   = config.COLORS[colorCode];
+    var colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
+    var colorHex = config.COLORS[colorCode];
+    var name = localStorage.player_name = UTIL.filterName(ZOR.UI.engine.get('player_name'));
+    var key = localStorage.alpha_key = ZOR.UI.engine.get('alpha_key');
+    ZOR.Game.playerMeta = {
+        playerType: type,
+        playerName: name,
+        key: key,
+        skin: localStorage.getItem('skin') || 'default',
+        color: colorCode,
+    };
 
     document.querySelector("meta[name=theme-color]").content = colorHex;
-    console.log('Player color', colorHex);
 
     // Initialize player size ui element
     ZOR.UI.engine.set('player_color', colorCode);
@@ -100,13 +105,16 @@ function startGame(type) {
     // Schedule one time Google Analytics tracking for Ping and FPS
     setTimeout(gaPerformanceMetrics, 15000);
 
-    sendEnterGame(playerType, playerName, colorCode, skin, key);
+    console.log('Player meta: ', ZOR.Game.playerMeta);
+
+    zorClient.z_sendEnterGame(ZOR.Game.playerMeta);
 }
 
 function respawnPlayer() {
     console.log("Respawning player: ", player.getPlayerId());
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
-    sendRespawn();
+    gameStart = false;
+    zorClient.z_sendRespawn();
 }
 
 function createScene() {
@@ -223,7 +231,7 @@ function createScene() {
 
             throttledSendPlayerUpdate();
 
-            sendClientPositionRapid(player.model.sphere.id, player.view.mainSphere.position);
+            zorClient.z_sendClientPositionRapid(player.model.sphere.id, player.view.mainSphere.position);
 
             foodController.checkFoodCaptures(player, captureFood);
 
@@ -405,6 +413,22 @@ function updateTargetLock() {
 }
 var throttledUpdateTargetLock = _.throttle(updateTargetLock, 100);
 
+function sendPlayerUpdate() {
+    // Make sure model is synced with view
+    player.refreshSphereModel();
+
+    // make sure we always have at least 4 recent positions
+    while (player.model.sphere.recentPositions.length < 4) {
+        player.addRecentPosition();
+    }
+
+    zorClient.z_sendPlayerUpdate(player.model.sphere, player.food_capture_queue);
+
+    // clear food queue
+    player.food_capture_queue = [];
+}
+var throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
+
 function captureFood(fi) {
     player.queueFoodCapture(fi);
     foodController.hideFood(fi);
@@ -416,7 +440,7 @@ window.addEventListener("mousedown", handleMouseDown);
 window.addEventListener("mouseup", handleMouseUp);
 
 window.onload = function homeOnload() {
-    connectToServer();
+    zorClient.z_connectToServer('ws://' + config.BALANCER + ':' + config.WS_PORT);
 };
 
 var KeysDown = {};
@@ -464,7 +488,7 @@ function handleMouseDown(evt) {
 
     if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any) {
         if (player.isSpeedBoostReady()) {
-            sendSpeedBoostStart();
+            zorClient.z_sendSpeedBoostStart();
         }
     }
 }
@@ -474,7 +498,7 @@ function handleMouseUp(evt) {
 
     if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any) {
         player.speedBoostStop();
-        sendSpeedBoostStop();
+        zorClient.z_sendSpeedBoostStop();
     }
 }
 
@@ -499,7 +523,7 @@ function keyDown( key ) {
 function keyJustPressed(key) {
     if ( key === 'w' && config.AUTO_RUN_ENABLED) {
         if (player.isSpeedBoostReady()) {
-            sendSpeedBoostStart();
+            zorClient.z_sendSpeedBoostStart();
         }
     }
 }
@@ -509,7 +533,7 @@ function keyReleased(key) {
     if (key === 'w' && config.AUTO_RUN_ENABLED) {
         if (player.isSpeedBoostActive()) {
             player.speedBoostStop();
-            sendSpeedBoostStop();
+            zorClient.z_sendSpeedBoostStop();
         }
     }
 }
@@ -626,24 +650,28 @@ function handleDeath(msg) {
     };
 
     // stop woosh in case player was speed boosting
-    ZOR.Sounds.sfx.woosh.stop();
+    //TODO: fix this
+    // ZOR.Sounds.sfx.woosh.stop();
 
     ZOR.UI.engine.set('attacker', attackingPlayer);
     ZOR.UI.engine.set('player', playerStats);
     ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
 }
 
-function handlePlayerKick(msg) {
+function handlePlayerKick(reason) {
+    setDeadState();
+
     ZOR.UI.state( ZOR.UI.STATES.KICKED_SCREEN );
 
     // Send server message to the UI (either real message, or undefined)
-    ZOR.UI.engine.set('kicked_message', msg);
+    ZOR.UI.engine.set('kicked_message', reason);
+
+    console.log("you were kicked: ", reason);
 }
 
 function setDeadState() {
     player.beingCaptured = false;
     player.isDead = true;
-    clearIntervalMethods();
     KeysDown = {};
 }
 
