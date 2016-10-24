@@ -488,7 +488,7 @@ function handleMouseDown(evt) {
 
     if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any) {
         if (player.isSpeedBoostReady()) {
-            sendSpeedBoostStart();
+            zorClient.z_sendSpeedBoostStart();
         }
     }
 }
@@ -498,7 +498,7 @@ function handleMouseUp(evt) {
 
     if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any) {
         player.speedBoostStop();
-        sendSpeedBoostStop();
+        zorClient.z_sendSpeedBoostStop();
     }
 }
 
@@ -523,7 +523,7 @@ function keyDown( key ) {
 function keyJustPressed(key) {
     if ( key === 'w' && config.AUTO_RUN_ENABLED) {
         if (player.isSpeedBoostReady()) {
-            sendSpeedBoostStart();
+            zorClient.z_sendSpeedBoostStart();
         }
     }
 }
@@ -533,7 +533,7 @@ function keyReleased(key) {
     if (key === 'w' && config.AUTO_RUN_ENABLED) {
         if (player.isSpeedBoostActive()) {
             player.speedBoostStop();
-            sendSpeedBoostStop();
+            zorClient.z_sendSpeedBoostStop();
         }
     }
 }

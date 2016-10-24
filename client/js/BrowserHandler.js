@@ -117,3 +117,14 @@ ZOR.ZORMessageHandler.z_handle_remove_player = function ZORHandleRemovePlayer(pl
 ZOR.ZORMessageHandler.z_handle_kick = function ZORhandleKick(reason) {
     handlePlayerKick(reason);
 };
+
+ZOR.ZORMessageHandler.handle_speed_boost_res = function ZORhandleSpeedBoostRes(is_valid) {
+    if (is_valid) {
+        player.speedBoostStart();
+    }
+};
+
+ZOR.ZORMessageHandler.z_handle_speed_boost_stop = function ZORhandleSpeedBoostStop() {
+    player.speedBoostStop();
+};
+

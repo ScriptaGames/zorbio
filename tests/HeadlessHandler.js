@@ -85,4 +85,12 @@ ZOR.ZORMessageHandler.z_handle_kick = function ZORhandleKick(reason) {
     global.playerDead = true;
 };
 
+ZOR.ZORMessageHandler.handle_speed_boost_res = function ZORhandleSpeedBoostRes(is_valid) {
+    // Headless does not speedboost
+};
+
+ZOR.ZORMessageHandler.z_handle_speed_boost_stop = function ZORhandleSpeedBoostStop() {
+    // Headless does not speedboost
+};
+
 module.exports = ZOR.ZORMessageHandler;

@@ -40,7 +40,6 @@ setInterval(function () {
 function sendPlayerUpdate() {
     // make sure we always have at least 4 recent positions
     while (global.player.sphere.recentPositions.length < 4) {
-        console.log("adding recent position");
         addRecentPosition();
     }
 

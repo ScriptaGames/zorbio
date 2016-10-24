@@ -95,15 +95,15 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
                 case 'remove_player':
                     handle_msg_remove_player(message);
                     break;
-            //     case 'speeding_warning':
-            //         handle_msg_speeding_warning();
-            //         break;
-            //     case 'speed_boost_res':
-            //         handle_msg_speed_boost_res(message);
-            //         break;
-            //     case 'speed_boost_stop':
-            //         handle_msg_speed_boost_stop();
-            //         break;
+                case 'speeding_warning':
+                    handle_msg_speeding_warning();
+                    break;
+                case 'speed_boost_res':
+                    handle_msg_speed_boost_res(message);
+                    break;
+                case 'speed_boost_stop':
+                    handle_msg_speed_boost_stop();
+                    break;
             }
         }
         else {
@@ -253,21 +253,19 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
         self.z_handler.z_handle_remove_player(msg.playerId);
     }
 
-    // function handle_msg_speeding_warning() {
-    //     if (!gameStart) return;
-    //     console.log("WARNING! You are speeding!");
-    // }
-    //
-    // function handle_msg_speed_boost_res(msg) {
-    //     console.log("speed boost is valid:", msg.is_valid);
-    //     player.speedBoostStart();
-    // }
-    //
-    // function handle_msg_speed_boost_stop() {
-    //     console.log("Received speed boost STOP");
-    //     player.speedBoostStop();
-    //     sendSpeedBoostStop();
-    // }
+    function handle_msg_speeding_warning() {
+        console.log("WARNING! You are speeding!");
+    }
+
+    function handle_msg_speed_boost_res(msg) {
+        self.z_handler.handle_speed_boost_res(msg.is_valid);
+    }
+
+    function handle_msg_speed_boost_stop() {
+        console.log("Received speed boost STOP");
+        self.z_handler.z_handle_speed_boost_stop();
+        self.z_sendSpeedBoostStop();
+    }
 };
 
 ZOR.ZORClient.prototype.z_handleNetworkTermination = function ZORhandleNetworkTermination() {
@@ -345,17 +343,14 @@ ZOR.ZORClient.prototype.z_sendPlayerUpdate = function ZORsendPlayerUpdate(player
 //
 //     ws.send(rapidSendBuffer);
 // }
-//
-// function sendSpeedBoostStart() {
-//     ws.send(JSON.stringify({op: "speed_boost_start"}));
-// }
-//
-// function sendSpeedBoostStop() {
-//     ws.send(JSON.stringify({op: "speed_boost_stop"}));
-// }
-// var throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
-//
-//
+
+ZOR.ZORClient.prototype.z_sendSpeedBoostStart = function ZORsendSpeedBoostStart() {
+    this.z_ws.send(JSON.stringify({op: "speed_boost_start"}));
+};
+
+ZOR.ZORClient.prototype.z_sendSpeedBoostStop = function ZORsendSpeedBoostStop() {
+    this.z_ws.send(JSON.stringify({op: "speed_boost_stop"}));
+};
 
 ZOR.ZORClient.prototype.z_clearIntervalMethods = function ZORclearIntervalMethods() {
     clearInterval(this.z_interval_id_heartbeat);
