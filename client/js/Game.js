@@ -231,7 +231,7 @@ function createScene() {
 
             throttledSendPlayerUpdate();
 
-            // sendClientPositionRapid(player.model.sphere.id, player.view.mainSphere.position);
+            zorClient.z_sendClientPositionRapid(player.model.sphere.id, player.view.mainSphere.position);
 
             foodController.checkFoodCaptures(player, captureFood);
 

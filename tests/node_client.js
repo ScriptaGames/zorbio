@@ -33,11 +33,14 @@ setTimeout(function () {
 setInterval(function () {
    if (global.gameStart && !global.playerDead) {
        addRecentPosition();
+       zorClient.z_sendClientPositionRapid(global.player.sphere.id, global.player.sphere.position);
        throttledPlayerUpdate(global.player.sphere, []);
    }
 }, 16);
 
 function sendPlayerUpdate() {
+    if (!global.gameStart) return;
+
     // make sure we always have at least 4 recent positions
     while (global.player.sphere.recentPositions.length < 4) {
         addRecentPosition();

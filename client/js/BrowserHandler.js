@@ -128,3 +128,11 @@ ZOR.ZORMessageHandler.z_handle_speed_boost_stop = function ZORhandleSpeedBoostSt
     player.speedBoostStop();
 };
 
+ZOR.ZORMessageHandler.z_handle_client_position_rapid = function ZORhandleClientPositionRapid(messageView) {
+    var clientActor = zorbioModel.getActorById(messageView[1]);
+
+    if (clientActor) {
+        clientActor.position.set(messageView[2], messageView[3], messageView[4]);
+    }
+};
+

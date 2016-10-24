@@ -40,7 +40,9 @@ ZOR.ZORMessageHandler.z_handle_pong = function ZORhandlePong(duration) {
 };
 
 ZOR.ZORMessageHandler.z_handleNetworkTermination = function ZORhandleNetworkTermination() {
+    global.gameStart = false;
     console.log('Connection terminated');
+    process.exit();
 };
 
 ZOR.ZORMessageHandler.z_handle_actor_updates = function ZORhandleActorUpdates(actors) {
@@ -91,6 +93,10 @@ ZOR.ZORMessageHandler.handle_speed_boost_res = function ZORhandleSpeedBoostRes(i
 
 ZOR.ZORMessageHandler.z_handle_speed_boost_stop = function ZORhandleSpeedBoostStop() {
     // Headless does not speedboost
+};
+
+ZOR.ZORMessageHandler.z_handle_client_position_rapid = function ZORhandleClientPositionRapid(messageView) {
+    // dont care about updating client positions
 };
 
 module.exports = ZOR.ZORMessageHandler;
