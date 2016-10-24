@@ -565,9 +565,11 @@ button:active {
   position: absolute;
   top: 0;
   height: 1.5vh;
-  width: 3px;
-  background-color: #f7f7f7;
-  border-radius: 3px;
+  background-color: rgba(247, 247, 247, 0.5);
+  width: 2px;
+}
+#size-meter-wrapper .milestone.passed {
+  background-color: rgba(247, 247, 247, 0.9);
 }
 * {
   -webkit-user-select: none;

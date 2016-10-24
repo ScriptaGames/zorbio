@@ -505,9 +505,11 @@ button {
         position: absolute;
         top: 0;
         height: 1.5vh;
-        width: 3px;
-        background-color: @primary-color;
-        border-radius: 3px;
+        background-color: fade(@primary-color, 50%);
+        width: 2px;
+        &.passed {
+            background-color: fade(@primary-color, 90%);
+        }
     }
 }
 
