@@ -78,6 +78,8 @@ ZOR.UI = function ZORUI() {
         REQUIRE_ALPHA_KEY: config.REQUIRE_ALPHA_KEY,
         DEBUG            : config.DEBUG,
         MISSING_FEATURES : [],
+        MAX_PLAYER_RADIUS: config.MAX_PLAYER_RADIUS,
+        CAMERA_ZOOM_STEPS: _(config.CAMERA_ZOOM_STEPS).map('min').tail().value(),
         AUTHORS          : ['Michael Clayton', 'Jared Sprague'],
         skins            : _(ZOR.PlayerSkins).map(_.partial(_.pick, _, 'meta')).sortBy('meta.sort').value(), // get the meta for every skin and sort them
         selected_skin    : localStorage.skin || 'default',
@@ -85,6 +87,7 @@ ZOR.UI = function ZORUI() {
         is_mobile        : isMobile.any,
         screen_x         : 0,
         screen_y         : 0,
+        player_size      : 0,
         showAd           : showAd,
         flip_x           : JSON.parse(localStorage.flip_x || "false"),
         flip_y           : JSON.parse(localStorage.flip_y || "false"),
@@ -385,6 +388,7 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.PAGE_RELOAD, location.reload.bind(location) );
 
         on( ACTIONS.PLAYER_RESPAWN, function ZORRespawnButtonHandler() {
+            engine.set('player_size', 0);
             if (respawnPlayer) {
                 // send event to google analytics
                 ga('send', {

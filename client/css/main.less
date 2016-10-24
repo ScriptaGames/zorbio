@@ -17,6 +17,7 @@
 // spacing
 
 @default-padding: 20px;
+@size-meter-height: 1.0vh;
 
 //
 
@@ -482,6 +483,33 @@ button {
     }
     li:last-child::after {
         content: '';
+    }
+}
+
+#size-meter-wrapper {
+    background-color: rgba(255, 255, 255, 0.1);
+
+    &, #size-meter {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: @size-meter-height;
+    }
+    #size-meter {
+        opacity: 0.9;
+        background-color: @accent-color;
+        transition: clip 0.2618s ease-in-out;
+    }
+    .milestone {
+        position: absolute;
+        top: 0;
+        height: @size-meter-height;
+        background-color: fade(@primary-color, 50%);
+        width: 2px;
+        &.passed {
+            background-color: fade(@primary-color, 90%);
+        }
     }
 }
 
