@@ -16,6 +16,17 @@ ZOR.Sounds = (function ZORSounds() {
         })
     }
 
+    // A simple helper function for creating Wad sounds.  If Web Audio API
+    // isn't supported, returns a mock object which plays no sounds.
+    function wadSfx(settings) {
+        if (Modernizr.webaudio) {
+            return new Wad(settings);
+        }
+        else {
+            return { play: _.noop, stop: _.noop };
+        }
+    }
+
     var sounds = {
         sfx: {
             // Only commented out food capture because it's worth saving the
@@ -46,7 +57,7 @@ ZOR.Sounds = (function ZORSounds() {
                 G4: howlSfx('food_capture/G4.mp3'),
                 Gb3: howlSfx('food_capture/Gb3.mp3'),
             },
-            woosh: new Wad({
+            woosh: wadSfx({
                 source: 'noise',
                 volume: 0.35,
                 env: {
