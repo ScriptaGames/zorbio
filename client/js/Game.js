@@ -308,7 +308,7 @@ function initCameraAndPlayer() {
 
     // move camera so that the player is facing towards the origin each time
     // they spawn
-    // camera.position.copy( player.model.sphere.position.clone().multiplyScalar(1.2) );
+    camera.position.copy( player.model.sphere.position.clone().multiplyScalar(1.2) );
 
     player.setCameraControls( camera_controls );
     player.view.adjustCamera(player.radius());

@@ -268,17 +268,17 @@ UTIL.safeRandomCoordinate = function UTILsafeRandomCoordinate(d) {
  * @param {Array} others an array of positions of all living players
  * @returns {Vector3} the position recommended for a player
  */
-UTIL.safePlayerPosition = function UTILsafePlayerPosition() {
+UTIL.randomWorldPosition = function UTILrandomWorldPosition() {
     var x = UTIL.safeRandomCoordinate();
     var y = UTIL.safeRandomCoordinate();
     var z = UTIL.safeRandomCoordinate();
     return new THREE.Vector3( x, y, z );
 };
 
-UTIL.safeInnerPlayerPosition = function UTILsafeInnerPlayerPosition() {
-    var x = UTIL.safeRandomCoordinate(5);
-    var y = UTIL.safeRandomCoordinate(5);
-    var z = UTIL.safeRandomCoordinate(5);
+UTIL.randomHorizontalPosition = function UTILrandomWorldPosition() {
+    var x = UTIL.safeRandomCoordinate();
+    var y = 1;
+    var z = UTIL.safeRandomCoordinate();
     return new THREE.Vector3( x, y, z );
 };
 
