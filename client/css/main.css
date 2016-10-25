@@ -574,6 +574,9 @@ button:active {
 #size-meter-wrapper .milestone.passed {
   background-color: rgba(247, 247, 247, 0.9);
 }
+#respawn-button {
+  width: 100%;
+}
 * {
   -webkit-user-select: none;
      -moz-user-select: none;
