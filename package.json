@@ -28,7 +28,7 @@
     "raven": "^0.12.1",
     "request": "^2.73.0",
     "schemapack": "^1.4.2",
-    "three": "^0.81.2",
+    "three": "^0.82.0",
     "valid-url": "^1.0.9",
     "ws": "^1.1.1",
     "xss-filters": "^1.2.6"

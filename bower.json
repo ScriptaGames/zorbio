@@ -32,9 +32,9 @@
     "raven-js": "^3.5.1",
     "linode-near-location": "^0.1.0",
     "xss-filters": "^1.2.6",
-    "three.js": "three#*",
     "howler.js": "^2.0.0",
-    "ractive": "^0.8.0"
+    "ractive": "^0.8.0",
+    "three.js": "three#r82"
   },
   "devDependencies": {}
 }
