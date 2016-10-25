@@ -628,9 +628,11 @@ function handleOtherPlayercapture(capturedPlayerID) {
     var sound = ZOR.Sounds.sfx.player_capture;
     var capturedPlayer = ZOR.Game.players[capturedPlayerID];
     var windDownTime = 0;
+    var ear;
 
     if (capturedPlayer) {
-        ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
+        ear = player.view ? player.view.mainSphere : camera;
+        ZOR.Sounds.playFromPos(sound, ear, capturedPlayer.model.sphere.position);
         capturedPlayer.handleCapture();
         windDownTime = capturedPlayer.getWindDownTime();
     }
