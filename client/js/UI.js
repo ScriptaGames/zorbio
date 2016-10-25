@@ -85,6 +85,7 @@ ZOR.UI = function ZORUI() {
         selected_skin    : localStorage.skin || 'default',
         leaders          : [],
         is_mobile        : isMobile.any,
+        playable         : false, // whether the play button can be pressed
         screen_x         : 0,
         screen_y         : 0,
         player_size      : 0,

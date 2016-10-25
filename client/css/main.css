@@ -73,6 +73,10 @@ button {
   font-weight: inherit;
   border-radius: 8px;
 }
+button[disabled] {
+  background-color: #171717;
+  color: #404040;
+}
 a {
   font-size: 1em;
   color: #f7f7f7;
@@ -350,10 +354,10 @@ button {
   padding: 20px;
   position: relative;
   z-index: 1;
-  -webkit-transition: -webkit-transform 0.01s ease-out;
-  transition: -webkit-transform 0.01s ease-out;
-  transition: transform 0.01s ease-out;
-  transition: transform 0.01s ease-out, -webkit-transform 0.01s ease-out;
+  -webkit-transition: color ease-in-out 0.3s, background-color ease-in-out 0.3s, -webkit-transform 0.01s ease-out;
+  transition: color ease-in-out 0.3s, background-color ease-in-out 0.3s, -webkit-transform 0.01s ease-out;
+  transition: transform 0.01s ease-out, color ease-in-out 0.3s, background-color ease-in-out 0.3s;
+  transition: transform 0.01s ease-out, color ease-in-out 0.3s, background-color ease-in-out 0.3s, -webkit-transform 0.01s ease-out;
 }
 button > span {
   vertical-align: middle;

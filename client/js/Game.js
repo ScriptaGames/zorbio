@@ -123,6 +123,7 @@ function createScene() {
     // turns into a noop afterwards.
     var revealCanvas = _.after(4, function () {
         canvas.classList.add('active');
+        ZOR.UI.engine.set('playable', true);
     });
 
     try {
