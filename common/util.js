@@ -254,11 +254,10 @@ UTIL.slopewell = function slopewell( r ) {
  *
  * @returns {Number}
  */
-UTIL.safeRandomCoordinate = function UTILsafeRandomCoordinate() {
-    // allow the value to be either random (0..1) for actual usage, or allow it
-    // to be passed in for testing the equation.
-    var v = arguments[0] || Math.random();
-    var safe_size = config.WORLD_SIZE - 2 * config.INITIAL_PLAYER_RADIUS;
+UTIL.safeRandomCoordinate = function UTILsafeRandomCoordinate(d) {
+    var devide = d || 1;
+    var v = Math.random();
+    var safe_size = (config.WORLD_SIZE / devide) - (2 * config.INITIAL_PLAYER_RADIUS);
     return v * safe_size - safe_size / 2;
 };
 
@@ -275,6 +274,14 @@ UTIL.safePlayerPosition = function UTILsafePlayerPosition() {
     var z = UTIL.safeRandomCoordinate();
     return new THREE.Vector3( x, y, z );
 };
+
+UTIL.safeInnerPlayerPosition = function UTILsafeInnerPlayerPosition() {
+    var x = UTIL.safeRandomCoordinate(5);
+    var y = UTIL.safeRandomCoordinate(5);
+    var z = UTIL.safeRandomCoordinate(5);
+    return new THREE.Vector3( x, y, z );
+};
+
 
 UTIL.trimPosition = function UTILTrimPosition(position, trim) {
     return {

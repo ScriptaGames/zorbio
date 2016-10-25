@@ -183,7 +183,7 @@ var AppServer = function (id, app, server_label, port) {
         }
 
         function handle_msg_respawn() {
-            var position = UTIL.safePlayerPosition();
+            var position = UTIL.safeInnerPlayerPosition();
 
             if (currentPlayer && self.isPlayerInGame(currentPlayer.id)) {
                 // make sure this player isn't already connected and playing
