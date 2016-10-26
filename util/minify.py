@@ -31,7 +31,7 @@ for script_tag in first_children:
 
 # Generate the minified files and move them to the right location
 subprocess.call('uglifyjs ' + third_party_scripts + ' -o js/third.min.js', shell=True)
-subprocess.call('uglifyjs ' + first_party_scripts + ' -o js/first.min.js -e -m -c', shell=True)
+subprocess.call('uglifyjs ' + first_party_scripts + ' -o js/first.min.js -e -m -c --mangle-props --mangle-regex="/^z_|^ZOR/"', shell=True)
 
 # Replace the script divs with a single script tag for the minified files
 new_third_tag = soup.new_tag("script", src='js/third.min.js')
