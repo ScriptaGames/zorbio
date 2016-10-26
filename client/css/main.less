@@ -524,6 +524,22 @@ button {
     width: 100%;
 }
 
+#instructions {
+
+    font-size: @font-size-base * 0.5;
+
+    .key {
+        display: inline-block;
+        color: @accent-color;
+        background-color: darken(@primary-color, 16%);
+        border-radius: 3px;
+    }
+}
+
+#social {
+    opacity: 0.7;
+}
+
 * {
     user-select: none;
     cursor: url('../images/cursor.png') -4 -4, crosshair;
