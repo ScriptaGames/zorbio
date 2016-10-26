@@ -339,6 +339,10 @@ input:focus {
 .greybox-wrapper .greybox p {
   text-align: center;
   font-size: 15px;
+  margin-bottom: 1rem;
+}
+.greybox-wrapper .greybox p:last-child {
+  margin-bottom: 0;
 }
 button:focus {
   outline: none;
@@ -523,6 +527,10 @@ button:active {
 #config .greybox p {
   text-align: center;
   font-size: 15px;
+  margin-bottom: 1rem;
+}
+#config .greybox p:last-child {
+  margin-bottom: 0;
 }
 #thanks-list {
   zoom: 1;
@@ -580,11 +588,14 @@ button:active {
 #tutorial #tutorial-content {
   text-align: center;
 }
+#tutorial p {
+  font-size: 21px;
+}
 #tutorial .key {
-  display: inline-block;
   color: #0B7BF4;
   background-color: #cecece;
   border-radius: 3px;
+  padding: 2px;
 }
 @-webkit-keyframes pulseOpacity {
   from {

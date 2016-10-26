@@ -323,6 +323,10 @@ input {
         p {
             text-align: center;
             font-size: @font-size-base * 0.5;
+            margin-bottom: 1rem;
+            &:last-child {
+                margin-bottom: 0;
+            }
         }
 
     }
@@ -530,11 +534,15 @@ button {
         text-align: center;
     }
 
+    p {
+        font-size: 0.7 * @font-size-base;
+    }
+
     .key {
-        display: inline-block;
         color: @accent-color;
         background-color: darken(@primary-color, 16%);
         border-radius: 3px;
+        padding: 2px;
     }
 }
 
