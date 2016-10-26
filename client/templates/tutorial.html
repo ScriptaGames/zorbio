@@ -18,8 +18,10 @@
 
                 <p>Fly near larger players to drain some of their size.</p>
 
-                <p>Speed boost with <span class="key">W</span> or left mouse button.</p>
+                {{ #if !is_mobile }}
+                <p>Speed boost with <span class="key">W</span>{{ #if steering !== "drag" }} or left mouse button{{ /if }}.</p>
                 <p>Stop with <span class="key">S</span>.</p>
+                {{ /if }}
 
                 <p>Now go eat 'em up!</p>
 
