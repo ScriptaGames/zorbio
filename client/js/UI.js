@@ -328,14 +328,18 @@ ZOR.UI = function ZORUI() {
         });
 
         on( ACTIONS.SET_STEERING, function ZORSetSteering(e) {
-            if (e.original.target.value === 'follow') {
+            var value = e.original.target.value;
+            if (value === 'follow') {
                 config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
                 localStorage.steering = 'follow';
             }
-            else if (e.original.target.value === 'drag') {
+            else if (value === 'drag') {
                 config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
                 localStorage.steering = 'drag';
             }
+            else { return }
+
+            engine.set('steering', value);
         });
 
         // state change events
