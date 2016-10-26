@@ -61,6 +61,7 @@ ZOR.UI = function ZORUI() {
         TOGGLE_OWN_TRAIL         : 'toggle-own-trail',
         VOLUME_MUSIC             : 'volume-music',
         VOLUME_SFX               : 'volume-sfx',
+        SET_STEERING             : 'set-steering',
 
         SET_SKIN                 : 'set-skin',
     };
@@ -93,6 +94,7 @@ ZOR.UI = function ZORUI() {
         flip_x           : JSON.parse(localStorage.flip_x || "false"),
         flip_y           : JSON.parse(localStorage.flip_y || "false"),
         hide_own_trail   : JSON.parse(localStorage.hide_own_trail || "false"),
+        steering         : localStorage.steering || "follow",
         music_enabled    : config.MUSIC_ENABLED,
         volume           : {
             music : config.VOLUME_MUSIC_INITIAL,
@@ -325,6 +327,17 @@ ZOR.UI = function ZORUI() {
             localStorage.volume_sfx = vol;
         });
 
+        on( ACTIONS.SET_STEERING, function ZORSetSteering(e) {
+            if (e.original.target.value === 'follow') {
+                config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
+                localStorage.steering = 'follow';
+            }
+            else if (e.original.target.value === 'drag') {
+                config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
+                localStorage.steering = 'drag';
+            }
+        });
+
         // state change events
 
         on( ACTIONS.SHOW_MENU_GAME_SCREEN   , stateSetter( STATES.MENU_GAME_SCREEN ) );
@@ -364,6 +377,8 @@ ZOR.UI = function ZORUI() {
         });
 
         config.HIDE_OWN_TRAIL = JSON.parse(localStorage.hide_own_trail || "false") ? true : false;
+
+        config.STEERING = config.STEERING_METHODS["MOUSE_" + uidata.steering.toUpperCase()];
 
         config.X_AXIS_MULT = JSON.parse(localStorage.flip_x || "false") ? -1 : 1;
         config.Y_AXIS_MULT = JSON.parse(localStorage.flip_y || "false") ? -1 : 1;

@@ -487,7 +487,7 @@ function handleKeyup(evt) {
 function handleMouseDown(evt) {
     if (!gameStart || player.isDead) return;
 
-    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any) {
+    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
         if (player.isSpeedBoostReady()) {
             zorClient.z_sendSpeedBoostStart();
         }
@@ -497,7 +497,7 @@ function handleMouseDown(evt) {
 function handleMouseUp(evt) {
     if (!gameStart || player.isDead) return;
 
-    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any) {
+    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
         player.speedBoostStop();
         zorClient.z_sendSpeedBoostStop();
     }
