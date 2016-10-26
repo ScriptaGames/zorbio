@@ -21,7 +21,7 @@
     <input type="checkbox" {{ hide_own_trail ? 'checked' : '' }} on-click="{{ ACTIONS.TOGGLE_OWN_TRAIL }}" id="hide-own-trail">
     <label for="hide-own-trail">Hide own trail</label>
 </div>
-{{ #if state === STATES.MENU_CONFIG_SCREEN }}
+{{ #if state === STATES.MENU_CONFIG_SCREEN && !is_mobile }}
 <div>
     <select name="steering-method" id="steering-method" on-change="{{ ACTIONS.SET_STEERING }}">
         <option value="follow" {{ steering=='follow' ? 'selected' : '' }}>Follow</option>
