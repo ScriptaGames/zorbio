@@ -183,7 +183,7 @@ var AppServer = function (id, app, server_label, port) {
         }
 
         function handle_msg_respawn() {
-            var position = UTIL.randomHorizontalPosition();
+            var position = self.model.getSafeSpawnPosition(10);
 
             if (currentPlayer && self.isPlayerInGame(currentPlayer.id)) {
                 // make sure this player isn't already connected and playing
@@ -555,16 +555,20 @@ var AppServer = function (id, app, server_label, port) {
 
                 // Check if player capture should happen between these two players
                 var result = self.checkPlayerCapture(p1, p2);
-                if (result && result.targetPlayerId === p1.id) {
+                if (result) {
+                    self.capturePlayer(result.attackingPlayerId, result.targetPlayerId);
+
                     // p1 got captured so move to the next player
-                    break;
+                    if (result.targetPlayerId === p1.id) {
+                        break;
+                    }
                 }
             }
         }
     };
 
     /**
-     * Compares two players to see if a capture should occur and captues if true
+     * Compares two players to see if a capture should occur
      * @param p1
      * @param p2
      * @returns {*} returns folse if no capture, other wise the ids of attacking and target players
@@ -592,11 +596,9 @@ var AppServer = function (id, app, server_label, port) {
                 // if distance is less than radius of p2 and p2 larger than p1, p2 captures p1
 
                 if (distance < (p1_scale + config.PLAYER_CAPTURE_EXTRA_TOLERANCE) && p1_scale > p2_scale) {
-                    self.capturePlayer(p1.id, p2.id);
                     return {attackingPlayerId: p1.id, targetPlayerId: p2.id};
                 }
                 else if (distance < (p2_scale + config.PLAYER_CAPTURE_EXTRA_TOLERANCE) && p2_scale > p1_scale) {
-                    self.capturePlayer(p2.id, p1.id);
                     return {attackingPlayerId: p2.id, targetPlayerId: p1.id};
                 }
             }

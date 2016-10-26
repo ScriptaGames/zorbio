@@ -29,7 +29,7 @@ var foodController;
 var zorbioModel = new ZOR.Model();
 
 // Game websocket client
-var zorClient = new ZOR.ZORClient(zorbioModel, ZOR.ZORMessageHandler);
+var zorClient = new ZOR.ZORClient(ZOR.ZORMessageHandler);
 
 ZOR.Game.players = {};
 
@@ -80,8 +80,6 @@ function startGame(type) {
     }
 
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
-
-
 
     // Assign player meta data and save to local storage
     var colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
@@ -487,7 +485,7 @@ function handleKeyup(evt) {
 function handleMouseDown(evt) {
     if (!gameStart || player.isDead) return;
 
-    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any) {
+    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
         if (player.isSpeedBoostReady()) {
             zorClient.z_sendSpeedBoostStart();
         }
@@ -497,7 +495,7 @@ function handleMouseDown(evt) {
 function handleMouseUp(evt) {
     if (!gameStart || player.isDead) return;
 
-    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any) {
+    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
         player.speedBoostStop();
         zorClient.z_sendSpeedBoostStop();
     }

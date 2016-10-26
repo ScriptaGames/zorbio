@@ -19,7 +19,7 @@ var Bot = function (scale, model) {
     self.name = "AI " + _.sample(Bot.prototype.names);
     self.scale = scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);
 
-    var position = UTIL.randomWorldPosition();
+    var position = self.model.getSafeSpawnPosition(10);
 
     // Create the player model
     self.player = new Zorbio.Player(self.id, self.name, self.colorCode, Zorbio.PlayerTypes.BOT, position, self.scale, null, self.skin_name);

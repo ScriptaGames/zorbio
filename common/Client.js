@@ -19,10 +19,9 @@ if (NODEJS) {
  * @param handler
  * @constructor
  */
-ZOR.ZORClient = function ZORclient(model, handler) {
+ZOR.ZORClient = function ZORclient(handler) {
     this.z_zorPingDuration = -1;
     this.z_actorUpdateGap = 0;
-    this.z_model = model;
     this.z_handler = handler;
     this.z_rapidSendBuffer = new ArrayBuffer(20);
     this.z_rapidSendView = new Float32Array(this.z_rapidSendBuffer);
@@ -55,7 +54,7 @@ ZOR.ZORClient.prototype.z_sendEnterGame = function ZORsendEnterGame(meta) {
             type: meta.playerType,
             name: meta.playerName,
             color: meta.color,
-            skin: meta.skinName,
+            skin: meta.skin,
             key: meta.key
         }));
 
