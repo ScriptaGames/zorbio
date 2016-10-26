@@ -524,9 +524,11 @@ button {
     width: 100%;
 }
 
-#instructions {
+#tutorial {
 
-    font-size: @font-size-base * 0.5;
+    #tutorial-content {
+        text-align: center;
+    }
 
     .key {
         display: inline-block;
@@ -536,8 +538,48 @@ button {
     }
 }
 
+@keyframes pulseOpacity {
+    from {
+        opacity: auto;
+    }
+    to {
+        opacity: 1.0;
+    }
+}
+
 #social {
-    opacity: 0.7;
+    position: relative;
+    text-align: right;
+
+    a {
+        width: 38px;
+        height: 38px;
+        display: inline-block;
+        transition: opacity linear 0.1s;
+        opacity: 0.65;
+        &:hover {
+            opacity: 0.9;
+        }
+        &:active {
+            transform: scale3d(0.94, 0.94, 1);
+        }
+        img {
+            cursor: pointer;
+        }
+    }
+
+    .tutorial-btn {
+        &.first-visit {
+            animation-duration: 1.518s;
+            animation-name: pulseOpacity;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+        }
+        opacity: 0.3;
+
+        position: absolute;
+        left: 0;
+    }
 }
 
 * {

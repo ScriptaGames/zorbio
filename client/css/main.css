@@ -577,14 +577,67 @@ button:active {
 #respawn-button {
   width: 100%;
 }
-#instructions {
-  font-size: 15px;
+#tutorial #tutorial-content {
+  text-align: center;
 }
-#instructions .key {
+#tutorial .key {
   display: inline-block;
   color: #0B7BF4;
   background-color: #cecece;
   border-radius: 3px;
+}
+@-webkit-keyframes pulseOpacity {
+  from {
+    opacity: auto;
+  }
+  to {
+    opacity: 1.0;
+  }
+}
+@keyframes pulseOpacity {
+  from {
+    opacity: auto;
+  }
+  to {
+    opacity: 1.0;
+  }
+}
+#social {
+  position: relative;
+  text-align: right;
+}
+#social a {
+  width: 38px;
+  height: 38px;
+  display: inline-block;
+  -webkit-transition: opacity linear 0.1s;
+  transition: opacity linear 0.1s;
+  opacity: 0.65;
+}
+#social a:hover {
+  opacity: 0.9;
+}
+#social a:active {
+  -webkit-transform: scale3d(0.94, 0.94, 1);
+          transform: scale3d(0.94, 0.94, 1);
+}
+#social a img {
+  cursor: pointer;
+}
+#social .tutorial-btn {
+  opacity: 0.3;
+  position: absolute;
+  left: 0;
+}
+#social .tutorial-btn.first-visit {
+  -webkit-animation-duration: 1.518s;
+          animation-duration: 1.518s;
+  -webkit-animation-name: pulseOpacity;
+          animation-name: pulseOpacity;
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  -webkit-animation-direction: alternate;
+          animation-direction: alternate;
 }
 * {
   -webkit-user-select: none;

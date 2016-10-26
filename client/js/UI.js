@@ -34,7 +34,7 @@ ZOR.UI = function ZORUI() {
         KICKED_SCREEN       : 'kicked-screen',
         GAME_INIT_ERROR     : 'game-init-error',
         SERVER_MSG_SCREEN   : 'server-msg-screen',
-        TUTORIAL_SCREEN     : 'tutorial-screen',
+        TUTORIAL_SCREEN     : 'menu-tutorial-screen',
     };
 
     /**
