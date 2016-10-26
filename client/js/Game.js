@@ -29,7 +29,7 @@ var foodController;
 var zorbioModel = new ZOR.Model();
 
 // Game websocket client
-var zorClient = new ZOR.ZORClient(zorbioModel, ZOR.ZORMessageHandler);
+var zorClient = new ZOR.ZORClient(ZOR.ZORMessageHandler);
 
 ZOR.Game.players = {};
 
@@ -80,8 +80,6 @@ function startGame(type) {
     }
 
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
-
-
 
     // Assign player meta data and save to local storage
     var colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
