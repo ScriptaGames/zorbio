@@ -193,6 +193,80 @@ ZOR.Model.prototype.removePlayer = function ZORModelRemovePlayer(id) {
 };
 
 /**
+ * Returns the safest spawn position within a limited number of tries
+ * @param num_tries
+ */
+ZOR.Model.prototype.getSafeSpawnPosition = function ZORGetSafeSpawnPosition( num_tries ) {
+    num_tries = num_tries || 1;
+
+    var tried_positions = [];
+    var position = UTIL.randomHorizontalPosition();
+
+    if (this.players.length > 0) {
+        for (var i = 0; i < num_tries; i++) {
+            var nearest = this.findNearestPlayerSphere(position);
+
+            if (this.isSafeSpawnPosition(nearest)) {
+                return position;  // safe dist from everyone, use this position
+            }
+            else {
+                // to close to a player try a new one
+                tried_positions.push({position: position.clone(), near_distance: nearest.dist});
+                position = UTIL.randomHorizontalPosition();
+                console.log('Not a safe spawn position, trying a new one');
+            }
+        }
+
+        // couldn't find a safe position in the number of tries so return the one that was farthest away
+        tried_positions = _.sortBy(tried_positions, ['near_distance']);
+        position = tried_positions[tried_positions.length - 1].position;
+    }
+
+    return position;
+};
+
+/**
+ * Returns the distance to the nearest player form this position*
+ * @param position
+ * @returns {{sphere: null, dist: number}}
+ */
+ZOR.Model.prototype.findNearestPlayerSphere = function ZORfindNearestPlayerSphere( position ) {
+    var distance = 0;
+    var min_distance = 0;
+    var nearest_sphere = {sphere: null, dist: config.WORLD_SIZE};
+
+    // Iterate over players find closest one
+    for (var i = 0, l = this.players.length; i < l; i++) {
+        var player_sphere = this.players[i].sphere;
+
+        distance = position.distanceTo(player_sphere.position);
+        min_distance = distance / 3;
+
+        if (min_distance < nearest_sphere.dist) {
+            nearest_sphere.dist = min_distance;
+            nearest_sphere.sphere = player_sphere;
+        }
+    }
+
+    return nearest_sphere;
+};
+
+/**
+ * Returns true of this is a safe spawn position based on current player positions in the model
+ * @param nearest
+ * @returns {boolean}
+ */
+ZOR.Model.prototype.isSafeSpawnPosition = function ZORIsSafeSpawnPosition( nearest ) {
+
+    if (nearest.dist < nearest.sphere.scale && nearest.sphere.scale > config.INITIAL_PLAYER_RADIUS) {
+        return false;
+    }
+
+    return true;
+};
+
+
+/**
  * ZOR.ActorTypes is a lookup table (enum basically) of all the types of actors
  * in Zorbio.
  */
