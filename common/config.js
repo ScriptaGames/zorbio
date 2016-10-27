@@ -69,6 +69,8 @@ if (!NODEJS) {
             //TODO: Send to seprate balancer when they are available
             case 'london':
             case 'frankfurt':
+                balancer = 'london';
+                break;
             case 'singapore':
             case 'fremont':
             case 'dallas':
