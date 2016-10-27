@@ -12,7 +12,7 @@ global.playerDead = false;
 
 console.log("Starting headless zorbio node client...");
 
-var zorClient = new ZORClient(global.zorbioModel, handler);
+var zorClient = new ZORClient(handler);
 
 var playerMeta = {
     color: 3,
