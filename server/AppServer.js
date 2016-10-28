@@ -374,21 +374,13 @@ var AppServer = function (id, app, server_label, port) {
         }
 
         function handle_msg_speed_boost_start() {
-            self.log("Speed boost request received for player: ", currentPlayer.id);
-
             if (currentPlayer.abilities.speed_boost.activate(currentPlayer)) {
-
-                self.log("Speed boost START for player: ", currentPlayer.id);
-
                 // Tell client to activate speed boost
                 ws.send(JSON.stringify({op: "speed_boost_res", is_valid: true}));
-
             }
         }
 
         function handle_msg_speed_boost_stop() {
-            self.log("Speed boost STOP for player: ", currentPlayer.id);
-
             currentPlayer.abilities.speed_boost.deactivate();
         }
     };
