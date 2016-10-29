@@ -57,7 +57,7 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
         depthFunc      : THREE.LessDepth,
         depthTest      : false,
         depthWrite     : true,
-        blending       : THREE.AdditiveBlending,
+        blending       : config.THEME.BLEND,
         alphaTest      : 1.0,
         morphTargets   : true,
     });

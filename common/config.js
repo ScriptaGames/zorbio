@@ -192,10 +192,6 @@ config.MAX_PLAYER_NAME_LENGTH         = 15;     // How many characters can be in
 //                            GFX SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOG_ENABLED             = true;
-config.FOG_NEAR                = 100;
-config.FOG_FAR                 = 1000;
-config.FOG_COLOR               = THREE.ColorKeywords.black;
 config.INITIAL_CAMERA_DISTANCE = 50;
 config.WALL_GRID_SEGMENTS      = 20;
 config.INITIAL_FOV             = 50;
@@ -207,6 +203,27 @@ config.REQUIRED_WEBGL_EXTENSIONS = ['ANGLE_instanced_arrays'];
 config.TRAIL_LINE_LENGTH       = 40;
 config.TRAIL_LINE_WIDTH        = 0.3;
 config.CAPTURE_PARTICLE_ATTRACTION_SPEED = 0.994;
+config.THEMES = {
+    LIGHT: {
+        NAME: 'theme-light', // used for css selector
+        BG: '#f7f7f7',
+        WALL: 'textures/skybox_grid_white.png',
+        GEAR: 'images/gear-light-theme.svg',
+        BLEND: THREE.MultiplyBlending,
+    },
+    DARK: {
+        NAME: 'theme-dark', // used for css selector
+        BG: '#000000',
+        WALL: 'textures/skybox_grid_black.png',
+        GEAR: 'images/gear-dark-theme.svg',
+        BLEND: THREE.AdditiveBlending,
+    },
+};
+config.THEME = config.THEMES.LIGHT;
+config.FOG_ENABLED             = true;
+config.FOG_NEAR                = 100;
+config.FOG_FAR                 = 1000;
+config.FOG_COLOR               = config.THEME.BG;
 
 ////////////////////////////////////////////////////////////////////////
 //                            CAMERA SETTINGS                            //

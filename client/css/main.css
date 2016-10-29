@@ -113,7 +113,12 @@ input:focus {
   -ms-touch-action: none;
       touch-action: none;
   z-index: 10;
-  cursor: url('../images/cursor.png') -4 -4, crosshair;
+}
+#render-canvas.theme-light {
+  cursor: url('../images/cursor-light-theme.png') -4 -4, crosshair;
+}
+#render-canvas.theme-dark {
+  cursor: url('../images/cursor-dark-theme.png') -4 -4, crosshair;
 }
 #render-canvas,
 #ui-overlay {

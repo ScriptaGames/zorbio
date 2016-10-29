@@ -93,7 +93,12 @@ input {
     padding      : 0;
     touch-action : none;
     z-index      : 10;
-    cursor       : url('../images/cursor.png') -4 -4, crosshair;
+    &.theme-light {
+        cursor       : url('../images/cursor-light-theme.png') -4 -4, crosshair;
+    }
+    &.theme-dark {
+        cursor       : url('../images/cursor-dark-theme.png') -4 -4, crosshair;
+    }
 }
 
 
