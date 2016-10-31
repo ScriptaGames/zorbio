@@ -115,7 +115,7 @@ config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
     var s = config.MAX_PLAYER_SPEED;
     return s - ((r * s) / config.STATIONARY_RADIUS);
 };
-config.PLAYER_GET_SCORE      = function PlayerGetScore( radius ) {
+config.GET_PADDED_INT      = function PlayerGetScore( radius ) {
     return Math.floor(radius * 10);
 };
 config.AUTO_RUN_ENABLED      = true;

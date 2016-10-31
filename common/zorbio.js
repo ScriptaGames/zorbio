@@ -447,6 +447,7 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     });
 
     // Stats
+    this.score = this.sphere.scale;
     this.foodCaptures = 0;
     this.playerCaptures = 0;
     this.drainAmount = 0;
@@ -496,7 +497,7 @@ ZOR.Player.prototype.getMetrics = function ZORPlayerGetMetrics() {
 };
 
 ZOR.Player.prototype.getScore = function ZORPlayerGetScore() {
-    return config.PLAYER_GET_SCORE(this.sphere.scale);
+    return config.GET_PADDED_INT( this.score );
 };
 
 /**

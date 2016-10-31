@@ -109,6 +109,7 @@ ZOR.Schemas = function ZORSchemas() {
         drain_ammount: "varuint",
         time_alive: "varuint",
         score: "varuint",
+        size: "varuint",
     };
 
     var op_tick_slow = {

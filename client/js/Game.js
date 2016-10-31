@@ -98,7 +98,7 @@ function startGame(type) {
 
     // Initialize player size ui element
     ZOR.UI.engine.set('player_color', colorCode);
-    ZOR.UI.engine.set('player_size', config.PLAYER_GET_SCORE(config.INITIAL_PLAYER_RADIUS));
+    ZOR.UI.engine.set('player_size', config.GET_PADDED_INT(config.INITIAL_PLAYER_RADIUS));
 
     // Schedule one time Google Analytics tracking for Ping and FPS
     setTimeout(gaPerformanceMetrics, 15000);
@@ -353,10 +353,10 @@ function updateActors() {
 updateActors.runningActorUpdateGap = config.TICK_FAST_INTERVAL;
 
 function updatePlayerSizeUI() {
-    var currentScore = player.getScore();
-    if (currentScore != player.lastScore) {
-        ZOR.UI.engine.set('player_size', currentScore);
-        player.lastScore = currentScore;
+    var currentSize = player.getSize();
+    if (currentSize != player.lastSize) {
+        ZOR.UI.engine.set('player_size', currentSize);
+        player.lastSize = currentSize;
     }
 }
 var throttledUpdatePlayerSizeUI = _.throttle(updatePlayerSizeUI, 70);
@@ -379,11 +379,11 @@ function updateTargetLock() {
 
                 if (pointedPlayer) {
                     var target_changed = player.getTargetLock() !== playerMesh.player_id;
-                    var currentScore = pointedPlayer.getScore();
+                    var currentSize = pointedPlayer.getSize();
 
                     var target = {
                         name: pointedPlayer.model.name,
-                        score: currentScore,
+                        size: currentSize,
                         color: pointedPlayer.model.sphere.color
                     };
 
@@ -391,13 +391,13 @@ function updateTargetLock() {
                         // Set new target
                         player.setTargetLock(playerMesh.player_id);
                         ZOR.UI.engine.set('target', target);
-                        pointedPlayer.lastScore = currentScore;
+                        pointedPlayer.lastSize = currentSize;
                         clearTimeout(ZOR.UI.target_clear_timeout_id);
                     }
-                    else if (currentScore != pointedPlayer.lastScore) {
+                    else if (currentSize != pointedPlayer.lastSize) {
                         // Update target score
-                        ZOR.UI.engine.set('target', { name: pointedPlayer.model.name, score: currentScore, color: pointedPlayer.model.sphere.color });
-                        pointedPlayer.lastScore = currentScore;
+                        ZOR.UI.engine.set('target', target);
+                        pointedPlayer.lastSize = currentSize;
                     }
                 }
             }
@@ -647,7 +647,7 @@ function handleDeath(msg) {
 
     var attackingPlayer = zorbioModel.getPlayerById(attackingPlayerId);
     var attackingActor = zorbioModel.getActorById(attackingPlayer.sphere.id);
-    attackingPlayer.score = config.PLAYER_GET_SCORE(attackingActor.scale);
+    attackingPlayer.size = config.GET_PADDED_INT(attackingActor.scale);
 
     // Set finaly data about the player from the server
     var playerStats = {
@@ -655,6 +655,7 @@ function handleDeath(msg) {
         foodCaptures: msg.food_captures,
         playerCaptures: msg.player_captures,
         score: msg.score,
+        size: msg.size,
     };
 
     // stop woosh in case player was speed boosting
