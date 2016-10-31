@@ -32,6 +32,7 @@ var zorbioModel = new ZOR.Model();
 var zorClient = new ZOR.ZORClient(ZOR.ZORMessageHandler);
 
 ZOR.Game.players = {};
+ZOR.Game.dead_players = {};  // hold dead player views while they finish death animations
 
 ZOR.Game.player_meshes = [];
 
@@ -217,6 +218,8 @@ function createScene() {
 
         updateActors();
 
+        updateDeadPlayers();
+
         if (gameStart && !player.isDead) {
             fogCenter = player.view.mainSphere.position;
 
@@ -350,7 +353,16 @@ function updateActors() {
         }
     });
 }
-updateActors.runningActorUpdateGap = config.TICK_FAST_INTERVAL;
+
+function updateDeadPlayers() {
+    var dead_player_ids = Object.getOwnPropertyNames( ZOR.Game.dead_players );
+    for (var i = 0, l = dead_player_ids.length; i < l; i++) {
+        var deadPlayer = ZOR.Game.dead_players[dead_player_ids[i]];
+        if (deadPlayer && deadPlayer.view) {
+            deadPlayer.view.update();  // update the dead player view for death particle effect
+        }
+    }
+}
 
 function updatePlayerSizeUI() {
     var currentScore = player.getScore();
@@ -538,23 +550,29 @@ function keyReleased(key) {
 }
 
 function removePlayerFromGame(playerId, time) {
-    var thePlayer = ZOR.Game.players[playerId];
+    var deadPlayer = ZOR.Game.players[playerId];
+
+    // safe reference to dead player to finish death FX e.g. particle explosion
+    ZOR.Game.dead_players[playerId] = deadPlayer;
+
+    // remove player from model
+    zorbioModel.removePlayer(playerId);
+
+    // remove from player controllers
+    delete ZOR.Game.players[playerId];
 
     setTimeout(function removePlayerNow() {
-        // remove player from model
-        zorbioModel.removePlayer(playerId);
-
         // remove player from scene and client
-        if (thePlayer) {
-            if (thePlayer.view) {
+        if (deadPlayer) {
+            if (deadPlayer.view) {
                 // Remove player from the scene
-                thePlayer.removeView();
+                deadPlayer.removeView();
             }
 
             // remove from player controllers
-            delete ZOR.Game.players[playerId];
+            delete ZOR.Game.dead_players[playerId];
         }
-        console.log('Removed player: ', playerId);
+        console.log('Removed dead player: ', playerId);
     }, time);
 }
 
