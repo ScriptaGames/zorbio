@@ -111,6 +111,7 @@ ZOR.PlayerController.prototype.refreshSphereModel = function ZORPlayerController
 };
 
 ZOR.PlayerController.prototype.handleCapture = function ZORPlayerControllerHandleCapture() {
+    this.isDead = true;
     this.view.handleCapture();
 };
 
