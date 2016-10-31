@@ -355,6 +355,7 @@ updateActors.runningActorUpdateGap = config.TICK_FAST_INTERVAL;
 function updatePlayerSizeUI() {
     var currentSize = player.getSize();
     if (currentSize != player.lastSize) {
+        ZOR.UI.engine.set('player_score', player.getScore());
         ZOR.UI.engine.set('player_size', currentSize);
         player.lastSize = currentSize;
     }
@@ -380,11 +381,17 @@ function updateTargetLock() {
                 if (pointedPlayer) {
                     var target_changed = player.getTargetLock() !== playerMesh.player_id;
                     var currentSize = pointedPlayer.getSize();
+                    var warning = 'Danger!';
+
+                    if (currentSize < player.getSize()) {
+                        warning = 'Can eat'
+                    }
 
                     var target = {
                         name: pointedPlayer.model.name,
                         size: currentSize,
-                        color: pointedPlayer.model.sphere.color
+                        color: pointedPlayer.model.sphere.color,
+                        warning: warning,
                     };
 
                     if (target_changed) {
@@ -567,12 +574,22 @@ function handleServerTick(serverTickData) {
         if (clientPlayer) {
             leader.name = clientPlayer.model.name;
             leader.color = clientPlayer.model.sphere.color;
+
+            // Sync own score
+            if (leader.player_id === player.getPlayerId()) {
+                player.setScore(leader.score);
+            }
         }
         else {
             leader.name = '';
             leader.color = 1;
         }
     });
+
+    // Trim leaders that will be displayed in the UI
+    if (serverTickData.leaders.length > config.LEADERS_LENGTH) {
+        serverTickData.leaders.length = config.LEADERS_LENGTH;
+    }
 
     ZOR.UI.engine.set( 'leaders', serverTickData.leaders );
     ZOR.UI.data.leaders = serverTickData.leaders;

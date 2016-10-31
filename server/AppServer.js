@@ -771,9 +771,6 @@ var AppServer = function (id, app, server_label, port) {
 
         // Prepare leaders array
         self.model.leaders.reverse();  // reverse for descending order
-        if (self.model.leaders.length > config.LEADERS_LENGTH) {
-            self.model.leaders.length = config.LEADERS_LENGTH;
-        }
     };
 
     /**
