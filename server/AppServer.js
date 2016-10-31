@@ -242,7 +242,7 @@ var AppServer = function (id, app, server_label, port) {
 
                     var playerCount = self.model.players.length;
                     self.log('Player ' + currentPlayer.id + ' joined game!');
-                    self.log('Total players: ' + playerCount);
+                    self.log('Total real players: ' + self.model.getRealPlayers().length);
 
                     // see if we need to remove a bot
                     if (self.botController.hasBots() && playerCount > config.MAX_BOTS) {
