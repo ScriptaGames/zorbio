@@ -15,6 +15,7 @@ ZOR.PlayerController = function ZORPlayerController(model, scene, current) {
     this.is_current_player = current || false;
     this.lastSize = 0;  // last reported size, used to only update UI when there is a change
     this.score = this.model.getScore();
+    this.lastScore = this.score;
 
     this.move_forward_v = new THREE.Vector3();
     this.move_backward_v = new THREE.Vector3();

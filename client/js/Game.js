@@ -353,10 +353,13 @@ function updateActors() {
 updateActors.runningActorUpdateGap = config.TICK_FAST_INTERVAL;
 
 function updatePlayerSizeUI() {
+    var currentScore = player.getScore();
     var currentSize = player.getSize();
-    if (currentSize != player.lastSize) {
+
+    if (currentScore != player.lastScore || currentSize != player.lastSize) {
         ZOR.UI.engine.set('player_score', player.getScore());
         ZOR.UI.engine.set('player_size', currentSize);
+        player.lastScore = currentScore;
         player.lastSize = currentSize;
     }
 }
