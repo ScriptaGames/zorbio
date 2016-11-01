@@ -1,5 +1,5 @@
 {{ #if target }}
 <div id="targets">
-    <span style="color: {{ COLORS[target.color] }}"> {{ target.name }} &nbsp <span style="white-space: nowrap">[ {{ target.warning }} ]</span> </span>
+    <span style="color: {{ COLORS[target.color] }}"> {{ target.name }} &nbsp <span style="white-space: nowrap;">[ <span style=" color: {{ COLORS[target.warning_color] }}">{{ target.warning }}</span> ]</span> </span>
 </div>
 {{ /if }}

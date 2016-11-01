@@ -188,13 +188,8 @@ function createScene() {
         scene.add( skybox );
 
         // lights
-
         var light = new THREE.AmbientLight( 0x222222 );
         scene.add( light );
-
-        // drain view
-
-        //drainView = new ZOR.DrainView(scene);
 
         window.addEventListener( 'resize', onWindowResize, false );
     }
@@ -385,10 +380,16 @@ function updateTargetLock() {
                 if (pointedPlayer) {
                     var target_changed = player.getTargetLock() !== playerMesh.player_id;
                     var currentSize = pointedPlayer.getSize();
-                    var warning = 'Danger!';
+                    var warning = 'Caution';
+                    var warning_color = 11;
 
-                    if (currentSize < player.getSize()) {
-                        warning = 'Can eat'
+                    if (currentSize < player.getSize() - 10) {
+                        warning = 'Can eat';
+                        warning_color = 9;
+                    }
+                    else if (currentSize > player.getSize()) {
+                        warning = 'Danger';
+                        warning_color = 14;
                     }
 
                     var target = {
@@ -396,6 +397,7 @@ function updateTargetLock() {
                         size: currentSize,
                         color: pointedPlayer.model.sphere.color,
                         warning: warning,
+                        warning_color: warning_color,
                     };
 
                     if (target_changed) {
