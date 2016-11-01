@@ -366,6 +366,11 @@ var AppServer = function (id, app, server_label, port) {
                     delete self.socket_uuid_map[player_id];
                 }
 
+                // Save their score to leaderboard if they were in game and got any points
+                if (currentPlayer && currentPlayer.getScore() > config.INITIAL_PLAYER_SCORE) {
+                    self.backend.saveScore('zorbio', currentPlayer.name, currentPlayer.getScore());
+                }
+
                 self.replenishBot();
             }
             else {
@@ -656,9 +661,10 @@ var AppServer = function (id, app, server_label, port) {
 
             self.clients[self.socket_uuid_map[targetPlayerId]].send(buffer);
 
-            // Save score to leaderboard
-            self.backend.saveScore('zorbio', targetPlayer.name, score);
-
+            // Save score to leaderboard if they got any points
+            if (score > config.INITIAL_PLAYER_SCORE) {
+                self.backend.saveScore('zorbio', targetPlayer.name, score);
+            }
         }
         else {
             self.replenishBot();
