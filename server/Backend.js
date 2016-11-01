@@ -44,6 +44,8 @@ Backend.prototype.saveGameInstanceStatus = function BackendSaveGameInstanceStatu
 };
 
 Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, score) {
+    if (!config.ENABLE_BACKEND_SERVICE) return;
+
     var result = '';
     var jsonResponse;
 
