@@ -655,6 +655,10 @@ var AppServer = function (id, app, server_label, port) {
             var buffer = Schemas.youDied.encode(msgObj);
 
             self.clients[self.socket_uuid_map[targetPlayerId]].send(buffer);
+
+            // Save score to leaderboard
+            self.backend.saveScore('zorbio', targetPlayer.name, score);
+
         }
         else {
             self.replenishBot();
