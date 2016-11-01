@@ -115,9 +115,10 @@ config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
     var s = config.MAX_PLAYER_SPEED;
     return s - ((r * s) / config.STATIONARY_RADIUS);
 };
-config.PLAYER_GET_SCORE      = function PlayerGetScore( radius ) {
+config.GET_PADDED_INT      = function PlayerGetScore( radius ) {
     return Math.floor(radius * 10);
 };
+config.INITIAL_PLAYER_SCORE  = config.GET_PADDED_INT(config.INITIAL_PLAYER_RADIUS);
 config.AUTO_RUN_ENABLED      = true;
 config.STEERING_METHODS      = Object.freeze({ // enum-ish
     MOUSE_DRAG: {

@@ -9,6 +9,12 @@ Absorb the Orbs!
 Install package dependancies:
 
     dnf install nodejs js-devel fedora-packager @development-tools gcc-c++
+    
+Optional dependancies:
+
+If you want to use the backend service to App42 you'll need php
+
+    dnf install php
 
 After cloning the repository, cd into it and install dependencies:
 

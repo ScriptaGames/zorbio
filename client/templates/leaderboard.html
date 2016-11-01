@@ -1,5 +1,9 @@
 <div id="leaderboard-playing">
     <div id="leaders" class="{{ is_mobile ? 'mobile' : '' }}">
+        <div class="leaderboard-leader" >
+            <span class="leaderboard-score">Score</span>
+            &nbsp;
+        </div>
         {{ #each leaders:i }}
         <div class="leaderboard-leader" style="color: {{ COLORS[leaders[i].color] }}">
             <span class="leaderboard-score">{{ leaders[i].score }}</span>

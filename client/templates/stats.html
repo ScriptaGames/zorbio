@@ -1,8 +1,9 @@
 <div id="leaders" class="{{ is_mobile ? 'mobile' : '' }}">
     <ul>
-        <li> Final Size: {{ player.score }} </li>
+        <li> Final Score: {{ player.score }} </li>
+        <li> Final Size: {{ player.size }} </li>
         <li> Food captures: {{ player.foodCaptures }} </li>
         <li> Player captures: {{ player.playerCaptures }} </li>
-        <li> Size gain from Siphon: {{ player.drainAmount }}</li>
+        <li> Size gain from Drain: {{ player.drainAmount }}</li>
     </ul>
 </div>

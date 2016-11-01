@@ -366,6 +366,11 @@ var AppServer = function (id, app, server_label, port) {
                     delete self.socket_uuid_map[player_id];
                 }
 
+                // Save their score to leaderboard if they were in game and got any points
+                if (currentPlayer && currentPlayer.getScore() > config.INITIAL_PLAYER_SCORE) {
+                    self.backend.saveScore('zorbio', currentPlayer.name, currentPlayer.getScore());
+                }
+
                 self.replenishBot();
             }
             else {
@@ -441,6 +446,8 @@ var AppServer = function (id, app, server_label, port) {
                     drain_amount = Drain.amount(drain_target.dist);
 
                     drainer.growExpected(+drain_amount);
+                    player.score += drain_amount;
+
                     drainee.growExpected(-drain_amount);
 
                     player.drainAmount += +drain_amount;  // save drain amount stat
@@ -501,6 +508,7 @@ var AppServer = function (id, app, server_label, port) {
 
             // grow player on the server to track growth validation
             player.sphere.growExpected( food_value );
+            player.score += food_value;
 
             // Queue to notify clients of food capture so they can update their food view
             self.model.food_captured_queue.push(fi);
@@ -622,7 +630,9 @@ var AppServer = function (id, app, server_label, port) {
         // grow the attacking player the expected amount
         var attackingSphere = attackingPlayer.sphere;
         var targetSphere = targetPlayer.sphere;
-        attackingSphere.growExpected( config.PLAYER_CAPTURE_VALUE( targetSphere.radius() ) );
+        var amount = config.PLAYER_CAPTURE_VALUE( targetSphere.radius() );
+        attackingSphere.growExpected( amount );
+        attackingPlayer.score += amount;
 
         if (attackingPlayer.type != Zorbio.PlayerTypes.BOT) {
             // Inform the attacking player that they captured target player
@@ -632,8 +642,9 @@ var AppServer = function (id, app, server_label, port) {
         if (targetPlayer.type != Zorbio.PlayerTypes.BOT) {
             // Inform the target player that they died
             var time_alive = Math.floor((Date.now() - targetPlayer.spawnTime) / 1000);
-            var score = config.PLAYER_GET_SCORE( targetPlayer.sphere.scale );
-            var drain_amount = config.PLAYER_GET_SCORE( targetPlayer.drainAmount );
+            var score = targetPlayer.getScore();
+            var size = config.GET_PADDED_INT( targetSphere.scale );
+            var drain_amount = config.GET_PADDED_INT( targetPlayer.drainAmount );
 
             var msgObj = {
                 0: Schemas.ops.YOU_DIED,
@@ -643,11 +654,17 @@ var AppServer = function (id, app, server_label, port) {
                 drain_ammount: drain_amount,
                 time_alive: time_alive,
                 score: score,
+                size: size,
             };
 
             var buffer = Schemas.youDied.encode(msgObj);
 
             self.clients[self.socket_uuid_map[targetPlayerId]].send(buffer);
+
+            // Save score to leaderboard if they got any points
+            if (score > config.INITIAL_PLAYER_SCORE) {
+                self.backend.saveScore('zorbio', targetPlayer.name, score);
+            }
         }
         else {
             self.replenishBot();
@@ -764,9 +781,6 @@ var AppServer = function (id, app, server_label, port) {
 
         // Prepare leaders array
         self.model.leaders.reverse();  // reverse for descending order
-        if (self.model.leaders.length > config.LEADERS_LENGTH) {
-            self.model.leaders.length = config.LEADERS_LENGTH;
-        }
     };
 
     /**

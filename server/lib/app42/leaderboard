@@ -1,0 +1,51 @@
+#!/usr/bin/php
+<?php
+include_once __DIR__ . '/php_sdk/ScoreBoardService.php';
+include_once __DIR__ . '/php_sdk/App42BadParameterException.php';
+include_once __DIR__ . '/php_sdk/App42NotFoundException.php';
+include_once __DIR__ . '/php_sdk/App42SecurityException.php';
+include_once __DIR__ . '/php_sdk/App42Exception.php';
+
+
+class Leaderboard
+{
+    private $api_key;
+    private $api_secret;
+
+    function __construct($key, $secret)
+    {
+        $this->api_key = $key;
+        $this->api_secret = $secret;
+    }
+
+    public function saveScore($gameName, $userName, $score)
+    {
+        App42API::initialize($this->api_key, $this->api_secret);
+        $scoreBoardService = App42API::buildScoreBoardService();
+
+        try {
+            $game = $scoreBoardService->saveUserScore($gameName, $userName, $score);
+            $jsonResponse = $game->toString();
+            print($jsonResponse);
+        } catch (App42BadParameterException $ex) {
+            print("App42BadParameterException");
+            print_r($ex);
+        } catch (App42SecurityException $ex) {
+            print("App42SecurityException");
+            // Check for authorization Error due to invalid Public/Private Key
+            if ($ex->getAppErrorCode() == 1401) {
+                // Do exception Handling here
+                print("Invalid keys");
+            }
+        } catch (App42Exception $ex) {
+            print("App42Exception");
+            print_r($ex);
+        }
+    }
+}
+
+$leaderboard = new leaderboard($argv[1], $argv[2]);
+
+if ($argv[3] == 'save') {
+    $leaderboard->saveScore($argv[4], $argv[5], $argv[6]);
+}

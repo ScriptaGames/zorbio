@@ -13,7 +13,9 @@ ZOR.PlayerController = function ZORPlayerController(model, scene, current) {
         model.sphere.scale, model.sphere.velocity, model.sphere.skin);
     this.isDead = false;
     this.is_current_player = current || false;
-    this.lastScore = 0;  // last reported score, used to only update UI when there is a change
+    this.lastSize = 0;  // last reported size, used to only update UI when there is a change
+    this.score = this.model.getScore();
+    this.lastScore = this.score; // last reported score, used to only update UI when there is a change
 
     this.move_forward_v = new THREE.Vector3();
     this.move_backward_v = new THREE.Vector3();
@@ -59,7 +61,15 @@ ZOR.PlayerController.prototype.getSpeed = function ZORPlayerControllerGetSpeed()
 };
 
 ZOR.PlayerController.prototype.getScore = function ZORPlayerControllerGetScore() {
-    return this.model.getScore();
+    return this.score;
+};
+
+ZOR.PlayerController.prototype.setScore = function ZORPlayerControllerSetScore(score) {
+    return this.score = score;
+};
+
+ZOR.PlayerController.prototype.getSize = function ZORPlayerControllerGetSize() {
+    return config.GET_PADDED_INT( this.model.sphere.scale );
 };
 
 ZOR.PlayerController.prototype.setAlpha = function ZORPlayerControllerSetAlpha(alpha) {

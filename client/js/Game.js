@@ -99,7 +99,8 @@ function startGame(type) {
 
     // Initialize player size ui element
     ZOR.UI.engine.set('player_color', colorCode);
-    ZOR.UI.engine.set('player_size', config.PLAYER_GET_SCORE(config.INITIAL_PLAYER_RADIUS));
+    ZOR.UI.engine.set('player_score', config.GET_PADDED_INT(config.INITIAL_PLAYER_RADIUS));
+    ZOR.UI.engine.set('player_size', config.GET_PADDED_INT(config.INITIAL_PLAYER_RADIUS));
 
     // Schedule one time Google Analytics tracking for Ping and FPS
     setTimeout(gaPerformanceMetrics, 15000);
@@ -188,13 +189,8 @@ function createScene() {
         scene.add( skybox );
 
         // lights
-
         var light = new THREE.AmbientLight( 0x222222 );
         scene.add( light );
-
-        // drain view
-
-        //drainView = new ZOR.DrainView(scene);
 
         window.addEventListener( 'resize', onWindowResize, false );
     }
@@ -366,9 +362,13 @@ function updateDeadPlayers() {
 
 function updatePlayerSizeUI() {
     var currentScore = player.getScore();
-    if (currentScore != player.lastScore) {
-        ZOR.UI.engine.set('player_size', currentScore);
+    var currentSize = player.getSize();
+
+    if (currentScore != player.lastScore || currentSize != player.lastSize) {
+        ZOR.UI.engine.set('player_score', player.getScore());
+        ZOR.UI.engine.set('player_size', currentSize);
         player.lastScore = currentScore;
+        player.lastSize = currentSize;
     }
 }
 var throttledUpdatePlayerSizeUI = _.throttle(updatePlayerSizeUI, 70);
@@ -391,25 +391,38 @@ function updateTargetLock() {
 
                 if (pointedPlayer) {
                     var target_changed = player.getTargetLock() !== playerMesh.player_id;
-                    var currentScore = pointedPlayer.getScore();
+                    var currentSize = pointedPlayer.getSize();
+                    var warning = 'Caution';
+                    var warning_color = 11;
+
+                    if (currentSize < player.getSize() - 10) {
+                        warning = 'Can eat';
+                        warning_color = 9;
+                    }
+                    else if (currentSize > player.getSize()) {
+                        warning = 'Danger';
+                        warning_color = 14;
+                    }
 
                     var target = {
                         name: pointedPlayer.model.name,
-                        score: currentScore,
-                        color: pointedPlayer.model.sphere.color
+                        size: currentSize,
+                        color: pointedPlayer.model.sphere.color,
+                        warning: warning,
+                        warning_color: warning_color,
                     };
 
                     if (target_changed) {
                         // Set new target
                         player.setTargetLock(playerMesh.player_id);
                         ZOR.UI.engine.set('target', target);
-                        pointedPlayer.lastScore = currentScore;
+                        pointedPlayer.lastSize = currentSize;
                         clearTimeout(ZOR.UI.target_clear_timeout_id);
                     }
-                    else if (currentScore != pointedPlayer.lastScore) {
+                    else if (currentSize != pointedPlayer.lastSize) {
                         // Update target score
-                        ZOR.UI.engine.set('target', { name: pointedPlayer.model.name, score: currentScore, color: pointedPlayer.model.sphere.color });
-                        pointedPlayer.lastScore = currentScore;
+                        ZOR.UI.engine.set('target', target);
+                        pointedPlayer.lastSize = currentSize;
                     }
                 }
             }
@@ -585,12 +598,22 @@ function handleServerTick(serverTickData) {
         if (clientPlayer) {
             leader.name = clientPlayer.model.name;
             leader.color = clientPlayer.model.sphere.color;
+
+            // Sync own score
+            if (leader.player_id === player.getPlayerId()) {
+                player.setScore(leader.score);
+            }
         }
         else {
             leader.name = '';
             leader.color = 1;
         }
     });
+
+    // Trim leaders that will be displayed in the UI
+    if (serverTickData.leaders.length > config.LEADERS_LENGTH) {
+        serverTickData.leaders.length = config.LEADERS_LENGTH;
+    }
 
     ZOR.UI.engine.set( 'leaders', serverTickData.leaders );
     ZOR.UI.data.leaders = serverTickData.leaders;
@@ -665,7 +688,7 @@ function handleDeath(msg) {
 
     var attackingPlayer = zorbioModel.getPlayerById(attackingPlayerId);
     var attackingActor = zorbioModel.getActorById(attackingPlayer.sphere.id);
-    attackingPlayer.score = config.PLAYER_GET_SCORE(attackingActor.scale);
+    attackingPlayer.size = config.GET_PADDED_INT(attackingActor.scale);
 
     // Set finaly data about the player from the server
     var playerStats = {
@@ -673,6 +696,7 @@ function handleDeath(msg) {
         foodCaptures: msg.food_captures,
         playerCaptures: msg.player_captures,
         score: msg.score,
+        size: msg.size,
     };
 
     // stop woosh in case player was speed boosting
