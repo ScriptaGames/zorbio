@@ -98,6 +98,7 @@ function startGame(type) {
 
     // Initialize player size ui element
     ZOR.UI.engine.set('player_color', colorCode);
+    ZOR.UI.engine.set('player_score', config.GET_PADDED_INT(config.INITIAL_PLAYER_RADIUS));
     ZOR.UI.engine.set('player_size', config.GET_PADDED_INT(config.INITIAL_PLAYER_RADIUS));
 
     // Schedule one time Google Analytics tracking for Ping and FPS
