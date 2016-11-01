@@ -2,6 +2,7 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 
 var config = require('../common/config.js');
 var exec   = require('child_process').exec;
+var util   = require('util');
 
 // Current implmentating service: App42
 var App42 = require("./lib/app42/node_sdk/app42.js");
@@ -45,8 +46,13 @@ Backend.prototype.saveGameInstanceStatus = function BackendSaveGameInstanceStatu
 Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, score) {
     var result = '';
     var jsonResponse;
-    var command = 'server/lib/app42/leaderboard ' + process.env.APP42_API_KEY + ' ' + process.env.APP42_API_SECRET + ' save ' + gameName + ' ' + userName + ' ' + score;
-    var child = exec(command);
+
+    // Build the command
+    var command = util.format('server/lib/app42/leaderboard %s %s save %s %s %s',
+        process.env.APP42_API_KEY, process.env.APP42_API_SECRET, gameName, userName, score);
+
+    var child = exec(command);  // Execute command
+
     child.stdout.on('data', function (data) {
         result += data;
     });
