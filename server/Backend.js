@@ -66,7 +66,9 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
                 console.log("Successfully saved score: ", gameName, userName, score)
             }
         } catch (e) {
-            return console.error(e);
+            console.error('Caught exception parsing json response from leaderboard service: ');
+            console.error(result);
+            console.error(e);
         }
     });
 };
