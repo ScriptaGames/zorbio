@@ -50,7 +50,7 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
     var jsonResponse;
 
     // Build the command
-    var command = util.format('server/lib/app42/leaderboard %s %s save %s %s %s',
+    var command = util.format('server/lib/app42/leaderboard %s %s save %s "%s" %s',
         process.env.APP42_API_KEY, process.env.APP42_API_SECRET, gameName, userName, score);
 
     var child = exec(command);  // Execute command
