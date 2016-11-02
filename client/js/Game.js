@@ -637,6 +637,12 @@ function handleServerTick(serverTickData) {
     ZOR.expireLocks();
 }
 
+function handleLeaderboardUpdate(leaderboards) {
+    ZOR.Game.leaderboards = leaderboards;
+    console.log("Updating leaderboards");
+    ZOR.UI.engine.set('leaderboard', ZOR.Game.leaderboards);
+}
+
 /**
  * Current player has captured someone.
  */

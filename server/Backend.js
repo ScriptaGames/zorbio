@@ -82,9 +82,9 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
  * @param limit
  * @param startDate
  * @param endDate
- * @param callback
+ * @param successCallback
  */
-Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, limit, startDate, endDate, callback) {
+Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, limit, startDate, endDate, successCallback) {
     if (!config.ENABLE_BACKEND_SERVICE) return;
 
     var result = '';
@@ -106,7 +106,19 @@ Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, 
         try {
             jsonResponse = JSON.parse(result);
             if (jsonResponse && jsonResponse.app42.response.success === true) {
-                callback(jsonResponse.app42.response.games.game.scores.score);
+                var leaders = jsonResponse.app42.response.games.game.scores.score;
+                var filteredLeaders = [];
+
+                // Filter out the meta data like date and score id, all we want is the name and the score
+                leaders.forEach(function eachLeader(leader) {
+                    var filteredLeader = {
+                        name: leader.userName,
+                        score: leader.value,
+                    };
+                    filteredLeaders.push(filteredLeader);
+                });
+
+                successCallback(filteredLeaders);
             }
         } catch (e) {
             console.error('Caught exception parsing json response from leaderboard service: ');

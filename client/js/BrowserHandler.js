@@ -93,6 +93,10 @@ ZOR.ZORMessageHandler.z_handle_server_tick = function ZORHandleServerTick(data) 
     handleServerTick(data);
 };
 
+ZOR.ZORMessageHandler.z_handle_leaderboard_update = function ZORHandLeaderboardUpdate(data) {
+    handleLeaderboardUpdate(data);
+};
+
 ZOR.ZORMessageHandler.z_handle_captured_player = function ZORHandleCapturePlayer(targetPlayerId) {
     if (!gameStart) return;
 

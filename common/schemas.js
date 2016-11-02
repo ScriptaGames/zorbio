@@ -52,6 +52,11 @@ ZOR.Schemas = function ZORSchemas() {
         score: "varuint",
     };
 
+    var leaderboard_leader = {
+        name: "string",
+        score: "varuint",
+    };
+
     var tick_slow_data =  {
         fr: ["varuint"],
         fc: ["varuint"],
@@ -117,6 +122,17 @@ ZOR.Schemas = function ZORSchemas() {
         tick_data: tick_slow_data,
     };
 
+    var op_leaderboards_request = {
+        0: "uint8",
+    };
+
+    var op_leaderboards_update = {
+        0: "uint8",
+        leaders_1_day: [leaderboard_leader],
+        leaders_7_day: [leaderboard_leader],
+        leaders_30_day: [leaderboard_leader],
+    };
+
     var ops = {
         INIT_GAME: 1,
         ACTOR_UPDATES: 2,
@@ -125,6 +141,8 @@ ZOR.Schemas = function ZORSchemas() {
         YOU_DIED: 5,
         WELCOME: 6,
         CLIENT_POSITION_RAPID: 7,
+        LEADERBOARDS_REQUEST: 8,
+        LEADERBOARDS_UPDATE: 9,
     };
 
     return {
@@ -135,6 +153,8 @@ ZOR.Schemas = function ZORSchemas() {
         tickSlowSchema: schemapack.build(op_tick_slow),
         youDied: schemapack.build(op_you_died),
         welcomeSchema: schemapack.build(op_welcome),
+        leaderboardRequestSchema: schemapack.build(op_leaderboards_request),
+        leaderboardUpdateSchema: schemapack.build(op_leaderboards_update),
     }
 }();
 

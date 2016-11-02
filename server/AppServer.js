@@ -37,8 +37,9 @@ var AppServer = function (id, app, server_label, port) {
     self.backend = new Backend();
 
     // Leaderboards
-    self.leaders_today = [];
-    self.leaders_seven_days = [];
+    self.leaders_1_day  = [];
+    self.leaders_7_day  = [];
+    self.leaders_30_day = [];
 
     /**
      * Console.log wrapper so we can include instance id for filtering
@@ -149,14 +150,19 @@ var AppServer = function (id, app, server_label, port) {
                 }
             }
             else {
-                // Read binary data
-                var op = msg.readFloatLE(0);
-                if (op === Schemas.ops.CLIENT_POSITION_RAPID) {
-                    handle_client_position_rapid(msg);
+                // Read firs byte from buffer
+                var op = msg.readUInt8(0);
+                if (op === Schemas.ops.PLAYER_UPDATE) {
+                    handle_msg_player_update(msg);
+                }
+                else if (op === Schemas.ops.LEADERBOARDS_REQUEST) {
+                    handle_leaderboard_request();
                 }
                 else {
-                    // Route binary message
-                    handle_msg_player_update(msg);
+                    op = msg.readFloatLE(0);
+                    if (op === Schemas.ops.CLIENT_POSITION_RAPID) {
+                        handle_client_position_rapid(msg);
+                    }
                 }
             }
         });
@@ -287,6 +293,18 @@ var AppServer = function (id, app, server_label, port) {
                 // TODO: figure out something better that's scalable
                 // self.broadcast(rapidBuffer);
             }
+        }
+
+        function handle_leaderboard_request() {
+            var responseMsg = {
+                0: Schemas.ops.LEADERBOARDS_UPDATE,
+                leaders_1_day: self.leaders_1_day,
+                leaders_7_day: self.leaders_7_day,
+                leaders_30_day: self.leaders_30_day,
+            };
+
+            var responseBuffer = Schemas.leaderboardUpdateSchema.encode( responseMsg );
+            ws.send(responseBuffer);
         }
 
         function handle_msg_player_update(buffer) {
@@ -907,13 +925,15 @@ var AppServer = function (id, app, server_label, port) {
     }
 
     // Get leaders
-    self.backend.getLeadersByDate('zorbio', 10, 'today', 'now', function todayLeaders(leaders) {
-        self.leaders_today = leaders;
+    self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, 'today', 'now', function todayLeaders(leaders) {
+        self.leaders_1_day = leaders;
     });
-    self.backend.getLeadersByDate('zorbio', 10, '-7 days', 'now', function sevenDayLeaders(leaders) {
-        self.leaders_seven_days = leaders;
+    self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-7 days', 'now', function sevenDayLeaders(leaders) {
+        self.leaders_7_day = leaders;
     });
-
+    self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-30 days', 'now', function sevenDayLeaders(leaders) {
+        self.leaders_30_day = leaders;
+    });
 };
 
 if (NODEJS) module.exports = AppServer;
