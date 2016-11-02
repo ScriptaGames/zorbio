@@ -166,9 +166,6 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
         self.z_NB_SRVID = msg.NB_SRVID;  // Linode nodebalancer node id that handled this socket connection
 
         self.z_handler.z_handle_init_game(msg.model);
-
-        // now fetch the leaderboards
-        self.z_sendLeaderboardsRequest();
     }
 
     function handle_msg_welcome(msg) {

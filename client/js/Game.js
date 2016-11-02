@@ -123,8 +123,10 @@ function createScene() {
     // turns into a noop afterwards.
     var revealCanvas = _.after(4, function () {
         canvas.classList.add('active');
-        ZOR.UI.engine.set('playable', true);
     });
+
+    ZOR.UI.engine.set('playable', true);
+    ZOR.UI.engine.fire(ZOR.UI.ACTIONS.UPDATE_LEADERBOARD, zorClient);
 
     try {
         init();
@@ -638,9 +640,8 @@ function handleServerTick(serverTickData) {
 }
 
 function handleLeaderboardUpdate(leaderboards) {
-    ZOR.Game.leaderboards = leaderboards;
     console.log("Updating leaderboards");
-    ZOR.UI.engine.set('leaderboard', ZOR.Game.leaderboards);
+    ZOR.UI.engine.set('leaderboard', leaderboards);
 }
 
 /**

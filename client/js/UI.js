@@ -53,6 +53,8 @@ ZOR.UI = function ZORUI() {
         SHOW_PLAYING_CONFIG      : 'show-playing-config',
         SHOW_PREVIOUS            : 'show-previous',
 
+        UPDATE_LEADERBOARD       : 'update-leaderboard',
+
         SHOW_MENU_GAME_SCREEN    : 'show-menu-game-screen',
         SHOW_MENU_STORE_SCREEN   : 'show-menu-store-screen',
         SHOW_MENU_CONFIG_SCREEN  : 'show-menu-config-screen',
@@ -349,6 +351,9 @@ ZOR.UI = function ZORUI() {
 
         // state change events
 
+        on( ACTIONS.UPDATE_LEADERBOARD, function ZORUpdateLeaderboard(client) {
+            client.z_sendLeaderboardsRequest();
+        });
         on( ACTIONS.SHOW_MENU_GAME_SCREEN   , stateSetter( STATES.MENU_GAME_SCREEN ) );
         on( ACTIONS.SHOW_MENU_GAME_SCREEN   , stateSetter( STATES.MENU_GAME_SCREEN ) );
         on( ACTIONS.SHOW_MENU_STORE_SCREEN  , stateSetter( STATES.MENU_STORE_SCREEN ) );

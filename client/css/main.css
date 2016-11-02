@@ -598,6 +598,7 @@ button:active {
   padding: 2px;
 }
 #leaderboard table {
+  font-size: 21px;
   width: 100%;
 }
 #leaderboard table thead {

@@ -9,10 +9,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{ #each leaderboard:i }}
+                    {{ #each leaderboard.leaders_1_day:i }}
                     <tr>
-                        <td class="leaderboard-name">{{ leaderboard[i].name }}</td>
-                        <td class="leaderboard-score">{{ numberCommas(leaderboard[i].score) }}</td>
+                        <td class="leaderboard-name">{{ leaderboard.leaders_1_day[i].name }}</td>
+                        <td class="leaderboard-score">{{ numberCommas(leaderboard.leaders_1_day[i].score) }}</td>
                     </tr>
                     {{ /each }}
                 </tbody>
