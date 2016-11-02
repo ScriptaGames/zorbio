@@ -641,7 +641,7 @@ function handleServerTick(serverTickData) {
 
 function handleLeaderboardUpdate(leaderboards) {
     console.log("Updating leaderboards");
-    ZOR.UI.engine.set('leaderboard', leaderboards);
+    ZOR.UI.engine.set('leaderboard.data', leaderboards);
 }
 
 /**

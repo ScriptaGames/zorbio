@@ -1,6 +1,11 @@
 <div id="leaderboard">
     <div class="greybox-wrapper">
         <div class="greybox">
+            <div id="leaderboard-controls">
+                <a class="{{#if leaderboard.activeBoard === 'leaders_1_day'}}active{{/if}}" on-click="{{ ACTIONS.SHOW_LEADERBOARD_1D }}">Today</a>
+                <a class="{{#if leaderboard.activeBoard === 'leaders_7_day'}}active{{/if}}" on-click="{{ ACTIONS.SHOW_LEADERBOARD_7D }}">7d</a>
+                <a class="{{#if leaderboard.activeBoard === 'leaders_30_day'}}active{{/if}}" on-click="{{ ACTIONS.SHOW_LEADERBOARD_30D }}">30d</a>
+            </div>
             <table border="0" cellspacing="10" cellpadding="0">
                 <thead>
                     <tr>
@@ -9,10 +14,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{ #each leaderboard.leaders_1_day:i }}
+                    {{ #each leaderboard.data[leaderboard.activeBoard] as leader }}
                     <tr>
-                        <td class="leaderboard-name">{{ leaderboard.leaders_1_day[i].name }}</td>
-                        <td class="leaderboard-score">{{ numberCommas(leaderboard.leaders_1_day[i].score) }}</td>
+                        <td class="leaderboard-name">{{ leader.name }}</td>
+                        <td class="leaderboard-score">{{ numberCommas(leader.score) }}</td>
                     </tr>
                     {{ /each }}
                 </tbody>

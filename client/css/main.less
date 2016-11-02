@@ -547,6 +547,14 @@ button {
 }
 
 #leaderboard {
+    #leaderboard-controls {
+        text-align: right;
+        font-size: 0.5 * @font-size-base;
+        a.active {
+            text-decoration: underline;
+            pointer-events: none;
+        }
+    }
     table {
         font-size: 0.7 * @font-size-base;
         width: 100%;

@@ -597,6 +597,14 @@ button:active {
   border-radius: 3px;
   padding: 2px;
 }
+#leaderboard #leaderboard-controls {
+  text-align: right;
+  font-size: 15px;
+}
+#leaderboard #leaderboard-controls a.active {
+  text-decoration: underline;
+  pointer-events: none;
+}
 #leaderboard table {
   font-size: 21px;
   width: 100%;

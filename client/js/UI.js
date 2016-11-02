@@ -54,6 +54,9 @@ ZOR.UI = function ZORUI() {
         SHOW_PREVIOUS            : 'show-previous',
 
         UPDATE_LEADERBOARD       : 'update-leaderboard',
+        SHOW_LEADERBOARD_1D      : 'show-leaderboard-1d',
+        SHOW_LEADERBOARD_7D      : 'show-leaderboard-7d',
+        SHOW_LEADERBOARD_30D     : 'show-leaderboard-30d',
 
         SHOW_MENU_GAME_SCREEN    : 'show-menu-game-screen',
         SHOW_MENU_STORE_SCREEN   : 'show-menu-store-screen',
@@ -89,6 +92,10 @@ ZOR.UI = function ZORUI() {
         skins            : _(ZOR.PlayerSkins).map(_.partial(_.pick, _, 'meta')).sortBy('meta.sort').value(), // get the meta for every skin and sort them
         selected_skin    : localStorage.skin || 'default',
         leaders          : [],
+        leaderboard      : {
+            activeBoard: 'leaders_1_day',
+            data: {},
+        },
         is_mobile        : isMobile.any,
         playable         : false, // whether the play button can be pressed
         screen_x         : 0,
@@ -354,6 +361,18 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.UPDATE_LEADERBOARD, function ZORUpdateLeaderboard(client) {
             client.z_sendLeaderboardsRequest();
         });
+        on( ACTIONS.SHOW_LEADERBOARD_1D, function ZORShowLeaderboard1D() {
+            engine.set('leaderboard.activeBoard', 'leaders_1_day');
+        });
+        on( ACTIONS.SHOW_LEADERBOARD_7D, function ZORShowLeaderboard7D() {
+            engine.set('leaderboard.activeBoard', 'leaders_7_day');
+        });
+        on( ACTIONS.SHOW_LEADERBOARD_30D, function ZORShowLeaderboard30D() {
+            engine.set('leaderboard.activeBoard', 'leaders_30_day');
+        });
+
+        //
+
         on( ACTIONS.SHOW_MENU_GAME_SCREEN   , stateSetter( STATES.MENU_GAME_SCREEN ) );
         on( ACTIONS.SHOW_MENU_GAME_SCREEN   , stateSetter( STATES.MENU_GAME_SCREEN ) );
         on( ACTIONS.SHOW_MENU_STORE_SCREEN  , stateSetter( STATES.MENU_STORE_SCREEN ) );
