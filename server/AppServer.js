@@ -296,15 +296,7 @@ var AppServer = function (id, app, server_label, port) {
         }
 
         function handle_leaderboard_request() {
-            var responseMsg = {
-                0: Schemas.ops.LEADERBOARDS_UPDATE,
-                leaders_1_day: self.leaders_1_day,
-                leaders_7_day: self.leaders_7_day,
-                leaders_30_day: self.leaders_30_day,
-            };
-
-            var responseBuffer = Schemas.leaderboardUpdateSchema.encode( responseMsg );
-            ws.send(responseBuffer);
+            self.sendLeaderboardsUpdate(ws);
         }
 
         function handle_msg_player_update(buffer) {
@@ -504,6 +496,18 @@ var AppServer = function (id, app, server_label, port) {
         ws.send(buffer);
     };
 
+    self.sendLeaderboardsUpdate = function appSendLeaderboardsUpdate(ws) {
+        var responseMsg = {
+            0: Schemas.ops.LEADERBOARDS_UPDATE,
+            leaders_1_day: self.leaders_1_day,
+            leaders_7_day: self.leaders_7_day,
+            leaders_30_day: self.leaders_30_day,
+        };
+
+        var responseBuffer = Schemas.leaderboardUpdateSchema.encode( responseMsg );
+        ws.send(responseBuffer);
+    };
+
     self.sendActorUpdates = function appSendActorUpdates() {
         var tinyActors = self.model.reduceActors(true);
         var actorUpdatesMessage = {0: Schemas.ops.ACTOR_UPDATES, actors: tinyActors};
@@ -681,12 +685,11 @@ var AppServer = function (id, app, server_label, port) {
 
             var buffer = Schemas.youDied.encode(msgObj);
 
-            self.clients[self.socket_uuid_map[targetPlayerId]].send(buffer);
+            var targetClientWs = self.clients[self.socket_uuid_map[targetPlayerId]];
+            targetClientWs.send(buffer);
 
             // Save score to leaderboard if they got any points
-            if (score > config.INITIAL_PLAYER_SCORE) {
-                self.backend.saveScore('zorbio', targetPlayer.name, score);
-            }
+            self.savePlayerScore(targetPlayer.name, score, targetClientWs);
         }
         else {
             self.replenishBot();
@@ -924,19 +927,42 @@ var AppServer = function (id, app, server_label, port) {
         self.botController.spawnBot();
     }
 
-    self.refreshLeaderboards = function appRefreshLeaderboards() {
+    self.savePlayerScore = function appSavePlayerScore(name, score, ws) {
+        if (score > config.INITIAL_PLAYER_SCORE) {
+            self.backend.saveScore('zorbio', name, score, function saveScoreCallback() {
+                // Check if this score made it on any of the leaderboards
+                var allLeaderboards = [].concat(self.leaders_1_day, self.leaders_7_day, self.leaders_30_day);
+
+                allLeaderboards = _.sortBy(allLeaderboards, ['score']);
+
+                if (score > allLeaderboards[0].score) {
+                    // Player score made it on the leaderboard so refresh and send a leaderboard update
+                    self.refreshLeaderboards(function leaderSuccessCallback() {
+                        self.sendLeaderboardsUpdate(ws);
+                    });
+                }
+            });
+        }
+    };
+
+    self.refreshLeaderboards = function appRefreshLeaderboards(successCallback) {
         // Get leaderboards from backend
         self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, 'today', 'now', function todayLeaders(leaders) {
             self.leaders_1_day = leaders;
             console.log("Successfully retrieved 1 day leaderboard", self.leaders_1_day.length);
-        });
-        self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-7 days', 'now', function sevenDayLeaders(leaders) {
-            self.leaders_7_day = leaders;
-            console.log("Successfully retrieved 7 day leaderboard", self.leaders_7_day.length);
-        });
-        self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-30 days', 'now', function sevenDayLeaders(leaders) {
-            self.leaders_30_day = leaders;
-            console.log("Successfully retrieved 30 day leaderboard", self.leaders_30_day.length);
+            self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-7 days', 'now', function sevenDayLeaders(leaders) {
+                self.leaders_7_day = leaders;
+                console.log("Successfully retrieved 7 day leaderboard", self.leaders_7_day.length);
+                self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-30 days', 'now', function sevenDayLeaders(leaders) {
+                    self.leaders_30_day = leaders;
+                    console.log("Successfully retrieved 30 day leaderboard", self.leaders_30_day.length);
+
+                    if (typeof successCallback === 'function') {
+                        // success call back once all leaderboards are refreshed
+                        successCallback();
+                    }
+                });
+            });
         });
     };
 

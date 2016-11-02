@@ -43,7 +43,7 @@ Backend.prototype.saveGameInstanceStatus = function BackendSaveGameInstanceStatu
     this.storageService.saveOrUpdateDocumentByKeyValue('zorbio', 'game_instances', 'uuid', uuid, status, this.storageOpCallback);
 };
 
-Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, score) {
+Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, score, successCallback) {
     if (!config.ENABLE_BACKEND_SERVICE) return;
 
     var result = '';
@@ -65,7 +65,11 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
         try {
             jsonResponse = JSON.parse(result);
             if (jsonResponse && jsonResponse.app42.response.success === true) {
-                console.log("Successfully saved score: ", gameName, userName, score)
+                console.log("Successfully saved score: ", gameName, userName, score);
+
+                if (typeof successCallback === 'function') {
+                    successCallback(jsonResponse);
+                }
             }
         } catch (e) {
             console.error('Caught exception parsing json response from leaderboard service: ');
