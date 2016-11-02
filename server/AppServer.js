@@ -36,6 +36,10 @@ var AppServer = function (id, app, server_label, port) {
 
     self.backend = new Backend();
 
+    // Leaderboards
+    self.leaders_today = [];
+    self.leaders_seven_days = [];
+
     /**
      * Console.log wrapper so we can include instance id for filtering
      */
@@ -901,6 +905,14 @@ var AppServer = function (id, app, server_label, port) {
     for (var i = 0; i < config.MAX_BOTS; i++) {
         self.botController.spawnBot();
     }
+
+    // Get leaders
+    self.backend.getLeadersByDate('zorbio', 10, 'today', 'now', function todayLeaders(leaders) {
+        self.leaders_today = leaders;
+    });
+    self.backend.getLeadersByDate('zorbio', 10, '-7 days', 'now', function sevenDayLeaders(leaders) {
+        self.leaders_seven_days = leaders;
+    });
 
 };
 

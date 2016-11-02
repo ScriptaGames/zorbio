@@ -75,4 +75,45 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
     });
 };
 
+/**
+ * Get the list of top players by start and end date.  Dates are in string format following this:
+ * http://php.net/manual/en/function.strtotime.php  e.g. "-7 days" or "now"
+ * @param gameName
+ * @param limit
+ * @param startDate
+ * @param endDate
+ * @param callback
+ */
+Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, limit, startDate, endDate, callback) {
+    if (!config.ENABLE_BACKEND_SERVICE) return;
+
+    var result = '';
+    var jsonResponse;
+
+    // Build the command
+    var command = util.format('server/lib/app42/leaderboard %s %s get_leaders %s %s "%s" "%s"',
+        process.env.APP42_API_KEY, process.env.APP42_API_SECRET, gameName, limit, startDate, endDate);
+
+    var child = exec(command);  // Execute command
+
+    child.stdout.on('data', function (data) {
+        result += data;
+    });
+    child.stderr.on('data', function (data) {
+        result += data;
+    });
+    child.on('close', function () {
+        try {
+            jsonResponse = JSON.parse(result);
+            if (jsonResponse && jsonResponse.app42.response.success === true) {
+                callback(jsonResponse.app42.response.games.game.scores.score);
+            }
+        } catch (e) {
+            console.error('Caught exception parsing json response from leaderboard service: ');
+            console.error(result);
+            console.error(e);
+        }
+    });
+};
+
 if (NODEJS) module.exports = Backend;
