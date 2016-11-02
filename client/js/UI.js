@@ -30,7 +30,7 @@ ZOR.UI = function ZORUI() {
         MENU_CREDITS_SCREEN : 'menu-credits-screen',
         PLAYING             : 'playing',
         PLAYING_CONFIG      : 'playing-config',
-        RESPAWN_SCREEN      : 'respawn-screen',
+        RESPAWN_SCREEN      : 'menu-respawn-screen',
         KICKED_SCREEN       : 'kicked-screen',
         GAME_INIT_ERROR     : 'game-init-error',
         SERVER_MSG_SCREEN   : 'server-msg-screen',
