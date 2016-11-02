@@ -505,6 +505,9 @@ var AppServer = function (id, app, server_label, port) {
         };
 
         var responseBuffer = Schemas.leaderboardUpdateSchema.encode( responseMsg );
+
+        console.log("Sending leaderboards update");
+
         ws.send(responseBuffer);
     };
 
@@ -932,21 +935,29 @@ var AppServer = function (id, app, server_label, port) {
 
         if (score > config.INITIAL_PLAYER_SCORE) {
             self.backend.saveScore('zorbio', name, score, function saveScoreCallback() {
-                if (!ws || ws.readyState != WebSocket.OPEN) return; // can't send update to client
-
-                // Check if this score made it on any of the leaderboards
-                var allLeaderboards = [].concat(self.leaders_1_day, self.leaders_7_day, self.leaders_30_day);
-
-                allLeaderboards = _.sortBy(allLeaderboards, ['score']);
-
-                if (score > allLeaderboards[0].score) {
+                if (self.isNewHighScore(name, score)) {
                     // Player score made it on the leaderboard so refresh and send a leaderboard update
                     self.refreshLeaderboards(function leaderSuccessCallback() {
-                        self.sendLeaderboardsUpdate(ws);
+                        if (ws && ws.readyState === WebSocket.OPEN) {
+                            self.sendLeaderboardsUpdate(ws);
+                        }
                     });
                 }
             });
         }
+    };
+
+    self.isNewHighScore = function appIsNewHIghScore(name, score) {
+        var allLeaderboards = [].concat(self.leaders_1_day, self.leaders_7_day, self.leaders_30_day);
+        var isHighScore = false;
+
+        allLeaderboards = _.sortBy(allLeaderboards, ['score']);
+
+        if (score > allLeaderboards[0].score) {
+            isHighScore = true;
+        }
+
+        return isHighScore;
     };
 
     self.refreshLeaderboards = function appRefreshLeaderboards(successCallback) {
