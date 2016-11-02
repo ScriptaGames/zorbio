@@ -597,6 +597,18 @@ button:active {
   border-radius: 3px;
   padding: 2px;
 }
+#leaderboard table {
+  width: 100%;
+}
+#leaderboard table thead {
+  display: none;
+}
+#leaderboard table td {
+  padding-bottom: 10px;
+}
+#leaderboard table .leaderboard-score {
+  text-align: right;
+}
 @-webkit-keyframes pulseOpacity {
   from {
     opacity: auto;
@@ -649,6 +661,12 @@ button:active {
           animation-iteration-count: infinite;
   -webkit-animation-direction: alternate;
           animation-direction: alternate;
+}
+#social .leaderboard-btn {
+  opacity: 0.3;
+  position: absolute;
+  left: 48px;
+  top: 1px;
 }
 * {
   -webkit-user-select: none;

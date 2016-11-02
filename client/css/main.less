@@ -546,6 +546,19 @@ button {
     }
 }
 
+#leaderboard {
+    table {
+        width: 100%;
+        thead {
+            display: none;
+        }
+        td { padding-bottom: 10px; }
+        .leaderboard-score {
+            text-align: right;
+        }
+    }
+}
+
 @keyframes pulseOpacity {
     from {
         opacity: auto;
@@ -587,6 +600,13 @@ button {
 
         position: absolute;
         left: 0;
+    }
+    .leaderboard-btn {
+        opacity: 0.3;
+
+        position: absolute;
+        left: 48px;
+        top: 1px;
     }
 }
 

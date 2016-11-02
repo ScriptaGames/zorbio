@@ -35,6 +35,7 @@ ZOR.UI = function ZORUI() {
         GAME_INIT_ERROR     : 'game-init-error',
         SERVER_MSG_SCREEN   : 'server-msg-screen',
         TUTORIAL_SCREEN     : 'menu-tutorial-screen',
+        LEADERBOARD_SCREEN  : 'menu-leaderboard-screen',
     };
 
     /**
@@ -48,6 +49,7 @@ ZOR.UI = function ZORUI() {
         PAGE_RELOAD              : 'page-reload',
         SHOW_MENU                : 'show-menu',
         SHOW_TUTORIAL            : 'show-tutorial',
+        SHOW_LEADERBOARD         : 'show-leaderboard',
         SHOW_PLAYING_CONFIG      : 'show-playing-config',
         SHOW_PREVIOUS            : 'show-previous',
 
@@ -90,6 +92,9 @@ ZOR.UI = function ZORUI() {
         screen_x         : 0,
         screen_y         : 0,
         player_size      : 0,
+        numberCommas     : function numberCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
         showAd           : showAd,
         flip_x           : JSON.parse(localStorage.flip_x || "false"),
         flip_y           : JSON.parse(localStorage.flip_y || "false"),
@@ -345,10 +350,12 @@ ZOR.UI = function ZORUI() {
         // state change events
 
         on( ACTIONS.SHOW_MENU_GAME_SCREEN   , stateSetter( STATES.MENU_GAME_SCREEN ) );
+        on( ACTIONS.SHOW_MENU_GAME_SCREEN   , stateSetter( STATES.MENU_GAME_SCREEN ) );
         on( ACTIONS.SHOW_MENU_STORE_SCREEN  , stateSetter( STATES.MENU_STORE_SCREEN ) );
         on( ACTIONS.SHOW_MENU_CONFIG_SCREEN , stateSetter( STATES.MENU_CONFIG_SCREEN ) );
         on( ACTIONS.SHOW_MENU_CREDITS_SCREEN, stateSetter( STATES.MENU_CREDITS_SCREEN ) );
         on( ACTIONS.SHOW_TUTORIAL           , stateSetter( STATES.TUTORIAL_SCREEN ) );
+        on( ACTIONS.SHOW_LEADERBOARD        , stateSetter( STATES.LEADERBOARD_SCREEN ) );
         on( ACTIONS.SHOW_PLAYING_CONFIG     , stateSetter( STATES.PLAYING_CONFIG ) );
         on( ACTIONS.SHOW_MENU               , stateSetter( STATES.MENU_SCREEN ) );
         on( ACTIONS.SHOW_PREVIOUS, function ZORShowPrevious() {
