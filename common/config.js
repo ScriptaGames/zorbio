@@ -40,6 +40,7 @@ config.HEARTBEAT_CHECK_INTERVAL = 1000;   // server heartbeat test interval
 config.HEARTBEAT_PULSE_INTERVAL = 5000;   // client heartbeat pulse
 config.TICK_SLOW_INTERVAL       = 200;    // General server updates in milliseconds
 config.TICK_FAST_INTERVAL       = 50;     // How often actors update their position in milliseconds
+config.LEADERBOARD_REFRESH_INTERVAL = 900000; // How often to refresh leaderboard on the server from backend service
 config.PENDING_PLAYER_CAPTURE_TTL = 3000; // how long pending player capture lives before it expires in milliseconds
 config.CHECK_VERSION            = true;   // check for latest version of the game through the zapi
 config.CHECK_VERSION_INTERVAL   = 30000;  // how often to check for new version

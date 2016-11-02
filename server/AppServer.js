@@ -924,16 +924,27 @@ var AppServer = function (id, app, server_label, port) {
         self.botController.spawnBot();
     }
 
-    // Get leaders
-    self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, 'today', 'now', function todayLeaders(leaders) {
-        self.leaders_1_day = leaders;
-    });
-    self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-7 days', 'now', function sevenDayLeaders(leaders) {
-        self.leaders_7_day = leaders;
-    });
-    self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-30 days', 'now', function sevenDayLeaders(leaders) {
-        self.leaders_30_day = leaders;
-    });
+    self.refreshLeaderboards = function appRefreshLeaderboards() {
+        // Get leaderboards from backend
+        self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, 'today', 'now', function todayLeaders(leaders) {
+            self.leaders_1_day = leaders;
+            console.log("Successfully retrieved 1 day leaderboard", self.leaders_1_day.length);
+        });
+        self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-7 days', 'now', function sevenDayLeaders(leaders) {
+            self.leaders_7_day = leaders;
+            console.log("Successfully retrieved 7 day leaderboard", self.leaders_7_day.length);
+        });
+        self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-30 days', 'now', function sevenDayLeaders(leaders) {
+            self.leaders_30_day = leaders;
+            console.log("Successfully retrieved 30 day leaderboard", self.leaders_30_day.length);
+        });
+    };
+
+    // Load leaderboards on server start up
+    self.refreshLeaderboards();
+
+    // Keep leaderboards refreshed on an interval
+    gameloop.setGameLoop(self.refreshLeaderboards, config.LEADERBOARD_REFRESH_INTERVAL);
 };
 
 if (NODEJS) module.exports = AppServer;
