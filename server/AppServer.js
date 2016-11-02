@@ -370,6 +370,11 @@ var AppServer = function (id, app, server_label, port) {
             if (player_id) {
                 self.log('Player connection closed for player_id:', player_id);
 
+                // Save their score to leaderboard if they were in game and got any points
+                if (currentPlayer && self.model.getPlayerById(player_id)) {
+                    self.savePlayerScore(currentPlayer.name, currentPlayer.getScore());
+                }
+
                 // notify other clients to remove this player
                 self.broadcast(JSON.stringify({op: 'remove_player', playerId: player_id}));
 
@@ -378,11 +383,6 @@ var AppServer = function (id, app, server_label, port) {
                 // remove the map of the player id to the socket uuid
                 if (self.socket_uuid_map[player_id]) {
                     delete self.socket_uuid_map[player_id];
-                }
-
-                // Save their score to leaderboard if they were in game and got any points
-                if (currentPlayer && currentPlayer.getScore() > config.INITIAL_PLAYER_SCORE) {
-                    self.backend.saveScore('zorbio', currentPlayer.name, currentPlayer.getScore());
                 }
 
                 self.replenishBot();
@@ -928,8 +928,12 @@ var AppServer = function (id, app, server_label, port) {
     }
 
     self.savePlayerScore = function appSavePlayerScore(name, score, ws) {
+        ws = ws || false;
+
         if (score > config.INITIAL_PLAYER_SCORE) {
             self.backend.saveScore('zorbio', name, score, function saveScoreCallback() {
+                if (!ws || ws.readyState != WebSocket.OPEN) return; // can't send update to client
+
                 // Check if this score made it on any of the leaderboards
                 var allLeaderboards = [].concat(self.leaders_1_day, self.leaders_7_day, self.leaders_30_day);
 
