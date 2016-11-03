@@ -972,15 +972,15 @@ var AppServer = function (id, app, server_label, port) {
 
     self.refreshLeaderboards = function appRefreshLeaderboards(successCallback) {
         // Get leaderboards from backend
-        self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, 'today', 'now', function todayLeaders(leaders) {
+        self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, 'today', 'now', function todayLeaders(leaders, success) {
             self.leaders_1_day = leaders;
-            console.log("Successfully retrieved 1 day leaderboard", self.leaders_1_day.length);
-            self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-7 days', 'now', function sevenDayLeaders(leaders) {
+            console.log("Retrieved 1 day leaderboard successfully?", success, self.leaders_1_day.length);
+            self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-7 days', 'now', function sevenDayLeaders(leaders, success) {
                 self.leaders_7_day = leaders;
-                console.log("Successfully retrieved 7 day leaderboard", self.leaders_7_day.length);
-                self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-30 days', 'now', function sevenDayLeaders(leaders) {
+                console.log("Retrieved 7 day leaderboard successfully?", success, self.leaders_7_day.length);
+                self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-30 days', 'now', function sevenDayLeaders(leaders, success) {
                     self.leaders_30_day = leaders;
-                    console.log("Successfully retrieved 30 day leaderboard", self.leaders_30_day.length);
+                    console.log("Retrieved 30 day leaderboard successfully?", success, self.leaders_30_day.length);
 
                     if (typeof successCallback === 'function') {
                         // success call back once all leaderboards are refreshed

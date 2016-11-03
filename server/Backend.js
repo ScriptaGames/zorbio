@@ -86,9 +86,9 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
  * @param limit
  * @param startDate
  * @param endDate
- * @param successCallback
+ * @param callback
  */
-Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, limit, startDate, endDate, successCallback) {
+Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, limit, startDate, endDate, callback) {
     if (!config.ENABLE_BACKEND_SERVICE) return;
 
     var result = '';
@@ -113,21 +113,31 @@ Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, 
                 var leaders = jsonResponse.app42.response.games.game.scores.score;
                 var filteredLeaders = [];
 
-                // Filter out the meta data like date and score id, all we want is the name and the score
-                leaders.forEach(function eachLeader(leader) {
-                    var filteredLeader = {
-                        name: leader.userName,
-                        score: leader.value,
-                    };
-                    filteredLeaders.push(filteredLeader);
-                });
+                if (Array.isArray(leaders)) {
+                    // Filter out the meta data like date and score id, all we want is the name and the score
+                    leaders.forEach(function eachLeader(leader) {
+                        var filteredLeader = {
+                            name: leader.userName,
+                            score: leader.value,
+                        };
+                        filteredLeaders.push(filteredLeader);
+                    });
+                }
+                else if (leaders && leaders.userName && leaders.value) {
+                    // Handle 1 score for range
+                    filteredLeaders.push({
+                        name: leaders.userName,
+                        score: leaders.value,
+                    });
+                }
 
-                successCallback(filteredLeaders);
+                callback(filteredLeaders, true);
             }
         } catch (e) {
             console.error('Caught exception parsing json response from Backend.getLeadersByDate service: ');
             console.error(result);
             console.error(e);
+            callback([], false); // If there was an error just return empty array
         }
     });
 };

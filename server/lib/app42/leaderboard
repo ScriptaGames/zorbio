@@ -70,6 +70,8 @@ class Leaderboard
             $response = $scoreBoardService->getTopNRankers($gameName, $limit, $startDate, $endDate);
             $jsonResponse = $response->toString();
             print($jsonResponse);
+        } catch (App42NotFoundException $ex) {
+            print('App42NotFoundException in getLeadersByDate likely due to no scores for date.');
         } catch (App42BadParameterException $ex) {
             print("App42BadParameterException");
             print_r($ex);
