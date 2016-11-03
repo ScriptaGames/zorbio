@@ -72,7 +72,7 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
                 }
             }
         } catch (e) {
-            console.error('Caught exception parsing json response from leaderboard service: ');
+            console.error('Caught exception parsing json response from Backend.saveScore service: ');
             console.error(result);
             console.error(e);
         }
@@ -125,7 +125,7 @@ Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, 
                 successCallback(filteredLeaders);
             }
         } catch (e) {
-            console.error('Caught exception parsing json response from leaderboard service: ');
+            console.error('Caught exception parsing json response from Backend.getLeadersByDate service: ');
             console.error(result);
             console.error(e);
         }

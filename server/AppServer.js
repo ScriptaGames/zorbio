@@ -950,11 +950,21 @@ var AppServer = function (id, app, server_label, port) {
     self.isNewHighScore = function appIsNewHIghScore(name, score) {
         var allLeaderboards = [].concat(self.leaders_1_day, self.leaders_7_day, self.leaders_30_day);
         var isHighScore = false;
+        var foundIndex = _.findIndex(allLeaderboards, ['name', name]);
 
-        allLeaderboards = _.sortBy(allLeaderboards, ['score']);
+        if (foundIndex >= 0) {
+            // Username already has a high score, see if this one is greater
+            if (score > allLeaderboards[foundIndex].score) {
+                isHighScore = true;
+            }
+        }
+        else {
+            // New username see if it's greater than the smallest high score
+            allLeaderboards = _.sortBy(allLeaderboards, ['score']);
 
-        if (score > allLeaderboards[0].score) {
-            isHighScore = true;
+            if (score > allLeaderboards[0].score) {
+                isHighScore = true;
+            }
         }
 
         return isHighScore;
