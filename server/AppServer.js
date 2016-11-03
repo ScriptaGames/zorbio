@@ -459,8 +459,8 @@ var AppServer = function (id, app, server_label, port) {
                 if (player.type != Zorbio.PlayerTypes.BOT || drainee_player.type != Zorbio.PlayerTypes.BOT) {
                     drain_amount = Drain.amount(drain_target.dist);
 
-                    drainer.growExpected(+drain_amount);
-                    player.score += drain_amount;
+                    // Grow the drainer and add to their score
+                    player.score += drainer.growExpected(+drain_amount);
 
                     drainee.growExpected(-drain_amount);
 
@@ -535,9 +535,8 @@ var AppServer = function (id, app, server_label, port) {
             // Increment the players food captures
             player.foodCaptures++;
 
-            // grow player on the server to track growth validation
-            player.sphere.growExpected( food_value );
-            player.score += food_value;
+            // grow player and add to their score
+            player.score += player.sphere.growExpected( food_value );
 
             // Queue to notify clients of food capture so they can update their food view
             self.model.food_captured_queue.push(fi);
@@ -660,8 +659,9 @@ var AppServer = function (id, app, server_label, port) {
         var attackingSphere = attackingPlayer.sphere;
         var targetSphere = targetPlayer.sphere;
         var amount = config.PLAYER_CAPTURE_VALUE( targetSphere.radius() );
-        attackingSphere.growExpected( amount );
-        attackingPlayer.score += amount;
+
+        // Grow the capturing player and add to their score
+        attackingPlayer.score += attackingSphere.growExpected( amount );
 
         if (attackingPlayer.type != Zorbio.PlayerTypes.BOT) {
             // Inform the attacking player that they captured target player

@@ -397,6 +397,11 @@ ZOR.PlayerSphere.prototype.radius = function ZORPlayerSphereRadius() {
     return this.scale;
 };
 
+/**
+ * Grow the sphere an expected amount.  Returns the increase delta.
+ * @param amount
+ * @returns {number}
+ */
 ZOR.PlayerSphere.prototype.growExpected = function ZORPlayerSphereGrowExpected(amount) {
     this.expectedScale += amount;
 
@@ -407,7 +412,14 @@ ZOR.PlayerSphere.prototype.growExpected = function ZORPlayerSphereGrowExpected(a
         this.expectedScale = config.INITIAL_PLAYER_RADIUS;
     }
 
+    var increaseDelta = this.expectedScale - this.scale;
+    if (increaseDelta < 0) {
+        increaseDelta = 0;
+    }
+
     this.scale = this.expectedScale;
+
+    return increaseDelta;
 };
 
 /**
