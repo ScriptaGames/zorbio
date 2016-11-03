@@ -672,7 +672,7 @@ button:active {
           animation-direction: alternate;
 }
 #social .leaderboard-btn {
-  opacity: 0.3;
+  opacity: 0.6;
   position: absolute;
   left: 48px;
   top: 1px;
