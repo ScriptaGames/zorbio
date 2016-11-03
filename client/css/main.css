@@ -657,7 +657,7 @@ button:active {
   cursor: pointer;
 }
 #social .tutorial-btn {
-  opacity: 0.3;
+  opacity: 0.6;
   position: absolute;
   left: 0;
 }
