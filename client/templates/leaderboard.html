@@ -22,6 +22,9 @@
                     {{ /each }}
                 </tbody>
             </table>
+            {{#if leaderboard.activeBoard === 'leaders_1_day'}}
+            <p>Today's leaderboard resets each midnight (GMT).<p>
+            {{ /if }}
             <button on-click="{{ ACTIONS.SHOW_PREVIOUS }}">Back</button>
         </div>
     </div>
