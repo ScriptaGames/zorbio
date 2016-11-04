@@ -23,7 +23,7 @@ config.REQUIRE_ALPHA_KEY = true;
 
 config.WORLD_SIZE       = 2000;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
-config.MAX_BOTS         = 25;
+config.MAX_BOTS         = 20;
 config.MAX_BOT_RADIUS   = 100;
 
 ////////////////////////////////////////////////////////////////////////
@@ -67,13 +67,16 @@ if (!NODEJS) {
 
         //TODO: if all locations have active node balancers this switch is not nessicary
         switch (linode_location) {
-            //TODO: Send to seprate balancer when they are available
             case 'london':
             case 'frankfurt':
                 balancer = 'london';
                 break;
             case 'singapore':
+                balancer = 'singapore';
+                break;
             case 'fremont':
+                balancer = 'fremont';
+                break;
             case 'dallas':
             case 'newark':
                 balancer = 'newark';
