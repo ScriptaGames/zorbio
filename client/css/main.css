@@ -668,8 +668,8 @@ button:active {
   left: 0;
 }
 #social .tutorial-btn.first-visit {
-  -webkit-animation-duration: 1.518s;
-          animation-duration: 1.518s;
+  -webkit-animation-duration: 1s;
+          animation-duration: 1s;
   -webkit-animation-name: pulseOpacity;
           animation-name: pulseOpacity;
   -webkit-animation-iteration-count: infinite;
