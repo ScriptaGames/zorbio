@@ -48,16 +48,6 @@ sed -i "s/{{ VERSION }}/$VERSION/g" dist/index.html
 sed -i "s/{{ BUILD }}/$BUILD/g" dist/index.html
 sed -i "s/{{ GIT_REF }}/$GIT_REF/g" dist/index.html
 
-GOOGLE_AD_SCRIPT="<script async src='//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script>\
-<script>\
-  (adsbygoogle = window.adsbygoogle || []).push({ \
-    google_ad_client: 'ca-pub-3460249463041072', \
-    enable_page_level_ads: true \
-  }); \
-</script> \
-"
-
-sed -i "s#<head>#<head>$GOOGLE_AD_SCRIPT#g" dist/index.html
 
 echo "dist/index.html written"
 
