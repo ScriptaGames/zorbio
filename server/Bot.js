@@ -13,8 +13,8 @@ var Bot = function (scale, model) {
 
     // initialized player properties
     self.colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
-    var skin_names = _.values(config.SKINS);
-    self.skin_name = skin_names[UTIL.getRandomIntInclusive(0, skin_names.length - 2)];
+    var skin_distribution = ['earth', 'boing', 'default', 'default'];
+    self.skin_name = skin_distribution[UTIL.getRandomIntInclusive(0, skin_distribution.length - 1)];
     self.id = Zorbio.IdGenerator.get_next_id();
     self.name = "AI " + _.sample(Bot.prototype.names);
     self.scale = scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);
