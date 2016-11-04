@@ -586,10 +586,16 @@ button:active {
   width: 100%;
 }
 #tutorial #tutorial-content {
-  text-align: center;
+  text-align: left;
 }
-#tutorial p {
+#tutorial #tutorial-content h2 {
+  color: #0B7BF4;
+  text-align: left;
+  margin: 1em 0 0.6em;
+}
+#tutorial #tutorial-content p {
   font-size: 21px;
+  text-align: left;
 }
 #tutorial .key {
   color: #0B7BF4;

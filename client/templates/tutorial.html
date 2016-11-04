@@ -2,26 +2,33 @@
     <div class="greybox-wrapper">
         <div class="greybox">
             <div id="tutorial-content">
-                <p>You're a sphere.</p>
-
-                <!-- <img src="images/tutorial/player.png" alt="image of player sphere"> -->
-
-                <p>Fly around by moving your mouse.</p>
-
-                <p>Run into food dots to grow.</p>
-
-                <!-- <img src="images/tutorial/player-beside-food.png" alt="image of player beside food"> -->
-
-                <p>Run into smaller players to eat them.</p>
-
-                <!-- <img src="images/tutorial/player-beside-player.png" alt="image of player beside a smaller player"> -->
-
-                <p>Fly near larger players to drain some of their size.</p>
+                <p>You are a sphere.</p>
 
                 {{ #if !is_mobile }}
-                <p>Speed boost with <span class="key">W</span>{{ #if steering !== "drag" }} or left mouse button{{ /if }}.</p>
-                <p>Stop with <span class="key">S</span>.</p>
+                <p>Fly around by moving your mouse.</p>
+                {{ else }}
+                <p>Tap and drag to fly around.</p>
                 {{ /if }}
+
+                <h2>Growing</h2>
+
+                <p>Run into food dots to grow.  Run into smaller players to eat
+                them and grow even more.  Fly near larger players to drain some
+                of their size.</p>
+
+                {{ #if !is_mobile }}
+                <h2>Controls</h2>
+
+                <p>Stop with <span class="key">S</span>.  Speed boost with
+                    <span class="key">W</span>{{ #if steering !== "drag" }} or
+                    left mouse button{{ /if }}, but it will
+                    cost you.</p>
+                {{ /if }}
+
+                <h2>Size & Scores</h2>
+
+                <p>You'll score points any time your sphere grows, but you
+                    never lose points even if your sphere shrinks.</p>
 
                 <p>Now go eat 'em up!</p>
 
