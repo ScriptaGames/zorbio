@@ -103,7 +103,7 @@ function startGame(type) {
     ZOR.UI.engine.set('player_size', config.GET_PADDED_INT(config.INITIAL_PLAYER_RADIUS));
 
     // Schedule one time Google Analytics tracking for Ping and FPS
-    setTimeout(gaPerformanceMetrics, 15000);
+    setTimeout(gaPerformanceMetrics, 30000);
 
     console.log('Player meta: ', ZOR.Game.playerMeta);
 
@@ -733,8 +733,8 @@ function setDeadState() {
 
 function gaPerformanceMetrics() {
     if (gameStart && !player.isDead) {
-        var ping = player.model.ping_metric.last;
-        var fps = player.model.fps_metric.last;
+        var ping = player.model.ping_metric.mean;
+        var fps = player.model.fps_metric.mean;
 
         if (ping > 0) {
             ga('send', {
@@ -752,6 +752,7 @@ function gaPerformanceMetrics() {
                 timingCategory: 'FPS',
                 timingVar: 'fps',
                 timingValue: fps,
+                timingLabel: isMobile.any ? 'mobile' : 'desktop',
             });
         }
     }
