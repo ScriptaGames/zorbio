@@ -24,8 +24,8 @@
 {{ #if state === STATES.MENU_CONFIG_SCREEN && !is_mobile }}
 <div>
     <select name="steering-method" id="steering-method" on-change="{{ ACTIONS.SET_STEERING }}">
-        <option value="follow" {{ steering=='follow' ? 'selected' : '' }}>Follow</option>
-        <option value="drag" {{ steering=='drag' ? 'selected' : '' }}>drag</option>
+        <option value="follow" {{ steering=='follow' ? 'selected' : '' }}>follow cursor</option>
+        <option value="drag" {{ steering=='drag' ? 'selected' : '' }}>{{#if is_mobile}}tap{{else}}click{{/if}} &amp; drag</option>
     </select>
     <label for="hide-own-trail">Steering Method</label>
 </div>
