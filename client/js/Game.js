@@ -677,7 +677,7 @@ function handleOtherPlayercapture(capturedPlayerID) {
     var ear;
 
     if (capturedPlayer) {
-        ear = player.view ? player.view.mainSphere : camera;
+        ear = (player && player.view) ? player.view.mainSphere : camera;
         ZOR.Sounds.playFromPos(sound, ear, capturedPlayer.model.sphere.position);
         capturedPlayer.handleCapture();
         windDownTime = capturedPlayer.getWindDownTime();
