@@ -589,6 +589,9 @@ UTIL.logTime = function UTILLogTime(msg, start, end) {
 UTIL.filterName = function UTILFilterName(name) {
     var filtered_name = xssFilters.inHTMLData(name);
 
+    // now also remove quotes because they break the backend
+    filtered_name = filtered_name.replace(/["']/g, "");
+
     if (UTIL.isBlank(filtered_name)) {
         filtered_name = "Guest";
     }
