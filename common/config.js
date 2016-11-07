@@ -70,20 +70,18 @@ if (!NODEJS) {
         switch (linode_location) {
             case 'london':
             case 'frankfurt':
-                balancer = 'london';
+                balancer = 'frankfurt';
                 break;
             case 'singapore':
                 balancer = 'singapore';
                 break;
             case 'fremont':
-                balancer = 'fremont';
-                break;
             case 'dallas':
             case 'newark':
-                balancer = 'newark';
+                balancer = 'dallas';
                 break;
             default:
-                balancer = 'newark';
+                balancer = 'dallas';
         }
 
         return balancer;
