@@ -266,7 +266,5 @@ ZOR.DrainView.prototype.createPinchVertices = function ZORDrainViewCreatePinchVe
  * Remove all drain objects from the scene.
  */
 ZOR.DrainView.prototype.dispose = function ZORDrainViewDispose() {
-    this.scene.remove(this.mesh);
-    this.geometry.dispose();
-    this.material.dispose();
+    UTIL.threeFree(this.scene, this.mesh);
 };

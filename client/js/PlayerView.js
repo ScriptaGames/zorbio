@@ -346,13 +346,12 @@ ZOR.PlayerView.prototype.removeTrail = function ZORPlayerViewRemoveTrail() {
                 this.trail.origins = [];
                 this.trail.geometries = [];
                 this.trail.lines = [];
-                this.trail.meshes.forEach(this.scene.remove.bind(scene));
+                this.trail.meshes.forEach(_.partial(UTIL.threeFree, this.scene, _));
                 break;
             case 'particle':
                 if (this.trail.emitter.group)
                     this.trail.emitter.remove();
-                this.trail.group.dispose();
-                this.scene.remove(this.trail.group.mesh);
+                UTIL.threeFree(this.scene, this.trail.group.mesh);
                 break;
         }
         this.trail.initialized = false;
@@ -362,15 +361,15 @@ ZOR.PlayerView.prototype.removeTrail = function ZORPlayerViewRemoveTrail() {
 
 ZOR.PlayerView.prototype.removeCaptureParticles = function ZORPlayerViewRemoveCaptureParticles() {
     this.capture.emitter.remove();
-    this.capture.group.dispose();
-    this.scene.remove(this.capture.group.mesh);
+    UTIL.threeFree(this.scene, this.capture.group.mesh);
 };
 
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove() {
     this.removeTrail();
     this.removeCaptureParticles();
     this.drainView.dispose();
-    this.scene.remove(this.mainSphere);
+
+    UTIL.threeFree(this.scene, this.mainSphere);
 
     // find the player mesh used for raycasting and remove it
     for (var i = 0; i < ZOR.Game.player_meshes.length; i++) {

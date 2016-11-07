@@ -613,5 +613,16 @@ UTIL.lerp = function UTILLerp(v0, v1, t) {
     return (1-t)*v0 + t*v1;
 };
 
+/**
+ * Remove a three.js mesh from the scene and free all its memory.
+ * @param {THREE.Scene} scene the scene to remove the mesh from
+ * @param {THREE.Mesh} mesh the mesh to free
+ */
+UTIL.threeFree = function UTILThreeFree(scene, mesh) {
+    scene.remove(mesh);
+    if (mesh.geometry) mesh.geometry.dispose();
+    if (mesh.material) mesh.material.dispose();
+};
+
 // if we're in nodejs, export the root UTIL object
 if (NODEJS) module.exports = UTIL;
