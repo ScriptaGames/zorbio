@@ -9,7 +9,7 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
     return {
         geometry: {
         },
-        material: {
+        material: new THREE.ShaderMaterial({
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },
                 "p"           : { type : "f",  value : 2.71828 },
@@ -27,7 +27,7 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
             // depthTest      : false,
             // depthWrite     : true,
             // blending       : THREE.AdditiveBlending,
-        },
+        }),
         behavior: {
         },
         trail: {

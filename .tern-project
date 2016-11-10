@@ -27,6 +27,7 @@
         "./bower_components/raven-js/dist/raven.js",
         "./lib/environment.js",
         "./js/config.js",
+        "./js/ObjectPool.js",
         "./js/Sentry.js",
         "./js/FollowOrbitControls.js",
         "./js/TrackballControls.js",

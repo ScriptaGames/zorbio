@@ -620,8 +620,16 @@ UTIL.lerp = function UTILLerp(v0, v1, t) {
  */
 UTIL.threeFree = function UTILThreeFree(scene, mesh) {
     scene.remove(mesh);
-    if (mesh.geometry) mesh.geometry.dispose();
-    if (mesh.material) mesh.material.dispose();
+    if (mesh.geometry) {
+        mesh.geometry.dispose();
+    }
+    // make sure textures are freed from GPU memory
+    if (mesh.material.uniforms.sphereTexture) {
+        mesh.material.uniforms.sphereTexture.value.dispose();
+    }
+    if (mesh.material) {
+        mesh.material.dispose();
+    }
 };
 
 // if we're in nodejs, export the root UTIL object

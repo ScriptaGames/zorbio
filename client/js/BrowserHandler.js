@@ -80,7 +80,6 @@ ZOR.ZORMessageHandler.z_handle_player_join = function ZORhandlePlayerJoin(newPla
     if (!ZOR.Game.players[newPlayer.id]) {
         // Create new player controller and add to player controllers array
         ZOR.Game.players[newPlayer.id] = new ZOR.PlayerController(newPlayer, scene);
-        ZOR.Game.players[newPlayer.id].setAlpha(1);
     }
 
     //Keep model in sync with the server

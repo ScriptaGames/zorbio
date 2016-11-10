@@ -324,7 +324,6 @@ function drawPlayers() {
             // Only draw other players
             if (!player || (id !== player.getPlayerId())) {
                 ZOR.Game.players[id] = new ZOR.PlayerController(playerModel, scene);
-                ZOR.Game.players[id].setAlpha(1);
             }
         }
     });
@@ -574,21 +573,27 @@ function removePlayerFromGame(playerId, time) {
     zorbioModel.removePlayer(playerId);
 
     // remove from player controllers
-    delete ZOR.Game.players[playerId];
+    ZOR.Game.players[playerId] = undefined;
 
-    setTimeout(function removePlayerNow() {
-        // remove player from scene and client
-        if (deadPlayer) {
-            if (deadPlayer.view) {
-                // Remove player from the scene
-                deadPlayer.removeView();
-            }
-
-            // remove from player controllers
-            delete ZOR.Game.dead_players[playerId];
+    if (deadPlayer) {
+        if (deadPlayer.view) {
+            deadPlayer.removeView();
         }
-        console.log('Removed dead player: ', playerId);
-    }, time);
+        ZOR.Game.dead_players[playerId] = undefined;
+    }
+    // setTimeout(function removePlayerNow() {
+    //     // remove player from scene and client
+    //     if (deadPlayer) {
+    //         if (deadPlayer.view) {
+    //             // Remove player from the scene
+    //             deadPlayer.removeView();
+    //         }
+
+    //         // remove from player controllers
+    //         delete ZOR.Game.dead_players[playerId];
+    //     }
+    //     console.log('Removed dead player: ', playerId);
+    // }, time);
 }
 
 function handleServerTick(serverTickData) {
@@ -648,23 +653,24 @@ function handleLeaderboardUpdate(leaderboards) {
  * Current player has captured someone.
  */
 function handleSuccessfulPlayerCapture(capturedPlayerID) {
-    var sound = ZOR.Sounds.sfx.player_capture;
+    // var sound = ZOR.Sounds.sfx.player_capture;
     var capturedPlayer = ZOR.Game.players[capturedPlayerID];
-    var windDownTime = 0;
+    // var windDownTime = 0;
 
     if (capturedPlayer) {
-        ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
+        // ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
         capturedPlayer.handleCapture();
-        windDownTime = capturedPlayer.getWindDownTime();
+        // windDownTime = capturedPlayer.getWindDownTime();
 
-        ZOR.UI.engine.set('capture_message', "You captured " + capturedPlayer.model.name);
+        // ZOR.UI.engine.set('capture_message', "You captured " + capturedPlayer.model.name);
 
-        setTimeout(function clearCaptureMessage() {
-            ZOR.UI.engine.set('capture_message', '');
-        }, 5000);
+        // setTimeout(function clearCaptureMessage() {
+        //     ZOR.UI.engine.set('capture_message', '');
+        // }, 5000);
     }
 
-    removePlayerFromGame(capturedPlayerID, windDownTime);
+    // removePlayerFromGame(capturedPlayerID, windDownTime);
+    removePlayerFromGame(capturedPlayerID, 0);
 }
 
 /**

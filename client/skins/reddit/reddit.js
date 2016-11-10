@@ -11,7 +11,7 @@ ZOR.PlayerSkins.reddit = function ZORRedditSkin(playerView) {
                 y: 0.001,
             },
         },
-        material: {
+        material: new THREE.ShaderMaterial({
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },
                 "p"           : { type : "f",  value : 2.71828 },
@@ -24,7 +24,7 @@ ZOR.PlayerSkins.reddit = function ZORRedditSkin(playerView) {
             vertexShader: document.getElementById('skin-reddit-vertex-shader').textContent,
             fragmentShader: document.getElementById('skin-reddit-fragment-shader').textContent,
             transparent: true,
-        },
+        }),
         behavior: {
         },
         trail: {

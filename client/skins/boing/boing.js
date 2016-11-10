@@ -11,7 +11,7 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
             polycount_w: 20,
             polycount_h: 10,
         },
-        material: {
+        material: new THREE.ShaderMaterial({
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },
                 "p"           : { type : "f",  value : 2.71828 },
@@ -29,7 +29,7 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
             // depthTest      : false,
             // depthWrite     : true,
             // blending       : THREE.AdditiveBlending,
-        },
+        }),
         behavior: {
         },
         trail: {

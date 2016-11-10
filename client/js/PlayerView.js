@@ -1,5 +1,15 @@
 var ZOR = ZOR || {};
 
+function createSphere() {
+    var mat = new THREE.MeshBasicMaterial();
+    var geo = new THREE.SphereGeometry(1, config.PLAYER_SPHERE_POLYCOUNT, config.PLAYER_SPHERE_POLYCOUNT);
+    return new THREE.Mesh(geo, mat);
+}
+
+ZOR.Pools = ZOR.Pools || {};
+ZOR.Pools.spheres = new ZOR.ObjectPool(20, createSphere);
+
+
 /**
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
  * visually, and how to move it's different 3D pieces around.
@@ -17,263 +27,260 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.playerColor = config.COLORS[model.sphere.color];
     this.skinName = model.sphere.skin;
 
-    this.clock = new THREE.Clock();
+    // this.clock = new THREE.Clock();
 
-    this.trail = {
-        initialized: false,
-    };
+    // this.trail = {
+    //     initialized: false,
+    // };
 
     this.cameraMinDistance = config.GET_CAMERA_MIN_DISTANCE(model.sphere.scale);
 
     this.skin = ZOR.PlayerSkins[this.skinName || 'default'](this);
 
-    this.geometry = new THREE.SphereGeometry(
-        1,
-        this.skin.geometry.polycount_w || config.PLAYER_SPHERE_POLYCOUNT,
-        this.skin.geometry.polycount_h || config.PLAYER_SPHERE_POLYCOUNT
-    );
-
     playerFogCenter.copy(model.sphere.position);
-    this.material = new THREE.ShaderMaterial( this.skin.material );
 
     if (config.FOOD_ALPHA_ENABLED) {
-        this.material.depthWrite = true;
+        this.skin.material.depthWrite = true;
     }
 
-    this.mainSphere = new THREE.Mesh( this.geometry, this.material );
+    this.mainSphere = ZOR.Pools.spheres.borrow();
     this.mainSphere.position.copy(model.sphere.position);
+    this.mainSphere.material = this.skin.material;
 
-    this.drainView = new ZOR.DrainView(this, scene);
+    if (!current) {
+        this.setAlpha(1);
+    }
+    // this.drainView = new ZOR.DrainView(this, scene);
 
     this.setScale(model.sphere.scale);
 
     this.mainSphere.player_id = this.model.id;
-    ZOR.Game.player_meshes.push(this.mainSphere);  // store mesh for raycaster search
+    // ZOR.Game.player_meshes.push(this.mainSphere);  // store mesh for raycaster search
 
-    this.initCaptureParticles();
+    // this.initCaptureParticles();
 
     scene.add( this.mainSphere );
 
     // give the meshes time to render before drawing trails
     // also adds a nice fade in effect for trails
-    setTimeout(function() {
-        self.initTrails();
-    }, 250);
+    // setTimeout(function() {
+    //     self.initTrails();
+    // }, 250);
 };
 
-ZOR.PlayerView.prototype.initTrails = function ZORPlayerViewInitTrails() {
-    var self = this;
+// ZOR.PlayerView.prototype.initTrails = function ZORPlayerViewInitTrails() {
+//     var self = this;
 
-    switch (this.skin.trail.type) {
-        case 'line':
-            this.initLineTrails();
-            break;
-        case 'particle':
-            this.initParticleTrails();
-            break;
-    }
+//     switch (this.skin.trail.type) {
+//         case 'line':
+//             this.initLineTrails();
+//             break;
+//         case 'particle':
+//             this.initParticleTrails();
+//             break;
+//     }
 
-    // Add the config handler
-    ZOR.UI.on(ZOR.UI.ACTIONS.TOGGLE_OWN_TRAIL, function (e) {
-        if (self.is_current_player) {
-            if (e.node.checked) {
-                self.hideTrails();
-                ZOR.UI.setAndSave('hide_own_trail', true);
-            }
-            else {
-                self.showTrails();
-                ZOR.UI.setAndSave('hide_own_trail', false);
-            }
-        }
-    });
+//     // Add the config handler
+//     ZOR.UI.on(ZOR.UI.ACTIONS.TOGGLE_OWN_TRAIL, function (e) {
+//         if (self.is_current_player) {
+//             if (e.node.checked) {
+//                 self.hideTrails();
+//                 ZOR.UI.setAndSave('hide_own_trail', true);
+//             }
+//             else {
+//                 self.showTrails();
+//                 ZOR.UI.setAndSave('hide_own_trail', false);
+//             }
+//         }
+//     });
 
-    // Default visibility from local storage
-    if (config.HIDE_OWN_TRAIL && this.is_current_player) {
-        self.hideTrails();
-    }
-};
+//     // Default visibility from local storage
+//     if (config.HIDE_OWN_TRAIL && this.is_current_player) {
+//         self.hideTrails();
+//     }
+// };
 
 // Player capture animation emitter
-ZOR.PlayerView.prototype.initCaptureParticles = function ZORPlayerViewInitCaptureParticles() {
-    this.capture = {};
-    this.capture.group = new SPE.Group(this.skin.capture.group);
-    this.capture.emitter = new SPE.Emitter(this.skin.capture.emitter);
-    this.capture.emitter.disable();
-    this.capture.group.addEmitter(this.capture.emitter);
-    this.capture.group.mesh.frustumCulled = false;
-    this.capture.group.mesh.renderOrder = -1;
-    this.capture.active = false;
+// ZOR.PlayerView.prototype.initCaptureParticles = function ZORPlayerViewInitCaptureParticles() {
+//     this.capture = {};
+//     this.capture.group = new SPE.Group(this.skin.capture.group);
+//     this.capture.emitter = new SPE.Emitter(this.skin.capture.emitter);
+//     this.capture.emitter.disable();
+//     this.capture.group.addEmitter(this.capture.emitter);
+//     this.capture.group.mesh.frustumCulled = false;
+//     this.capture.group.mesh.renderOrder = -1;
+//     this.capture.active = false;
 
-    this.scene.add( this.capture.group.mesh );
-};
+//     this.scene.add( this.capture.group.mesh );
+// };
 
-ZOR.PlayerView.prototype.initParticleTrails = function ZORPlayerViewInitParticleTrails() {
-    this.trail.group = new SPE.Group(this.skin.trail.group);
+// ZOR.PlayerView.prototype.initParticleTrails = function ZORPlayerViewInitParticleTrails() {
+//     this.trail.group = new SPE.Group(this.skin.trail.group);
 
-    this.trail.emitter = new SPE.Emitter(this.skin.trail.emitter);
+//     this.trail.emitter = new SPE.Emitter(this.skin.trail.emitter);
 
-    this.trail.group.mesh.renderOrder = -2;
-    this.trail.group.mesh.frustumCulled = false;
-    this.trail.group.addEmitter( this.trail.emitter );
-    this.trail.visible = 1;
+//     this.trail.group.mesh.renderOrder = -2;
+//     this.trail.group.mesh.frustumCulled = false;
+//     this.trail.group.addEmitter( this.trail.emitter );
+//     this.trail.visible = 1;
 
-    this.scene.add( this.trail.group.mesh );
+//     this.scene.add( this.trail.group.mesh );
 
-    this.trail.initialized = true;
-};
+//     this.trail.initialized = true;
+// };
 
-ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails() {
-    // Create the line material
-    this.trail.material = new THREE.MeshLineMaterial( {
-        useMap: 0,
-        color: this.skin.trail.color,
-        opacity: 1,
-        resolution: new THREE.Vector2( window.innerWidth, window.innerHeight ),
-        sizeAttenuation: 1,
-        lineWidth: this.skin.trail.customScale * config.TRAIL_LINE_WIDTH,
-        near: camera.near,
-        far: camera.far,
-        depthTest: true,
-        blending: THREE.AdditiveBlending,
-        transparent: false,
-        side: THREE.DoubleSide,
-        visibility: 1,
-    });
+// ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails() {
+//     // Create the line material
+//     this.trail.material = new THREE.MeshLineMaterial( {
+//         useMap: 0,
+//         color: this.skin.trail.color,
+//         opacity: 1,
+//         resolution: new THREE.Vector2( window.innerWidth, window.innerHeight ),
+//         sizeAttenuation: 1,
+//         lineWidth: this.skin.trail.customScale * config.TRAIL_LINE_WIDTH,
+//         near: camera.near,
+//         far: camera.far,
+//         depthTest: true,
+//         blending: THREE.AdditiveBlending,
+//         transparent: false,
+//         side: THREE.DoubleSide,
+//         visibility: 1,
+//     });
 
-    this.trail.origins = [];
-    this.trail.geometries = [];
-    this.trail.lines = [];
-    this.trail.meshes = [];
+//     this.trail.origins = [];
+//     this.trail.geometries = [];
+//     this.trail.lines = [];
+//     this.trail.meshes = [];
 
-    // for each line this skin requests...
-    for (var line_i = 0; line_i < this.skin.trail.origins.length; ++line_i) {
-        // transform the line's origins from sphere space to world space
-        this.trail.origins[line_i] = this.mainSphere.localToWorld(this.skin.trail.origins[line_i].clone());
+//     // for each line this skin requests...
+//     for (var line_i = 0; line_i < this.skin.trail.origins.length; ++line_i) {
+//         // transform the line's origins from sphere space to world space
+//         this.trail.origins[line_i] = this.mainSphere.localToWorld(this.skin.trail.origins[line_i].clone());
 
-        // create a geometry for the line's vertices
-        this.trail.geometries[line_i] = new THREE.Geometry();
+//         // create a geometry for the line's vertices
+//         this.trail.geometries[line_i] = new THREE.Geometry();
 
-        // create initial vertices for the line
-        for (var vertex_i = 0; vertex_i < config.TRAIL_LINE_LENGTH; ++vertex_i) {
-            this.trail.geometries[line_i].vertices.push(this.trail.origins[line_i]);
-        }
+//         // create initial vertices for the line
+//         for (var vertex_i = 0; vertex_i < config.TRAIL_LINE_LENGTH; ++vertex_i) {
+//             this.trail.geometries[line_i].vertices.push(this.trail.origins[line_i]);
+//         }
 
-        // create the line's mesh
-        this.trail.lines[line_i] = new THREE.MeshLine();
-        this.trail.lines[line_i].setGeometry( this.trail.geometries[line_i], this.skin.trail.lineWidth ); // makes width taper
+//         // create the line's mesh
+//         this.trail.lines[line_i] = new THREE.MeshLine();
+//         this.trail.lines[line_i].setGeometry( this.trail.geometries[line_i], this.skin.trail.lineWidth ); // makes width taper
 
-        this.trail.meshes[line_i] = new THREE.Mesh( this.trail.lines[line_i].geometry, this.trail.material );
-        this.trail.meshes[line_i].frustumCulled = false;
-        this.scene.add( this.trail.meshes[line_i] );
-    }
+//         this.trail.meshes[line_i] = new THREE.Mesh( this.trail.lines[line_i].geometry, this.trail.material );
+//         this.trail.meshes[line_i].frustumCulled = false;
+//         this.scene.add( this.trail.meshes[line_i] );
+//     }
 
-    this.trail.initialized = true;
-};
+//     this.trail.initialized = true;
+// };
 
-ZOR.PlayerView.prototype.hideTrails = function ZORPlayerViewHideTrail() {
-    if (!this.trail.initialized) return;
+// ZOR.PlayerView.prototype.hideTrails = function ZORPlayerViewHideTrail() {
+//     if (!this.trail.initialized) return;
 
-    switch (this.skin.trail.type) {
-        case 'line':
-            this.hideLineTrails();
-            break;
-        case 'particle':
-            this.hideParticleTrails();
-            break;
-    }
-};
+//     switch (this.skin.trail.type) {
+//         case 'line':
+//             this.hideLineTrails();
+//             break;
+//         case 'particle':
+//             this.hideParticleTrails();
+//             break;
+//     }
+// };
 
-ZOR.PlayerView.prototype.showTrails = function ZORPlayerViewShowTrail() {
-    if (!this.trail.initialized) return;
+// ZOR.PlayerView.prototype.showTrails = function ZORPlayerViewShowTrail() {
+//     if (!this.trail.initialized) return;
 
-    switch (this.skin.trail.type) {
-        case 'line':
-            this.showLineTrails();
-            break;
-        case 'particle':
-            this.showParticleTrails();
-            break;
-    }
-};
+//     switch (this.skin.trail.type) {
+//         case 'line':
+//             this.showLineTrails();
+//             break;
+//         case 'particle':
+//             this.showParticleTrails();
+//             break;
+//     }
+// };
 
-ZOR.PlayerView.prototype.hideLineTrails = function ZORPlayerViewHideLineTrails() {
-    // hide line trail
-    this.trail.material.transparent = true;
-    this.trail.material.depthTest = false;
-    this.trail.material.visible = false;
-    this.trail.material.uniforms.opacity.value = 0;
-    this.trail.material.uniforms.visibility.value = 0;
-};
+// ZOR.PlayerView.prototype.hideLineTrails = function ZORPlayerViewHideLineTrails() {
+//     // hide line trail
+//     this.trail.material.transparent = true;
+//     this.trail.material.depthTest = false;
+//     this.trail.material.visible = false;
+//     this.trail.material.uniforms.opacity.value = 0;
+//     this.trail.material.uniforms.visibility.value = 0;
+// };
 
-ZOR.PlayerView.prototype.hideParticleTrails = function ZORPlayerViewHideParticleTrails() {
-    this.trail.visible = 0;
-};
+// ZOR.PlayerView.prototype.hideParticleTrails = function ZORPlayerViewHideParticleTrails() {
+//     this.trail.visible = 0;
+// };
 
-ZOR.PlayerView.prototype.showLineTrails = function ZORPlayerViewShowLineTrails() {
-    // hide line trail
-    this.trail.material.transparent = false;
-    this.trail.material.depthTest = true;
-    this.trail.material.visible = true;
-    this.trail.material.uniforms.opacity.value = 1;
-    this.trail.material.uniforms.visibility.value = 1;
-};
+// ZOR.PlayerView.prototype.showLineTrails = function ZORPlayerViewShowLineTrails() {
+//     // hide line trail
+//     this.trail.material.transparent = false;
+//     this.trail.material.depthTest = true;
+//     this.trail.material.visible = true;
+//     this.trail.material.uniforms.opacity.value = 1;
+//     this.trail.material.uniforms.visibility.value = 1;
+// };
 
-ZOR.PlayerView.prototype.showParticleTrails = function ZORPlayerViewShowParticleTrails() {
-    this.trail.visible = 1;
-};
+// ZOR.PlayerView.prototype.showParticleTrails = function ZORPlayerViewShowParticleTrails() {
+//     this.trail.visible = 1;
+// };
 
-ZOR.PlayerView.prototype.updateTrails = function ZORPlayerViewUpdateTrail() {
-    switch (this.skin.trail.type) {
-        case 'line':
-            this.updateLineTrails();
-            break;
-        case 'particle':
-            this.updateParticleTrails();
-            break;
-    }
-};
+// ZOR.PlayerView.prototype.updateTrails = function ZORPlayerViewUpdateTrail() {
+//     switch (this.skin.trail.type) {
+//         case 'line':
+//             this.updateLineTrails();
+//             break;
+//         case 'particle':
+//             this.updateParticleTrails();
+//             break;
+//     }
+// };
 
-ZOR.PlayerView.prototype.updateParticleTrails = function ZORPlayerViewupdateParticleTrails() {
-    if (!this.trail.initialized) return;
+// ZOR.PlayerView.prototype.updateParticleTrails = function ZORPlayerViewupdateParticleTrails() {
+//     if (!this.trail.initialized) return;
 
-    var newPos = this.mainSphere.position.clone();
+//     var newPos = this.mainSphere.position.clone();
 
-    this.trail.emitter.position._value.x = newPos.x;
-    this.trail.emitter.position._value.y = newPos.y;
-    this.trail.emitter.position._value.z = newPos.z;
+//     this.trail.emitter.position._value.x = newPos.x;
+//     this.trail.emitter.position._value.y = newPos.y;
+//     this.trail.emitter.position._value.z = newPos.z;
 
-    var scale = this.mainSphere.scale.x * (this.skin.trail.customScale || 1);
-    this.trail.emitter.position._spreadClamp.setX( scale );
-    this.trail.emitter.position._spread.setX( scale );
-    this.trail.emitter.position._radius = scale;
-    this.trail.emitter.size._value =  [scale/3, scale*2/6, scale/9, 0];
+//     var scale = this.mainSphere.scale.x * (this.skin.trail.customScale || 1);
+//     this.trail.emitter.position._spreadClamp.setX( scale );
+//     this.trail.emitter.position._spread.setX( scale );
+//     this.trail.emitter.position._radius = scale;
+//     this.trail.emitter.size._value =  [scale/3, scale*2/6, scale/9, 0];
 
-    var boosting = this.model.abilities.speed_boost.isActive();
+//     var boosting = this.model.abilities.speed_boost.isActive();
 
-    if (boosting) {
-        this.trail.emitter.activeMultiplier = 1 * this.trail.visible;
-    }
-    else {
-        this.trail.emitter.activeMultiplier = 0.1 * this.trail.visible;
-    }
+//     if (boosting) {
+//         this.trail.emitter.activeMultiplier = 1 * this.trail.visible;
+//     }
+//     else {
+//         this.trail.emitter.activeMultiplier = 0.1 * this.trail.visible;
+//     }
 
-    this.trail.emitter.updateFlags.position = true;
-    this.trail.emitter.updateFlags.velocity = true;
-    this.trail.emitter.updateFlags.size = true;
+//     this.trail.emitter.updateFlags.position = true;
+//     this.trail.emitter.updateFlags.velocity = true;
+//     this.trail.emitter.updateFlags.size = true;
 
-    this.trail.group.tick( this.clock.getDelta() );
-};
+//     this.trail.group.tick( this.clock.getDelta() );
+// };
 
-ZOR.PlayerView.prototype.updateLineTrails = function ZORPlayerViewupdateLineTrails() {
-    if (!this.trail.initialized) return;
+// ZOR.PlayerView.prototype.updateLineTrails = function ZORPlayerViewupdateLineTrails() {
+//     if (!this.trail.initialized) return;
 
-    // Increase trail width based on sphere scale but prevent giant width trails
-    this.trail.material.uniforms.lineWidth.value = this.skin.trail.customScale * config.TRAIL_LINE_WIDTH * (1 + (this.mainSphere.scale.x  / 10));
+//     // Increase trail width based on sphere scale but prevent giant width trails
+//     this.trail.material.uniforms.lineWidth.value = this.skin.trail.customScale * config.TRAIL_LINE_WIDTH * (1 + (this.mainSphere.scale.x  / 10));
 
-    for (var line_i = 0; line_i < this.skin.trail.origins.length; ++line_i) {
-        this.trail.lines[line_i].advance(this.mainSphere.localToWorld(this.skin.trail.origins[line_i].clone()));
-    }
-};
+//     for (var line_i = 0; line_i < this.skin.trail.origins.length; ++line_i) {
+//         this.trail.lines[line_i].advance(this.mainSphere.localToWorld(this.skin.trail.origins[line_i].clone()));
+//     }
+// };
 
 ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
     this.mainSphere.scale.addScalar( amount );
@@ -285,37 +292,37 @@ ZOR.PlayerView.prototype.grow = function ZORPlayerViewGrow(amount) {
 };
 
 ZOR.PlayerView.prototype.handleCapture = function ZORPlayerViewHandleCapture() {
-    this.capture.active = true;
+    // this.capture.active = true;
 
     // Hide all view elements except for capture particles
-    this.mainSphere.visible = false;
-    this.drainView.mesh.visible = false;
-    this.removeTrail();  // must remove trail because particles trails mess up the look of capture particles
+    this.scene.remove(this.mainSphere);
+    // this.drainView.mesh.visible = false;
+    // this.removeTrail();  // must remove trail because particles trails mess up the look of capture particles
 
     // fire particle burst
-    var currentPos = this.mainSphere.position.clone();
+    // var currentPos = this.mainSphere.position.clone();
 
     // Set position to current position
-    this.capture.emitter.position.value = currentPos;
+    // this.capture.emitter.position.value = currentPos;
 
     // Adjust burst size based on sphere scale
-    var scale = this.mainSphere.scale.x * (this.skin.capture.customScale || 1);
-    this.capture.emitter.position.radius = scale;
-    this.capture.emitter.size.value = [scale/3, scale*2/6, scale/9, 0];
+    // var scale = this.mainSphere.scale.x * (this.skin.capture.customScale || 1);
+    // this.capture.emitter.position.radius = scale;
+    // this.capture.emitter.size.value = [scale/3, scale*2/6, scale/9, 0];
 
-    this.capture.emitter.enable();
+    // this.capture.emitter.enable();
 };
 
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
-    this.updateTrails();
+    // this.updateTrails();
     if (this.is_current_player || this.skin.behavior.faceCamera) {
         this.updateDirection();
     }
 
-    if (this.capture.active) {
-        this.capture.group.tick( this.clock.getDelta() );
-    }
+    // if (this.capture.active) {
+    //     this.capture.group.tick( this.clock.getDelta() );
+    // }
 };
 
 ZOR.PlayerView.prototype.updateDirection = function ZORPlayerViewUpdateDirection() {
@@ -323,13 +330,13 @@ ZOR.PlayerView.prototype.updateDirection = function ZORPlayerViewUpdateDirection
     this.mainSphere.up.copy(camera.up);
 };
 
-ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {
-    this.drainView.update( drain_target_id );
-};
+// ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {
+//     this.drainView.update( drain_target_id );
+// };
 
 ZOR.PlayerView.prototype.setAlpha = function ZORPlayerViewSetAlpha(alpha) {
     // TODO remove transparent true/false
-    this.material.transparent = !alpha;
+    this.mainSphere.material.transparent = !alpha;
 
     // TODO implement this
     // this.material.alpha = alpha;
@@ -339,57 +346,68 @@ ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(p
     this.mainSphere.position.lerp(position, config.PLAYER_MOVE_LERP_WEIGHT);
 };
 
-ZOR.PlayerView.prototype.removeTrail = function ZORPlayerViewRemoveTrail() {
-    if (this.trail.initialized) {
-        switch (this.skin.trail.type) {
-            case 'line':
-                this.trail.origins = [];
-                this.trail.geometries = [];
-                this.trail.lines = [];
-                this.trail.meshes.forEach(_.partial(UTIL.threeFree, this.scene, _));
-                break;
-            case 'particle':
-                if (this.trail.emitter.group)
-                    this.trail.emitter.remove();
-                UTIL.threeFree(this.scene, this.trail.group.mesh);
-                break;
-        }
-        this.trail.initialized = false;
-    }
+// ZOR.PlayerView.prototype.removeTrail = function ZORPlayerViewRemoveTrail() {
+//     if (this.trail.initialized) {
+//         switch (this.skin.trail.type) {
+//             case 'line':
+//                 this.trail.origins = [];
+//                 this.trail.geometries = [];
+//                 this.trail.lines = [];
+//                 this.trail.meshes.forEach(_.partial(UTIL.threeFree, this.scene, _));
+//                 break;
+//             case 'particle':
+//                 if (this.trail.emitter.group)
+//                     this.trail.emitter.remove();
+//                 UTIL.threeFree(this.scene, this.trail.group.mesh);
+//                 break;
+//         }
+//         this.trail.initialized = false;
+//     }
 
-};
+// };
 
-ZOR.PlayerView.prototype.removeCaptureParticles = function ZORPlayerViewRemoveCaptureParticles() {
-    this.capture.emitter.remove();
-    UTIL.threeFree(this.scene, this.capture.group.mesh);
-};
+// ZOR.PlayerView.prototype.removeCaptureParticles = function ZORPlayerViewRemoveCaptureParticles() {
+//     this.capture.emitter.remove();
+//     UTIL.threeFree(this.scene, this.capture.group.mesh);
+// };
 
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove() {
-    this.removeTrail();
-    this.removeCaptureParticles();
-    this.drainView.dispose();
+    // this.removeTrail();
+    // this.removeCaptureParticles();
+    // this.drainView.dispose();
+
+    ZOR.Pools.spheres.return(this.mainSphere);
+
+    // make sure sphere textures are freed from GPU memory
+    if (this.mainSphere.material.uniforms.sphereTexture) {
+        this.mainSphere.material.uniforms.sphereTexture.value.dispose();
+    }
 
     UTIL.threeFree(this.scene, this.mainSphere);
+    this.mainSphere = undefined;
+    // this.scene.remove(this.mainSphere);
+    // this.mainSphere.material.dispose();
+    // this.mainSphere.geometry.dispose();
 
     // find the player mesh used for raycasting and remove it
-    for (var i = 0; i < ZOR.Game.player_meshes.length; i++) {
-        var playerMesh = ZOR.Game.player_meshes[i];
+    // for (var i = 0; i < ZOR.Game.player_meshes.length; i++) {
+    //     var playerMesh = ZOR.Game.player_meshes[i];
 
-        if (playerMesh && playerMesh.player_id === this.model.id) {
-            // remove this players mesh
-            console.log("Removing mesh for player: ", this.model.id);
-            ZOR.Game.player_meshes.splice(i, 1);
-        }
-    }
+    //     if (playerMesh && playerMesh.player_id === this.model.id) {
+    //         // remove this players mesh
+    //         console.log("Removing mesh for player: ", this.model.id);
+    //         ZOR.Game.player_meshes.splice(i, 1);
+    //     }
+    // }
 };
 
 /**
  * Returns the time in ms that the capture emitter particles will be alive
  * @returns {number}
  */
-ZOR.PlayerView.prototype.getCaptureEmitterLifetime = function ZORPlayerViewGetCaptureEmitterLifetime() {
-    return Math.floor((this.capture.emitter.maxAge.value + this.capture.emitter.maxAge.spread + this.capture.emitter.duration + 0.1) * 1000);
-};
+// ZOR.PlayerView.prototype.getCaptureEmitterLifetime = function ZORPlayerViewGetCaptureEmitterLifetime() {
+//     return Math.floor((this.capture.emitter.maxAge.value + this.capture.emitter.maxAge.spread + this.capture.emitter.duration + 0.1) * 1000);
+// };
 
 ZOR.PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
     this.mainSphere.scale.set(scale, scale, scale);
