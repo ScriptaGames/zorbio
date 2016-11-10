@@ -6,11 +6,7 @@ ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 ZOR.PlayerSkins.reddit = function ZORRedditSkin(playerView) {
 
     return {
-        geometry: {
-            spin: {
-                y: 0.001,
-            },
-        },
+        poolname: 'spheres',
         material: new THREE.ShaderMaterial({
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },

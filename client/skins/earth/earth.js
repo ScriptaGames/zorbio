@@ -7,8 +7,7 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
     var opacity = playerView.is_current_player ? 0.2 : 0.6;
 
     return {
-        geometry: {
-        },
+        poolname: 'spheres',
         material: new THREE.ShaderMaterial({
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },

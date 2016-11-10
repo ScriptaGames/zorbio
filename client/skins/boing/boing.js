@@ -7,10 +7,7 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
     var color = new THREE.Color('#D71C26');
 
     return {
-        geometry: {
-            polycount_w: 20,
-            polycount_h: 10,
-        },
+        poolname: 'lowPolySpheres',
         material: new THREE.ShaderMaterial({
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },

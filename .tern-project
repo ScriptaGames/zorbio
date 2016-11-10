@@ -26,6 +26,7 @@
         "./bower_components/xss-filters/dist/xss-filters.min.js",
         "./bower_components/raven-js/dist/raven.js",
         "./lib/environment.js",
+        "./js/Pools.js",
         "./js/config.js",
         "./js/ObjectPool.js",
         "./js/Sentry.js",

@@ -8,6 +8,7 @@ ZOR.PlayerSkins.techno = function ZORTechnoSkin(playerView) {
     var color = new THREE.Color('#ffffff');
 
     return {
+        poolname: 'spheres',
         geometry: {
             polycount_w: 20,
             polycount_h: 10,

@@ -1,15 +1,5 @@
 var ZOR = ZOR || {};
 
-function createSphere() {
-    var mat = new THREE.MeshBasicMaterial();
-    var geo = new THREE.SphereGeometry(1, config.PLAYER_SPHERE_POLYCOUNT, config.PLAYER_SPHERE_POLYCOUNT);
-    return new THREE.Mesh(geo, mat);
-}
-
-ZOR.Pools = ZOR.Pools || {};
-ZOR.Pools.spheres = new ZOR.ObjectPool(20, createSphere);
-
-
 /**
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
  * visually, and how to move it's different 3D pieces around.
@@ -43,14 +33,17 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
         this.skin.material.depthWrite = true;
     }
 
-    this.mainSphere = ZOR.Pools.spheres.borrow();
+    this.spherePool = ZOR.Pools[this.skin.poolname];
+    this.mainSphere = this.spherePool.borrow();
     this.mainSphere.position.copy(model.sphere.position);
     this.mainSphere.material = this.skin.material;
 
     if (!current) {
         this.setAlpha(1);
     }
-    // this.drainView = new ZOR.DrainView(this, scene);
+
+    this.drainView = ZOR.Pools.drainBeams.borrow();
+    this.drainView.setPlayerView(this);
 
     this.setScale(model.sphere.scale);
 
@@ -60,6 +53,7 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     // this.initCaptureParticles();
 
     scene.add( this.mainSphere );
+    scene.add( this.drainView.mesh );
 
     // give the meshes time to render before drawing trails
     // also adds a nice fade in effect for trails
@@ -296,7 +290,7 @@ ZOR.PlayerView.prototype.handleCapture = function ZORPlayerViewHandleCapture() {
 
     // Hide all view elements except for capture particles
     this.scene.remove(this.mainSphere);
-    // this.drainView.mesh.visible = false;
+    this.drainView.hide();
     // this.removeTrail();  // must remove trail because particles trails mess up the look of capture particles
 
     // fire particle burst
@@ -330,9 +324,9 @@ ZOR.PlayerView.prototype.updateDirection = function ZORPlayerViewUpdateDirection
     this.mainSphere.up.copy(camera.up);
 };
 
-// ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {
-//     this.drainView.update( drain_target_id );
-// };
+ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {
+    this.drainView.update( drain_target_id );
+};
 
 ZOR.PlayerView.prototype.setAlpha = function ZORPlayerViewSetAlpha(alpha) {
     // TODO remove transparent true/false
@@ -374,14 +368,11 @@ ZOR.PlayerView.prototype.updatePosition = function ZORPlayerViewUpdatePosition(p
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove() {
     // this.removeTrail();
     // this.removeCaptureParticles();
-    // this.drainView.dispose();
+    ZOR.Pools.drainBeams.return(this.drainView);
+    this.drainView.dispose(this.scene);
+    this.drainView = undefined;
 
-    ZOR.Pools.spheres.return(this.mainSphere);
-
-    // make sure sphere textures are freed from GPU memory
-    if (this.mainSphere.material.uniforms.sphereTexture) {
-        this.mainSphere.material.uniforms.sphereTexture.value.dispose();
-    }
+    this.spherePool.return(this.mainSphere);
 
     UTIL.threeFree(this.scene, this.mainSphere);
     this.mainSphere = undefined;
@@ -461,3 +452,19 @@ ZOR.PlayerView.prototype.shouldChangeMinDist = function ZORPlayerViewShouldChang
 
     return false;
 };
+
+
+(function () {
+
+    function createSphere(polycountx, polycounty) {
+        var polyx = polycountx || config.PLAYER_SPHERE_POLYCOUNT;
+        var polyy = polycounty || config.PLAYER_SPHERE_POLYCOUNT;
+        var mat = new THREE.MeshBasicMaterial();
+        var geo = new THREE.SphereGeometry(1, polyx, polyy);
+        return new THREE.Mesh(geo, mat);
+    }
+
+    ZOR.Pools.spheres = new ZOR.ObjectPool(config.MAX_PLAYERS_PER_INSTANCE * 2, createSphere);
+    ZOR.Pools.lowPolySpheres = new ZOR.ObjectPool(config.MAX_PLAYERS_PER_INSTANCE * 2, createSphere, [20, 10]);
+
+}());

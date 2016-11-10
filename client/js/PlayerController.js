@@ -132,7 +132,7 @@ ZOR.PlayerController.prototype.updateScale = function ZORPlayerControllerUpdateS
 
 ZOR.PlayerController.prototype.updateDrain = function ZORPlayerControllerUpdateDrain(drain_target_id) {
     this.model.sphere.drain_target_id = drain_target_id;
-    // this.view.updateDrain( drain_target_id );
+    this.view.updateDrain( drain_target_id );
 };
 
 ZOR.PlayerController.prototype.updatePosition = function ZORPlayerControllerUpdatePosition(position) {
@@ -166,7 +166,7 @@ ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene
     this.view.adjustCamera(this.radius());
 
     // Update drain
-    // this.view.updateDrain(this.model.sphere.drain_target_id);
+    this.view.updateDrain(this.model.sphere.drain_target_id);
 
     // check if we need to animate anything
     if (this._animated_grow_frames > 0) {

@@ -7,7 +7,7 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
     var color = new THREE.Color(playerView.playerColor);
 
     return {
-        geometry: {},
+        poolname: 'spheres',
         material: new THREE.ShaderMaterial({
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },
