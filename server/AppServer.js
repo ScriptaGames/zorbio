@@ -41,6 +41,29 @@ var AppServer = function (id, app, server_label, port) {
     self.leaders_7_day  = [];
     self.leaders_30_day = [];
 
+    self.app = app; // express
+
+    // Game state
+    self.model = new Zorbio.Model();
+    self.model.init(config.WORLD_SIZE, config.FOOD_DENSITY);
+    self.socket_uuid_map = {};  // Maps a player ID to a socket uuid
+    self.clients = {};  // Client websockets with a uuid key
+    self.serverMsg = '';
+
+    /**
+     * Status object to send to a remote data store for monitoring and analytics
+     */
+    self.status = {
+        doctype: 'game_instance_status',
+        uuid: self.uuid,
+        clients: 0,
+        real_player_count: 0,
+        players_metrics: [],
+        socket_uuid_map: 0,
+        tick_time_metric: new Zorbio.Metric(50),
+        au_send_metric: new Zorbio.Metric(100),
+    };
+
     /**
      * Console.log wrapper so we can include instance id for filtering
      */
@@ -68,27 +91,17 @@ var AppServer = function (id, app, server_label, port) {
         }
     };
 
-    self.app = app; // express
-
-    // Game state
-    self.model = new Zorbio.Model();
-    self.model.init(config.WORLD_SIZE, config.FOOD_DENSITY);
-    self.socket_uuid_map = {};  // Maps a player ID to a socket uuid
-    self.clients = {};  // Client websockets with a uuid key
-    self.serverMsg = '';
-
     /**
-     * Status object to send to a remote data store for monitoring and analytics
+     * Sends a websocket message to a specific websocket by player id
+     * @param player_id the id of the player ot send to
+     * @param msg
      */
-    self.status = {
-        doctype: 'game_instance_status',
-        uuid: self.uuid,
-        clients: 0,
-        real_player_count: 0,
-        players_metrics: [],
-        socket_uuid_map: 0,
-        tick_time_metric: new Zorbio.Metric(50),
-        au_send_metric: new Zorbio.Metric(100),
+    self.sendToPlayer = function appSendToPlayer(player_id, msg) {
+        var ws = self.clients[self.socket_uuid_map[player_id]];
+
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(msg);
+        }
     };
 
     self.addClient = function appAddClient(ws) {
@@ -665,7 +678,7 @@ var AppServer = function (id, app, server_label, port) {
 
         if (attackingPlayer.type != Zorbio.PlayerTypes.BOT) {
             // Inform the attacking player that they captured target player
-            self.clients[self.socket_uuid_map[attackingPlayerId]].send(JSON.stringify({op: 'captured_player', targetPlayerId: targetPlayerId}));
+            self.sendToPlayer(attackingPlayerId, JSON.stringify({op: 'captured_player', targetPlayerId: targetPlayerId}));
         }
 
         if (targetPlayer.type != Zorbio.PlayerTypes.BOT) {
@@ -688,11 +701,11 @@ var AppServer = function (id, app, server_label, port) {
 
             var buffer = Schemas.youDied.encode(msgObj);
 
-            var targetClientWs = self.clients[self.socket_uuid_map[targetPlayerId]];
-            targetClientWs.send(buffer);
+            // Notify the target player that they died
+            self.sendToPlayer(targetPlayerId, buffer);
 
             // Save score to leaderboard if they got any points
-            self.savePlayerScore(targetPlayer.name, score, targetClientWs);
+            self.savePlayerScore(targetPlayer.name, score, self.clients[self.socket_uuid_map[targetPlayerId]]);
         }
         else {
             self.replenishBot();
@@ -712,10 +725,8 @@ var AppServer = function (id, app, server_label, port) {
     self.kickPlayer = function appKickPlayer(playerId, reason) {
         self.log('kicking player: ', playerId, reason);
 
-        // notify player
-        if (self.clients[self.socket_uuid_map[playerId]]) {
-            self.clients[self.socket_uuid_map[playerId]].send(JSON.stringify({op: 'kick', reason: reason}));
-        }
+        // notify player that they are kicked
+        self.sendToPlayer(playerId, JSON.stringify({op: 'kick', reason: reason}));
 
         // notify other clients
         self.broadcast(JSON.stringify({op: 'remove_player', playerId: playerId}));
