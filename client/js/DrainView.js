@@ -271,9 +271,3 @@ ZOR.DrainView.prototype.dispose = function ZORDrainViewDispose(scene) {
     UTIL.threeFree(scene, this.mesh);
 };
 
-
-// Establish Drain Beam pool
-
-ZOR.Pools.drainBeams = new ZOR.ObjectPool(config.MAX_PLAYERS_PER_INSTANCE * 2, function createDrainBeam() {
-    return new ZOR.DrainView();
-});

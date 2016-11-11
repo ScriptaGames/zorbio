@@ -575,25 +575,19 @@ function removePlayerFromGame(playerId, time) {
     // remove from player controllers
     ZOR.Game.players[playerId] = undefined;
 
-    if (deadPlayer) {
-        if (deadPlayer.view) {
-            deadPlayer.removeView();
-        }
-        ZOR.Game.dead_players[playerId] = undefined;
-    }
-    // setTimeout(function removePlayerNow() {
-    //     // remove player from scene and client
-    //     if (deadPlayer) {
-    //         if (deadPlayer.view) {
-    //             // Remove player from the scene
-    //             deadPlayer.removeView();
-    //         }
+    setTimeout(function removePlayerNow() {
+        // remove player from scene and client
+        if (deadPlayer) {
+            if (deadPlayer.view) {
+                // Remove player from the scene
+                deadPlayer.removeView();
+            }
 
-    //         // remove from player controllers
-    //         delete ZOR.Game.dead_players[playerId];
-    //     }
-    //     console.log('Removed dead player: ', playerId);
-    // }, time);
+            // remove from player controllers
+            delete ZOR.Game.dead_players[playerId];
+        }
+        console.log('Removed dead player: ', playerId);
+    }, time);
 }
 
 function handleServerTick(serverTickData) {
@@ -655,12 +649,12 @@ function handleLeaderboardUpdate(leaderboards) {
 function handleSuccessfulPlayerCapture(capturedPlayerID) {
     // var sound = ZOR.Sounds.sfx.player_capture;
     var capturedPlayer = ZOR.Game.players[capturedPlayerID];
-    // var windDownTime = 0;
+    var windDownTime = 0;
 
     if (capturedPlayer) {
         // ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
         capturedPlayer.handleCapture();
-        // windDownTime = capturedPlayer.getWindDownTime();
+        windDownTime = capturedPlayer.getWindDownTime();
 
         // ZOR.UI.engine.set('capture_message', "You captured " + capturedPlayer.model.name);
 
@@ -669,8 +663,7 @@ function handleSuccessfulPlayerCapture(capturedPlayerID) {
         // }, 5000);
     }
 
-    // removePlayerFromGame(capturedPlayerID, windDownTime);
-    removePlayerFromGame(capturedPlayerID, 0);
+    removePlayerFromGame(capturedPlayerID, windDownTime);
 }
 
 /**

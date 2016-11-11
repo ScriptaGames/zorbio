@@ -90,9 +90,9 @@ ZOR.PlayerController.prototype.removeView = function ZORPlayerControllerRemoveVi
 ZOR.PlayerController.prototype.getWindDownTime = function ZORPlayerControllerGetWindDownTime() {
     var time = 0;
 
-    // if (this.view) {
-    //     time = this.view.getCaptureEmitterLifetime();
-    // }
+    if (this.view) {
+        time = this.view.getCaptureEmitterLifetime();
+    }
 
     return time;
 };
