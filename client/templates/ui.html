@@ -1,6 +1,7 @@
 <!-- UI while in menus -->
 <div id="menu-ui-container" data-state="{{ state }}">
     {{ #if state.indexOf('playing') !== 0 }}
+        {{ > top_ad }}
         {{ > title }}
     {{ /if }}
     {{ #if state === STATES.MENU_GAME_SCREEN    }} {{ > menu        }} {{ /if }}

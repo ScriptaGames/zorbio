@@ -166,10 +166,16 @@ input {
 
     display  : grid;
 
+    #top_ad {
+        text-align: center;
+    }
     #title {
         position: relative;
         h1 {
-            .center-abs();
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
     }
     #menu {
@@ -229,24 +235,28 @@ input {
         & {
             grid-definition-columns: 1fr;
             grid-template-columns: 1fr;
-            grid-definition-rows: 100px 1fr 100px 22px;
-            grid-template-rows: 100px 1fr 100px 22px;
+            grid-definition-rows: 100px 80px 1fr 100px 28px;
+            grid-template-rows: 100px 80px 1fr 100px 28px;
         }
-        & #title {
+        & #top_ad {
             grid-column: 1;
             grid-row: 1;
         }
-        & #menu {
+        & #title {
             grid-column: 1;
             grid-row: 2;
         }
-        & #tabs {
+        & #menu {
             grid-column: 1;
             grid-row: 3;
         }
-        & #copy {
+        & #tabs {
             grid-column: 1;
             grid-row: 4;
+        }
+        & #copy {
+            grid-column: 1;
+            grid-row: 5;
         }
     }
 
