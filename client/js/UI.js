@@ -308,8 +308,11 @@ ZOR.UI = function ZORUI() {
     }
 
     function showAd() {
-        console.log("showing ad");
-        (adsbygoogle = window.adsbygoogle || []).push({});
+        // There is a weird race condition with googles ads that require a timeout to make it work
+        setTimeout(function () {
+            console.log("showing ad");
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        }, 250);
     }
 
     /**
