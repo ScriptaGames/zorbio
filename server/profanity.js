@@ -2,7 +2,7 @@ const _ = require('lodash');
 const censor = require('profanity-censor');
 
 const custom_dictionary = [
-    'fuck',
+    'fuck', 'pussi',
 ];
 
 function add_term(term) {

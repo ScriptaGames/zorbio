@@ -655,12 +655,6 @@ function handleSuccessfulPlayerCapture(capturedPlayerID) {
         // ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
         capturedPlayer.handleCapture();
         windDownTime = capturedPlayer.getWindDownTime();
-
-        // ZOR.UI.engine.set('capture_message', "You captured " + capturedPlayer.model.name);
-
-        // setTimeout(function clearCaptureMessage() {
-        //     ZOR.UI.engine.set('capture_message', '');
-        // }, 5000);
     }
 
     removePlayerFromGame(capturedPlayerID, windDownTime);

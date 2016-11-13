@@ -34,13 +34,10 @@
     {{ #if state === STATES.PLAYING_CONFIG }}
         {{ > config-play }}
     {{ /if }}
+
+    {{ #if server_message }}
+    <div id="server-message"> {{ server_message }} </div>
+    {{ /if }}
+
 </div>
-{{ /if }}
-
-{{ #if server_message }}
-<div id="server-message"> {{ server_message }} </div>
-{{ /if }}
-
-{{ #if capture_message }}
-<div id="capture-message"> {{ capture_message }} </div>
 {{ /if }}
