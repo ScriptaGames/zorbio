@@ -14,13 +14,13 @@ ZOR.Pools = {};
         return new THREE.Mesh(geo, mat);
     }
 
-    ZOR.Pools.spheres = new ZOR.ObjectPool(config.MAX_PLAYERS_PER_INSTANCE * 2, createSphere);
-    ZOR.Pools.lowPolySpheres = new ZOR.ObjectPool(config.MAX_PLAYERS_PER_INSTANCE * 2, createSphere, [20, 10]);
+    ZOR.Pools.spheres = new ZOR.ObjectPool(createSphere);
+    ZOR.Pools.lowPolySpheres = new ZOR.ObjectPool(createSphere, [20, 10]);
 
 }());
 
 // Drain view pool
 
-ZOR.Pools.drainViews = new ZOR.ObjectPool(config.MAX_PLAYERS_PER_INSTANCE * 2, function createDrainBeam() {
+ZOR.Pools.drainViews = new ZOR.ObjectPool(function createDrainBeam() {
     return new ZOR.DrainView();
 });
