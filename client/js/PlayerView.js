@@ -48,7 +48,7 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.setScale(model.sphere.scale);
 
     this.mainSphere.player_id = this.model.id;
-    // ZOR.Game.player_meshes.push(this.mainSphere);  // store mesh for raycaster search
+    ZOR.Game.player_meshes.push(this.mainSphere);  // store mesh for raycaster search
 
     this.initCaptureParticles();
 
