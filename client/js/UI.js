@@ -276,9 +276,6 @@ ZOR.UI = function ZORUI() {
 
         init_events();
 
-        // call all the registered init handlers
-        _.invokeMap(init_handlers, _.call);
-
         // add active class to UI overlay so it'll show up
         engine.el.classList.add('active');
 
@@ -298,6 +295,9 @@ ZOR.UI = function ZORUI() {
         // capture screen size, and future adjustments to screen size
         set_screen_size();
         window.addEventListener( 'resize', set_screen_size, false );
+
+        // call all the registered init handlers
+        _.each(init_handlers, function (f) { f(); });
     }
 
     function stateSetter(newState) {
