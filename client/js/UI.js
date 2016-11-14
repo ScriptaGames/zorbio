@@ -114,6 +114,8 @@ ZOR.UI = function ZORUI() {
             music : config.VOLUME_MUSIC_INITIAL,
             sfx   : config.VOLUME_SFX_INITIAL,
         },
+        marquee_messages : [],
+        marquee_index    : 0,
     };
 
     // the public functions exposes by this module (may be modified during execution)
@@ -125,10 +127,18 @@ ZOR.UI = function ZORUI() {
         on          : on,
         clearTarget : clearTarget,
         setAndSave  : setAndSave,
+        advanceMarquee: advanceMarquee,
     };
 
     // array of registered on-init handlers
     var init_handlers = [];
+
+    function advanceMarquee() {
+        var i = engine.get('marquee_index');
+        i += 1;
+        i %= uidata.marquee_messages.length;
+        engine.set('marquee_index', i);
+    }
 
     function clearTarget() {
         uidata.target = undefined;
@@ -295,6 +305,9 @@ ZOR.UI = function ZORUI() {
         // capture screen size, and future adjustments to screen size
         set_screen_size();
         window.addEventListener( 'resize', set_screen_size, false );
+
+        // periodically advance the help marquee
+        setInterval(advanceMarquee, 5432);
 
         // call all the registered init handlers
         _.each(init_handlers, function (f) { f(); });
@@ -481,6 +494,24 @@ ZOR.UI = function ZORUI() {
         if (config.AUTO_PLAY) {
             engine.fire( ACTIONS.PLAYER_LOGIN );
         }
+
+
+        var isInIframe = window.frameElement && window.frameElement.nodeName == "IFRAME";
+        if (isInIframe) {
+            uidata.marquee_messages.push('Play in fullscreen at <a href="http://zor.bio" target="_top">http://<strong>zor.bio</strong></a>!');
+        }
+
+        if (config.STEERING.NAME === 'FOLLOW') {
+            uidata.marquee_messages.push('Place your cursor in the middle of the screen to fly straight ahead.');
+        }
+
+        uidata.marquee_messages.push('Short speed boosts are best.');
+
+        uidata.marquee_messages.push('Try to predict other players\' trajectories.');
+
+        uidata.marquee_messages.push('You can hide behind big spheres if someone is chasing you.');
+
+        uidata.marquee_messages.push('Fly close to a big player to absorb mass, but be careful!');
 
     }
 

@@ -62,6 +62,7 @@ a {
 }
 button, a {
     cursor: pointer;
+    pointer-events: auto;
 }
 
 img {
@@ -196,7 +197,6 @@ input {
         a {
             color: lighten(@secondary-color, 16%);
             text-decoration: underline;
-            pointer-events: auto;
         }
     }
 
@@ -205,16 +205,20 @@ input {
             // TODO variablize these fixed px sizes
             grid-definition-columns: 0.8fr 0.2fr;
             grid-template-columns: 0.81fr 0.2fr;
-            grid-definition-rows: 75px 1fr 14px;
-            grid-template-rows: 75px 1fr 14px;
+            grid-definition-rows: 67px 20px 1fr 14px;
+            grid-template-rows: 67px 20px 1fr 14px;
         }
         & #title {
             grid-column: 1;
             grid-row: 1;
         }
-        & #menu {
+        & #marquee {
             grid-column: 1;
             grid-row: 2;
+        }
+        & #menu {
+            grid-column: 1;
+            grid-row: 3;
         }
         & #tabs {
             grid-column: 2;
@@ -222,31 +226,35 @@ input {
         }
         & #copy {
             grid-column: 1;
-            grid-row: 3;
+            grid-row: 4;
         }
     }
     @media (min-height: 451px), (orientation: portrait) {
         & {
             grid-definition-columns: 1fr;
             grid-template-columns: 1fr;
-            grid-definition-rows: 100px 1fr 100px 22px;
-            grid-template-rows: 100px 1fr 100px 22px;
+            grid-definition-rows: 90px 20px 1fr 100px 22px;
+            grid-template-rows: 90px 20px 1fr 100px 22px;
         }
         & #title {
             grid-column: 1;
             grid-row: 1;
         }
-        & #menu {
+        & #marquee {
             grid-column: 1;
             grid-row: 2;
         }
-        & #tabs {
+        & #menu {
             grid-column: 1;
             grid-row: 3;
         }
-        & #copy {
+        & #tabs {
             grid-column: 1;
             grid-row: 4;
+        }
+        & #copy {
+            grid-column: 1;
+            grid-row: 5;
         }
     }
 
@@ -453,9 +461,11 @@ button {
 }
 
 #title {
-    color: white;
-    font-size: 4rem;
-    text-shadow: 0 0 40px rgba(255,255,255,0.5);
+    h1 {
+        color: white;
+        font-size: 4rem;
+        text-shadow: 0 0 40px rgba(255,255,255,0.5);
+    }
 }
 
 #tabs {
@@ -581,6 +591,17 @@ button {
     }
     to {
         opacity: 1.0;
+    }
+}
+
+#marquee {
+    font-size: 0.5 * @font-size-base;
+    position: relative;
+    opacity: 0.7;
+    li {
+        width: 100%;
+        position: absolute;
+        text-align: center;
     }
 }
 
