@@ -501,6 +501,8 @@ ZOR.UI = function ZORUI() {
             uidata.marquee_messages.push('Play in fullscreen at <a href="http://zor.bio" target="_top">http://<strong>zor.bio</strong></a>!');
         }
 
+        uidata.marquee_messages.push('Hold W key or left mouse to speed boost');
+
         if (config.STEERING.NAME === 'FOLLOW') {
             uidata.marquee_messages.push('Place your cursor in the middle of the screen to fly straight ahead.');
         }
