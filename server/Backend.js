@@ -24,15 +24,19 @@ var Backend = function () {
 };
 
 Backend.prototype.storageOpCallback = function BackendStorageOpCallback(object) {
-    var result_JSON = JSON.parse(object);
-    if (result_JSON.app42) {
-        // noop
-    }
-    else {
-        console.error("Error storing json data in App42");
-        console.error("Error Message is: ", result_JSON.app42Fault.message);
-        console.error("Error Detail is: ", result_JSON.app42Fault.details);
-        console.error("Error Code is: ", result_JSON.app42Fault.appErrorCode);
+    try {
+        var result_JSON = JSON.parse(object);
+        if (result_JSON.app42) {
+            // noop
+        }
+        else {
+            console.error("Error storing json data in App42");
+            console.error("Error Message is: ", result_JSON.app42Fault.message);
+            console.error("Error Detail is: ", result_JSON.app42Fault.details);
+            console.error("Error Code is: ", result_JSON.app42Fault.appErrorCode);
+        }
+    } catch (e) {
+        console.error("Error parsing return object from app42's saveOrUpdateDocumentByKeyValue, value is: ", object);
     }
 };
 
