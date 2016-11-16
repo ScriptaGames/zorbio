@@ -495,13 +495,9 @@ ZOR.UI = function ZORUI() {
             engine.fire( ACTIONS.PLAYER_LOGIN );
         }
 
+        // populate the marquee with some helpful messages
 
-        var isInIframe = window.frameElement && window.frameElement.nodeName == "IFRAME";
-        if (isInIframe) {
-            uidata.marquee_messages.push('Play in fullscreen at <a href="http://zor.bio" target="_top">http://<strong>zor.bio</strong></a>!');
-        }
-
-        uidata.marquee_messages.push('Hold W key or left mouse to speed boost');
+        uidata.marquee_messages.push('Hold W key or left mouse to speed boost.');
 
         if (config.STEERING.NAME === 'FOLLOW') {
             uidata.marquee_messages.push('Place your cursor in the middle of the screen to fly straight ahead.');
@@ -511,9 +507,21 @@ ZOR.UI = function ZORUI() {
 
         uidata.marquee_messages.push('Try to predict other players\' trajectories.');
 
-        uidata.marquee_messages.push('You can hide behind big spheres if someone is chasing you.');
+        uidata.marquee_messages.push('Hide behind big spheres if someone is chasing you.');
 
-        uidata.marquee_messages.push('Fly close to a big player to absorb mass, but be careful!');
+        uidata.marquee_messages.push('Fly near big players to absorb mass, but be careful!');
+
+        // shuffle the messages
+
+        uidata.marquee_messages = _.shuffle(uidata.marquee_messages);
+
+        // put important message(s) first
+
+        var inIframe = window.frameElement && window.frameElement.nodeName == "IFRAME";
+        var indirectVisitor = inIframe || document.referrer !== "";
+        if (indirectVisitor) {
+            uidata.marquee_messages.unshift('Bookmark us at <a href="http://zor.bio" target="_top">http://<strong>zor.bio</strong></a>!');
+        }
 
     }
 
