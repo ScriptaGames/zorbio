@@ -191,6 +191,7 @@ config.INFRACTION_TOLERANCE_SCALE     = 1;      // how many scale infractions a 
 config.MOVE_VALIDATION_SAMPLE_RATE    = 10;      // How often to sample, 1 would be ever time, 10 would be every 10th check
 config.LOADING_WAIT_DURATION          = 10000;  // How many milliseconds to wait before starting to track movement validation
 config.MAX_PLAYER_NAME_LENGTH         = 15;     // How many characters can be in the player name
+config.MAX_NOT_IN_MODEL_ERRORS        = 100;    // How many not-in-model errors before kicking the client
 
 ////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //

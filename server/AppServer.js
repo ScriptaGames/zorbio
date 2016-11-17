@@ -125,8 +125,10 @@ var AppServer = function (id, app, server_label, port) {
         var key;
 
         // Pool variables for speed
-        var rapidBuffer  = new ArrayBuffer(20);
+        var rapidBuffer = new ArrayBuffer(20);
         var rapidView = new Float32Array(rapidBuffer);
+
+        var player_not_in_model_count = 0;
 
         ws.on('message', function wsMessage(msg) {
             if (typeof msg === "string") {
@@ -371,6 +373,11 @@ var AppServer = function (id, app, server_label, port) {
                         self.model.getPlayerById(currentPlayer.id).infractions_speed++;
                         break;
                     case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
+                        player_not_in_model_count++;
+                        if (player_not_in_model_count > config.MAX_NOT_IN_MODEL_ERRORS) {
+                            self.log("Player had to many not-in-model errors", player_not_in_model_count);
+                            self.kickPlayer(currentPlayer.id, "Disconnected from server");
+                        }
                         self.log("Recieved 'player_update' from player not in model!", sphere.id);
                         break;
                 }
