@@ -186,9 +186,9 @@ config.PLAYER_SCALE_EXTRA_TOLERANCE   = 0.1;    // extra tolerance for player sc
 config.PLAYER_POSITIONS_WINDOW        = 30;     // number of recent positions to save for the player for validation rewind
 config.INFRACTION_TOLERANCE_FOOD      = 20;     // how many food infractions a player can have before they are kicked
 config.INFRACTION_TOLERANCE_PCAP      = 1;      // how many player capture infractions a player can have before they are kicked
-config.INFRACTION_TOLERANCE_SPEED     = 15;     // how many speed infractions a player can have before they are kicked
+config.INFRACTION_TOLERANCE_SPEED     = 20;     // how many speed infractions a player can have before they are kicked
 config.INFRACTION_TOLERANCE_SCALE     = 1;      // how many scale infractions a player can have before they are kicked
-config.MOVE_VALIDATION_SAMPLE_RATE    = 5;      // How often to sample, 1 would be ever time, 10 would be every 10th check
+config.MOVE_VALIDATION_SAMPLE_RATE    = 10;      // How often to sample, 1 would be ever time, 10 would be every 10th check
 config.LOADING_WAIT_DURATION          = 10000;  // How many milliseconds to wait before starting to track movement validation
 config.MAX_PLAYER_NAME_LENGTH         = 15;     // How many characters can be in the player name
 
