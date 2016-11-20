@@ -377,7 +377,7 @@ var AppServer = function (id, app, server_label, port) {
                         if (player_not_in_model_count > config.MAX_NOT_IN_MODEL_ERRORS) {
                             self.log("Player had to many not-in-model errors", player_not_in_model_count);
                             self.kickPlayer(currentPlayer.id, "Disconnected from server");
-                            self.removePlayerSocket(socket_uuid);
+                            // self.removePlayerSocket(socket_uuid);
                         }
                         self.log("Recieved 'player_update' from player not in model!", sphere.id);
                         break;
@@ -865,7 +865,7 @@ var AppServer = function (id, app, server_label, port) {
         }
 
         // Save game status to remote data store
-        self.backend.saveGameInstanceStatus(self.uuid, self.status);
+        // self.backend.saveGameInstanceStatus(self.uuid, self.status);
 
         self.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.status.clients + ', Players: ' + self.status.real_player_count + ', socket_uuid_map: ' + self.status.socket_uuid_map);
     }
