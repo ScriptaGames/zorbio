@@ -4,7 +4,7 @@ var ZOR = ZOR || {};
 
 ZOR.Env = {
     CHECK_ORIGIN      : true,
-    CHECK_VERSION     : true,
+    CHECK_VERSION     : false,
     REQUIRE_ALPHA_KEY : false,
 };
 
