@@ -96,22 +96,36 @@ var AppProxy = function (wss, app, server_label, port) {
             url: 'https://raw.githubusercontent.com/ScriptaGames/zorbio-version/master/version.json',
         };
 
-        rq(options, function (error, response, body) {
+        console.log("Checking version...");
+
+        rq.get(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                var res = JSON.parse(body);
-                var local_version = pjson.version + '-' + pjson.build;
+                try {
+                    var res = JSON.parse(body);
+                    var local_version = pjson.version + '-' + pjson.build;
 
-                if (local_version !== res.version) {
-                    console.log("version out of date, local  version:", local_version);
-                    console.log("version out of date, remote version:", res.version);
+                    if (local_version !== res.version) {
+                        console.log("version out of date, local  version:", local_version);
+                        console.log("version out of date, remote version:", res.version);
 
-                    // notify all game instances that the version is out of date
-                    for (var i = 0; i < self.gameInstances.length; i++) {
-                        self.gameInstances[i].setServerMessage("Server restart imminent!");
+                        // notify all game instances that the version is out of date
+                        for (var i = 0; i < self.gameInstances.length; i++) {
+                            self.gameInstances[i].setServerMessage("Server restart imminent!");
+                        }
                     }
+                    else {
+                        console.log('Version is up-to-date', local_version)
+                    }
+                } catch (e) {
+                    console.error('Caught exception parsing json from zorbio-version');
                 }
             }
-        });
+            else {
+                console.error('Error response code form getting zorbio-version from github');
+            }
+        }).on('error', function(e){
+            console.error('Error http request failed to get zorbio-version from github');
+        }).end();
     };
 
     self.setSrvIdCookie = function appSetSrvIdCookie(id, res) {
