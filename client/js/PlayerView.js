@@ -27,23 +27,23 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 
     this.skin = ZOR.PlayerSkins[this.skinName || 'default'](this);
 
-    this.geometry = new THREE.SphereGeometry(
-        1,
-        this.skin.geometry.polycount_w || config.PLAYER_SPHERE_POLYCOUNT,
-        this.skin.geometry.polycount_h || config.PLAYER_SPHERE_POLYCOUNT
-    );
-
     playerFogCenter.copy(model.sphere.position);
-    this.material = new THREE.ShaderMaterial( this.skin.material );
 
     if (config.FOOD_ALPHA_ENABLED) {
-        this.material.depthWrite = true;
+        this.skin.material.depthWrite = true;
     }
 
-    this.mainSphere = new THREE.Mesh( this.geometry, this.material );
+    this.spherePool = ZOR.Pools[this.skin.poolname];
+    this.mainSphere = this.spherePool.borrow();
     this.mainSphere.position.copy(model.sphere.position);
+    this.mainSphere.material = this.skin.material;
 
-    this.drainView = new ZOR.DrainView(this, scene);
+    if (!current) {
+        this.setAlpha(1);
+    }
+
+    this.drainView = ZOR.Pools.drainViews.borrow();
+    this.drainView.setPlayerView(this);
 
     this.setScale(model.sphere.scale);
 
@@ -53,6 +53,7 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.initCaptureParticles();
 
     scene.add( this.mainSphere );
+    scene.add( this.drainView.mesh );
 
     // give the meshes time to render before drawing trails
     // also adds a nice fade in effect for trails
@@ -288,15 +289,12 @@ ZOR.PlayerView.prototype.handleCapture = function ZORPlayerViewHandleCapture() {
     this.capture.active = true;
 
     // Hide all view elements except for capture particles
-    this.mainSphere.visible = false;
-    this.drainView.mesh.visible = false;
+    this.scene.remove(this.mainSphere);
+    this.drainView.hide();
     this.removeTrail();  // must remove trail because particles trails mess up the look of capture particles
 
-    // fire particle burst
-    var currentPos = this.mainSphere.position.clone();
-
     // Set position to current position
-    this.capture.emitter.position.value = currentPos;
+    this.capture.emitter.position.value = this.mainSphere.position.clone();
 
     // Adjust burst size based on sphere scale
     var scale = this.mainSphere.scale.x * (this.skin.capture.customScale || 1);
@@ -329,7 +327,7 @@ ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_t
 
 ZOR.PlayerView.prototype.setAlpha = function ZORPlayerViewSetAlpha(alpha) {
     // TODO remove transparent true/false
-    this.material.transparent = !alpha;
+    this.mainSphere.material.transparent = !alpha;
 
     // TODO implement this
     // this.material.alpha = alpha;
@@ -346,13 +344,11 @@ ZOR.PlayerView.prototype.removeTrail = function ZORPlayerViewRemoveTrail() {
                 this.trail.origins = [];
                 this.trail.geometries = [];
                 this.trail.lines = [];
-                this.trail.meshes.forEach(this.scene.remove.bind(scene));
+                this.trail.meshes.forEach(_.partial(UTIL.threeFree, this.scene, _));
                 break;
             case 'particle':
-                if (this.trail.emitter.group)
-                    this.trail.emitter.remove();
-                this.trail.group.dispose();
-                this.scene.remove(this.trail.group.mesh);
+                if (this.trail.emitter.group) this.trail.emitter.remove();
+                UTIL.threeFree(this.scene, this.trail.group.mesh);
                 break;
         }
         this.trail.initialized = false;
@@ -362,26 +358,34 @@ ZOR.PlayerView.prototype.removeTrail = function ZORPlayerViewRemoveTrail() {
 
 ZOR.PlayerView.prototype.removeCaptureParticles = function ZORPlayerViewRemoveCaptureParticles() {
     this.capture.emitter.remove();
-    this.capture.group.dispose();
-    this.scene.remove(this.capture.group.mesh);
+    UTIL.threeFree(this.scene, this.capture.group.mesh);
 };
 
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove() {
     this.removeTrail();
     this.removeCaptureParticles();
-    this.drainView.dispose();
-    this.scene.remove(this.mainSphere);
+    ZOR.Pools.drainViews.return(this.drainView);
+    this.drainView.dispose(this.scene);
+    this.drainView = undefined;
+
+    this.spherePool.return(this.mainSphere);
+
+    UTIL.threeFree(this.scene, this.mainSphere);
+    this.mainSphere = undefined;
+    // this.scene.remove(this.mainSphere);
+    // this.mainSphere.material.dispose();
+    // this.mainSphere.geometry.dispose();
 
     // find the player mesh used for raycasting and remove it
-    for (var i = 0; i < ZOR.Game.player_meshes.length; i++) {
-        var playerMesh = ZOR.Game.player_meshes[i];
+    // for (var i = 0; i < ZOR.Game.player_meshes.length; i++) {
+    //     var playerMesh = ZOR.Game.player_meshes[i];
 
-        if (playerMesh && playerMesh.player_id === this.model.id) {
-            // remove this players mesh
-            console.log("Removing mesh for player: ", this.model.id);
-            ZOR.Game.player_meshes.splice(i, 1);
-        }
-    }
+    //     if (playerMesh && playerMesh.player_id === this.model.id) {
+    //         // remove this players mesh
+    //         console.log("Removing mesh for player: ", this.model.id);
+    //         ZOR.Game.player_meshes.splice(i, 1);
+    //     }
+    // }
 };
 
 /**
@@ -444,3 +448,4 @@ ZOR.PlayerView.prototype.shouldChangeMinDist = function ZORPlayerViewShouldChang
 
     return false;
 };
+

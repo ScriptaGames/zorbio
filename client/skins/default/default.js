@@ -7,8 +7,8 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
     var color = new THREE.Color(playerView.playerColor);
 
     return {
-        geometry: {},
-        material: {
+        poolname: 'spheres',
+        material: new THREE.ShaderMaterial({
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },
                 "p"           : { type : "f",  value : 2.71828 },
@@ -27,7 +27,7 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
             // depthTest      : false,
             // depthWrite     : true,
             // blending       : THREE.AdditiveBlending,
-        },
+        }),
         behavior: {
             faceCamera: false, // should OTHER player's spheres face the camera?
         },

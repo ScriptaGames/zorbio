@@ -7,6 +7,10 @@ include_once __DIR__ . '/php_sdk/App42SecurityException.php';
 include_once __DIR__ . '/php_sdk/App42Exception.php';
 
 
+/**
+ * Class Leaderboard
+ * Client to the App42 Leaderboard service
+ */
 class Leaderboard
 {
     private $api_key;
@@ -18,6 +22,12 @@ class Leaderboard
         $this->api_secret = $secret;
     }
 
+    /**
+     * Save the user score by game and username
+     * @param $gameName
+     * @param $userName
+     * @param $score
+     */
     public function saveScore($gameName, $userName, $score)
     {
         App42API::initialize($this->api_key, $this->api_secret);
@@ -42,10 +52,48 @@ class Leaderboard
             print_r($ex);
         }
     }
+
+    /**
+     * Get the list of top players by start and end date.  Dates are in string format following this:
+     * http://php.net/manual/en/function.strtotime.php  e.g. "-7 days" or "now"
+     * @param $gameName
+     * @param $startDate
+     * @param $endDate
+     * @param $limit
+     */
+    public function getLeadersByDate($gameName, $limit, $startDate, $endDate)
+    {
+        App42API::initialize($this->api_key, $this->api_secret);
+        $scoreBoardService = App42API::buildScoreBoardService();
+
+        try {
+            $response = $scoreBoardService->getTopNRankers($gameName, $limit, $startDate, $endDate);
+            $jsonResponse = $response->toString();
+            print($jsonResponse);
+        } catch (App42NotFoundException $ex) {
+            print('App42NotFoundException in getLeadersByDate likely due to no scores for date.');
+        } catch (App42BadParameterException $ex) {
+            print("App42BadParameterException");
+            print_r($ex);
+        } catch (App42SecurityException $ex) {
+            print("App42SecurityException");
+            // Check for authorization Error due to invalid Public/Private Key
+            if ($ex->getAppErrorCode() == 1401) {
+                // Do exception Handling here
+                print("Invalid keys");
+            }
+        } catch (App42Exception $ex) {
+            print("App42Exception");
+            print_r($ex);
+        }
+    }
 }
 
 $leaderboard = new leaderboard($argv[1], $argv[2]);
 
 if ($argv[3] == 'save') {
     $leaderboard->saveScore($argv[4], $argv[5], $argv[6]);
+}
+else if ($argv[3] == 'get_leaders') {
+    $leaderboard->getLeadersByDate($argv[4], $argv[5], $argv[6], $argv[7]);
 }

@@ -11,13 +11,17 @@ var ZOR = ZOR || {};
  * @param {array} args an array of arguments to pass to the create function
  */
 
-ZOR.ObjectPool = function ZORObjectPool(quantity, create, args) {
-    this.pool = [];
-    this.available = new Uint8Array(quantity).fill(1);
-    for(var i = 0; i < quantity; ++i) {
-        this.pool.push(create.apply([], args));
-        this.pool[i]._pool_index = i;
-    }
+ZOR.ObjectPool = function ZORObjectPool(create, args) {
+    this._create    = create;
+    this._args      = args;
+    this._pool      = [];
+    this._available = [];
+    this._i         = -1;
+    // this._available = new Uint8Array(quantity).fill(1);
+    // for(var i = 0; i < quantity; ++i) {
+    //     this._pool.push(create.apply([], args));
+    //     this._pool[i]._pool_index = i;
+    // }
 };
 
 /**
@@ -25,9 +29,13 @@ ZOR.ObjectPool = function ZORObjectPool(quantity, create, args) {
  * @returns {object} an object from the pool, or undefined if none are available
  */
 ZOR.ObjectPool.prototype.borrow = function ZORObjectPoolBorrow() {
-    this.updateNextAvailable();
-    this.available[this.i] = 0;
-    return this.pool[this.i];
+    this._updateNextAvailable();
+    if (this._dry()) {
+        // console.log('full, adding');
+        this._add();
+    }
+    this._available[this._i] = 0;
+    return this._pool[this._i];
 };
 
 /**
@@ -35,21 +43,65 @@ ZOR.ObjectPool.prototype.borrow = function ZORObjectPoolBorrow() {
  * @param {object} obj the object to return to the pool
  */
 ZOR.ObjectPool.prototype.return = function ZORObjectPoolReturn(obj) {
-    this.available[obj._pool_index] = 1;
-    this.updateNextAvailable();
+    // console.log('returning object: ' + obj);
+    this._available[obj._pool_index] = 1;
+    this._updateNextAvailable(obj._pool_index);
+};
+
+/**
+ * Add a new object to the end of the pool.
+ *
+ * @return {Object} a reference to the object that was just added
+ */
+ZOR.ObjectPool.prototype._add = function ZORObjectPoolAdd() {
+    var i = this._pool.length;
+    this._pool.push(this._create.apply({}, this._args));
+    this._pool[i]._pool_index = i;
+    this._available.push(1);
+    this._updateNextAvailable(i);
+};
+
+/**
+ * Find out if the object pool is dry (all instantiated objects are claimed).
+ *
+ * @return {boolean} true if all objects are claimed, false otherwise
+ */
+ZOR.ObjectPool.prototype._dry = function ZORObjectPoolDry() {
+    return this._i === -1;
 };
 
 /**
  * Returns the index of the next available object.
  * @return {number} the index of the next available object.
  */
-ZOR.ObjectPool.prototype.nextAvailable = function ZORObjectPoolNextAvailable() {
-    return this.available.indexOf(1);
+ZOR.ObjectPool.prototype._nextAvailable = function ZORObjectPoolNextAvailable() {
+    return this._available.indexOf(1);
 };
 
 /**
  * Updates the internal reference to the next available index.
+ * @param {number} [i] optionally provide a known index of an available object.  if not provided, one will be searched for.
  */
-ZOR.ObjectPool.prototype.updateNextAvailable = function ZORObjectPoolUpdateNextAvailable() {
-    this.i = this.nextAvailable();
+ZOR.ObjectPool.prototype._updateNextAvailable = function ZORObjectPoolUpdateNextAvailable(i) {
+    this._i = i || this._nextAvailable();
+    // console.log('next available is ' + this._i);
 };
+
+
+// test
+
+// pool = new ZOR.ObjectPool(create, [1]);
+// function create(x) {
+//     return { n: x };
+// }
+
+// var a = pool.borrow();
+// console.log(a);
+// var b = pool.borrow();
+// pool.return(b);
+// var c = pool.borrow();
+// var d = pool.borrow();
+// var e = pool.borrow();
+// pool.return(e);
+// pool.return(d);
+// var f = pool.borrow();

@@ -44,6 +44,9 @@ fi
 
 function start {
     echo "Starting zorbio server"
+
+    cd /usr/share/games/zorbio/
+
     # Check if environemt variable BALANCER_NODES is greater than 0 if so fork multiple processes
     if [ ${NUM_NODES} -gt 1 ]; then
         BAL_COUNT=0
@@ -58,14 +61,14 @@ function start {
             echo "Starting next zorbio process on http_port: ${NEXT_HTTP_PORT}"
             echo "Starting next zorbio process on ws_port: ${NEXT_WS_PORT}"
 
-            HTTP_PORT=${NEXT_HTTP_PORT} WS_PORT=${NEXT_WS_PORT} SERVER_LABEL=${LABEL} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-$BAL_COUNT" /usr/share/games/zorbio/server/server.js -- dist
+            HTTP_PORT=${NEXT_HTTP_PORT} WS_PORT=${NEXT_WS_PORT} SERVER_LABEL=${LABEL} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-$BAL_COUNT" server/server.js -- dist
 
             let BAL_COUNT=BAL_COUNT+1
         done
     else
         echo "Starting next zorbio process on http_port: ${HTTP_PORT}"
         echo "Starting single zorbio process on ws port: ${WS_PORT}"
-        HTTP_PORT=${HTTP_PORT} WS_PORT=${WS_PORT} SERVER_LABEL=${LABEL} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-0" /usr/share/games/zorbio/server/server.js -- dist
+        HTTP_PORT=${HTTP_PORT} WS_PORT=${WS_PORT} SERVER_LABEL=${LABEL} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-0" server/server.js -- dist
     fi
 }
 

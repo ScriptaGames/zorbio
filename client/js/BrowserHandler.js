@@ -80,7 +80,6 @@ ZOR.ZORMessageHandler.z_handle_player_join = function ZORhandlePlayerJoin(newPla
     if (!ZOR.Game.players[newPlayer.id]) {
         // Create new player controller and add to player controllers array
         ZOR.Game.players[newPlayer.id] = new ZOR.PlayerController(newPlayer, scene);
-        ZOR.Game.players[newPlayer.id].setAlpha(1);
     }
 
     //Keep model in sync with the server
@@ -91,6 +90,10 @@ ZOR.ZORMessageHandler.z_handle_player_join = function ZORhandlePlayerJoin(newPla
 
 ZOR.ZORMessageHandler.z_handle_server_tick = function ZORHandleServerTick(data) {
     handleServerTick(data);
+};
+
+ZOR.ZORMessageHandler.z_handle_leaderboard_update = function ZORHandLeaderboardUpdate(data) {
+    handleLeaderboardUpdate(data);
 };
 
 ZOR.ZORMessageHandler.z_handle_captured_player = function ZORHandleCapturePlayer(targetPlayerId) {

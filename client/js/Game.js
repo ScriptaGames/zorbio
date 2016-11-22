@@ -32,6 +32,7 @@ var zorbioModel = new ZOR.Model();
 var zorClient = new ZOR.ZORClient(ZOR.ZORMessageHandler);
 
 ZOR.Game.players = {};
+ZOR.Game.dead_players = {};  // hold dead player views while they finish death animations
 
 ZOR.Game.player_meshes = [];
 
@@ -102,7 +103,7 @@ function startGame(type) {
     ZOR.UI.engine.set('player_size', config.GET_PADDED_INT(config.INITIAL_PLAYER_RADIUS));
 
     // Schedule one time Google Analytics tracking for Ping and FPS
-    setTimeout(gaPerformanceMetrics, 15000);
+    setTimeout(gaPerformanceMetrics, 30000);
 
     console.log('Player meta: ', ZOR.Game.playerMeta);
 
@@ -124,6 +125,8 @@ function createScene() {
         canvas.classList.add('active');
         ZOR.UI.engine.set('playable', true);
     });
+
+    ZOR.UI.engine.fire(ZOR.UI.ACTIONS.UPDATE_LEADERBOARD, zorClient);
 
     try {
         init();
@@ -212,6 +215,8 @@ function createScene() {
         var fogCenter;
 
         updateActors();
+
+        updateDeadPlayers();
 
         if (gameStart && !player.isDead) {
             fogCenter = player.view.mainSphere.position;
@@ -319,7 +324,6 @@ function drawPlayers() {
             // Only draw other players
             if (!player || (id !== player.getPlayerId())) {
                 ZOR.Game.players[id] = new ZOR.PlayerController(playerModel, scene);
-                ZOR.Game.players[id].setAlpha(1);
             }
         }
     });
@@ -346,7 +350,16 @@ function updateActors() {
         }
     });
 }
-updateActors.runningActorUpdateGap = config.TICK_FAST_INTERVAL;
+
+function updateDeadPlayers() {
+    var dead_player_ids = Object.getOwnPropertyNames( ZOR.Game.dead_players );
+    for (var i = 0, l = dead_player_ids.length; i < l; i++) {
+        var deadPlayer = ZOR.Game.dead_players[dead_player_ids[i]];
+        if (deadPlayer && deadPlayer.view) {
+            deadPlayer.view.update();  // update the dead player view for death particle effect
+        }
+    }
+}
 
 function updatePlayerSizeUI() {
     var currentScore = player.getScore();
@@ -551,23 +564,29 @@ function keyReleased(key) {
 }
 
 function removePlayerFromGame(playerId, time) {
-    var thePlayer = ZOR.Game.players[playerId];
+    var deadPlayer = ZOR.Game.players[playerId];
+
+    // safe reference to dead player to finish death FX e.g. particle explosion
+    ZOR.Game.dead_players[playerId] = deadPlayer;
+
+    // remove player from model
+    zorbioModel.removePlayer(playerId);
+
+    // remove from player controllers
+    ZOR.Game.players[playerId] = undefined;
 
     setTimeout(function removePlayerNow() {
-        // remove player from model
-        zorbioModel.removePlayer(playerId);
-
         // remove player from scene and client
-        if (thePlayer) {
-            if (thePlayer.view) {
+        if (deadPlayer) {
+            if (deadPlayer.view) {
                 // Remove player from the scene
-                thePlayer.removeView();
+                deadPlayer.removeView();
             }
 
             // remove from player controllers
-            delete ZOR.Game.players[playerId];
+            delete ZOR.Game.dead_players[playerId];
         }
-        console.log('Removed player: ', playerId);
+        console.log('Removed dead player: ', playerId);
     }, time);
 }
 
@@ -619,24 +638,23 @@ function handleServerTick(serverTickData) {
     ZOR.expireLocks();
 }
 
+function handleLeaderboardUpdate(leaderboards) {
+    console.log("Updating leaderboards");
+    ZOR.UI.engine.set('leaderboard.data', leaderboards);
+}
+
 /**
  * Current player has captured someone.
  */
 function handleSuccessfulPlayerCapture(capturedPlayerID) {
-    var sound = ZOR.Sounds.sfx.player_capture;
+    // var sound = ZOR.Sounds.sfx.player_capture;
     var capturedPlayer = ZOR.Game.players[capturedPlayerID];
     var windDownTime = 0;
 
     if (capturedPlayer) {
-        ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
+        // ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
         capturedPlayer.handleCapture();
         windDownTime = capturedPlayer.getWindDownTime();
-
-        ZOR.UI.engine.set('capture_message', "You captured " + capturedPlayer.model.name);
-
-        setTimeout(function clearCaptureMessage() {
-            ZOR.UI.engine.set('capture_message', '');
-        }, 5000);
     }
 
     removePlayerFromGame(capturedPlayerID, windDownTime);
@@ -652,7 +670,7 @@ function handleOtherPlayercapture(capturedPlayerID) {
     var ear;
 
     if (capturedPlayer) {
-        ear = player.view ? player.view.mainSphere : camera;
+        ear = (player && player.view) ? player.view.mainSphere : camera;
         ZOR.Sounds.playFromPos(sound, ear, capturedPlayer.model.sphere.position);
         capturedPlayer.handleCapture();
         windDownTime = capturedPlayer.getWindDownTime();
@@ -708,8 +726,8 @@ function setDeadState() {
 
 function gaPerformanceMetrics() {
     if (gameStart && !player.isDead) {
-        var ping = player.model.ping_metric.last;
-        var fps = player.model.fps_metric.last;
+        var ping = player.model.ping_metric.mean;
+        var fps = player.model.fps_metric.mean;
 
         if (ping > 0) {
             ga('send', {
@@ -727,6 +745,7 @@ function gaPerformanceMetrics() {
                 timingCategory: 'FPS',
                 timingVar: 'fps',
                 timingValue: fps,
+                timingLabel: isMobile.any ? 'mobile' : 'desktop',
             });
         }
     }

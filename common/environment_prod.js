@@ -3,8 +3,8 @@ var NODEJS = typeof module !== 'undefined' && module.exports;
 var ZOR = ZOR || {};
 
 ZOR.Env = {
-    CHECK_ORIGIN      : false,
-    CHECK_VERSION     : true,
+    CHECK_ORIGIN      : true,
+    CHECK_VERSION     : false,
     REQUIRE_ALPHA_KEY : false,
 };
 

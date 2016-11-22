@@ -23,7 +23,6 @@ var ServerPlayer = function ZORServerPlayer(player_id, name, color, skin, type, 
         self.sphere.growExpected(-shrink_amount);
 
         if (self.sphere.scale <= config.INITIAL_PLAYER_RADIUS) {
-            console.log("Sending speed boost stop: ", player_id);
             ws.send(JSON.stringify({op: 'speed_boost_stop'}));
         }
     });

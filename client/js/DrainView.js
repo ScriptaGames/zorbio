@@ -4,19 +4,14 @@ var ZOR = ZOR || {};
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
  * visually, and how to move it's different 3D pieces around.
  * @param playerView
- * @param scene
- * @constructor
  */
 
-ZOR.DrainView = function ZORDrainView(playerView, scene) {
+ZOR.DrainView = function ZORDrainView() {
 
     this.MORPH_INDEX_STRETCH       = 0;
     this.MORPH_INDEX_DRAINER_TAPER = 1;
     this.MORPH_INDEX_DRAINEE_TAPER = 2;
     this.MORPH_INDEX_PINCH         = 3;
-
-    this.scene = scene;
-    this.playerView = playerView;
 
     this.time = 0.1;
 
@@ -41,7 +36,7 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
         uniforms: {
             time          : { type : "f",  value : this.time },
             power         : { type : "f",  value : 0 },
-            erColor       : { type : "c",  value : new THREE.Color(this.playerView.playerColor) },
+            erColor       : { type : "c",  value : 0 },
             eeColor       : { type : "c",  value : 0 },
             len           : { type : "f",  value : 0 },
             mainSpherePos : { type : "v3", value : playerFogCenter },
@@ -49,8 +44,6 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
             FOG_FAR       : { type : "f",  value : config.FOG_FAR },
             FOG_ENABLED   : { type : "f",  value : ~~config.FOG_ENABLED },
         },
-        vertexShader   : document.getElementById('drain-vertex-shader').textContent,
-        fragmentShader : document.getElementById('drain-frag-shader').textContent,
         side           : THREE.DoubleSide,
         transparent    : true,
         opacity        : 0.8,
@@ -61,6 +54,11 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
         alphaTest      : 1.0,
         morphTargets   : true,
     });
+    var self = this;
+    ZOR.UI.on('init', function injectDrainBeamShaders() {
+        self.material.vertexShader   = document.getElementById('drain-vertex-shader').textContent;
+        self.material.fragmentShader = document.getElementById('drain-frag-shader').textContent;
+    });
 
     this.mesh = new THREE.Mesh( this.geometry, this.material );
     this.mesh.renderOrder = 10;
@@ -70,8 +68,12 @@ ZOR.DrainView = function ZORDrainView(playerView, scene) {
     this.mesh.morphTargetInfluences[ this.MORPH_INDEX_PINCH         ] = 0.065; // strength of pinch effect
 
     this.hide(); // initially hide
+};
 
-    scene.add(this.mesh);
+ZOR.DrainView.prototype.setPlayerView = function ZORDrainViewSetPlayerView(view) {
+    this.playerView = view;
+    this.material.uniforms.erColor.value = new THREE.Color(this.playerView.playerColor);
+
 };
 
 ZOR.DrainView.prototype.pinch = function pinch(x, h) {
@@ -265,8 +267,7 @@ ZOR.DrainView.prototype.createPinchVertices = function ZORDrainViewCreatePinchVe
 /**
  * Remove all drain objects from the scene.
  */
-ZOR.DrainView.prototype.dispose = function ZORDrainViewDispose() {
-    this.scene.remove(this.mesh);
-    this.geometry.dispose();
-    this.material.dispose();
+ZOR.DrainView.prototype.dispose = function ZORDrainViewDispose(scene) {
+    UTIL.threeFree(scene, this.mesh);
 };
+

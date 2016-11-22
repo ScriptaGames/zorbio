@@ -30,11 +30,12 @@ ZOR.UI = function ZORUI() {
         MENU_CREDITS_SCREEN : 'menu-credits-screen',
         PLAYING             : 'playing',
         PLAYING_CONFIG      : 'playing-config',
-        RESPAWN_SCREEN      : 'respawn-screen',
+        RESPAWN_SCREEN      : 'menu-respawn-screen',
         KICKED_SCREEN       : 'kicked-screen',
         GAME_INIT_ERROR     : 'game-init-error',
         SERVER_MSG_SCREEN   : 'server-msg-screen',
         TUTORIAL_SCREEN     : 'menu-tutorial-screen',
+        LEADERBOARD_SCREEN  : 'menu-leaderboard-screen',
     };
 
     /**
@@ -48,8 +49,14 @@ ZOR.UI = function ZORUI() {
         PAGE_RELOAD              : 'page-reload',
         SHOW_MENU                : 'show-menu',
         SHOW_TUTORIAL            : 'show-tutorial',
+        SHOW_LEADERBOARD         : 'show-leaderboard',
         SHOW_PLAYING_CONFIG      : 'show-playing-config',
         SHOW_PREVIOUS            : 'show-previous',
+
+        UPDATE_LEADERBOARD       : 'update-leaderboard',
+        SHOW_LEADERBOARD_1D      : 'show-leaderboard-1d',
+        SHOW_LEADERBOARD_7D      : 'show-leaderboard-7d',
+        SHOW_LEADERBOARD_30D     : 'show-leaderboard-30d',
 
         SHOW_MENU_GAME_SCREEN    : 'show-menu-game-screen',
         SHOW_MENU_STORE_SCREEN   : 'show-menu-store-screen',
@@ -85,11 +92,18 @@ ZOR.UI = function ZORUI() {
         skins            : _(ZOR.PlayerSkins).map(_.partial(_.pick, _, 'meta')).sortBy('meta.sort').value(), // get the meta for every skin and sort them
         selected_skin    : localStorage.skin || 'default',
         leaders          : [],
+        leaderboard      : {
+            activeBoard: 'leaders_1_day',
+            data: {},
+        },
         is_mobile        : isMobile.any,
         playable         : false, // whether the play button can be pressed
         screen_x         : 0,
         screen_y         : 0,
         player_size      : 0,
+        numberCommas     : function numberCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
         showAd           : showAd,
         flip_x           : JSON.parse(localStorage.flip_x || "false"),
         flip_y           : JSON.parse(localStorage.flip_y || "false"),
@@ -100,6 +114,8 @@ ZOR.UI = function ZORUI() {
             music : config.VOLUME_MUSIC_INITIAL,
             sfx   : config.VOLUME_SFX_INITIAL,
         },
+        marquee_messages : [],
+        marquee_index    : 0,
     };
 
     // the public functions exposes by this module (may be modified during execution)
@@ -111,10 +127,18 @@ ZOR.UI = function ZORUI() {
         on          : on,
         clearTarget : clearTarget,
         setAndSave  : setAndSave,
+        advanceMarquee: advanceMarquee,
     };
 
     // array of registered on-init handlers
     var init_handlers = [];
+
+    function advanceMarquee() {
+        var i = engine.get('marquee_index');
+        i += 1;
+        i %= uidata.marquee_messages.length;
+        engine.set('marquee_index', i);
+    }
 
     function clearTarget() {
         uidata.target = undefined;
@@ -262,9 +286,6 @@ ZOR.UI = function ZORUI() {
 
         init_events();
 
-        // call all the registered init handlers
-        _.invokeMap(init_handlers, _.call);
-
         // add active class to UI overlay so it'll show up
         engine.el.classList.add('active');
 
@@ -284,6 +305,12 @@ ZOR.UI = function ZORUI() {
         // capture screen size, and future adjustments to screen size
         set_screen_size();
         window.addEventListener( 'resize', set_screen_size, false );
+
+        // periodically advance the help marquee
+        setInterval(advanceMarquee, 5432);
+
+        // call all the registered init handlers
+        _.each(init_handlers, function (f) { f(); });
     }
 
     function stateSetter(newState) {
@@ -294,8 +321,11 @@ ZOR.UI = function ZORUI() {
     }
 
     function showAd() {
-        console.log("showing ad");
-        (adsbygoogle = window.adsbygoogle || []).push({});
+        // There is a weird race condition with googles ads that require a timeout to make it work
+        setTimeout(function () {
+            console.log("showing ad");
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        }, 250);
     }
 
     /**
@@ -344,11 +374,28 @@ ZOR.UI = function ZORUI() {
 
         // state change events
 
+        on( ACTIONS.UPDATE_LEADERBOARD, function ZORUpdateLeaderboard(client) {
+            client.z_sendLeaderboardsRequest();
+        });
+        on( ACTIONS.SHOW_LEADERBOARD_1D, function ZORShowLeaderboard1D() {
+            engine.set('leaderboard.activeBoard', 'leaders_1_day');
+        });
+        on( ACTIONS.SHOW_LEADERBOARD_7D, function ZORShowLeaderboard7D() {
+            engine.set('leaderboard.activeBoard', 'leaders_7_day');
+        });
+        on( ACTIONS.SHOW_LEADERBOARD_30D, function ZORShowLeaderboard30D() {
+            engine.set('leaderboard.activeBoard', 'leaders_30_day');
+        });
+
+        //
+
+        on( ACTIONS.SHOW_MENU_GAME_SCREEN   , stateSetter( STATES.MENU_GAME_SCREEN ) );
         on( ACTIONS.SHOW_MENU_GAME_SCREEN   , stateSetter( STATES.MENU_GAME_SCREEN ) );
         on( ACTIONS.SHOW_MENU_STORE_SCREEN  , stateSetter( STATES.MENU_STORE_SCREEN ) );
         on( ACTIONS.SHOW_MENU_CONFIG_SCREEN , stateSetter( STATES.MENU_CONFIG_SCREEN ) );
         on( ACTIONS.SHOW_MENU_CREDITS_SCREEN, stateSetter( STATES.MENU_CREDITS_SCREEN ) );
         on( ACTIONS.SHOW_TUTORIAL           , stateSetter( STATES.TUTORIAL_SCREEN ) );
+        on( ACTIONS.SHOW_LEADERBOARD        , stateSetter( STATES.LEADERBOARD_SCREEN ) );
         on( ACTIONS.SHOW_PLAYING_CONFIG     , stateSetter( STATES.PLAYING_CONFIG ) );
         on( ACTIONS.SHOW_MENU               , stateSetter( STATES.MENU_SCREEN ) );
         on( ACTIONS.SHOW_PREVIOUS, function ZORShowPrevious() {
@@ -446,6 +493,34 @@ ZOR.UI = function ZORUI() {
 
         if (config.AUTO_PLAY) {
             engine.fire( ACTIONS.PLAYER_LOGIN );
+        }
+
+        // populate the marquee with some helpful messages
+
+        uidata.marquee_messages.push('Hold W key or left mouse to speed boost.');
+
+        if (config.STEERING.NAME === 'FOLLOW') {
+            uidata.marquee_messages.push('Place your cursor in the middle of the screen to fly straight ahead.');
+        }
+
+        uidata.marquee_messages.push('Short speed boosts are best.');
+
+        uidata.marquee_messages.push('Try to predict other players\' trajectories.');
+
+        uidata.marquee_messages.push('Hide behind big spheres if someone is chasing you.');
+
+        uidata.marquee_messages.push('Fly near big players to absorb mass, but be careful!');
+
+        // shuffle the messages
+
+        uidata.marquee_messages = _.shuffle(uidata.marquee_messages);
+
+        // put important message(s) first
+
+        var inIframe = window.frameElement && window.frameElement.nodeName == "IFRAME";
+        var indirectVisitor = inIframe || document.referrer !== "";
+        if (indirectVisitor) {
+            uidata.marquee_messages.unshift('Bookmark us at <a href="http://zor.bio" target="_top">http://<strong>zor.bio</strong></a>!');
         }
 
     }

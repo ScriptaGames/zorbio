@@ -589,6 +589,9 @@ UTIL.logTime = function UTILLogTime(msg, start, end) {
 UTIL.filterName = function UTILFilterName(name) {
     var filtered_name = xssFilters.inHTMLData(name);
 
+    // now also remove quotes because they break the backend
+    filtered_name = filtered_name.replace(/["']/g, "");
+
     if (UTIL.isBlank(filtered_name)) {
         filtered_name = "Guest";
     }
@@ -608,6 +611,30 @@ UTIL.filterName = function UTILFilterName(name) {
  */
 UTIL.lerp = function UTILLerp(v0, v1, t) {
     return (1-t)*v0 + t*v1;
+};
+
+/**
+ * Remove a three.js mesh from the scene and free all its memory.
+ * @param {THREE.Scene} scene the scene to remove the mesh from
+ * @param {THREE.Mesh} mesh the mesh to free
+ */
+UTIL.threeFree = function UTILThreeFree(scene, mesh) {
+    scene.remove(mesh);
+    if (mesh.geometry) {
+        mesh.geometry.dispose();
+    }
+
+    // make sure textures are freed from GPU memory
+    if (mesh.material.uniforms.sphereTexture) {
+        mesh.material.uniforms.sphereTexture.value.dispose();
+    }
+    if (mesh.material.uniforms.texture) {
+        mesh.material.uniforms.texture.value.dispose();
+    }
+
+    if (mesh.material) {
+        mesh.material.dispose();
+    }
 };
 
 // if we're in nodejs, export the root UTIL object

@@ -87,6 +87,7 @@ a:hover {
 button,
 a {
   cursor: pointer;
+  pointer-events: auto;
 }
 img {
   max-width: 100%;
@@ -203,16 +204,15 @@ input:focus {
 #menu-ui-container #copy a {
   color: #404040;
   text-decoration: underline;
-  pointer-events: auto;
 }
 @media (max-height: 450px), (orientation: landscape) {
   #menu-ui-container {
     grid-definition-columns: 0.8fr 0.2fr;
     -ms-grid-columns: 0.81fr 0.2fr;
         grid-template-columns: 0.81fr 0.2fr;
-    grid-definition-rows: 75px 1fr 14px;
-    -ms-grid-rows: 75px 1fr 14px;
-        grid-template-rows: 75px 1fr 14px;
+    grid-definition-rows: 67px 20px 1fr 14px;
+    -ms-grid-rows: 67px 20px 1fr 14px;
+        grid-template-rows: 67px 20px 1fr 14px;
   }
   #menu-ui-container #title {
     -ms-grid-column: 1;
@@ -220,11 +220,17 @@ input:focus {
     -ms-grid-row: 1;
         grid-row: 1;
   }
-  #menu-ui-container #menu {
+  #menu-ui-container #marquee {
     -ms-grid-column: 1;
         grid-column: 1;
     -ms-grid-row: 2;
         grid-row: 2;
+  }
+  #menu-ui-container #menu {
+    -ms-grid-column: 1;
+        grid-column: 1;
+    -ms-grid-row: 3;
+        grid-row: 3;
   }
   #menu-ui-container #tabs {
     -ms-grid-column: 2;
@@ -236,8 +242,8 @@ input:focus {
   #menu-ui-container #copy {
     -ms-grid-column: 1;
         grid-column: 1;
-    -ms-grid-row: 3;
-        grid-row: 3;
+    -ms-grid-row: 4;
+        grid-row: 4;
   }
 }
 @media (min-height: 451px), (orientation: portrait) {
@@ -245,9 +251,9 @@ input:focus {
     grid-definition-columns: 1fr;
     -ms-grid-columns: 1fr;
         grid-template-columns: 1fr;
-    grid-definition-rows: 100px 1fr 100px 22px;
-    -ms-grid-rows: 100px 1fr 100px 22px;
-        grid-template-rows: 100px 1fr 100px 22px;
+    grid-definition-rows: 90px 20px 1fr 100px 22px;
+    -ms-grid-rows: 90px 20px 1fr 100px 22px;
+        grid-template-rows: 90px 20px 1fr 100px 22px;
   }
   #menu-ui-container #title {
     -ms-grid-column: 1;
@@ -255,23 +261,29 @@ input:focus {
     -ms-grid-row: 1;
         grid-row: 1;
   }
-  #menu-ui-container #menu {
+  #menu-ui-container #marquee {
     -ms-grid-column: 1;
         grid-column: 1;
     -ms-grid-row: 2;
         grid-row: 2;
   }
-  #menu-ui-container #tabs {
+  #menu-ui-container #menu {
     -ms-grid-column: 1;
         grid-column: 1;
     -ms-grid-row: 3;
         grid-row: 3;
   }
-  #menu-ui-container #copy {
+  #menu-ui-container #tabs {
     -ms-grid-column: 1;
         grid-column: 1;
     -ms-grid-row: 4;
         grid-row: 4;
+  }
+  #menu-ui-container #copy {
+    -ms-grid-column: 1;
+        grid-column: 1;
+    -ms-grid-row: 5;
+        grid-row: 5;
   }
 }
 #menu-ui-container #skin-list li {
@@ -455,7 +467,7 @@ button:active {
 #player-size {
   top: 1vh;
 }
-#title {
+#title h1 {
   color: white;
   font-size: 4rem;
   text-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
@@ -586,16 +598,43 @@ button:active {
   width: 100%;
 }
 #tutorial #tutorial-content {
-  text-align: center;
+  text-align: left;
 }
-#tutorial p {
+#tutorial #tutorial-content h2 {
+  color: #0B7BF4;
+  text-align: left;
+  margin: 1em 0 0.6em;
+}
+#tutorial #tutorial-content p {
   font-size: 21px;
+  text-align: left;
 }
 #tutorial .key {
   color: #0B7BF4;
   background-color: #cecece;
   border-radius: 3px;
   padding: 2px;
+}
+#leaderboard #leaderboard-controls {
+  text-align: right;
+  font-size: 15px;
+}
+#leaderboard #leaderboard-controls a.active {
+  text-decoration: underline;
+  pointer-events: none;
+}
+#leaderboard table {
+  font-size: 21px;
+  width: 100%;
+}
+#leaderboard table thead {
+  display: none;
+}
+#leaderboard table td {
+  padding-bottom: 10px;
+}
+#leaderboard table .leaderboard-score {
+  text-align: right;
 }
 @-webkit-keyframes pulseOpacity {
   from {
@@ -612,6 +651,16 @@ button:active {
   to {
     opacity: 1.0;
   }
+}
+#marquee {
+  font-size: 15px;
+  position: relative;
+  opacity: 0.7;
+}
+#marquee li {
+  width: 100%;
+  position: absolute;
+  text-align: center;
 }
 #social {
   position: relative;
@@ -636,19 +685,28 @@ button:active {
   cursor: pointer;
 }
 #social .tutorial-btn {
-  opacity: 0.3;
+  opacity: 0.6;
   position: absolute;
   left: 0;
 }
 #social .tutorial-btn.first-visit {
-  -webkit-animation-duration: 1.518s;
-          animation-duration: 1.518s;
+  -webkit-animation-duration: 1s;
+          animation-duration: 1s;
   -webkit-animation-name: pulseOpacity;
           animation-name: pulseOpacity;
   -webkit-animation-iteration-count: infinite;
           animation-iteration-count: infinite;
   -webkit-animation-direction: alternate;
           animation-direction: alternate;
+}
+#social .leaderboard-btn {
+  opacity: 0.6;
+  position: absolute;
+  left: 48px;
+  top: 1px;
+}
+#ad-login-center {
+  text-align: center;
 }
 * {
   -webkit-user-select: none;

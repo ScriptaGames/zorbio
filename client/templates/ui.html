@@ -8,6 +8,7 @@
     {{ #if state === STATES.MENU_CONFIG_SCREEN  }} {{ > menu        }} {{ /if }}
     {{ #if state === STATES.MENU_CREDITS_SCREEN }} {{ > menu        }} {{ /if }}
     {{ #if state === STATES.TUTORIAL_SCREEN     }} {{ > tutorial    }} {{ /if }}
+    {{ #if state === STATES.LEADERBOARD_SCREEN  }} {{ > leaderboard }} {{ /if }}
     {{ #if state === STATES.RESPAWN_SCREEN      }} {{ > death       }} {{ /if }}
     {{ #if state === STATES.KICKED_SCREEN       }} {{ > kicked      }} {{ /if }}
     {{ #if state === STATES.GAME_INIT_ERROR     }} {{ > initerror   }} {{ /if }}
@@ -24,7 +25,7 @@
 {{ #if state.indexOf('playing') === 0 }}
 <div id="play-ui-container" data-state="{{ state }}">
     {{ #if state === STATES.PLAYING }}
-        {{ > leaderboard }}
+        {{ > leaders     }}
         {{ > gear-btn    }}
         {{ > player-size }}
         {{ > targets     }}
@@ -33,13 +34,10 @@
     {{ #if state === STATES.PLAYING_CONFIG }}
         {{ > config-play }}
     {{ /if }}
+
+    {{ #if server_message }}
+    <div id="server-message"> {{ server_message }} </div>
+    {{ /if }}
+
 </div>
-{{ /if }}
-
-{{ #if server_message }}
-<div id="server-message"> {{ server_message }} </div>
-{{ /if }}
-
-{{ #if capture_message }}
-<div id="capture-message"> {{ capture_message }} </div>
 {{ /if }}

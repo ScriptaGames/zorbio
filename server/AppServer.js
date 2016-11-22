@@ -36,6 +36,34 @@ var AppServer = function (id, app, server_label, port) {
 
     self.backend = new Backend();
 
+    // Leaderboards
+    self.leaders_1_day  = [];
+    self.leaders_7_day  = [];
+    self.leaders_30_day = [];
+
+    self.app = app; // express
+
+    // Game state
+    self.model = new Zorbio.Model();
+    self.model.init(config.WORLD_SIZE, config.FOOD_DENSITY);
+    self.socket_uuid_map = {};  // Maps a player ID to a socket uuid
+    self.clients = {};  // Client websockets with a uuid key
+    self.serverMsg = '';
+
+    /**
+     * Status object to send to a remote data store for monitoring and analytics
+     */
+    self.status = {
+        doctype: 'game_instance_status',
+        uuid: self.uuid,
+        clients: 0,
+        real_player_count: 0,
+        players_metrics: [],
+        socket_uuid_map: 0,
+        tick_time_metric: new Zorbio.Metric(50),
+        au_send_metric: new Zorbio.Metric(100),
+    };
+
     /**
      * Console.log wrapper so we can include instance id for filtering
      */
@@ -63,27 +91,17 @@ var AppServer = function (id, app, server_label, port) {
         }
     };
 
-    self.app = app; // express
-
-    // Game state
-    self.model = new Zorbio.Model();
-    self.model.init(config.WORLD_SIZE, config.FOOD_DENSITY);
-    self.socket_uuid_map = {};  // Maps a player ID to a socket uuid
-    self.clients = {};  // Client websockets with a uuid key
-    self.serverMsg = '';
-
     /**
-     * Status object to send to a remote data store for monitoring and analytics
+     * Sends a websocket message to a specific websocket by player id
+     * @param player_id the id of the player ot send to
+     * @param msg
      */
-    self.status = {
-        doctype: 'game_instance_status',
-        uuid: self.uuid,
-        clients: 0,
-        real_player_count: 0,
-        players_metrics: [],
-        socket_uuid_map: 0,
-        tick_time_metric: new Zorbio.Metric(50),
-        au_send_metric: new Zorbio.Metric(100),
+    self.sendToPlayer = function appSendToPlayer(player_id, msg) {
+        var ws = self.clients[self.socket_uuid_map[player_id]];
+
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(msg);
+        }
     };
 
     self.addClient = function appAddClient(ws) {
@@ -107,8 +125,10 @@ var AppServer = function (id, app, server_label, port) {
         var key;
 
         // Pool variables for speed
-        var rapidBuffer  = new ArrayBuffer(20);
+        var rapidBuffer = new ArrayBuffer(20);
         var rapidView = new Float32Array(rapidBuffer);
+
+        var player_not_in_model_count = 0;
 
         ws.on('message', function wsMessage(msg) {
             if (typeof msg === "string") {
@@ -145,14 +165,19 @@ var AppServer = function (id, app, server_label, port) {
                 }
             }
             else {
-                // Read binary data
-                var op = msg.readFloatLE(0);
-                if (op === Schemas.ops.CLIENT_POSITION_RAPID) {
-                    handle_client_position_rapid(msg);
+                // Read firs byte from buffer
+                var op = msg.readUInt8(0);
+                if (op === Schemas.ops.PLAYER_UPDATE) {
+                    handle_msg_player_update(msg);
+                }
+                else if (op === Schemas.ops.LEADERBOARDS_REQUEST) {
+                    handle_leaderboard_request();
                 }
                 else {
-                    // Route binary message
-                    handle_msg_player_update(msg);
+                    op = msg.readFloatLE(0);
+                    if (op === Schemas.ops.CLIENT_POSITION_RAPID) {
+                        handle_client_position_rapid(msg);
+                    }
                 }
             }
         });
@@ -242,7 +267,7 @@ var AppServer = function (id, app, server_label, port) {
 
                     var playerCount = self.model.players.length;
                     self.log('Player ' + currentPlayer.id + ' joined game!');
-                    self.log('Total players: ' + playerCount);
+                    self.log('Total real players: ' + self.model.getRealPlayers().length);
 
                     // see if we need to remove a bot
                     if (self.botController.hasBots() && playerCount > config.MAX_BOTS) {
@@ -283,6 +308,10 @@ var AppServer = function (id, app, server_label, port) {
                 // TODO: figure out something better that's scalable
                 // self.broadcast(rapidBuffer);
             }
+        }
+
+        function handle_leaderboard_request() {
+            self.sendLeaderboardsUpdate(ws);
         }
 
         function handle_msg_player_update(buffer) {
@@ -344,6 +373,12 @@ var AppServer = function (id, app, server_label, port) {
                         self.model.getPlayerById(currentPlayer.id).infractions_speed++;
                         break;
                     case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
+                        player_not_in_model_count++;
+                        if (player_not_in_model_count > config.MAX_NOT_IN_MODEL_ERRORS) {
+                            self.log("Player had to many not-in-model errors", player_not_in_model_count);
+                            self.kickPlayer(currentPlayer.id, "Disconnected from server");
+                            // self.removePlayerSocket(socket_uuid);
+                        }
                         self.log("Recieved 'player_update' from player not in model!", sphere.id);
                         break;
                 }
@@ -355,6 +390,11 @@ var AppServer = function (id, app, server_label, port) {
 
             if (player_id) {
                 self.log('Player connection closed for player_id:', player_id);
+
+                // Save their score to leaderboard if they were in game and got any points
+                if (currentPlayer && self.model.getPlayerById(player_id)) {
+                    self.savePlayerScore(currentPlayer.name, currentPlayer.getScore());
+                }
 
                 // notify other clients to remove this player
                 self.broadcast(JSON.stringify({op: 'remove_player', playerId: player_id}));
@@ -440,8 +480,8 @@ var AppServer = function (id, app, server_label, port) {
                 if (player.type != Zorbio.PlayerTypes.BOT || drainee_player.type != Zorbio.PlayerTypes.BOT) {
                     drain_amount = Drain.amount(drain_target.dist);
 
-                    drainer.growExpected(+drain_amount);
-                    player.score += drain_amount;
+                    // Grow the drainer and add to their score
+                    player.score += drainer.growExpected(+drain_amount);
 
                     drainee.growExpected(-drain_amount);
 
@@ -477,6 +517,21 @@ var AppServer = function (id, app, server_label, port) {
         ws.send(buffer);
     };
 
+    self.sendLeaderboardsUpdate = function appSendLeaderboardsUpdate(ws) {
+        var responseMsg = {
+            0: Schemas.ops.LEADERBOARDS_UPDATE,
+            leaders_1_day: self.leaders_1_day,
+            leaders_7_day: self.leaders_7_day,
+            leaders_30_day: self.leaders_30_day,
+        };
+
+        var responseBuffer = Schemas.leaderboardUpdateSchema.encode( responseMsg );
+
+        console.log("Sending leaderboards update");
+
+        ws.send(responseBuffer);
+    };
+
     self.sendActorUpdates = function appSendActorUpdates() {
         var tinyActors = self.model.reduceActors(true);
         var actorUpdatesMessage = {0: Schemas.ops.ACTOR_UPDATES, actors: tinyActors};
@@ -501,9 +556,8 @@ var AppServer = function (id, app, server_label, port) {
             // Increment the players food captures
             player.foodCaptures++;
 
-            // grow player on the server to track growth validation
-            player.sphere.growExpected( food_value );
-            player.score += food_value;
+            // grow player and add to their score
+            player.score += player.sphere.growExpected( food_value );
 
             // Queue to notify clients of food capture so they can update their food view
             self.model.food_captured_queue.push(fi);
@@ -626,12 +680,13 @@ var AppServer = function (id, app, server_label, port) {
         var attackingSphere = attackingPlayer.sphere;
         var targetSphere = targetPlayer.sphere;
         var amount = config.PLAYER_CAPTURE_VALUE( targetSphere.radius() );
-        attackingSphere.growExpected( amount );
-        attackingPlayer.score += amount;
+
+        // Grow the capturing player and add to their score
+        attackingPlayer.score += attackingSphere.growExpected( amount );
 
         if (attackingPlayer.type != Zorbio.PlayerTypes.BOT) {
             // Inform the attacking player that they captured target player
-            self.clients[self.socket_uuid_map[attackingPlayerId]].send(JSON.stringify({op: 'captured_player', targetPlayerId: targetPlayerId}));
+            self.sendToPlayer(attackingPlayerId, JSON.stringify({op: 'captured_player', targetPlayerId: targetPlayerId}));
         }
 
         if (targetPlayer.type != Zorbio.PlayerTypes.BOT) {
@@ -654,11 +709,11 @@ var AppServer = function (id, app, server_label, port) {
 
             var buffer = Schemas.youDied.encode(msgObj);
 
-            self.clients[self.socket_uuid_map[targetPlayerId]].send(buffer);
+            // Notify the target player that they died
+            self.sendToPlayer(targetPlayerId, buffer);
 
-            // Save score to leaderboard
-            self.backend.saveScore('zorbio', targetPlayer.name, score);
-
+            // Save score to leaderboard if they got any points
+            self.savePlayerScore(targetPlayer.name, score, self.clients[self.socket_uuid_map[targetPlayerId]]);
         }
         else {
             self.replenishBot();
@@ -678,10 +733,8 @@ var AppServer = function (id, app, server_label, port) {
     self.kickPlayer = function appKickPlayer(playerId, reason) {
         self.log('kicking player: ', playerId, reason);
 
-        // notify player
-        if (self.clients[self.socket_uuid_map[playerId]]) {
-            self.clients[self.socket_uuid_map[playerId]].send(JSON.stringify({op: 'kick', reason: reason}));
-        }
+        // notify player that they are kicked
+        self.sendToPlayer(playerId, JSON.stringify({op: 'kick', reason: reason}));
 
         // notify other clients
         self.broadcast(JSON.stringify({op: 'remove_player', playerId: playerId}));
@@ -812,7 +865,7 @@ var AppServer = function (id, app, server_label, port) {
         }
 
         // Save game status to remote data store
-        self.backend.saveGameInstanceStatus(self.uuid, self.status);
+        // self.backend.saveGameInstanceStatus(self.uuid, self.status);
 
         self.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.status.clients + ', Players: ' + self.status.real_player_count + ', socket_uuid_map: ' + self.status.socket_uuid_map);
     }
@@ -896,6 +949,74 @@ var AppServer = function (id, app, server_label, port) {
         self.botController.spawnBot();
     }
 
+    self.savePlayerScore = function appSavePlayerScore(name, score, ws) {
+        ws = ws || false;
+
+        if (score > config.INITIAL_PLAYER_SCORE) {
+            self.backend.saveScore('zorbio', name, score, function saveScoreCallback() {
+                if (self.isNewHighScore(name, score)) {
+                    // Player score made it on the leaderboard so refresh and send a leaderboard update
+                    self.refreshLeaderboards(function leaderSuccessCallback() {
+                        if (ws && ws.readyState === WebSocket.OPEN) {
+                            self.sendLeaderboardsUpdate(ws);
+                        }
+                    });
+                }
+            });
+        }
+    };
+
+    self.isNewHighScore = function appIsNewHIghScore(name, score) {
+        var allLeaderboards = [].concat(self.leaders_1_day, self.leaders_7_day, self.leaders_30_day);
+        var isHighScore = false;
+        var foundIndex = _.findIndex(allLeaderboards, ['name', name]);
+
+        if (foundIndex >= 0) {
+            // Username already has a high score, see if this one is greater
+            if (score > allLeaderboards[foundIndex].score) {
+                isHighScore = true;
+            }
+        }
+        else {
+            // New username see if it's greater than the smallest high score
+            allLeaderboards = _.sortBy(allLeaderboards, ['score']);
+
+            if (score > allLeaderboards[0].score) {
+                isHighScore = true;
+            }
+        }
+
+        return isHighScore;
+    };
+
+    self.refreshLeaderboards = function appRefreshLeaderboards(successCallback) {
+        // Get leaderboards from backend
+        self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, 'today', 'now', function todayLeaders(leaders, success) {
+            if (leaders && leaders.length > 0) self.leaders_1_day = leaders;
+            console.log("Retrieved 1 day leaderboard successfully?", success, self.leaders_1_day.length);
+
+            self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-7 days', 'now', function sevenDayLeaders(leaders, success) {
+                if (leaders && leaders.length > 0) self.leaders_7_day = leaders;
+                console.log("Retrieved 7 day leaderboard successfully?", success, self.leaders_7_day.length);
+
+                self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-30 days', 'now', function sevenDayLeaders(leaders, success) {
+                    if (leaders && leaders.length > 0) self.leaders_30_day = leaders;
+                    console.log("Retrieved 30 day leaderboard successfully?", success, self.leaders_30_day.length);
+
+                    if (typeof successCallback === 'function') {
+                        // success call back once all leaderboards are refreshed
+                        successCallback();
+                    }
+                });
+            });
+        });
+    };
+
+    // Load leaderboards on server start up
+    self.refreshLeaderboards();
+
+    // Keep leaderboards refreshed on an interval
+    gameloop.setGameLoop(self.refreshLeaderboards, config.LEADERBOARD_REFRESH_INTERVAL);
 };
 
 if (NODEJS) module.exports = AppServer;

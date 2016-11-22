@@ -7,11 +7,8 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
     var color = new THREE.Color('#D71C26');
 
     return {
-        geometry: {
-            polycount_w: 20,
-            polycount_h: 10,
-        },
-        material: {
+        poolname: 'lowPolySpheres',
+        material: new THREE.ShaderMaterial({
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },
                 "p"           : { type : "f",  value : 2.71828 },
@@ -29,7 +26,7 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
             // depthTest      : false,
             // depthWrite     : true,
             // blending       : THREE.AdditiveBlending,
-        },
+        }),
         behavior: {
         },
         trail: {
@@ -62,7 +59,7 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
                     spread: new THREE.Vector3( 100 ),
                 },
                 size: {
-                    value: [ 100, 0 ]
+                    value: [ 120, 0 ]
                 },
                 opacity: {
                     value: [1, 0]
@@ -70,7 +67,7 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
                 color: {
                     value: [color],
                 },
-                particleCount: 50,
+                particleCount: 70,
                 alive: false,
                 duration: 0.05,
                 maxAge: {

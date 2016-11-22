@@ -1,10 +1,8 @@
-<div id="menu">
+<div fade-in-out id="menu">
     <div class="greybox-wrapper">
-        <div class="greybox">
         {{ #if state === STATES.MENU_GAME_SCREEN    }} {{ > game-tab    }} {{ /if }}
         {{ #if state === STATES.MENU_STORE_SCREEN   }} {{ > store       }} {{ /if }}
         {{ #if state === STATES.MENU_CONFIG_SCREEN  }} {{ > config-menu }} {{ /if }}
         {{ #if state === STATES.MENU_CREDITS_SCREEN }} {{ > credits }} {{ /if }}
-        </div>
     </div>
 </div>

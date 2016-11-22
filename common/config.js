@@ -23,7 +23,7 @@ config.REQUIRE_ALPHA_KEY = true;
 
 config.WORLD_SIZE       = 2000;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
-config.MAX_BOTS         = 25;
+config.MAX_BOTS         = 20;
 config.MAX_BOT_RADIUS   = 100;
 
 ////////////////////////////////////////////////////////////////////////
@@ -40,6 +40,7 @@ config.HEARTBEAT_CHECK_INTERVAL = 1000;   // server heartbeat test interval
 config.HEARTBEAT_PULSE_INTERVAL = 5000;   // client heartbeat pulse
 config.TICK_SLOW_INTERVAL       = 200;    // General server updates in milliseconds
 config.TICK_FAST_INTERVAL       = 50;     // How often actors update their position in milliseconds
+config.LEADERBOARD_REFRESH_INTERVAL = 900000; // How often to refresh leaderboard on the server from backend service
 config.PENDING_PLAYER_CAPTURE_TTL = 3000; // how long pending player capture lives before it expires in milliseconds
 config.CHECK_VERSION            = true;   // check for latest version of the game through the zapi
 config.CHECK_VERSION_INTERVAL   = 30000;  // how often to check for new version
@@ -63,22 +64,24 @@ if (!NODEJS) {
         }
 
         var linode_location = linodeNearLocation();
+        console.log("Location near: ", linode_location);
 
         //TODO: if all locations have active node balancers this switch is not nessicary
         switch (linode_location) {
-            //TODO: Send to seprate balancer when they are available
             case 'london':
             case 'frankfurt':
-                balancer = 'london';
+                balancer = 'frankfurt';
                 break;
             case 'singapore':
+                balancer = 'singapore';
+                break;
             case 'fremont':
             case 'dallas':
             case 'newark':
-                balancer = 'newark';
+                balancer = 'dallas';
                 break;
             default:
-                balancer = 'newark';
+                balancer = 'dallas';
         }
 
         return balancer;
@@ -118,6 +121,7 @@ config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
 config.GET_PADDED_INT      = function PlayerGetScore( radius ) {
     return Math.floor(radius * 10);
 };
+config.INITIAL_PLAYER_SCORE  = config.GET_PADDED_INT(config.INITIAL_PLAYER_RADIUS);
 config.AUTO_RUN_ENABLED      = true;
 config.STEERING_METHODS      = Object.freeze({ // enum-ish
     MOUSE_DRAG: {
@@ -177,16 +181,17 @@ config.FOOD_GET_VALUE              = function FoodGetValue( r ) {
 config.ENABLE_VALIDATION              = true;   // enable validation checks on the server to prevent cheating
 config.FOOD_CAPTURE_EXTRA_TOLERANCE   = 10;     // extra distance that we'll tolerate for valid food capture
 config.PLAYER_CAPTURE_EXTRA_TOLERANCE = 1;      // extra distance that we'll tolerate for valid player capture
-config.SPEED_EXTRA_TOLERANCE          = 0.08;   // extra speed tolerance for movement validation
+config.SPEED_EXTRA_TOLERANCE          = 0.4;   // extra speed tolerance for movement validation
 config.PLAYER_SCALE_EXTRA_TOLERANCE   = 0.1;    // extra tolerance for player scale
 config.PLAYER_POSITIONS_WINDOW        = 30;     // number of recent positions to save for the player for validation rewind
 config.INFRACTION_TOLERANCE_FOOD      = 20;     // how many food infractions a player can have before they are kicked
 config.INFRACTION_TOLERANCE_PCAP      = 1;      // how many player capture infractions a player can have before they are kicked
-config.INFRACTION_TOLERANCE_SPEED     = 7;      // how many speed infractions a player can have before they are kicked
+config.INFRACTION_TOLERANCE_SPEED     = 20;     // how many speed infractions a player can have before they are kicked
 config.INFRACTION_TOLERANCE_SCALE     = 1;      // how many scale infractions a player can have before they are kicked
-config.MOVE_VALIDATION_SAMPLE_RATE    = 5;      // How often to sample, 1 would be ever time, 10 would be every 10th check
+config.MOVE_VALIDATION_SAMPLE_RATE    = 10;      // How often to sample, 1 would be ever time, 10 would be every 10th check
 config.LOADING_WAIT_DURATION          = 10000;  // How many milliseconds to wait before starting to track movement validation
 config.MAX_PLAYER_NAME_LENGTH         = 15;     // How many characters can be in the player name
+config.MAX_NOT_IN_MODEL_ERRORS        = 100;    // How many not-in-model errors before kicking the client
 
 ////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //
@@ -252,7 +257,7 @@ generateCameraZoomSteps();
 ////////////////////////////////////////////////////////////////////////
 //                            UI SETTINGS                             //
 ////////////////////////////////////////////////////////////////////////
-
+config.LEADERBOARD_LENGTH = 20;
 
 config.COLORS = [
     // new colors

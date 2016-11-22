@@ -7,9 +7,8 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
     var opacity = playerView.is_current_player ? 0.2 : 0.6;
 
     return {
-        geometry: {
-        },
-        material: {
+        poolname: 'spheres',
+        material: new THREE.ShaderMaterial({
             uniforms: {
                 "c"           : { type : "f",  value : 1.41803 },
                 "p"           : { type : "f",  value : 2.71828 },
@@ -27,7 +26,7 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
             // depthTest      : false,
             // depthWrite     : true,
             // blending       : THREE.AdditiveBlending,
-        },
+        }),
         behavior: {
         },
         trail: {
@@ -90,20 +89,20 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
             emitter: {
                 type: SPE.distributions.SPHERE,
                 position: {
-                    spread: new THREE.Vector3( 5 ),
+                    spread: new THREE.Vector3( 10 ),
                     radius: 10,
                 },
                 velocity: {
                     spread: new THREE.Vector3( 100 ),
                 },
                 size: {
-                    value: [ 30, 0 ]
+                    value: [ 40, 0 ]
                 },
                 opacity: {
                     value: [1, 0]
                 },
                 color: {
-                    value: [new THREE.Color('yellow'),new THREE.Color('red')],
+                    value: [new THREE.Color('yellow'), new THREE.Color('red')],
                 },
                 particleCount: 100,
                 alive: false,

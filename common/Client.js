@@ -15,7 +15,6 @@ if (NODEJS) {
 
 /**
  * Zorbio game client can be used in a browser or headless
- * @param model
  * @param handler
  * @constructor
  */
@@ -125,6 +124,9 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
                 case ZOR.Schemas.ops.YOU_DIED:
                     handle_msg_you_died( ZOR.Schemas.youDied.decode(msg.data) );
                     break;
+                case ZOR.Schemas.ops.LEADERBOARDS_UPDATE:
+                    handle_msg_leaderboard_update( ZOR.Schemas.leaderboardUpdateSchema.decode(msg.data) );
+                    break;
                 default:
                     // // see if this is a player fast update
                     var msgView = new Float32Array(msg.data);
@@ -222,6 +224,10 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     function handle_msg_you_died(msg) {
         self.z_handler.z_handle_you_died(msg);
         self.z_clearIntervalMethods();
+    }
+
+    function handle_msg_leaderboard_update(msg) {
+        self.z_handler.z_handle_leaderboard_update(msg);
     }
 
     function handle_msg_player_died(msg) {
@@ -343,6 +349,17 @@ ZOR.ZORClient.prototype.z_sendSpeedBoostStart = function ZORsendSpeedBoostStart(
 
 ZOR.ZORClient.prototype.z_sendSpeedBoostStop = function ZORsendSpeedBoostStop() {
     this.z_ws.send(JSON.stringify({op: "speed_boost_stop"}));
+};
+
+/**
+ * Request the leaderboards from the server.
+ */
+ZOR.ZORClient.prototype.z_sendLeaderboardsRequest = function ZORsendLeaderboardsRequest() {
+    var msg = {
+        0: ZOR.Schemas.ops.LEADERBOARDS_REQUEST,
+    };
+
+    this.z_ws.send(ZOR.Schemas.leaderboardRequestSchema.encode(msg));
 };
 
 ZOR.ZORClient.prototype.z_clearIntervalMethods = function ZORclearIntervalMethods() {

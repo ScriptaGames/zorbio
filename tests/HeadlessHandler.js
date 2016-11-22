@@ -99,4 +99,8 @@ ZOR.ZORMessageHandler.z_handle_client_position_rapid = function ZORhandleClientP
     // dont care about updating client positions
 };
 
+ZOR.ZORMessageHandler.z_handle_leaderboard_update = function ZORHandLeaderboardUpdate(data) {
+    // dont care
+};
+
 module.exports = ZOR.ZORMessageHandler;
