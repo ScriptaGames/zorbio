@@ -79,7 +79,7 @@ function animate() {
     t += 0.005;
 
     mesh.scale.setScalar( ((Math.sin(t) + 1)/2) * 145 + 5 );
-    borderMesh.scale.setScalar( mesh.scale.x + 5.0 );
+    borderMesh.scale.setScalar( (mesh.scale.x + 2.0) + mesh.scale.x/40 );
     borderMaterial.uniforms.sphereSize.value = mesh.scale.x;
     mesh.scale.setScalar( ((Math.sin(t) + 1)/2) * 145 + 5 );
 

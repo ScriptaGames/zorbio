@@ -24,3 +24,9 @@ ZOR.Pools = {};
 ZOR.Pools.drainViews = new ZOR.ObjectPool(function createDrainBeam() {
     return new ZOR.DrainView();
 });
+
+// Danger view pool
+
+ZOR.Pools.dangerViews = new ZOR.ObjectPool(function createDangerView() {
+    return new ZOR.DangerView();
+});

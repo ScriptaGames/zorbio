@@ -40,10 +40,14 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 
     if (!current) {
         this.setAlpha(1);
+        this.dangerView = ZOR.Pools.dangerViews.borrow();
+        this.dangerView.setPlayerView(this);
+        this.dangerView.show();
     }
 
     this.drainView = ZOR.Pools.drainViews.borrow();
     this.drainView.setPlayerView(this);
+
 
     this.setScale(model.sphere.scale);
 
@@ -54,6 +58,9 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 
     scene.add( this.mainSphere );
     scene.add( this.drainView.mesh );
+    if (this.dangerView) {
+        scene.add( this.dangerView.mesh );
+    }
 
     // give the meshes time to render before drawing trails
     // also adds a nice fade in effect for trails
@@ -291,6 +298,9 @@ ZOR.PlayerView.prototype.handleCapture = function ZORPlayerViewHandleCapture() {
     // Hide all view elements except for capture particles
     this.scene.remove(this.mainSphere);
     this.drainView.hide();
+    if (this.dangerView) {
+        this.dangerView.hide();
+    }
     this.removeTrail();  // must remove trail because particles trails mess up the look of capture particles
 
     // Set position to current position
@@ -307,6 +317,9 @@ ZOR.PlayerView.prototype.handleCapture = function ZORPlayerViewHandleCapture() {
 ZOR.PlayerView.prototype.update = function ZORPlayerViewUpdate(scale) {
     this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
     this.updateTrails();
+    if (this.dangerView) {
+        this.updateDanger();
+    }
     if (this.is_current_player || this.skin.behavior.faceCamera) {
         this.updateDirection();
     }
@@ -323,6 +336,10 @@ ZOR.PlayerView.prototype.updateDirection = function ZORPlayerViewUpdateDirection
 
 ZOR.PlayerView.prototype.updateDrain = function ZORPlayerViewUpdateDrain(drain_target_id) {
     this.drainView.update( drain_target_id );
+};
+
+ZOR.PlayerView.prototype.updateDanger = function ZORPlayerViewUpdateDanger() {
+    this.dangerView.update();
 };
 
 ZOR.PlayerView.prototype.setAlpha = function ZORPlayerViewSetAlpha(alpha) {
@@ -365,6 +382,11 @@ ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove() {
     this.removeTrail();
     this.removeCaptureParticles();
     ZOR.Pools.drainViews.return(this.drainView);
+    if (this.dangerView) {
+        ZOR.Pools.dangerViews.return(this.dangerView);
+        this.dangerView.dispose(this.scene);
+        this.dangerView = undefined;
+    }
     this.drainView.dispose(this.scene);
     this.drainView = undefined;
 
