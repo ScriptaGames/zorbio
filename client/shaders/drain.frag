@@ -1,4 +1,4 @@
-#define MAX_OPACITY 0.45
+#define MAX_OPACITY 0.55
 
 uniform float time;
 uniform float power;
