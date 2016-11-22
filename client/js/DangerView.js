@@ -11,13 +11,14 @@ ZOR.DangerView = function ZORDangerView() {
     this.geometry = new THREE.SphereGeometry( 1, 64, 64 );
     this.material = new THREE.ShaderMaterial({
         uniforms: {
-            riskSpread    : { type : "f",  value : 40 },
-            playerSize    : { type : "f",  value : 50 },
-            sphereSize    : { type : "f",  value : 50 },
-            cameraPos     : { type : "v3", value : new THREE.Vector3() },
-            dangerColor   : { type : "c",  value : new THREE.Color('#ff0000') },
-            nearbyColor   : { type : "c",  value : new THREE.Color('#444444') },
-            safetyColor   : { type : "c",  value : new THREE.Color('#00ff00') },
+            upperRiskRange : { type : "f",  value : 0.2 },
+            lowerRiskRange : { type : "f",  value : 40 },
+            playerSize     : { type : "f",  value : 50 },
+            sphereSize     : { type : "f",  value : 50 },
+            cameraPos      : { type : "v3", value : new THREE.Vector3() },
+            dangerColor    : { type : "c",  value : new THREE.Color('#ff0000') },
+            nearbyColor    : { type : "c",  value : new THREE.Color('#ffff00') },
+            safetyColor    : { type : "c",  value : new THREE.Color('#00ff00') },
         },
         transparent: true,
         blending: THREE.AdditiveBlending,

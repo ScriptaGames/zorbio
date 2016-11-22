@@ -7,30 +7,32 @@
 
 uniform float c;
 uniform float p;
-uniform float riskSpread;
+uniform float upperRiskRange;
+uniform float lowerRiskRange;
 uniform float playerSize;
 uniform float sphereSize;
 uniform vec3 dangerColor;
 uniform vec3 safetyColor;
 uniform vec3 nearbyColor;
 
-varying float vDangerLevel;
+float dangerLevel;
 varying vec3 vColor;
 varying float vDistanceOpacity;
 
 void main() {
-    vDangerLevel = clamp(sphereSize - playerSize, -riskSpread, riskSpread) / riskSpread;
     vec4 csPosition = modelViewMatrix * vec4(position, 1.0);
     float distToCamera = -csPosition.z;
     float cameraDist = clamp(distToCamera, 0.0, FADE_DIST) / FADE_DIST;
     vDistanceOpacity = clamp(cameraDist, MIN_ALPHA, MAX_ALPHA);
-    if ( vDangerLevel > 0.0 ) {
+
+    dangerLevel = clamp(sphereSize - playerSize, -lowerRiskRange, upperRiskRange);
+    if ( dangerLevel > 0.0 ) {
         // sphere is larger than player
-        vColor = mix(nearbyColor, dangerColor, vDangerLevel);
+        vColor = mix(nearbyColor, dangerColor, dangerLevel/upperRiskRange);
     }
     else {
         // sphere is smaller than player
-        vColor = mix(nearbyColor, safetyColor, -vDangerLevel);
+        vColor = mix(nearbyColor, safetyColor, -dangerLevel/lowerRiskRange);
     }
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );

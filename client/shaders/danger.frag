@@ -1,6 +1,3 @@
-uniform vec3 dangerColor;
-uniform vec3 safetyColor;
-
 varying vec3 vColor;
 varying float vDistanceOpacity;
 
