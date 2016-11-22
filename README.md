@@ -69,6 +69,18 @@ Here's the command:
 ![multi-process](https://cloud.githubusercontent.com/assets/3926730/18602090/cb485666-7c34-11e6-9f18-eb91f733bc45.png)
 
 
+## Creating a new node
+
+    ssh mcp.zor.bio -p4460
+    sudo su -
+
+    # -l can be dallas frankfurt singapore
+    # -c is cores, can be more if demand spikes quickly
+    ./create_node.sh -l dallas -c 1
+
+    # when that is done (check lish or wait 3+ mins)... get node's IP and:
+    ansible-playbook -i ~/linode.py -l 45.33.14.120 ~/provision.yaml
+
 ## Creating audio recordings of WebAudio files
 
 I used two programs, `sox` which is a command-line audio manipulation tool, and
