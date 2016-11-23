@@ -11,10 +11,11 @@ ZOR.DangerView = function ZORDangerView() {
     this.geometry = new THREE.SphereGeometry( 1, 64, 64 );
     this.material = new THREE.ShaderMaterial({
         uniforms: {
-            upperRiskRange : { type : "f",  value : 0.2 },
-            lowerRiskRange : { type : "f",  value : 40 },
+            upperRiskRange : { type : "f",  value : 0.1 },
+            lowerRiskRange : { type : "f",  value : 25 },
             playerSize     : { type : "f",  value : 50 },
             sphereSize     : { type : "f",  value : 50 },
+            spherePos      : { type : "v3", value : new THREE.Vector3() },
             cameraPos      : { type : "v3", value : new THREE.Vector3() },
             dangerColor    : { type : "c",  value : new THREE.Color('#ff0000') },
             nearbyColor    : { type : "c",  value : new THREE.Color('#ffff00') },
@@ -22,16 +23,9 @@ ZOR.DangerView = function ZORDangerView() {
         },
         transparent: true,
         blending: THREE.AdditiveBlending,
-        side: THREE.BackSide,
-
-        // depthFunc      : THREE.LessDepth,
-        depthTest      : true,
-        depthWrite     : true,
-        alphaTest      : 0.5,
     });
     this.mesh = new THREE.Mesh( this.geometry, this.material );
     this.mesh.position.copy( this.mesh.position );
-    this.mesh.renderOrder = 3;
 
     var self = this;
     ZOR.UI.on('init', function injectDangerBeamShaders() {
@@ -50,12 +44,13 @@ ZOR.DangerView.prototype.update = function ZORDangerViewUpdate() {
     var playerScale = this.playerView.mainSphere.scale.x;
     this.mesh.position.copy(this.playerView.mainSphere.position);
 
-    this.mesh.scale.setScalar( (playerScale + 2.0) + playerScale/60 );
+    this.mesh.scale.setScalar( (playerScale + 2.0) + playerScale/80 );
     this.material.uniforms.sphereSize.value = playerScale;
     if (typeof player !== 'undefined') {
         this.material.uniforms.playerSize.value = player.model.sphere.scale;
     }
     this.material.uniforms.cameraPos.value.copy(camera.position);
+    this.material.uniforms.spherePos.value.copy(this.mesh.position);
 };
 
 ZOR.DangerView.prototype.hide = function ZORDangerViewHide() {
