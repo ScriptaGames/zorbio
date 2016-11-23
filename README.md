@@ -57,6 +57,20 @@ Here's the command:
 
     npm run start-prod
 
+### Building with docker
+
+After installing docker, build zorbio's docker "builder" image.
+
+    cd $ZORBIO_DIR
+    docker build -t mwcz/zorbio-builder .
+
+Once that's done, you can run builds through docker!
+
+    bash build-docker.sh
+
+(this helps a lot if you aren't running the same Fedora release as our prod
+servers)
+
 ## Pushing to production
 
  1. Update package.json version number and/or build number.
