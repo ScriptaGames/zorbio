@@ -690,14 +690,15 @@ button:active {
   left: 0;
 }
 #social .tutorial-btn.first-visit {
-  -webkit-animation-duration: 1s;
-          animation-duration: 1s;
+  -webkit-animation-duration: .618s;
+          animation-duration: .618s;
   -webkit-animation-name: pulseOpacity;
           animation-name: pulseOpacity;
   -webkit-animation-iteration-count: infinite;
           animation-iteration-count: infinite;
   -webkit-animation-direction: alternate;
           animation-direction: alternate;
+  opacity: 0.3;
 }
 #social .leaderboard-btn {
   opacity: 0.6;
