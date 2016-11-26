@@ -38,6 +38,9 @@ ZOR.DrainView = function ZORDrainView() {
             power         : { type : "f",  value : 0 },
             erColor       : { type : "c",  value : 0 },
             eeColor       : { type : "c",  value : 0 },
+            erSize        : { type : "f",  value : 0 },
+            eeSize        : { type : "f",  value : 0 },
+            sizeSpread    : { type : "f",  value : config.MAX_PLAYER_RADIUS - config.INITIAL_PLAYER_RADIUS },
             len           : { type : "f",  value : 0 },
             mainSpherePos : { type : "v3", value : playerFogCenter },
             pos           : { type : "v3", value : new THREE.Vector3() },
@@ -102,6 +105,8 @@ ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drain_target_id ) 
     var distance = drainer_pos.distanceTo( drainee_pos ) - drainer_scale - drainee_scale;
 
     this.material.uniforms.pos.value.copy(this.mesh.position);
+    this.material.uniforms.erSize.value = drainer_scale;
+    this.material.uniforms.eeSize.value = drainee_scale;
 
     // make invisible if any required params are unavailable
     if (drainee && drainer_pos && drainee_pos && drainer_scale && drainee_scale) {
