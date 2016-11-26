@@ -478,7 +478,7 @@ var AppServer = function (id, app, server_label, port) {
 
                 // Bots can't drain eachother
                 if (player.type != Zorbio.PlayerTypes.BOT || drainee_player.type != Zorbio.PlayerTypes.BOT) {
-                    drain_amount = Drain.amount(drain_target.dist);
+                    drain_amount = Drain.amount(drain_target.dist) * Drain.bonusAmount(drainer.scale, drainee.scale);
 
                     // Grow the drainer and add to their score
                     player.score += drainer.growExpected(+drain_amount);

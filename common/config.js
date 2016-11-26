@@ -155,6 +155,7 @@ config.ABILITY_SPEED_BOOST_PENALTY = 0.05;   // Initial penalty, increases the l
 config.DRAIN_MAX_DISTANCE    = 300; // distance at which draining starts
 config.DRAIN_PINCH_STRENGTH  = 0.4;
 config.DRAIN_RADIO_FREQUENCY = 65; // how quickly the radio waves flow down the drain beam, higher is slower
+config.DRAIN_SIZE_INFLUENCE  = 0.4; // bonus percentage to drain due from relative player size (bonus scales down as player sizes get closer)
 
 ////////////////////////////////////////////////////////////////////////
 //                           FOOD SETTINGS                            //

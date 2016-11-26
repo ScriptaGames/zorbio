@@ -89,5 +89,18 @@ ZOR.Drain.amount = function ZORDrainAmount( distance ) {
     return p / ( (n * (distance * distance)) + o );
 };
 
+/**
+ * Calculate how much drain should be scaled because of the two players'
+ * relative sizes.
+ *
+ * @param {Number} drainer_size the drainer's size
+ * @param {Number} drainee_size the drainee's size
+ * @return {Number} a scale factor to apply to drain amount
+ */
+ZOR.Drain.bonusAmount = function ZORDrainBonusAmount( drainer_size, drainee_size ) {
+    // https://www.desmos.com/calculator/fzrj7f2b6l
+    return config.DRAIN_SIZE_INFLUENCE * (drainee_size - drainer_size) / (config.MAX_PLAYER_RADIUS - config.INITIAL_PLAYER_RADIUS) + 1;
+};
+
 // if we're in nodejs, export the root ZOR object
 if (NODEJS) module.exports = ZOR.Drain;
