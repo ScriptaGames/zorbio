@@ -97,7 +97,7 @@ ZOR.UI = function ZORUI() {
             data: {},
         },
         is_mobile        : isMobile.any,
-        playable         : false, // whether the play button can be pressed
+        loading          : true,
         screen_x         : 0,
         screen_y         : 0,
         player_size      : 0,

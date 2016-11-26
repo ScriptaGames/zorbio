@@ -1,43 +1,49 @@
 <!-- UI while in menus -->
-<div id="menu-ui-container" data-state="{{ state }}">
-    {{ #if state.indexOf('playing') !== 0 }}
-        {{ > title }}
-    {{ /if }}
-    {{ #if state === STATES.MENU_GAME_SCREEN    }} {{ > menu        }} {{ /if }}
-    {{ #if state === STATES.MENU_STORE_SCREEN   }} {{ > menu        }} {{ /if }}
-    {{ #if state === STATES.MENU_CONFIG_SCREEN  }} {{ > menu        }} {{ /if }}
-    {{ #if state === STATES.MENU_CREDITS_SCREEN }} {{ > menu        }} {{ /if }}
-    {{ #if state === STATES.TUTORIAL_SCREEN     }} {{ > tutorial    }} {{ /if }}
-    {{ #if state === STATES.LEADERBOARD_SCREEN  }} {{ > leaderboard }} {{ /if }}
-    {{ #if state === STATES.RESPAWN_SCREEN      }} {{ > death       }} {{ /if }}
-    {{ #if state === STATES.KICKED_SCREEN       }} {{ > kicked      }} {{ /if }}
-    {{ #if state === STATES.GAME_INIT_ERROR     }} {{ > initerror   }} {{ /if }}
+{{ #if !loading }}
+    <div id="menu-ui-container" fade-in-out data-state="{{ state }}">
+        {{ #if state.indexOf('playing') !== 0 }}
+            {{ > title }}
+        {{ /if }}
+        {{ #if state === STATES.MENU_GAME_SCREEN    }} {{ > menu        }} {{ /if }}
+        {{ #if state === STATES.MENU_STORE_SCREEN   }} {{ > menu        }} {{ /if }}
+        {{ #if state === STATES.MENU_CONFIG_SCREEN  }} {{ > menu        }} {{ /if }}
+        {{ #if state === STATES.MENU_CREDITS_SCREEN }} {{ > menu        }} {{ /if }}
+        {{ #if state === STATES.TUTORIAL_SCREEN     }} {{ > tutorial    }} {{ /if }}
+        {{ #if state === STATES.LEADERBOARD_SCREEN  }} {{ > leaderboard }} {{ /if }}
+        {{ #if state === STATES.RESPAWN_SCREEN      }} {{ > death       }} {{ /if }}
+        {{ #if state === STATES.KICKED_SCREEN       }} {{ > kicked      }} {{ /if }}
+        {{ #if state === STATES.GAME_INIT_ERROR     }} {{ > initerror   }} {{ /if }}
 
-    {{ #if state.indexOf('playing') !== 0
-    && state !== STATES.KICKED_SCREEN
-    && state !== STATES.GAME_INIT_ERROR }}
-        {{ > tabs }}
-        {{ > copyright }}
-    {{ /if }}
-</div>
+        {{ #if state.indexOf('playing') !== 0
+        && state !== STATES.KICKED_SCREEN
+        && state !== STATES.GAME_INIT_ERROR }}
+            {{ > tabs }}
+            {{ > copyright }}
+        {{ /if }}
+    </div>
 
-<!-- UI while playing -->
-{{ #if state.indexOf('playing') === 0 }}
-<div id="play-ui-container" data-state="{{ state }}">
-    {{ #if state === STATES.PLAYING }}
-        {{ > leaders     }}
-        {{ > gear-btn    }}
-        {{ > player-size }}
-        {{ > targets     }}
-        {{ > size-meter  }}
-    {{ /if }}
-    {{ #if state === STATES.PLAYING_CONFIG }}
-        {{ > config-play }}
-    {{ /if }}
+    <!-- UI while playing -->
+    {{ #if state.indexOf('playing') === 0 }}
+    <div id="play-ui-container" fade-in-out data-state="{{ state }}">
+        {{ #if state === STATES.PLAYING }}
+            {{ > leaders     }}
+            {{ > gear-btn    }}
+            {{ > player-size }}
+            {{ > targets     }}
+            {{ > size-meter  }}
+        {{ /if }}
+        {{ #if state === STATES.PLAYING_CONFIG }}
+            {{ > config-play }}
+        {{ /if }}
 
-    {{ #if server_message }}
-    <div id="server-message"> {{ server_message }} </div>
-    {{ /if }}
+        {{ #if server_message }}
+        <div id="server-message"> {{ server_message }} </div>
+        {{ /if }}
 
-</div>
+    </div>
+    {{ /if }}
+{{ else }}
+    <div id="loading-image">
+        <img fade-in-out src="../images/loading-spinner.png">
+    </div>
 {{ /if }}

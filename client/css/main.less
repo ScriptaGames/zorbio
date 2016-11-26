@@ -95,6 +95,11 @@ input {
     touch-action : none;
     z-index      : 10;
     cursor       : url('../images/cursor.png') -4 -4, crosshair;
+    opacity: 0;
+    transition: opacity linear 0.3s;
+    &.active {
+        opacity: 1;
+    }
 }
 
 
@@ -103,13 +108,22 @@ input {
 #ui-overlay {
     height     : 100%;
     width      : 100%;
-    opacity    : 0.01;
     transition : opacity 0.618s ease-in-out;
-    &.active {
-        opacity: 1;
-    }
     & > * {
         color: @primary-color;
+    }
+}
+
+#loading-image {
+    .center-abs();
+    height: 200px;
+    width: 200px;
+    z-index: 5;
+    img {
+        animation-duration: 2.618s;
+        animation-name: loadingSpinner;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
     }
 }
 
@@ -591,6 +605,15 @@ button {
     }
     to {
         opacity: 1.0;
+    }
+}
+
+@keyframes loadingSpinner {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }
 

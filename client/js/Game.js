@@ -123,7 +123,7 @@ function createScene() {
     // turns into a noop afterwards.
     var revealCanvas = _.after(4, function () {
         canvas.classList.add('active');
-        ZOR.UI.engine.set('playable', true);
+        ZOR.UI.engine.set('loading', false);
     });
 
     ZOR.UI.engine.fire(ZOR.UI.ACTIONS.UPDATE_LEADERBOARD, zorClient);
@@ -133,6 +133,7 @@ function createScene() {
         animate();
     } catch (e) {
         console.error('Failed to init game.  Possible WebGL failure.  Original error below.');
+        ZOR.UI.engine.set('loading', false);
         ZOR.UI.state( ZOR.UI.STATES.GAME_INIT_ERROR );
         throw e;
     }
