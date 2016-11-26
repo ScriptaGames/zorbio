@@ -75,17 +75,17 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
 };
 
 /**
- * Calculate the amount of drain based on distance.
+ * Calculate the amount of drain based on distance and relative size.
  *
- * @param {Number} distance the distance between two players' centers
+ * @param {Number} distance the distance between two players' surfaces
  * @return {Number} the scale drained from one player and added to the other
  */
 ZOR.Drain.amount = function ZORDrainAmount( distance ) {
     // adjust n, o. and p to balance the drain amount.
     // see https://www.desmos.com/calculator/wmiuaymrtu
     var n = 0.007;
-    var o = 3.0;
-    var p = 0.05;
+    var o = 4.0;
+    var p = 0.06;
     return p / ( (n * (distance * distance)) + o );
 };
 
