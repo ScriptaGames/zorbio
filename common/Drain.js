@@ -6,6 +6,7 @@ if (NODEJS) var THREE = require('three');
 if (NODEJS) var _ = require('lodash');
 if (NODEJS) var UTIL = require('./util.js');
 if (NODEJS) var config = require('./config.js');
+if (NODEJS) var ZOR = require('../common/zorbio.js');
 
 var ZOR = ZOR || {};
 ZOR.Drain = {};
@@ -46,6 +47,8 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
 
             // find the distance between these two players
             p2 = players_array[j];
+
+            if (p1.type === ZOR.PlayerTypes.BOT && p2.type === ZOR.PlayerTypes.BOT) continue;
 
             p1_scale = p1.sphere.scale;
             p2_scale = p2.sphere.scale;
