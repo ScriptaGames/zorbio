@@ -491,6 +491,66 @@ var foodMaps = {
 
         return positions;
     },
+    paths: function foodMapPath(count, density) {
+
+        var worldSizeWithMargin = config.WORLD_SIZE/2;
+
+        function foodSpline( firstPoint, length, kinks ) {
+            var points = [];
+            var pointCount = Math.max( 0, kinks ); // not including first two points
+            var newPoint = new THREE.Vector3();
+            var randomOffset = new THREE.Vector3();
+
+            var interLength = length / kinks; // distance between points
+            var secondPoint = new THREE.Vector3( Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 );
+
+            secondPoint.normalize().multiplyScalar(interLength).add(firstPoint);
+
+            points.unshift(firstPoint);
+            points.unshift(secondPoint);
+
+            while( pointCount-- ) {
+                newPoint.copy(points[0]).sub(points[1]).normalize().multiplyScalar(interLength).add(points[0]);
+                randomOffset.set( Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 ).normalize().multiplyScalar(interLength);
+                newPoint.add(randomOffset);
+                // if new point is outside world bounds, regenerate the point
+                if (Math.abs(newPoint.x) > worldSizeWithMargin || Math.abs(newPoint.y) > worldSizeWithMargin || Math.abs(newPoint.z) > worldSizeWithMargin) {
+                    pointCount++;
+                    continue;
+                }
+                points.unshift(newPoint.clone());
+            }
+
+            points.reverse();
+
+            var spline = new THREE.Spline( points );
+
+            return spline;
+        }
+
+        var positions = new Int16Array(count * 3);
+
+        positions.fill(-65000);
+
+        while (count >= 0) {
+            var spline = foodSpline(
+                new THREE.Vector3(Math.random()*worldSizeWithMargin - worldSizeWithMargin/2, Math.random()*worldSizeWithMargin - worldSizeWithMargin/2, Math.random()*worldSizeWithMargin - worldSizeWithMargin/2 ),
+                300,
+                3
+            );
+
+            for ( var i = 0; i < 20*3; i += 3 ) {
+                var point = spline.getPoint(i/(20*3));
+                positions[count+i+0] = point.x;
+                positions[count+i+1] = point.y;
+                positions[count+i+2] = point.z;
+                count--;
+            }
+        }
+
+        return positions;
+
+    },
 };
 
 /**
