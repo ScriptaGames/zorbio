@@ -29,7 +29,7 @@
     "es6-promise": "^3.2.1",
     "Wad": "wad#^2.4.1",
     "ShaderParticleEngine": "https://github.com/squarefeet/ShaderParticleEngine.git#^1.0.5",
-    "raven-js": "^3.5.1",
+    "raven-js": "^3.9.1",
     "linode-near-location": "^0.1.2",
     "xss-filters": "^1.2.6",
     "howler.js": "^2.0.0",
