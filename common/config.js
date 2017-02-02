@@ -99,6 +99,8 @@ config.BALANCERS = Object.freeze({
     singapore: 'apac.zor.bio',
     prod:      'zor.bio',
     prodwww:   'www.zor.bio',
+    zorb_io:   'zorb.io',
+    zorb_io_www: 'www.zorb.io',
 });
 
 ////////////////////////////////////////////////////////////////////////
