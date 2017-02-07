@@ -26,9 +26,11 @@ cd client/
 
 echo "Compiling Ractive templates"
 node ../util/ractive-precompile.js
-# replace '.html' with '.json' in ractive template script tags
 cp index.html index.jsontemplate.html
+# replace '.html' with '.json' in ractive template script tags
 sed -i -e '/\(\(templates\/.*\)\.html\)"/s//\2.json"/' index.jsontemplate.html
+# load only ractive's runtime (parser/compiler no longer needed)
+sed -i -e 's/\/ractive\.js/\/ractive.runtime.js/' index.jsontemplate.html
 
 echo 'Minifing Javascript'
 python ../util/minify.py index.jsontemplate.html > index_min.html
