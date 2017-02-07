@@ -52,7 +52,6 @@
     "less": "^2.7.1",
     "postcss-cli": "^2.5.2",
     "supervisor": "^0.11.0",
-    "thor": "^1.0.0",
     "uglify-js": "^2.7.4"
   }
 }
