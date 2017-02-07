@@ -23,9 +23,17 @@ cd ../
 
 # Minify Javascript
 cd client/
+
+echo "Compiling Ractive templates"
+node ../util/ractive-precompile.js
+# replace '.html' with '.json' in ractive template script tags
+cp index.html index.jsontemplate.html
+sed -i -e '/\(\(templates\/.*\)\.html\)"/s//\2.json"/' index.jsontemplate.html
+
 echo 'Minifing Javascript'
-python ../util/minify.py index.html > index_min.html
+python ../util/minify.py index.jsontemplate.html > index_min.html
 cd ../
+
 
 echo "Inlining and minify html"
 mkdir -p dist > /dev/null
@@ -39,6 +47,8 @@ node node_modules/html-minifier/cli.js dist/index-inlined.html --collapse-whites
 
 # Cleanup build temp build files
 rm dist/index-inlined.html
+rm client/templates/*.json
+rm client/index.jsontemplate.html
 rm client/index_min.html
 rm client/js/third.min.js
 rm client/js/first.min.js

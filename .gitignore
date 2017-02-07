@@ -8,6 +8,8 @@ client/css/.o
 client/css/.o.map
 client/css/.sass-cache
 
+client/templates/*.json
+
 dist
 
 build_files/*.spec

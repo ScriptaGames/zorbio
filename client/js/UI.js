@@ -160,7 +160,13 @@ ZOR.UI = function ZORUI() {
 
     function make_partial( el ) {
         var name = el.id.replace('-template', '');
-        return [name, el.textContent];
+        var template;
+        try {
+            template = JSON.parse(el.textContent);
+        } catch (e) {
+            template = el.textContent;
+        }
+        return [name, template];
     }
 
     /**
@@ -269,11 +275,21 @@ ZOR.UI = function ZORUI() {
 
         var partials = _.map( document.querySelectorAll('script[type="text/ractive"]'), make_partial ); // register all ractive templates as partials
 
+        var mainTemplate;
+        try {
+            // if the Ractive template was precompiled into JSON, this will
+            // succeed.  If it was not precompiled (ie, dev mode), this will
+            // fail and fall back to catch.
+            mainTemplate = JSON.parse(document.querySelector('#ui-template').textContent);
+        } catch (e) {
+            mainTemplate = document.querySelector('#ui-template').textContent;
+        }
+
         Ractive.DEBUG = config.DEBUG;
         engine = new Ractive({
             el: '#ui-overlay',
             data: uidata,
-            template: '#ui-template',
+            template: mainTemplate,
             partials: _.fromPairs(partials),
         });
 
