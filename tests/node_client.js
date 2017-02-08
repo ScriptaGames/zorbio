@@ -10,7 +10,7 @@ global.zorbioModel = new Zorbio.Model();
 global.gameStart = false;
 global.playerDead = false;
 
-console.log("Starting headless zorbio node client...");
+console.log("Starting headless zorbio node client to: " + process.argv[2]);
 
 var zorClient = new ZORClient(handler);
 
@@ -22,10 +22,11 @@ var playerMeta = {
     skin: "default",
 };
 
-zorClient.z_connectToServer('ws://useast.zor.bio:31000');
+zorClient.z_connectToServer(process.argv[2]);
 
 // Give the socket time to connect, then enter the game
 setTimeout(function () {
+    console.log("Entering game...");
     zorClient.z_sendEnterGame(playerMeta);
 }, 6000);
 
