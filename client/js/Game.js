@@ -77,7 +77,8 @@ function startGame(type) {
     }
 
     if (config.MUSIC_ENABLED) {
-        ZOR.Sounds.music.background.play();
+        ZOR.Sounds.stopMusic();
+        setTimeout(function () { ZOR.Sounds.playMusic('play') }, 1000);
     }
 
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
@@ -113,6 +114,8 @@ function startGame(type) {
 function respawnPlayer() {
     console.log("Respawning player: ", player.getPlayerId());
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
+    ZOR.Sounds.stopMusic();
+    setTimeout(function () { ZOR.Sounds.playMusic('play') }, 1000);
     gameStart = false;
     zorClient.z_sendRespawn();
 }
@@ -686,6 +689,8 @@ function handleDeath(msg) {
 
     console.log("YOU DIED! You were alive for " + msg.time_alive + " seconds. Killed by: ", attackingPlayerId);
     setDeadState();
+
+    ZOR.Sounds.playMusic('gameover');
 
     var attackingPlayer = zorbioModel.getPlayerById(attackingPlayerId);
     var attackingActor = zorbioModel.getActorById(attackingPlayer.sphere.id);

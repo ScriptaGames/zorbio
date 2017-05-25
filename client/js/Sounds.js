@@ -4,16 +4,17 @@ ZOR.Sounds = (function ZORSounds() {
 
     // A simple helper function to avoid repetition when creating Howl objects
     // for our sfx
-    function howlSfx(path, volume) {
-        return new Howl({
+    function howlSfx(path, custom) {
+        var conf = _.assign({
             src: ['../sfx/' + path],
             autoplay: false,
             loop: false,
             volume: config.VOLUME_SFX_INITIAL,
             buffer: false,
             preload: true,
-            volume: volume || 0.3,
-        })
+            volume: 0.3,
+        }, custom);
+        return new Howl(conf);
     }
 
     // A simple helper function for creating Wad sounds.  If Web Audio API
@@ -28,6 +29,21 @@ ZOR.Sounds = (function ZORSounds() {
     }
 
     var sounds = {
+        musicVolume: function (vol) {
+            _.forEach(sounds.music, function (music) { music.volume(vol); });
+        },
+        playMusic: function (name) {
+            sounds.stopMusic();
+            sounds.music[name].play();
+        },
+        stopMusic: function () {
+            _.forEach(sounds.music, function (music) { music.stop(); });
+        },
+        music: {
+            menu     : howlSfx('../sfx/veus/Zorbio_MainMenu.ogg', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
+            play     : howlSfx('../sfx/veus/Zorbio_GamePlay.ogg', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
+            gameover : howlSfx('../sfx/veus/Zorbio_GameOver.ogg', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
+        },
         sfx: {
             // Only commented out food capture because it's worth saving the
             // envelope (env) below.
@@ -74,7 +90,7 @@ ZOR.Sounds = (function ZORSounds() {
                 },
             }),
             state_change: howlSfx('food_capture/D3.mp3'),
-            player_capture: howlSfx('player_capture.wav', 0.8),
+            player_capture: howlSfx('player_capture.wav', { volume: 0.8 }),
         },
         playFromPos: function ZORSoundsPlayFromPos(sound, earObject, soundPos) {
             var dist = earObject.position.distanceTo(soundPos);

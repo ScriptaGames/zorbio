@@ -300,6 +300,8 @@ ZOR.UI = function ZORUI() {
 
         state( STATES.INITIAL );
 
+        ZOR.Sounds.playMusic('menu');
+
         init_events();
 
         // add active class to UI overlay so it'll show up
@@ -360,7 +362,7 @@ ZOR.UI = function ZORUI() {
 
         on( ACTIONS.VOLUME_MUSIC, function ZORVolumeMusic() {
             var vol = this.get('volume.music');
-            ZOR.Sounds.music.background.volume( vol );
+            ZOR.Sounds.musicVolume(vol);
             localStorage.volume_music = vol;
         });
 

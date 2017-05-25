@@ -314,7 +314,7 @@ if (!NODEJS) {
     config.VOLUME_MUSIC_INITIAL = localStorage.volume_music || 0.45;
     config.VOLUME_SFX_INITIAL   = localStorage.volume_sfx || 1.0;
 }
-config.MUSIC_ENABLED        = false;
+config.MUSIC_ENABLED        = true;
 config.SFX_FOOD_CAPTURE_TONES = [
     'D3',
     'E3',
