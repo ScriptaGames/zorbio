@@ -116,7 +116,6 @@ input:focus {
   z-index: 10;
   cursor: url('../images/cursor.png') -4 -4, crosshair;
   opacity: 0;
-  -webkit-transition: opacity linear 0.3s;
   transition: opacity linear 0.3s;
 }
 #render-canvas.active {
@@ -126,7 +125,6 @@ input:focus {
 #ui-overlay {
   height: 100%;
   width: 100%;
-  -webkit-transition: opacity 0.618s ease-in-out;
   transition: opacity 0.618s ease-in-out;
 }
 #render-canvas > *,
@@ -202,6 +200,7 @@ input:focus {
 }
 #menu-ui-container #menu {
   overflow: hidden;
+  position: relative;
 }
 #menu-ui-container #menu #start-button,
 #menu-ui-container #menu #input-name,
@@ -228,10 +227,8 @@ input:focus {
 }
 @media (max-height: 450px), (orientation: landscape) {
   #menu-ui-container {
-    grid-definition-columns: 0.8fr 0.2fr;
-    -ms-grid-columns: 0.81fr 0.2fr;
-        grid-template-columns: 0.81fr 0.2fr;
-    grid-definition-rows: 67px 20px 1fr 14px;
+    -ms-grid-columns: 0.8fr 0.2fr;
+        grid-template-columns: 0.8fr 0.2fr;
     -ms-grid-rows: 67px 20px 1fr 14px;
         grid-template-rows: 67px 20px 1fr 14px;
   }
@@ -269,10 +266,8 @@ input:focus {
 }
 @media (min-height: 451px), (orientation: portrait) {
   #menu-ui-container {
-    grid-definition-columns: 1fr;
     -ms-grid-columns: 1fr;
         grid-template-columns: 1fr;
-    grid-definition-rows: 90px 20px 1fr 100px 22px;
     -ms-grid-rows: 90px 20px 1fr 100px 22px;
         grid-template-rows: 90px 20px 1fr 100px 22px;
   }
@@ -391,7 +386,6 @@ button {
   padding: 20px;
   position: relative;
   z-index: 1;
-  -webkit-transition: color ease-in-out 0.3s, background-color ease-in-out 0.3s, -webkit-transform 0.01s ease-out;
   transition: color ease-in-out 0.3s, background-color ease-in-out 0.3s, -webkit-transform 0.01s ease-out;
   transition: transform 0.01s ease-out, color ease-in-out 0.3s, background-color ease-in-out 0.3s;
   transition: transform 0.01s ease-out, color ease-in-out 0.3s, background-color ease-in-out 0.3s, -webkit-transform 0.01s ease-out;
@@ -460,7 +454,6 @@ button:active {
   background: none;
   margin: 8px;
   cursor: pointer;
-  -webkit-transition: opacity ease-in-out 0.1s;
   transition: opacity ease-in-out 0.1s;
   pointer-events: auto;
 }
@@ -500,7 +493,6 @@ button:active {
   position: relative;
   top: 15px;
   margin: 6px;
-  -webkit-transition: opacity ease-out 0.2s, -webkit-transform ease-out 0.2s;
   transition: opacity ease-out 0.2s, -webkit-transform ease-out 0.2s;
   transition: opacity ease-out 0.2s, transform ease-out 0.2s;
   transition: opacity ease-out 0.2s, transform ease-out 0.2s, -webkit-transform ease-out 0.2s;
@@ -602,7 +594,6 @@ button:active {
 #size-meter-wrapper #size-meter {
   opacity: 0.9;
   background-color: #0B7BF4;
-  -webkit-transition: clip 0.2618s ease-in-out;
   transition: clip 0.2618s ease-in-out;
 }
 #size-meter-wrapper .milestone {
@@ -711,7 +702,6 @@ button:active {
   width: 38px;
   height: 38px;
   display: inline-block;
-  -webkit-transition: opacity linear 0.1s;
   transition: opacity linear 0.1s;
   opacity: 0.65;
 }

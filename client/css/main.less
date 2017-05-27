@@ -189,6 +189,7 @@ input {
     }
     #menu {
         overflow: hidden;
+        position: relative;
         #start-button,
         #input-name,
         #input-alphakey,
@@ -217,9 +218,7 @@ input {
     @media (max-height: 450px), (orientation: landscape) {
         & {
             // TODO variablize these fixed px sizes
-            grid-definition-columns: 0.8fr 0.2fr;
-            grid-template-columns: 0.81fr 0.2fr;
-            grid-definition-rows: 67px 20px 1fr 14px;
+            grid-template-columns: 0.8fr 0.2fr;
             grid-template-rows: 67px 20px 1fr 14px;
         }
         & #title {
@@ -245,9 +244,7 @@ input {
     }
     @media (min-height: 451px), (orientation: portrait) {
         & {
-            grid-definition-columns: 1fr;
             grid-template-columns: 1fr;
-            grid-definition-rows: 90px 20px 1fr 100px 22px;
             grid-template-rows: 90px 20px 1fr 100px 22px;
         }
         & #title {
