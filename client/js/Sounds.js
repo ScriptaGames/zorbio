@@ -40,9 +40,9 @@ ZOR.Sounds = (function ZORSounds() {
             _.forEach(sounds.music, function (music) { music.stop(); });
         },
         music: {
-            menu     : howlSfx('../sfx/veus/Zorbio_MainMenu.ogg', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
-            play     : howlSfx('../sfx/veus/Zorbio_GamePlay.ogg', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
-            gameover : howlSfx('../sfx/veus/Zorbio_GameOver.ogg', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
+            menu     : howlSfx('veus/Zorbio_MainMenu.ogg.mp3', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
+            play     : howlSfx('veus/Zorbio_GamePlay.ogg.mp3', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
+            gameover : howlSfx('veus/Zorbio_GameOver.ogg.mp3', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
         },
         sfx: {
             // Only commented out food capture because it's worth saving the
@@ -60,19 +60,7 @@ ZOR.Sounds = (function ZORSounds() {
             // }),
 
             // a chime sound for food capture
-            food_capture: {
-                A3: howlSfx('food_capture/A3.mp3'),
-                A4: howlSfx('food_capture/A4.mp3'),
-                B3: howlSfx('food_capture/B3.mp3'),
-                B4: howlSfx('food_capture/B4.mp3'),
-                D3: howlSfx('food_capture/D3.mp3'),
-                D4: howlSfx('food_capture/D4.mp3'),
-                E3: howlSfx('food_capture/E3.mp3'),
-                E4: howlSfx('food_capture/E4.mp3'),
-                G3: howlSfx('food_capture/G3.mp3'),
-                G4: howlSfx('food_capture/G4.mp3'),
-                Gb3: howlSfx('food_capture/Gb3.mp3'),
-            },
+            food_capture: howlSfx('veus/Effects/LowPitchLazer.ogg.mp3'),
             woosh: wadSfx({
                 source: 'noise',
                 volume: 0.35,
@@ -90,7 +78,7 @@ ZOR.Sounds = (function ZORSounds() {
                 },
             }),
             state_change: howlSfx('food_capture/D3.mp3'),
-            player_capture: howlSfx('player_capture.wav', { volume: 0.8 }),
+            player_capture: howlSfx('veus/Effects/LowPitchDrop.ogg.mp3'),
         },
         playFromPos: function ZORSoundsPlayFromPos(sound, earObject, soundPos) {
             var dist = earObject.position.distanceTo(soundPos);
@@ -108,7 +96,7 @@ ZOR.Sounds = (function ZORSounds() {
         // The Howler sfx seem to be delayed and sound glitchy the first time
         // they're played.  This function attempts to fix that by playing them
         // once, at zero volume.
-        var sound = sounds.sfx.food_capture.A3;
+        var sound = sounds.sfx.food_capture;
         var id = sound.play();
         sound.mute(true, id);
         sound.volume(0, id);

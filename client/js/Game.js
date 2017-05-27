@@ -651,12 +651,12 @@ function handleLeaderboardUpdate(leaderboards) {
  * Current player has captured someone.
  */
 function handleSuccessfulPlayerCapture(capturedPlayerID) {
-    // var sound = ZOR.Sounds.sfx.player_capture;
+    var sound = ZOR.Sounds.sfx.player_capture;
     var capturedPlayer = ZOR.Game.players[capturedPlayerID];
     var windDownTime = 0;
 
     if (capturedPlayer) {
-        // ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
+        ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
         capturedPlayer.handleCapture();
         windDownTime = capturedPlayer.getWindDownTime();
     }
