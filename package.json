@@ -32,7 +32,7 @@
     "three": "0.86.0",
     "utf-8-validate": "3.0.2",
     "valid-url": "1.0.9",
-    "ws": "1.1.1",
+    "ws": "3.0.0",
     "xss-filters": "1.2.6"
   },
   "devDependencies": {
