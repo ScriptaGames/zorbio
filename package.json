@@ -26,7 +26,7 @@
     "node-uuid": "1.4.8",
     "performance-now": "2.1.0",
     "profanity-censor": "1.0.5",
-    "raven": "0.12.1",
+    "raven": "2.1.0",
     "request": "2.73.0",
     "schemapack": "1.4.2",
     "three": "0.82.0",
