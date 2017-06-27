@@ -1,29 +1,29 @@
 <h1>Settings</h1>
 <div>
-    <input type="checkbox" {{ flip_y ? 'checked' : '' }} on-click="{{ ACTIONS.TOGGLE_Y_AXIS }}" id="flip-y-axis">
+    <input type="checkbox" {{ flip_y ? 'checked' : '' }} on-click="@this.fire( ACTIONS.TOGGLE_Y_AXIS )" id="flip-y-axis">
     <label for="flip-y-axis">Flip Y axis</label>
 </div>
 <div>
-    <input type="checkbox" {{ flip_x ? 'checked' : '' }} on-click="{{ ACTIONS.TOGGLE_X_AXIS }}" id="flip-x-axis">
+    <input type="checkbox" {{ flip_x ? 'checked' : '' }} on-click="@this.fire( ACTIONS.TOGGLE_X_AXIS )" id="flip-x-axis">
     <label for="flip-x-axis">Flip X axis</label>
 </div>
 {{ #if music_enabled }}
 <div>
-    <input id="music-volume" type="range" on-change="{{ ACTIONS.VOLUME_MUSIC }}" min="0" max="1" step="0.01" value="{{ volume.music }}">
+    <input id="music-volume" type="range" on-change="@this.fire( ACTIONS.VOLUME_MUSIC )" min="0" max="1" step="0.01" value="{{ volume.music }}">
     <label for="music-volume">Music volume</label>
 </div>
 {{ /if }}
 <div>
-    <input id="sfx-volume" type="range" on-change="{{ ACTIONS.VOLUME_SFX }}" min="0" max="0.5" step="0.01" value="{{ volume.sfx }}">
+    <input id="sfx-volume" type="range" on-change="@this.fire( ACTIONS.VOLUME_SFX )" min="0" max="0.5" step="0.01" value="{{ volume.sfx }}">
     <label for="sfx-volume">SFX volume</LABEL>
 </div>
 <div>
-    <input type="checkbox" {{ hide_own_trail ? 'checked' : '' }} on-click="{{ ACTIONS.TOGGLE_OWN_TRAIL }}" id="hide-own-trail">
+    <input type="checkbox" {{ hide_own_trail ? 'checked' : '' }} on-click="@this.fire( ACTIONS.TOGGLE_OWN_TRAIL )" id="hide-own-trail">
     <label for="hide-own-trail">Hide own trail</label>
 </div>
 {{ #if state === STATES.MENU_CONFIG_SCREEN && !is_mobile }}
 <div>
-    <select name="steering-method" id="steering-method" on-change="{{ ACTIONS.SET_STEERING }}">
+    <select name="steering-method" id="steering-method" on-change="@this.fire( ACTIONS.SET_STEERING )">
         <option value="follow" {{ steering=='follow' ? 'selected' : '' }}>follow cursor</option>
         <option value="drag" {{ steering=='drag' ? 'selected' : '' }}>{{#if is_mobile}}tap{{else}}click{{/if}} &amp; drag</option>
     </select>
@@ -31,5 +31,5 @@
 </div>
 {{ /if }}
 {{ #if state === STATES.PLAYING_CONFIG }}
-<button on-click="{{ ACTIONS.SHOW_PREVIOUS }}">Done</button>
+<button on-click="@this.fire( ACTIONS.SHOW_PREVIOUS )">Done</button>
 {{ /if }}

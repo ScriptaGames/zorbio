@@ -5,7 +5,7 @@
                 <h2>YOU WERE REMOVED</h2>
                 <p>{{ kicked_message }}</p>
                 <p>You can report this on our <a href='https://github.com/ScriptaGames/zorbio-issues/issues'>github page</a></p>
-                <button on-click="{{ ACTIONS.PAGE_RELOAD }}" id="respawn-button"><span>Reload</span></button>
+                <button on-click="@this.fire( ACTIONS.PAGE_RELOAD )" id="respawn-button"><span>Reload</span></button>
             </div>
         </div>
     </div>

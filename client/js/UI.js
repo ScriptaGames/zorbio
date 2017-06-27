@@ -116,6 +116,7 @@ ZOR.UI = function ZORUI() {
         },
         marquee_messages : [],
         marquee_index    : 0,
+        target           : undefined,
     };
 
     // the public functions exposes by this module (may be modified during execution)
@@ -141,7 +142,8 @@ ZOR.UI = function ZORUI() {
     }
 
     function clearTarget() {
-        uidata.target = undefined;
+        engine.set('target', undefined);
+        // uidata.target = undefined;
     }
 
     /**
@@ -332,7 +334,7 @@ ZOR.UI = function ZORUI() {
     }
 
     function stateSetter(newState) {
-        return function () {
+        return function (context) {
             console.log('changing to ' + newState);
             state(newState);
         };
@@ -375,7 +377,7 @@ ZOR.UI = function ZORUI() {
             localStorage.volume_sfx = vol;
         });
 
-        on( ACTIONS.SET_STEERING, function ZORSetSteering(e) {
+        on( ACTIONS.SET_STEERING, function ZORSetSteering(context, e) {
             var value = e.original.target.value;
             if (value === 'follow') {
                 config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
@@ -392,7 +394,7 @@ ZOR.UI = function ZORUI() {
 
         // state change events
 
-        on( ACTIONS.UPDATE_LEADERBOARD, function ZORUpdateLeaderboard(client) {
+        on( ACTIONS.UPDATE_LEADERBOARD, function ZORUpdateLeaderboard(context, client) {
             client.z_sendLeaderboardsRequest();
         });
         on( ACTIONS.SHOW_LEADERBOARD_1D, function ZORShowLeaderboard1D() {
@@ -420,7 +422,7 @@ ZOR.UI = function ZORUI() {
             state( uidata.prev_state );
         });
 
-        on( ACTIONS.SET_SKIN, function ZORSetSkin(e) {
+        on( ACTIONS.SET_SKIN, function ZORSetSkin(context, e) {
             engine.set('selected_skin', e.node.value);
             localStorage.setItem('skin', e.node.value);
 
@@ -454,7 +456,7 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.TOGGLE_Y_AXIS, axisToggler('y'));
         on( ACTIONS.TOGGLE_X_AXIS, axisToggler('x'));
 
-        function axisToggler(axis) {
+        function axisToggler(context, axis) {
             return function ZORToggleYAxis(e) {
                 var lsKey = 'flip_'+axis.toLowerCase();
                 var confKey = axis.toUpperCase()+'_AXIS_MULT';
@@ -485,7 +487,7 @@ ZOR.UI = function ZORUI() {
             }
         });
 
-        on( ACTIONS.PLAYER_LOGIN_KEYPRESS, function ZORPlayerLoginKeypressHandler(e) {
+        on( ACTIONS.PLAYER_LOGIN_KEYPRESS, function ZORPlayerLoginKeypressHandler(context, e) {
             var key = e.original.which || e.original.keyCode;
             var KEY_ENTER = 13;
 

@@ -31,7 +31,7 @@
     "node-uuid": "1.4.8",
     "performance-now": "2.1.0",
     "profanity-censor": "1.0.5",
-    "ractive": "0.8.0",
+    "ractive": "0.9.1",
     "ractive-transitions-fade": "0.3.1",
     "raven": "2.1.0",
     "raven-js": "3.16.0",

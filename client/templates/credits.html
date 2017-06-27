@@ -43,5 +43,5 @@
         <li> <a href="http://www.ractivejs.org/">ractive.js</a> &mdash; <a target="_blank" rel="noopener noreferrer referer" href="https://github.com/ractivejs/ractive/blob/dev/LICENSE.md">LICENSE</a> </li>
         <li> <a href="https://lodash.com/">lodash</a> &mdash; <a target="_blank" rel="noopener noreferrer referer" href="https://raw.githubusercontent.com/lodash/lodash/4.0.0/LICENSE">LICENSE</a> </li>
     </ul>
-    <button on-click="{{ ACTIONS.SHOW_PREVIOUS }}">Back</button>
+    <button on-click="@this.fire( ACTIONS.SHOW_PREVIOUS )">Back</button>
 </div>

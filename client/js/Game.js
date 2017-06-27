@@ -420,6 +420,7 @@ function updateTargetLock() {
                     if (target_changed) {
                         // Set new target
                         player.setTargetLock(playerMesh.player_id);
+                        console.log(target);
                         ZOR.UI.engine.set('target', target);
                         pointedPlayer.lastSize = currentSize;
                         clearTimeout(ZOR.UI.target_clear_timeout_id);
