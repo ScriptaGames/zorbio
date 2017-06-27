@@ -15,7 +15,7 @@
   },
   "author": "Scripta Games, Inc.",
   "dependencies": {
-    "basic-auth": "1.0.4",
+    "basic-auth": "1.1.0",
     "bufferutil": "1.2.1",
     "console-stamp": "0.2.2",
     "cookie": "0.3.1",
