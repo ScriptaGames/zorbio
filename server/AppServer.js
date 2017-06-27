@@ -104,9 +104,9 @@ var AppServer = function (id, app, server_label, port) {
         }
     };
 
-    self.addClient = function appAddClient(ws) {
-        var headers = JSON.stringify(ws.upgradeReq.headers);
-        var NB_SRVID = self.parseNbSrvIdCookie(ws.upgradeReq.headers.cookie);
+    self.addClient = function appAddClient(ws, req) {
+        var headers = JSON.stringify(req.headers);
+        var NB_SRVID = self.parseNbSrvIdCookie(req.headers.cookie);
         var socket_uuid = uuid.v4();
         self.clients[socket_uuid] = ws;
 

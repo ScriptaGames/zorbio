@@ -54,10 +54,10 @@ var AppProxy = function (wss, app, server_label, port) {
         res.end();
     });
 
-    self.wss.on('connection', function wssConnection(ws) {
+    self.wss.on('connection', function wssConnection(ws, req) {
         for (var i = 0; i < self.gameInstances.length; i++) {
             if (!self.gameInstances[i].isFull()) {
-                self.gameInstances[i].addClient(ws);
+                self.gameInstances[i].addClient(ws, req);
                 break;
             }
 
@@ -68,7 +68,7 @@ var AppProxy = function (wss, app, server_label, port) {
                 console.warn('All game instances full!');
 
                 var low_pop_index = self.findLowestPopInstanceIndex();
-                self.gameInstances[low_pop_index].addClient(ws);
+                self.gameInstances[low_pop_index].addClient(ws, req);
             }
         }
     });
