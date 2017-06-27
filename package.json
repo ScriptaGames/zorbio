@@ -33,7 +33,7 @@
     "utf-8-validate": "3.0.2",
     "valid-url": "1.0.9",
     "ws": "3.0.0",
-    "xss-filters": "1.2.6"
+    "xss-filters": "1.2.7"
   },
   "devDependencies": {
     "autoprefixer": "7.1.1",
