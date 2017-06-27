@@ -24,7 +24,7 @@
     "lodash": "4.17.4",
     "node-gameloop": "0.1.4",
     "node-uuid": "1.4.8",
-    "performance-now": "0.2.0",
+    "performance-now": "2.1.0",
     "profanity-censor": "1.0.4",
     "raven": "0.12.1",
     "request": "2.73.0",
