@@ -43,7 +43,7 @@
     "html-inline": "1.2.0",
     "html-minifier": "3.5.2",
     "jasmine": "2.6.0",
-    "jasmine-core": "2.3.4",
+    "jasmine-core": "2.6.4",
     "karma": "1.1.1",
     "karma-chrome-launcher": "1.0.1",
     "karma-firefox-launcher": "1.0.0",
