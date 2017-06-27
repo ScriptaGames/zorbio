@@ -938,11 +938,11 @@ var AppServer = function (id, app, server_label, port) {
         self.serverMsg = msg;
     };
 
+    self.botController = new BotController(self.model);
+
     // Start game loops
     gameloop.setGameLoop(self.serverTickFast, config.TICK_FAST_INTERVAL);
     gameloop.setGameLoop(self.serverTickSlow, config.TICK_SLOW_INTERVAL);
-
-    self.botController = new BotController(self.model);
 
     // Spawn Bots
     for (var i = 0; i < config.MAX_BOTS; i++) {
