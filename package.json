@@ -7,6 +7,7 @@
   "scripts": {
     "test": "exit 0",
     "start": "./node_modules/.bin/supervisor --watch server,common,package.json server/server.js",
+    "debug": "node-debug --web-port 8088 server/server.js",
     "start-prod": "node server/server.js dist",
     "css": "./node_modules/.bin/lessc client/css/main.less client/css/main.css && node_modules/postcss-cli/bin/postcss --use autoprefixer -r client/css/main.css",
     "build": "bash build.sh",
@@ -50,6 +51,7 @@
     "karma-jasmine": "1.1.0",
     "karma-super-dots-reporter": "0.1.0",
     "less": "2.7.2",
+    "node-inspector": "^1.1.1",
     "postcss-cli": "4.1.0",
     "supervisor": "0.12.0",
     "uglify-js": "3.0.20"
