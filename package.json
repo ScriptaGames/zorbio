@@ -51,7 +51,7 @@
     "karma-jasmine": "1.1.0",
     "karma-super-dots-reporter": "0.1.0",
     "less": "2.7.2",
-    "node-inspector": "^1.1.1",
+    "node-inspector": "1.1.1",
     "postcss-cli": "4.1.0",
     "supervisor": "0.12.0",
     "uglify-js": "3.0.20"
