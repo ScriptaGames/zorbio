@@ -30,7 +30,7 @@
     "request": "2.81.0",
     "schemapack": "1.4.2",
     "three": "0.86.0",
-    "utf-8-validate": "1.2.1",
+    "utf-8-validate": "3.0.2",
     "valid-url": "1.0.9",
     "ws": "1.1.1",
     "xss-filters": "1.2.6"
