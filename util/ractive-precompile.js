@@ -12,7 +12,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const Ractive = require('../client/bower_components/ractive/ractive');
+const Ractive = require('ractive');
 
 const TEMPLATE_DIR = path.resolve(__dirname, '../client/templates/');
 
