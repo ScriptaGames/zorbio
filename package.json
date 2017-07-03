@@ -11,7 +11,9 @@
     "start-prod": "node server/server.js dist",
     "css": "./node_modules/.bin/lessc client/css/main.less client/css/main.css && node_modules/postcss-cli/bin/postcss --use autoprefixer -r client/css/main.css",
     "build": "bash build.sh",
-    "build-upload": "bash build.sh --upload"
+    "build-upload": "bash build.sh --upload",
+    "uglify-theirs": "uglifyjs -o client/js/third.min.js",
+    "uglify-ours": "uglifyjs -o client/js/first.min.js --wrap ZOR -m -c --mangle-props mangle-regex=\"/^z_|^ZOR/\""
   },
   "author": "Scripta Games, Inc.",
   "dependencies": {

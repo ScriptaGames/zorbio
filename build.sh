@@ -17,25 +17,22 @@ SCRIPT_DIR=$( dirname $(realpath --relative-base=../ "$0") )
 ###############################################
 # Point the common/environment.js symlink to environment_prod.js
 # Do this first, so inlined index.html get's prod config
-cd common/
-ln -f -s ./environment_prod.js ./environment.js
-cd ../
+ln -f -s environment_prod.js common/environment.js
 
-# Minify Javascript
-cd client/
+# Compile ractive templates
 
 echo "Compiling Ractive templates"
-node ../util/ractive-precompile.js
-cp index.html index.jsontemplate.html
+node util/ractive-precompile.js
+cp client/index.html client/index.jsontemplate.html
 # replace '.html' with '.json' in ractive template script tags
-sed -i -e '/\(\(templates\/.*\)\.html\)"/s//\2.json"/' index.jsontemplate.html
+sed -i -e '/\(\(templates\/.*\)\.html\)"/s//\2.json"/' client/index.jsontemplate.html
 # load only ractive's runtime (parser/compiler no longer needed)
-sed -i -e 's/\/ractive\.js/\/ractive.runtime.js/' index.jsontemplate.html
+sed -i -e 's/\/ractive\.js/\/runtime.js/' client/index.jsontemplate.html
+
+# Minify Javascript
 
 echo 'Minifing Javascript'
-python ../util/minify.py index.jsontemplate.html > index_min.html
-cd ../
-
+python util/minify.py client/index.jsontemplate.html > client/index_min.html
 
 echo "Inlining and minify html"
 mkdir -p dist > /dev/null
