@@ -30,7 +30,17 @@ ZOR.Sounds = (function ZORSounds() {
 
     var sounds = {
         musicVolume: function (vol) {
-            _.forEach(sounds.music, function (music) { music.volume(vol); });
+            _.each(sounds.music, function (music) { music.volume(vol); });
+            localStorage.volume_music = vol;
+            console.log(`set music volume to ${vol}`);
+        },
+        sfxVolume: function (vol) {
+            _.each(
+                sounds.sfx,
+                _.partial( _.invoke, _, 'setVolume', vol )
+            );
+            localStorage.volume_sfx = vol;
+            console.log(`set sfx volume to ${vol}`);
         },
         playMusic: function (name) {
             sounds.stopMusic();

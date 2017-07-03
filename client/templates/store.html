@@ -6,7 +6,7 @@
             <img src="{{ skins[i].meta.preview }}" alt="thumbnail image for {{ skins[i].meta.friendly_name }}">
             <button
                 class="button-use-skin {{ selected_skin == skins[i].meta.name ? 'selected' : '' }}"
-                on-click="@this.fire( ACTIONS.SET_SKIN )"
+                on-click="@this.fire( ACTIONS.SET_SKIN, skins[i].meta.name )"
                 value="{{ skins[i].meta.name }}">Use!</button>
         </li>
         {{ /each }}

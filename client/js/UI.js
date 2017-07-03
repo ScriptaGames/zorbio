@@ -365,20 +365,15 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.VOLUME_MUSIC, function ZORVolumeMusic() {
             var vol = this.get('volume.music');
             ZOR.Sounds.musicVolume(vol);
-            localStorage.volume_music = vol;
         });
 
         on( ACTIONS.VOLUME_SFX, function ZORVolumeSfx() {
             var vol = this.get('volume.sfx');
-            _.each(
-                ZOR.Sounds.sfx,
-                _.partial( _.invoke, _, 'setVolume', vol )
-            );
-            localStorage.volume_sfx = vol;
+            ZOR.Sounds.sfxVolume(vol);
         });
 
         on( ACTIONS.SET_STEERING, function ZORSetSteering(context, e) {
-            var value = e.original.target.value;
+            var value = e.target.value;
             if (value === 'follow') {
                 config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
                 localStorage.steering = 'follow';
@@ -422,16 +417,16 @@ ZOR.UI = function ZORUI() {
             state( uidata.prev_state );
         });
 
-        on( ACTIONS.SET_SKIN, function ZORSetSkin(context, e) {
-            engine.set('selected_skin', e.node.value);
-            localStorage.setItem('skin', e.node.value);
+        on( ACTIONS.SET_SKIN, function ZORSetSkin(context, skin) {
+            engine.set('selected_skin', skin);
+            localStorage.setItem('skin', skin);
 
             // send event to google analytics
             ga('send', {
                 hitType: 'event',
                 eventCategory: 'button',
                 eventAction: 'use_skin_button',
-                eventLabel: e.node.value,
+                eventLabel: skin,
             });
             startGame(ZOR.PlayerTypes.PLAYER);
         });
@@ -456,11 +451,11 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.TOGGLE_Y_AXIS, axisToggler('y'));
         on( ACTIONS.TOGGLE_X_AXIS, axisToggler('x'));
 
-        function axisToggler(context, axis) {
-            return function ZORToggleYAxis(e) {
+        function axisToggler(axis) {
+            return function ZORToggleYAxis(context, e) {
                 var lsKey = 'flip_'+axis.toLowerCase();
                 var confKey = axis.toUpperCase()+'_AXIS_MULT';
-                if ( e.node.checked ) {
+                if (e.target.checked) {
                     config[confKey] = -1;
                     uidata[lsKey] = true;
                 }
@@ -488,7 +483,7 @@ ZOR.UI = function ZORUI() {
         });
 
         on( ACTIONS.PLAYER_LOGIN_KEYPRESS, function ZORPlayerLoginKeypressHandler(context, e) {
-            var key = e.original.which || e.original.keyCode;
+            var key = e.which || e.keyCode;
             var KEY_ENTER = 13;
 
             if (key === KEY_ENTER) {

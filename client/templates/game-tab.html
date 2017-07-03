@@ -1,7 +1,7 @@
 <div fade-in-out class="greybox">
-    <input id="input-name" on-keypress="@this.fire( ACTIONS.PLAYER_LOGIN_KEYPRESS )" type="text" placeholder="Player name" value="{{ player_name }}" autofocus />
+    <input id="input-name" on-keypress="@this.fire( ACTIONS.PLAYER_LOGIN_KEYPRESS, @event )" type="text" placeholder="Player name" value="{{ player_name }}" autofocus />
     {{ #if REQUIRE_ALPHA_KEY }}
-    <input id="input-alphakey" on-keypress="@this.fire( ACTIONS.PLAYER_LOGIN_KEYPRESS )" type="text" placeholder="Alpha key" value="{{ alpha_key }}"/>
+    <input id="input-alphakey" on-keypress="@this.fire( ACTIONS.PLAYER_LOGIN_KEYPRESS, @event )" type="text" placeholder="Alpha key" value="{{ alpha_key }}"/>
     {{ /if }}
     {{ #if login_error_msg }}
     <b class="error-text">{{ login_error_msg }}</b>

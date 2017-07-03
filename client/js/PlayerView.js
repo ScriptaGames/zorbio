@@ -70,8 +70,6 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 };
 
 ZOR.PlayerView.prototype.initTrails = function ZORPlayerViewInitTrails() {
-    var self = this;
-
     switch (this.skin.trail.type) {
         case 'line':
             this.initLineTrails();
@@ -82,14 +80,14 @@ ZOR.PlayerView.prototype.initTrails = function ZORPlayerViewInitTrails() {
     }
 
     // Add the config handler
-    ZOR.UI.on(ZOR.UI.ACTIONS.TOGGLE_OWN_TRAIL, function (e) {
-        if (self.is_current_player) {
-            if (e.node.checked) {
-                self.hideTrails();
+    ZOR.UI.on(ZOR.UI.ACTIONS.TOGGLE_OWN_TRAIL, (context, e) => {
+        if (this.is_current_player) {
+            if (e.target.checked) {
+                this.hideTrails();
                 ZOR.UI.setAndSave('hide_own_trail', true);
             }
             else {
-                self.showTrails();
+                this.showTrails();
                 ZOR.UI.setAndSave('hide_own_trail', false);
             }
         }
