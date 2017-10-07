@@ -1,0 +1,41 @@
+{
+    "extends": ["eslint:recommended", "google"],
+    "rules": {
+        "no-var": "off",
+        "no-multi-spaces": "off",
+        "no-undef": "off",
+        "max-len": [2, {
+            "code": 180,
+            "ignoreUrls": true
+        }],
+        "space-before-function-paren": "off",
+        "quotes": "off",
+        "no-console": "off",
+        "camelcase": "off",
+        "semi": "off",
+        "valid-jsdoc": "off",
+        "padded-blocks": "off",
+        "brace-style": "off",
+        "space-before-blocks": "off",
+        "prefer-rest-params": "off",
+        "keyword-spacing": "off",
+        "require-jsdoc": "off",
+        "spaced-comment": "off",
+        "new-cap": "off",
+        "block-spacing": "off",
+        "key-spacing": "off",
+        "comma-dangle": "off",
+        "no-multiple-empty-lines": "off",
+        "object-curly-spacing": "off",
+        "computed-property-spacing": "off",
+        "no-unused-vars": "off",
+        "no-redeclare": "off",
+        "curly": "off",
+        "comma-spacing": "off",
+        "quote-props": "off",
+        "one-var": "off",
+        "no-throw-literal": "off",
+        "no-irregular-whitespace": "off",
+        "array-bracket-spacing": "off"
+    }
+}

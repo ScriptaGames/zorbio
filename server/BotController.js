@@ -60,7 +60,7 @@ var BotController = function (model) {
      */
     self.getNextSpawnScale = function botGetNextSpawnScale() {
         // just in case
-        var scale = (this.currentSpawnCycle == 0) ? 1 : this.currentSpawnCycle;
+        var scale = (this.currentSpawnCycle === 0) ? 1 : this.currentSpawnCycle;
 
         // https://www.desmos.com/calculator/fmmedr9kzi
         return (30 / (scale - 0.75)) + 3;

@@ -12,7 +12,7 @@ Validators.ErrorCodes = {
     PLAYER_CAPTURE_TO_FAR: 3,
     NO_CHANGE: 4,
     SPEED_TO_FAST: 5,
-    PLAYER_SCALE_TO_BIG: 6
+    PLAYER_SCALE_TO_BIG: 6,
 };
 
 Validators.v3 = new THREE.Vector3();
@@ -23,7 +23,7 @@ Validators.is_profane = function (str) {
 
 Validators.movement = function () {
 
-    const MS_PER_FRAME = 1/60 * 1000;
+    var MS_PER_FRAME = 1/60 * 1000;
     var recentSpeeds = [];
     var currentScale = 1;
     var currentAvgSpeed = 0;

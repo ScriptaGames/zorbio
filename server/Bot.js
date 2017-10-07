@@ -93,7 +93,7 @@ var Bot = function (scale, model) {
             sphere.position.add(targetPos);
 
             sphere.pushRecentPosition({position: sphere.position, radius: sphere.scale, time: Date.now()});
-        }
+        },
     };
 
     self.setChaseTarget = function botChaseTarget(actor_id) {

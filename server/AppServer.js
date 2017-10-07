@@ -600,7 +600,9 @@ var AppServer = function (id, app, server_label, port) {
 
                 // See if these players are close enough for capture checking
                 distance = p1.sphere.position.distanceTo(p2.sphere.position);
-                if (distance > p1.getCaptureRange() && distance > p2.getCaptureRange()) continue;  // players to far apart for capture checking
+
+                // players to far apart for capture checking
+                if (distance > p1.getCaptureRange() && distance > p2.getCaptureRange()) continue;
 
                 // Check if player capture should happen between these two players
                 var result = self.checkPlayerCapture(p1, p2);
@@ -821,7 +823,7 @@ var AppServer = function (id, app, server_label, port) {
             var score = player.getScore();
             var leader = {
                 player_id: id,
-                score: score
+                score: score,
             };
             UTIL.sortedObjectPush(self.model.leaders, leader, 'score');
         });
@@ -838,7 +840,7 @@ var AppServer = function (id, app, server_label, port) {
             fr: self.model.food_respawn_ready_queue,
             fc: self.model.food_captured_queue,
             sm: self.serverMsg,
-            leaders: self.model.leaders
+            leaders: self.model.leaders,
         };
 
         var tickSlowMessage = {0: Schemas.ops.TICK_SLOW, tick_data: serverTickData};
@@ -867,7 +869,10 @@ var AppServer = function (id, app, server_label, port) {
         // Save game status to remote data store
         // self.backend.saveGameInstanceStatus(self.uuid, self.status);
 
-        self.log('Tick: ' + tick_time.toFixed(3) + ', Clients: ' + self.status.clients + ', Players: ' + self.status.real_player_count + ', socket_uuid_map: ' + self.status.socket_uuid_map);
+        self.log('Tick: ' + tick_time.toFixed(3) +
+            ', Clients: ' + self.status.clients +
+            ', Players: ' + self.status.real_player_count +
+            ', socket_uuid_map: ' + self.status.socket_uuid_map);
     }
     self.logServerStatusNth = UTIL.nth(logServerStatus, Math.floor(config.STATUS_LOG_DELAY / config.TICK_FAST_INTERVAL));
 
