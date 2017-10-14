@@ -2,7 +2,7 @@
  * Thew View part of Food MVC
  * @constructor
  */
-var FoodView = function ZORFoodView() {
+let FoodView = function ZORFoodView() {
 
     this.initialized = false;
 
@@ -15,24 +15,24 @@ var FoodView = function ZORFoodView() {
         this.geometry.copy( new THREE.PlaneBufferGeometry( 2, 2 ) );
         // this.geometry.copy( new THREE.CircleBufferGeometry( 1, 6 ) );
 
-        var foodCrayon = UTIL.getFoodCrayon( config.FOOD_COLORING_TYPE );
+        let foodCrayon = UTIL.getFoodCrayon( config.FOOD_COLORING_TYPE );
 
-        var translate = this.translate;
-        var colors = this.colors;
-        var respawning = this.respawning;
+        let translate = this.translate;
+        let colors = this.colors;
+        let respawning = this.respawning;
 
         // copy food translate and food color values from the food array
         // into the typed arrays for the particle system
 
-        var X, Y, Z, R, G, B;
-        var offset = 0;
-        for (var i = 0, l = foodCount; i < l; i++) {
+        let X, Y, Z, R, G, B;
+        let offset = 0;
+        for (let i = 0, l = foodCount; i < l; i++) {
 
             X = food[ offset     ];
             Y = food[ offset + 1 ];
             Z = food[ offset + 2 ];
 
-            var color = foodCrayon( X, Y, Z );
+            let color = foodCrayon( X, Y, Z );
             R = color.r;
             G = color.g;
             B = color.b;
@@ -48,7 +48,7 @@ var FoodView = function ZORFoodView() {
             colors[ offset + 2 ] = B;
 
             // Add this food object to the Octree
-            var foodObj = {x: X, y: Y, z: Z, radius: 1, fi: i};
+            let foodObj = {x: X, y: Y, z: Z, radius: 1, fi: i};
             octree.add( foodObj );
 
             offset += 3;
@@ -87,11 +87,11 @@ var FoodView = function ZORFoodView() {
     this.update = function ZORFoodViewUpdate() {
         // Decrement each food value
 
-        var c = this.respawning; // c = collection
-        var i = c.length;        // i = index
-        var v;                   // v = value
-        var duration = config.FOOD_RESPAWN_ANIM_DURATION;
-        var lsGet = ZOR.LagScale.get;
+        let c = this.respawning; // c = collection
+        let i = c.length;        // i = index
+        let v;                   // v = value
+        let duration = config.FOOD_RESPAWN_ANIM_DURATION;
+        let lsGet = ZOR.LagScale.get;
 
         while( i-- ) {
             v = c[i];

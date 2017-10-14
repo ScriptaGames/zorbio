@@ -1,14 +1,21 @@
-var NODEJS = typeof module !== 'undefined' && module.exports;
+const NODEJS_DRAIN = typeof module !== 'undefined' && module.exports;
+
+let THREE;
+let _;
+let UTIL;
+let config;
+
 
 // if we're running in nodejs, import THREE.  for browser, assume it's
 // already there.
-if (NODEJS) var THREE = require('three');
-if (NODEJS) var _ = require('lodash');
-if (NODEJS) var UTIL = require('./util.js');
-if (NODEJS) var config = require('./config.js');
-if (NODEJS) var ZOR = require('../common/zorbio.js');
+if (NODEJS_DRAIN) {
+    THREE  = require('three');
+    _      = require('lodash');
+    UTIL   = require('./util.js');
+    config = require('./config.js');
+    ZOR    = require('../common/zorbio.js');
+}
 
-var ZOR = ZOR || {};
 ZOR.Drain = {};
 
 /**
@@ -18,20 +25,20 @@ ZOR.Drain = {};
  * @return {Object} an array of all player pairs within drain distance
  */
 ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
-    var players_array = players;
-    var drain = {};
-    var p1;
-    var p2;
-    var p1_scale;
-    var p2_scale;
-    var distance;
+    let players_array = players;
+    let drain = {};
+    let p1;
+    let p2;
+    let p1_scale;
+    let p2_scale;
+    let distance;
 
-    var l = players_array.length;
-    var j = 0;
+    let l = players_array.length;
+    let j = 0;
 
     // init empty arrays for each player, they will hold the id's of players
     // they are draining
-    var i = l;
+    let i = l;
     while ( i-- ) drain[ players_array[i].id ] = [];
 
     i = l;
@@ -86,9 +93,9 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
 ZOR.Drain.amount = function ZORDrainAmount( distance ) {
     // adjust n, o. and p to balance the drain amount.
     // see https://www.desmos.com/calculator/wmiuaymrtu
-    var n = 0.007;
-    var o = 4.0;
-    var p = 0.06;
+    let n = 0.007;
+    let o = 4.0;
+    let p = 0.06;
     return p / ( (n * (distance * distance)) + o );
 };
 
@@ -106,4 +113,4 @@ ZOR.Drain.bonusAmount = function ZORDrainBonusAmount( drainer_size, drainee_size
 };
 
 // if we're in nodejs, export the root ZOR object
-if (NODEJS) module.exports = ZOR.Drain;
+if (NODEJS_DRAIN) module.exports = ZOR.Drain;

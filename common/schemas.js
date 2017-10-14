@@ -1,12 +1,12 @@
-var NODEJS = typeof module !== 'undefined' && module.exports;
+const NODEJS_SCHEMAS = typeof module !== 'undefined' && module.exports;
 
-if (NODEJS) global.schemapack = require('schemapack');
+if (NODEJS_SCHEMAS) global.schemapack = require('schemapack');
 
-var ZOR = ZOR || {};
+
 
 ZOR.Schemas = function ZORSchemas() {
-    var vector3 = {x: "float32", y: "float32", z: "float32"};
-    var actor = {
+    let vector3 = {x: "float32", y: "float32", z: "float32"};
+    let actor = {
         id: "varuint",
         position: vector3,
         velocity: vector3,
@@ -19,7 +19,7 @@ ZOR.Schemas = function ZORSchemas() {
         playerId: "varuint"
     };
 
-    var tiny_actor = {
+    let tiny_actor = {
         id: "varuint",
         position: vector3,
         velocity: vector3,
@@ -28,14 +28,14 @@ ZOR.Schemas = function ZORSchemas() {
         speed_boosting: "boolean",
     };
 
-    var player = {
+    let player = {
         id: "varuint",
         name: "string",
         type: "string",
         sphere: actor,
     };
 
-    var model = {
+    let model = {
         actors: [actor],
         players: [player],
         worldSize: {x: "uint16", y: "uint16", z: "uint16"},
@@ -47,51 +47,51 @@ ZOR.Schemas = function ZORSchemas() {
         food_respawning_indexes: ["varuint"]
     };
 
-    var leader = {
+    let leader = {
         player_id: "varuint",
         score: "varuint",
     };
 
-    var leaderboard_leader = {
+    let leaderboard_leader = {
         name: "string",
         score: "varuint",
     };
 
-    var tick_slow_data =  {
+    let tick_slow_data =  {
         fr: ["varuint"],
         fc: ["varuint"],
         sm: "string",
         leaders: [leader],
     };
 
-    var recent_position = {
+    let recent_position = {
         position: vector3,
         radius: "float32",
         time: "varuint",
     };
 
-    var food_capture_entry = {
+    let food_capture_entry = {
         fi: "varuint",
         radius: "float32",
     };
 
-    var op_init_game = {
+    let op_init_game = {
         0: "uint8",
         NB_SRVID: "string",
         model: model,
     };
 
-    var op_welcome = {
+    let op_welcome = {
         0: "uint8",
         player: player,
     };
 
-    var op_actor_updates = {
+    let op_actor_updates = {
         0: "uint8",
         actors: [tiny_actor],
     };
 
-    var op_player_update = {
+    let op_player_update = {
         0: "uint8",
         player_id: "varuint",
         sphere_id: "varuint",
@@ -106,7 +106,7 @@ ZOR.Schemas = function ZORSchemas() {
         food_capture_queue: [food_capture_entry],
     };
 
-    var op_you_died = {
+    let op_you_died = {
         0: "uint8",
         attacking_player_id: "varuint",
         food_captures: "varuint",
@@ -117,23 +117,23 @@ ZOR.Schemas = function ZORSchemas() {
         size: "varuint",
     };
 
-    var op_tick_slow = {
+    let op_tick_slow = {
         0: "uint8",
         tick_data: tick_slow_data,
     };
 
-    var op_leaderboards_request = {
+    let op_leaderboards_request = {
         0: "uint8",
     };
 
-    var op_leaderboards_update = {
+    let op_leaderboards_update = {
         0: "uint8",
         leaders_1_day: [leaderboard_leader],
         leaders_7_day: [leaderboard_leader],
         leaders_30_day: [leaderboard_leader],
     };
 
-    var ops = {
+    let ops = {
         INIT_GAME: 1,
         ACTOR_UPDATES: 2,
         PLAYER_UPDATE: 3,
@@ -158,4 +158,4 @@ ZOR.Schemas = function ZORSchemas() {
     }
 }();
 
-if (NODEJS) module.exports = ZOR.Schemas;
+if (NODEJS_SCHEMAS) module.exports = ZOR.Schemas;

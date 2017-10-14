@@ -3,25 +3,25 @@
  *  handling chat display etc.
  */
 
-var ZOR = ZOR || {};
+
 
 ZOR.UI = function ZORUI() {
 
-    var engine; // the UI engine, currently Ractive
-    var initialized = false;
+    let engine; // the UI engine, currently Ractive
+    let initialized = false;
 
     /**
      * A list of the browser features that are required to run Zorbio.  The
      * match the names provided by Modernizr.
      */
 
-    var REQUIRED_FEATURES = [ 'json', 'websockets', 'webgl', 'flexbox' ];
+    let REQUIRED_FEATURES = [ 'json', 'websockets', 'webgl', 'flexbox' ];
 
     /**
      * An "enum" storing unique values for UI states.
      */
 
-    var STATES = {
+    let STATES = {
         INITIAL             : 'menu-game-screen',
         MENU_SCREEN         : 'menu-game-screen',
         MENU_GAME_SCREEN    : 'menu-game-screen',
@@ -42,7 +42,7 @@ ZOR.UI = function ZORUI() {
      * An "enum" storing unique values for UI state transitions.
      */
 
-    var ACTIONS = {
+    let ACTIONS = {
         PLAYER_LOGIN_KEYPRESS    : 'player-login-keypress',
         PLAYER_LOGIN             : 'player-login',
         PLAYER_RESPAWN           : 'player-respawn',
@@ -77,7 +77,7 @@ ZOR.UI = function ZORUI() {
      * The data to pass into templates.
      */
 
-    var uidata = {
+    let uidata = {
         state            : '',
         prev_state       : STATES.INITIAL,
         STATES           : STATES,
@@ -120,7 +120,7 @@ ZOR.UI = function ZORUI() {
     };
 
     // the public functions exposes by this module (may be modified during execution)
-    var api = {
+    let api = {
         STATES      : STATES,
         ACTIONS     : ACTIONS,
         data        : uidata,
@@ -132,10 +132,10 @@ ZOR.UI = function ZORUI() {
     };
 
     // array of registered on-init handlers
-    var init_handlers = [];
+    let init_handlers = [];
 
     function advanceMarquee() {
-        var i = engine.get('marquee_index');
+        let i = engine.get('marquee_index');
         i += 1;
         i %= uidata.marquee_messages.length;
         engine.set('marquee_index', i);
@@ -161,8 +161,8 @@ ZOR.UI = function ZORUI() {
      */
 
     function make_partial( el ) {
-        var name = el.id.replace('-template', '');
-        var template;
+        let name = el.id.replace('-template', '');
+        let template;
         try {
             template = JSON.parse(el.textContent);
         } catch (e) {
@@ -239,7 +239,7 @@ ZOR.UI = function ZORUI() {
 
     function validate_browser_features() {
 
-        var missing_feature_names = _.chain(missing_browser_features())
+        let missing_feature_names = _.chain(missing_browser_features())
             .keys()
             .union(config.BROWSER_FORCE_DISABLED_FEATURES)
             .intersection(REQUIRED_FEATURES)
@@ -275,9 +275,9 @@ ZOR.UI = function ZORUI() {
 
     function init() {
 
-        var partials = _.map( document.querySelectorAll('script[type="text/ractive"]'), make_partial ); // register all ractive templates as partials
+        let partials = _.map( document.querySelectorAll('script[type="text/ractive"]'), make_partial ); // register all ractive templates as partials
 
-        var mainTemplate;
+        let mainTemplate;
         try {
             // if the Ractive template was precompiled into JSON, this will
             // succeed.  If it was not precompiled (ie, dev mode), this will
@@ -310,9 +310,9 @@ ZOR.UI = function ZORUI() {
         engine.el.classList.add('active');
 
         // Strip any hidden skins that don't match unlock url
-        var i = uidata.skins.length;
+        let i = uidata.skins.length;
         while (i--) {
-            var skin = uidata.skins[i];
+            let skin = uidata.skins[i];
             if (skin.meta.unlock_url && skin.meta.unlock_url != window.location.search) {
                 uidata.skins.splice(i, 1);
             }
@@ -363,17 +363,17 @@ ZOR.UI = function ZORUI() {
         // volume change handlers
 
         on( ACTIONS.VOLUME_MUSIC, function ZORVolumeMusic() {
-            var vol = this.get('volume.music');
+            let vol = this.get('volume.music');
             ZOR.Sounds.musicVolume(vol);
         });
 
         on( ACTIONS.VOLUME_SFX, function ZORVolumeSfx() {
-            var vol = this.get('volume.sfx');
+            let vol = this.get('volume.sfx');
             ZOR.Sounds.sfxVolume(vol);
         });
 
         on( ACTIONS.SET_STEERING, function ZORSetSteering(context, e) {
-            var value = e.target.value;
+            let value = e.target.value;
             if (value === 'follow') {
                 config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
                 localStorage.steering = 'follow';
@@ -453,8 +453,8 @@ ZOR.UI = function ZORUI() {
 
         function axisToggler(axis) {
             return function ZORToggleYAxis(context, e) {
-                var lsKey = 'flip_'+axis.toLowerCase();
-                var confKey = axis.toUpperCase()+'_AXIS_MULT';
+                let lsKey = 'flip_'+axis.toLowerCase();
+                let confKey = axis.toUpperCase()+'_AXIS_MULT';
                 if (e.target.checked) {
                     config[confKey] = -1;
                     uidata[lsKey] = true;
@@ -483,8 +483,8 @@ ZOR.UI = function ZORUI() {
         });
 
         on( ACTIONS.PLAYER_LOGIN_KEYPRESS, function ZORPlayerLoginKeypressHandler(context, e) {
-            var key = e.which || e.keyCode;
-            var KEY_ENTER = 13;
+            let key = e.which || e.keyCode;
+            let KEY_ENTER = 13;
 
             if (key === KEY_ENTER) {
                 if (startGame) {
@@ -532,8 +532,8 @@ ZOR.UI = function ZORUI() {
 
         // put important message(s) first
 
-        var inIframe = window.frameElement && window.frameElement.nodeName == "IFRAME";
-        var indirectVisitor = inIframe || document.referrer !== "";
+        let inIframe = window.frameElement && window.frameElement.nodeName == "IFRAME";
+        let indirectVisitor = inIframe || document.referrer !== "";
         if (indirectVisitor) {
             uidata.marquee_messages.unshift('Bookmark us at <a href="http://zor.bio" target="_top">http://<strong>zor.bio</strong></a>!');
         }
@@ -553,10 +553,10 @@ ZOR.UI = function ZORUI() {
      * Fetch Ractive templates and GLSL shaders, then init UI.
      */
     function fetch_then_init() {
-        var needs_fetching = document.querySelector('script[type="text/ractive"]').innerHTML === "";
+        let needs_fetching = document.querySelector('script[type="text/ractive"]').innerHTML === "";
 
         if (needs_fetching) {
-            var scripts = document.querySelectorAll('script[type="text/ractive"], script[type^=x-shader]');
+            let scripts = document.querySelectorAll('script[type="text/ractive"], script[type^=x-shader]');
             Promise.all( _.map(scripts, fetch_inject) ).then( init );
         }
         else {

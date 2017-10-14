@@ -1,11 +1,11 @@
-var ZOR = ZOR || {};
+
 
 ZOR.Sounds = (function ZORSounds() {
 
     // A simple helper function to avoid repetition when creating Howl objects
     // for our sfx
     function howlSfx(path, custom) {
-        var conf = _.assign({
+        let conf = _.assign({
             src: ['../sfx/' + path],
             autoplay: false,
             loop: false,
@@ -28,7 +28,7 @@ ZOR.Sounds = (function ZORSounds() {
         }
     }
 
-    var sounds = {
+    let sounds = {
         musicVolume: function (vol) {
             _.each(sounds.music, function (music) { music.volume(vol); });
             localStorage.volume_music = vol;
@@ -91,9 +91,9 @@ ZOR.Sounds = (function ZORSounds() {
             player_capture: howlSfx('veus/Effects/LowPitchDrop.ogg.mp3'),
         },
         playFromPos: function ZORSoundsPlayFromPos(sound, earObject, soundPos) {
-            var dist = earObject.position.distanceTo(soundPos);
-            var pos = earObject.worldToLocal(soundPos).normalize().multiplyScalar(dist/config.VOLUME_FALLOFF_RATE);
-            var id = sound.play();
+            let dist = earObject.position.distanceTo(soundPos);
+            let pos = earObject.worldToLocal(soundPos).normalize().multiplyScalar(dist/config.VOLUME_FALLOFF_RATE);
+            let id = sound.play();
             sound.pos(pos.x, pos.y, pos.z, id);
         },
     };
@@ -106,8 +106,8 @@ ZOR.Sounds = (function ZORSounds() {
         // The Howler sfx seem to be delayed and sound glitchy the first time
         // they're played.  This function attempts to fix that by playing them
         // once, at zero volume.
-        var sound = sounds.sfx.food_capture;
-        var id = sound.play();
+        let sound = sounds.sfx.food_capture;
+        let id = sound.play();
         sound.mute(true, id);
         sound.volume(0, id);
         sound.pos(1,1,1,id);

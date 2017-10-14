@@ -14,7 +14,7 @@
     "build-upload": "bash build.sh --upload",
     "uglify-theirs": "uglifyjs -o client/js/third.min.js",
     "uglify-ours": "uglifyjs -o client/js/first.min.js --wrap ZOR -m -c --mangle-props mangle-regex=\"/^z_|^ZOR/\"",
-    "eslint": "./node_modules/.bin/eslint server client/js common tests/*.js"
+    "eslint": "./node_modules/.bin/eslint server client/js client/skins common tests/*.js"
   },
   "author": "Scripta Games, Inc.",
   "dependencies": {

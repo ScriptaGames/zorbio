@@ -1,4 +1,4 @@
-var ZOR = ZOR || {};
+
 ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 
 //

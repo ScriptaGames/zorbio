@@ -1,6 +1,6 @@
-var ZOR = {};
+let ZOR = {};
 
-var Zorbio = require('../common/zorbio.js');
+let Zorbio = require('../common/zorbio.js');
 
 ZOR.ZORMessageHandler = {};
 
@@ -11,7 +11,7 @@ ZOR.ZORMessageHandler.z_handle_init_game = function ZORhandleInitGame(model) {
 };
 
 ZOR.ZORMessageHandler.z_handle_welcome = function ZORhandleWelcome(msg) {
-    var model = msg.player;
+    let model = msg.player;
 
     global.player = new Zorbio.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
         model.sphere.scale, model.sphere.velocity, model.sphere.skin);

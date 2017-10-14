@@ -1,4 +1,4 @@
-var ZOR = ZOR || {};
+
 
 /**
  * This is the Player Controller that is the C in MVC, it has model that syncs state to the server, and a view
@@ -88,7 +88,7 @@ ZOR.PlayerController.prototype.removeView = function ZORPlayerControllerRemoveVi
 };
 
 ZOR.PlayerController.prototype.getWindDownTime = function ZORPlayerControllerGetWindDownTime() {
-    var time = 0;
+    let time = 0;
 
     if (this.view) {
         time = this.view.getCaptureEmitterLifetime();
@@ -201,9 +201,9 @@ ZOR.PlayerController.prototype.applyVelocity = function ZORPlayerControllerApply
 };
 
 ZOR.PlayerController.prototype.addRecentPosition = function ZORPlayerControllerAddRecentPosition() {
-    var p = {x: this.view.mainSphere.position.x, y: this.view.mainSphere.position.y, z: this.view.mainSphere.position.z};
+    let p = {x: this.view.mainSphere.position.x, y: this.view.mainSphere.position.y, z: this.view.mainSphere.position.z};
 
-    var time = Date.now() - this.model.createdTime;  // milliseconds since the player was created
+    let time = Date.now() - this.model.createdTime;  // milliseconds since the player was created
     this.model.sphere.recentPositions.push({position: p, radius: this.radius(), time: time});
 
     if (this.model.sphere.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {
@@ -216,8 +216,8 @@ ZOR.PlayerController.prototype.resetVelocity = function ZORPlayerControllerReset
 };
 
 ZOR.PlayerController.prototype.moveForward = function ZORPlayerControllerMoveForward(camera) {
-    var v = this.move_forward_v;
-    var mainSphere = this.view.mainSphere;
+    let v = this.move_forward_v;
+    let mainSphere = this.view.mainSphere;
     v.copy( mainSphere.position );
     v.sub( camera.position );
     v.multiplyScalar( -1 );
@@ -227,8 +227,8 @@ ZOR.PlayerController.prototype.moveForward = function ZORPlayerControllerMoveFor
 };
 
 ZOR.PlayerController.prototype.moveBackward = function ZORPlayerControllerMoveBackward(camera) {
-    var v = this.move_backward_v;
-    var mainSphere = this.view.mainSphere;
+    let v = this.move_backward_v;
+    let mainSphere = this.view.mainSphere;
     v.copy( mainSphere.position );
     v.sub( camera.position );
     v.normalize();

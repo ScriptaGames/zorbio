@@ -1,10 +1,10 @@
-var config = require('../common/config.js');
-var _ = require('lodash');
-var alphakeys = require('./alphakeys');
-var UTIL = require('../common/util');
-var profanity = require('./profanity');
+let config = require('../common/config.js');
+let _ = require('lodash');
+let alphakeys = require('./alphakeys');
+let UTIL = require('../common/util');
+let profanity = require('./profanity');
 
-var Validators = {};
+let Validators = {};
 
 Validators.ErrorCodes = {
     PLAYER_NOT_IN_MODEL: 1,
@@ -23,35 +23,35 @@ Validators.is_profane = function (str) {
 
 Validators.movement = function () {
 
-    var MS_PER_FRAME = 1/60 * 1000;
-    var recentSpeeds = [];
-    var currentScale = 1;
-    var currentAvgSpeed = 0;
-    var oldAvgSpeed = 0;
-    var showAvgDiff = true;
-    var maxSpeed = 0;
-    var oldMaxSpeed = 0;
+    let MS_PER_FRAME = 1/60 * 1000;
+    let recentSpeeds = [];
+    let currentScale = 1;
+    let currentAvgSpeed = 0;
+    let oldAvgSpeed = 0;
+    let showAvgDiff = true;
+    let maxSpeed = 0;
+    let oldMaxSpeed = 0;
 
-    var point_a = new THREE.Vector3();
-    var point_b = new THREE.Vector3();
+    let point_a = new THREE.Vector3();
+    let point_b = new THREE.Vector3();
 
     return function (sphere, actor, model) {
         if (!config.ENABLE_VALIDATION) return 0;
 
         // Give the player a grace period while they are loading before validating movement.
-        var zPlayer = model.getPlayerById(actor.playerId);
-        var curTime = Date.now();
-        var timeSinceSpawn = curTime - zPlayer.spawnTime;
+        let zPlayer = model.getPlayerById(actor.playerId);
+        let curTime = Date.now();
+        let timeSinceSpawn = curTime - zPlayer.spawnTime;
         if (timeSinceSpawn < config.LOADING_WAIT_DURATION) {
             return 0;
         }
 
-        var latestPosition = sphere.latestPosition;
+        let latestPosition = sphere.latestPosition;
 
         if (sphere.oldestPosition) {
-            var oldestPosition = sphere.oldestPosition;
-            var time = latestPosition.time - oldestPosition.time;
-            var minTime = ((config.PLAYER_POSITIONS_WINDOW * MS_PER_FRAME) - 100);
+            let oldestPosition = sphere.oldestPosition;
+            let time = latestPosition.time - oldestPosition.time;
+            let minTime = ((config.PLAYER_POSITIONS_WINDOW * MS_PER_FRAME) - 100);
 
             //console.log("time, minTime: ", time, minTime);
             //console.log("recent positions length: ", actor.recentPositions.length);
@@ -64,10 +64,10 @@ Validators.movement = function () {
             point_b.copy(latestPosition.position);
 
             // get distance from point A to point B
-            var vdist = point_a.distanceTo(point_b);
+            let vdist = point_a.distanceTo(point_b);
 
             // find out what current speed should be based on scale
-            var expectedSpeed;
+            let expectedSpeed;
             if (zPlayer.abilities.speed_boost.isActive()) {
                 expectedSpeed = zPlayer.getSpeed();
             }
@@ -75,9 +75,9 @@ Validators.movement = function () {
                 expectedSpeed = config.PLAYER_GET_SPEED(oldestPosition.radius);
             }
 
-            var maxToleratedSpeed = expectedSpeed + config.SPEED_EXTRA_TOLERANCE;
-            var measuredSpeed = vdist / time;
-            var actualSpeed = MS_PER_FRAME * measuredSpeed;
+            let maxToleratedSpeed = expectedSpeed + config.SPEED_EXTRA_TOLERANCE;
+            let measuredSpeed = vdist / time;
+            let actualSpeed = MS_PER_FRAME * measuredSpeed;
 
             // do the actual validation
             if (actualSpeed > maxToleratedSpeed) {
@@ -108,14 +108,14 @@ Validators.movement = function () {
                 }
 
                 if (recentSpeeds.length === 200 && showAvgDiff) {
-                    var sum = 0;
-                    for (var i = 0, l = recentSpeeds.length; i < l; i++) {
+                    let sum = 0;
+                    for (let i = 0, l = recentSpeeds.length; i < l; i++) {
                         sum += recentSpeeds[i];
                     }
                     currentAvgSpeed = sum / recentSpeeds.length;
 
-                    var avgDiff = oldAvgSpeed - currentAvgSpeed;
-                    var maxDiff = oldMaxSpeed - maxSpeed;
+                    let avgDiff = oldAvgSpeed - currentAvgSpeed;
+                    let maxDiff = oldMaxSpeed - maxSpeed;
                     console.log("avgDiff", avgDiff);
                     console.log("maxDiff", maxDiff);
                     console.log('maxSpeed, avgSpeed, speed, scale:', maxSpeed, currentAvgSpeed, actualSpeed, sphere.scale);
@@ -140,16 +140,16 @@ Validators.foodCapture = function (model, fi, sphere, radius) {
     }
 
     // get food position
-    var food_index = fi * 3;
-    var food_x = model.food[food_index];
-    var food_y = model.food[food_index + 1];
-    var food_z = model.food[food_index + 2];
+    let food_index = fi * 3;
+    let food_x = model.food[food_index];
+    let food_y = model.food[food_index + 1];
+    let food_z = model.food[food_index + 2];
 
     // calculate dist and tolerance
     Validators.v3.set(food_x, food_y, food_z);
-    var foodPosition = Validators.v3;
-    var vdist = foodPosition.distanceTo(sphere.position);
-    var tolerance = radius + config.FOOD_CAPTURE_ASSIST + config.FOOD_CAPTURE_EXTRA_TOLERANCE;
+    let foodPosition = Validators.v3;
+    let vdist = foodPosition.distanceTo(sphere.position);
+    let tolerance = radius + config.FOOD_CAPTURE_ASSIST + config.FOOD_CAPTURE_EXTRA_TOLERANCE;
 
     // Make sure the sphere is in range of the food being captured
     if (vdist > tolerance) {
@@ -168,15 +168,15 @@ Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, s
     if (!config.ENABLE_VALIDATION) return 0;
 
     // Make sure target is in model
-    var targetPlayer = model.getPlayerById(targetPlayerId);
+    let targetPlayer = model.getPlayerById(targetPlayerId);
 
     if (!targetPlayer) {
         // target player not in model
         return Validators.ErrorCodes.PLAYER_NOT_IN_MODEL;
     }
 
-    var otherSphere = undefined;
-    var attackingPlayerSphere = model.getPlayerById(attackingPlayerId).sphere;
+    let otherSphere = undefined;
+    let attackingPlayerSphere = model.getPlayerById(attackingPlayerId).sphere;
 
     if (sendingSphere.playerId === attackingPlayerId) {
         otherSphere = targetPlayer.sphere;
@@ -184,17 +184,17 @@ Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, s
         otherSphere = attackingPlayerSphere;
     }
 
-    var captureDist = attackingPlayerSphere.radius() + config.PLAYER_CAPTURE_EXTRA_TOLERANCE;
-    var aPosition = new THREE.Vector3();
-    var bPosition = new THREE.Vector3();
-    var vdist = undefined;
-    var validCapture = false;
+    let captureDist = attackingPlayerSphere.radius() + config.PLAYER_CAPTURE_EXTRA_TOLERANCE;
+    let aPosition = new THREE.Vector3();
+    let bPosition = new THREE.Vector3();
+    let vdist = undefined;
+    let validCapture = false;
 
     // Check distances between sphere positions. iterate from the most recent position to the oldest position
-    for (var i = sendingSphere.recentPositions.length - 1; i >= 0; i--) {
+    for (let i = sendingSphere.recentPositions.length - 1; i >= 0; i--) {
         aPosition.copy(sendingSphere.recentPositions[i].position);
 
-        for (var j = otherSphere.recentPositions.length - 1; j >= 0; j--) {
+        for (let j = otherSphere.recentPositions.length - 1; j >= 0; j--) {
             bPosition.copy(otherSphere.recentPositions[j].position);
 
             vdist = aPosition.distanceTo(bPosition);
@@ -223,15 +223,15 @@ Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, s
 Validators.playerSphereScale = function (sphere) {
     if (!config.ENABLE_VALIDATION) return 0;
 
-    var recentPositions = sphere.recentPositions;
+    let recentPositions = sphere.recentPositions;
 
     // first make sure that we've given the client time to grow and sync with the server
     if (recentPositions.length < config.PLAYER_POSITIONS_WINDOW) {
         return 0;
     }
 
-    var expectedScale = sphere.expectedScale;
-    var actualScale = sphere.scale;
+    let expectedScale = sphere.expectedScale;
+    let actualScale = sphere.scale;
 
     // make sure the expected scale within tolerance
     if (actualScale > (expectedScale + config.PLAYER_SCALE_EXTRA_TOLERANCE)) {

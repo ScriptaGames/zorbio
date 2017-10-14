@@ -1,22 +1,20 @@
-var NODEJS = typeof module !== 'undefined' && module.exports;
-
-var config    = require('../common/config.js');
-var ZorApi    = require('./ZorApi.js');
-var AppServer = require('./AppServer.js');
-var pjson     = require('../package.json');
-var rq        = require('request');
-var cookie    = require('cookie');
+let config    = require('../common/config.js');
+let ZorApi    = require('./ZorApi.js');
+let AppServer = require('./AppServer.js');
+let pjson     = require('../package.json');
+let rq        = require('request');
+let cookie    = require('cookie');
 
 
-var AppProxy = function (wss, app, server_label, port) {
+let AppProxy = function (wss, app, server_label, port) {
     //  Scope
-    var self = this;
+    let self = this;
     self.wss = wss;
     self.app = app;
 
     self.gameInstances = [];
 
-    for (var i = 0; i < config.NUM_GAME_INSTANCES; i++) {
+    for (let i = 0; i < config.NUM_GAME_INSTANCES; i++) {
         self.gameInstances.push(new AppServer(i, self.app, server_label, port));
     }
 
@@ -25,25 +23,25 @@ var AppProxy = function (wss, app, server_label, port) {
 
     // Route to write sticky session cookie for linode nodebalancer at given location
     self.app.get('/nbsrv/:nb/:id', function (req, res) {
-        var balancer = req.params.nb;
-        var node_id = req.params.id;
+        let balancer = req.params.nb;
+        let node_id = req.params.id;
 
         // Set a new cookie with the name
         self.setSrvIdCookie(node_id, res);
 
         // Get the subdomain of the balancer location
-        var balancer_domain = config.BALANCERS[balancer];
+        let balancer_domain = config.BALANCERS[balancer];
 
         // bounce redirect to balancer subdomain to set the cookie there too
         res.statusCode = 302;
-        var bounce_url = 'http://' + balancer_domain + '/nbsrv_bounce/' + node_id;
+        let bounce_url = 'http://' + balancer_domain + '/nbsrv_bounce/' + node_id;
         res.setHeader('Location', bounce_url);
         res.end();
     });
 
     // Route to set the cookie at the nodebalancer subdomain and bounce back to homepage
     self.app.get('/nbsrv_bounce/:id', function (req, res) {
-        var node_id = req.params.id;
+        let node_id = req.params.id;
 
         // Set a new cookie with the name
         self.setSrvIdCookie(node_id, res);
@@ -55,7 +53,7 @@ var AppProxy = function (wss, app, server_label, port) {
     });
 
     self.wss.on('connection', function wssConnection(ws, req) {
-        for (var i = 0; i < self.gameInstances.length; i++) {
+        for (let i = 0; i < self.gameInstances.length; i++) {
             if (!self.gameInstances[i].isFull()) {
                 self.gameInstances[i].addClient(ws, req);
                 break;
@@ -67,7 +65,7 @@ var AppProxy = function (wss, app, server_label, port) {
 
                 console.warn('All game instances full!');
 
-                var low_pop_index = self.findLowestPopInstanceIndex();
+                let low_pop_index = self.findLowestPopInstanceIndex();
                 self.gameInstances[low_pop_index].addClient(ws, req);
             }
         }
@@ -78,10 +76,10 @@ var AppProxy = function (wss, app, server_label, port) {
      * @returns {number}
      */
     self.findLowestPopInstanceIndex = function proxyFindLowestPopInstance() {
-        var lowest_pop_index = 0;
-        var client_count = Infinity;
-        for (var i = 0; i < self.gameInstances.length; i++) {
-            var cur_client_count = self.gameInstances[i].getClientCount();
+        let lowest_pop_index = 0;
+        let client_count = Infinity;
+        for (let i = 0; i < self.gameInstances.length; i++) {
+            let cur_client_count = self.gameInstances[i].getClientCount();
             if (cur_client_count < client_count) {
                 client_count = cur_client_count;
                 lowest_pop_index = i;
@@ -92,24 +90,24 @@ var AppProxy = function (wss, app, server_label, port) {
     };
 
     self.versionCheck = function appVersionCheck() {
-        var options = {
+        let options = {
             url: 'https://raw.githubusercontent.com/ScriptaGames/zorbio-version/master/version.json',
         };
 
         console.log("Checking version...");
 
         rq.get(options, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
+            if (!error && response.statusCode === 200) {
                 try {
-                    var res = JSON.parse(body);
-                    var local_version = pjson.version + '-' + pjson.build;
+                    let res = JSON.parse(body);
+                    let local_version = pjson.version + '-' + pjson.build;
 
                     if (local_version !== res.version) {
                         console.log("version out of date, local  version:", local_version);
                         console.log("version out of date, remote version:", res.version);
 
                         // notify all game instances that the version is out of date
-                        for (var i = 0; i < self.gameInstances.length; i++) {
+                        for (let i = 0; i < self.gameInstances.length; i++) {
                             self.gameInstances[i].setServerMessage("Server restart imminent!");
                         }
                     }
@@ -123,7 +121,7 @@ var AppProxy = function (wss, app, server_label, port) {
             else {
                 console.error('Error response code form getting zorbio-version from github');
             }
-        }).on('error', function(e){
+        }).on('error', function(){
             console.error('Error http request failed to get zorbio-version from github');
         }).end();
     };
@@ -141,4 +139,4 @@ var AppProxy = function (wss, app, server_label, port) {
     }
 };
 
-if (NODEJS) module.exports = AppProxy;
+module.exports = AppProxy;

@@ -1,17 +1,17 @@
 // Configuration values.  Values defined here are available to both the client and
 // the server.
 
-var NODEJS = typeof module !== 'undefined' && module.exports;
+const NODEJS_CONFIG = typeof module !== 'undefined' && module.exports;
 
 
-if (NODEJS) {
+if (NODEJS_CONFIG) {
     global.self = {}; // threejs expects there to be a global named 'self'... for some reason..
     global.THREE = require('three');
     global._ = require('lodash');
     global.ZOR = { Env: require('../common/environment.js') };
 }
 
-var config = {};
+let config = {};
 
 config.DEBUG = false;
 config.AUTO_PLAY = false;
@@ -53,17 +53,17 @@ config.STATUS_LOG_DELAY         = 15000;  // how many milliseconds to wait betwe
 config.ENABLE_RAPID_UPDATES     = true;   // If enabled will send and broadcast player position updates every frame
 config.ENABLE_BACKEND_SERVICE   = true;   // Enable communication with a remote api (currently app42)
 
-if (!NODEJS) {
+if (!NODEJS_CONFIG) {
     // Gets the name of the nearest load balancer
     config.GET_NEAR_BALANCER = function getNearBalancer() {
         // allow local storage to override, in case me make this a user setting in the future
-        var balancer = localStorage.getItem('balancer');
+        let balancer = localStorage.getItem('balancer');
 
         if (balancer) {
             return balancer;  // local storage is set return it
         }
 
-        var linode_location = linodeNearLocation();
+        let linode_location = linodeNearLocation();
         console.log("Location near: ", linode_location);
 
         //TODO: if all locations have active node balancers this switch is not nessicary
@@ -117,7 +117,7 @@ config.STATIONARY_RADIUS     = config.MAX_PLAYER_RADIUS + 25; // the size at whi
 config.PLAYER_CAPTURE_VALUE  = function PlayerCaptureValue( r ) { return r / 2; };
 config.PLAYER_GET_SPEED      = function PlayerGetSpeed( r ) {
     // https://www.desmos.com/calculator/dphm84crab
-    var s = config.MAX_PLAYER_SPEED;
+    let s = config.MAX_PLAYER_SPEED;
     return s - ((r * s) / config.STATIONARY_RADIUS);
 };
 config.GET_PADDED_INT      = function PlayerGetScore( radius ) {
@@ -232,16 +232,16 @@ config.GET_CAMERA_MIN_DISTANCE = function getCameraMinDistance(r) {
 };
 config.CAMERA_ZOOM_STEPS = {};
 function generateCameraZoomSteps() {
-    var scale = config.INITIAL_PLAYER_RADIUS;
-    var min_scale = 0;
-    var cur_distance = config.GET_CAMERA_MIN_DISTANCE(scale);
-    var new_dist = 0;
+    let scale = config.INITIAL_PLAYER_RADIUS;
+    let min_scale = 0;
+    let cur_distance = config.GET_CAMERA_MIN_DISTANCE(scale);
+    let new_dist = 0;
 
     while(scale <= config.MAX_PLAYER_RADIUS * 2) {
         new_dist = config.GET_CAMERA_MIN_DISTANCE(scale);
 
         if (new_dist > cur_distance) {
-            var dist = Math.floor(cur_distance);
+            let dist = Math.floor(cur_distance);
 
             config.CAMERA_ZOOM_STEPS[dist] = {
                 min: min_scale,
@@ -310,7 +310,7 @@ config.SKINS = {
 //                           SOUND SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-if (!NODEJS) {
+if (!NODEJS_CONFIG) {
     config.VOLUME_MUSIC_INITIAL = localStorage.volume_music || 0.45;
     config.VOLUME_SFX_INITIAL   = localStorage.volume_sfx || 1.0;
 }
@@ -341,7 +341,7 @@ config.BROWSER_FORCE_DISABLED_FEATURES = []; // these items will be forcibly set
 // Merge environment-specific settings into config
 _.assign(config, ZOR.Env);
 
-if (NODEJS) {
+if (NODEJS_CONFIG) {
     module.exports = config;
 }
 else {

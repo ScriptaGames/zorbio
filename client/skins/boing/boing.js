@@ -1,10 +1,10 @@
-var ZOR = ZOR || {};
+
 ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 
 //
 
 ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
-    var color = new THREE.Color('#D71C26');
+    const color = new THREE.Color('#D71C26');
 
     return {
         poolname: 'lowPolySpheres',

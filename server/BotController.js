@@ -1,12 +1,10 @@
-var NODEJS = typeof module !== 'undefined' && module.exports;
+let config = require('../common/config.js');
+let Zorbio = require('../common/zorbio.js');
+let Bot    = require('./Bot.js');
 
-var config = require('../common/config.js');
-var Zorbio = require('../common/zorbio.js');
-var Bot    = require('./Bot.js');
-
-var BotController = function (model) {
+let BotController = function (model) {
     //  Scope
-    var self = this;
+    let self = this;
 
     self.model = model;
 
@@ -16,9 +14,9 @@ var BotController = function (model) {
 
     self.spawnBot = function botSpawnBot() {
         self.setNextSpawnCycle();
-        var scale = self.getNextSpawnScale();
+        let scale = self.getNextSpawnScale();
 
-        var bot = new Bot(scale, self.model);
+        let bot = new Bot(scale, self.model);
 
         self.bots.push(bot);
         self.model.players.push(bot.player);
@@ -35,7 +33,7 @@ var BotController = function (model) {
         }
 
         // First find out how many big bots are already in the model
-        var big_bots = self.getNumBigBots();
+        let big_bots = self.getNumBigBots();
 
         do {
             self.currentSpawnCycle++;
@@ -44,7 +42,7 @@ var BotController = function (model) {
     };
 
     self.getNumBigBots = function botGetNumBigBots() {
-        var num = 0;
+        let num = 0;
         self.model.players.forEach(function eachPlayer(player) {
             if (player.type === Zorbio.PlayerTypes.BOT && player.sphere.scale >= 90) {
                 num++
@@ -60,14 +58,14 @@ var BotController = function (model) {
      */
     self.getNextSpawnScale = function botGetNextSpawnScale() {
         // just in case
-        var scale = (this.currentSpawnCycle === 0) ? 1 : this.currentSpawnCycle;
+        let scale = (this.currentSpawnCycle === 0) ? 1 : this.currentSpawnCycle;
 
         // https://www.desmos.com/calculator/fmmedr9kzi
         return (30 / (scale - 0.75)) + 3;
     };
 
     self.removeBot = function botRemoveBot() {
-        var bot = self.bots.pop();
+        let bot = self.bots.pop();
 
         // remove from model
         self.model.removePlayer(bot.player.id);
@@ -78,8 +76,8 @@ var BotController = function (model) {
     };
 
     self.update = function botUpdate() {
-        for (var i = 0; i < self.bots.length; i++) {
-            var bot = self.bots[i];
+        for (let i = 0; i < self.bots.length; i++) {
+            let bot = self.bots[i];
             bot.move();
         }
     };
@@ -90,4 +88,4 @@ var BotController = function (model) {
 
 };
 
-if (NODEJS) module.exports = BotController;
+module.exports = BotController;

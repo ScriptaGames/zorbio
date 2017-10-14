@@ -1,10 +1,10 @@
-var ZOR = ZOR || {};
+
 ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 
 //
 
 ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
-    var color = new THREE.Color(playerView.playerColor);
+    const color = new THREE.Color(playerView.playerColor);
 
     return {
         poolname: 'spheres',

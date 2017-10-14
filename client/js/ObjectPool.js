@@ -1,4 +1,4 @@
-var ZOR = ZOR || {};
+
 
 /**
  * ZOR.Pool contains various types of pre-allocated objects to be used.
@@ -54,7 +54,7 @@ ZOR.ObjectPool.prototype.return = function ZORObjectPoolReturn(obj) {
  * @return {Object} a reference to the object that was just added
  */
 ZOR.ObjectPool.prototype._add = function ZORObjectPoolAdd() {
-    var i = this._pool.length;
+    let i = this._pool.length;
     this._pool.push(this._create.apply({}, this._args));
     this._pool[i]._pool_index = i;
     this._available.push(1);

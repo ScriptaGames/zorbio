@@ -1,10 +1,10 @@
-var ZOR = ZOR || {};
+
 ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 
 //
 
 ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
-    var opacity = playerView.is_current_player ? 0.2 : 0.6;
+    let opacity = playerView.is_current_player ? 0.2 : 0.6;
 
     return {
         poolname: 'spheres',

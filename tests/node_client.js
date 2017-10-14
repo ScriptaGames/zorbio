@@ -1,9 +1,9 @@
 global.player = null;
 
-var ZORClient = require('../common/Client.js');
-var Zorbio    = require('../common/zorbio.js');
-var handler   = require('./HeadlessHandler.js');
-var _         = require('lodash');
+let ZORClient = require('../common/Client.js');
+let Zorbio    = require('../common/zorbio.js');
+let handler   = require('./HeadlessHandler.js');
+let _         = require('lodash');
 
 global.zorbioModel = new Zorbio.Model();
 
@@ -12,9 +12,9 @@ global.playerDead = false;
 
 console.log("Starting headless zorbio node client to: " + process.argv[2]);
 
-var zorClient = new ZORClient(handler);
+let zorClient = new ZORClient(handler);
 
-var playerMeta = {
+let playerMeta = {
     color: 3,
     key: "mathisfreedom",
     playerName: "test2",
@@ -50,17 +50,17 @@ function sendPlayerUpdate() {
     zorClient.z_sendPlayerUpdate(global.player.sphere, []);
 }
 
-var throttledPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
+let throttledPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
 
 
 function addRecentPosition() {
-    var p = {
+    let p = {
         x: global.player.sphere.position.x,
         y: global.player.sphere.position.y,
         z: global.player.sphere.position.z
     };
 
-    var time = Date.now() - global.player.createdTime;  // milliseconds since the player was created
+    let time = Date.now() - global.player.createdTime;  // milliseconds since the player was created
     global.player.sphere.recentPositions.push({position: p, radius: global.player.sphere.scale, time: time});
 
     if (global.player.sphere.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {

@@ -1,22 +1,20 @@
-var NODEJS = typeof module !== 'undefined' && module.exports;
-
-var config = require('../common/config.js');
-var exec   = require('child_process').exec;
-var util   = require('util');
+let config = require('../common/config.js');
+let exec   = require('child_process').exec;
+let util   = require('util');
 
 // Current implmentating service: App42
-var App42 = require("./lib/app42/node_sdk/app42.js");
+let App42 = require("./lib/app42/node_sdk/app42.js");
 
 /**
  * Genetic interface for backend services such as document store, and social auth.
  * Abstraction of implementing service, so implmentation can be switched out if needed.
  * @constructor
  */
-var Backend = function () {
+let Backend = function () {
     if (!config.ENABLE_BACKEND_SERVICE) return;
 
     //  Scope
-    var self = this;
+    let self = this;
 
     App42.initialize(process.env.APP42_API_KEY, process.env.APP42_API_SECRET);
 
@@ -25,7 +23,7 @@ var Backend = function () {
 
 Backend.prototype.storageOpCallback = function BackendStorageOpCallback(object) {
     try {
-        var result_JSON = JSON.parse(object);
+        let result_JSON = JSON.parse(object);
         if (result_JSON.app42) {
             // noop
         }
@@ -50,14 +48,14 @@ Backend.prototype.saveGameInstanceStatus = function BackendSaveGameInstanceStatu
 Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, score, successCallback) {
     if (!config.ENABLE_BACKEND_SERVICE) return;
 
-    var result = '';
-    var jsonResponse;
+    let result = '';
+    let jsonResponse;
 
     // Build the command
-    var command = util.format('server/lib/app42/leaderboard %s %s save %s "%s" %s',
+    let command = util.format('server/lib/app42/leaderboard %s %s save %s "%s" %s',
         process.env.APP42_API_KEY, process.env.APP42_API_SECRET, gameName, userName, score);
 
-    var child = exec(command);  // Execute command
+    let child = exec(command);  // Execute command
 
     child.stdout.on('data', function (data) {
         result += data;
@@ -95,14 +93,14 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
 Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, limit, startDate, endDate, callback) {
     if (!config.ENABLE_BACKEND_SERVICE) return;
 
-    var result = '';
-    var jsonResponse;
+    let result = '';
+    let jsonResponse;
 
     // Build the command
-    var command = util.format('server/lib/app42/leaderboard %s %s get_leaders %s %s "%s" "%s"',
+    let command = util.format('server/lib/app42/leaderboard %s %s get_leaders %s %s "%s" "%s"',
         process.env.APP42_API_KEY, process.env.APP42_API_SECRET, gameName, limit, startDate, endDate);
 
-    var child = exec(command);  // Execute command
+    let child = exec(command);  // Execute command
 
     child.stdout.on('data', function (data) {
         result += data;
@@ -114,13 +112,13 @@ Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, 
         try {
             jsonResponse = JSON.parse(result);
             if (jsonResponse && jsonResponse.app42.response.success === true) {
-                var leaders = jsonResponse.app42.response.games.game.scores.score;
-                var filteredLeaders = [];
+                let leaders = jsonResponse.app42.response.games.game.scores.score;
+                let filteredLeaders = [];
 
                 if (Array.isArray(leaders)) {
                     // Filter out the meta data like date and score id, all we want is the name and the score
                     leaders.forEach(function eachLeader(leader) {
-                        var filteredLeader = {
+                        let filteredLeader = {
                             name: leader.userName,
                             score: leader.value,
                         };
@@ -146,4 +144,4 @@ Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, 
     });
 };
 
-if (NODEJS) module.exports = Backend;
+module.exports = Backend;

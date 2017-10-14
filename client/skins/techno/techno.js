@@ -1,11 +1,11 @@
-var ZOR = ZOR || {};
+
 ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 
 //
 
 ZOR.PlayerSkins.techno = function ZORTechnoSkin(playerView) {
-    var opacity = playerView.is_current_player ? 0.1 : 0.4;
-    var color = new THREE.Color('#ffffff');
+    let opacity = playerView.is_current_player ? 0.1 : 0.4;
+    const color = new THREE.Color('#ffffff');
 
     return {
         poolname: 'spheres',

@@ -1,4 +1,4 @@
-var ZOR = ZOR || {};
+
 
 /**
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
@@ -57,7 +57,7 @@ ZOR.DrainView = function ZORDrainView() {
         alphaTest      : 1.0,
         morphTargets   : true,
     });
-    var self = this;
+    let self = this;
     ZOR.UI.on('init', function injectDrainBeamShaders() {
         self.material.vertexShader   = document.getElementById('drain-vertex-shader').textContent;
         self.material.fragmentShader = document.getElementById('drain-frag-shader').textContent;
@@ -93,16 +93,16 @@ ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drain_target_id ) 
         return;  // no drain target
     }
 
-    var drainee = ZOR.Game.players[drain_target_id];
+    let drainee = ZOR.Game.players[drain_target_id];
 
     // sometimes drainee isn't in the players array yet
     if (!drainee) return;
 
-    var drainer_pos = this.playerView.mainSphere.position;
-    var drainee_pos = drainee.view.mainSphere.position;
-    var drainer_scale = this.playerView.mainSphere.scale.x;
-    var drainee_scale = drainee.view.mainSphere.scale.x;
-    var distance = drainer_pos.distanceTo( drainee_pos ) - drainer_scale - drainee_scale;
+    let drainer_pos = this.playerView.mainSphere.position;
+    let drainee_pos = drainee.view.mainSphere.position;
+    let drainer_scale = this.playerView.mainSphere.scale.x;
+    let drainee_scale = drainee.view.mainSphere.scale.x;
+    let distance = drainer_pos.distanceTo( drainee_pos ) - drainer_scale - drainee_scale;
 
     this.material.uniforms.pos.value.copy(this.mesh.position);
     this.material.uniforms.erSize.value = drainer_scale;
@@ -153,8 +153,8 @@ ZOR.DrainView.prototype.updateVisibility = function ZORDrainViewUpdateVisibility
 
 ZOR.DrainView.prototype.updatePosition = function ZORDrainViewUpdatePosition(  drainer_pos, drainee_pos, drainer_scale, drainee_scale ) {
     // position and angle the cylinder correctly
-    var drainer_edge_pos = drainee_pos.clone().sub( drainer_pos ).normalize().multiplyScalar( -drainee_scale ).add( drainer_pos );
-    var drainee_edge_pos = drainer_pos.clone().sub( drainee_pos ).normalize().multiplyScalar( -drainer_scale ).add( drainee_pos );
+    let drainer_edge_pos = drainee_pos.clone().sub( drainer_pos ).normalize().multiplyScalar( -drainee_scale ).add( drainer_pos );
+    let drainee_edge_pos = drainer_pos.clone().sub( drainee_pos ).normalize().multiplyScalar( -drainer_scale ).add( drainee_pos );
     this.mesh.position.copy( drainer_edge_pos.add( drainee_edge_pos ).divideScalar(2) );
     this.mesh.lookAt( drainer_pos );
 };
@@ -176,13 +176,13 @@ ZOR.DrainView.prototype.updateUniforms = function ZORDrainViewUpdateUniforms( dr
 
 
 ZOR.DrainView.prototype.createStretch = function ZORDrainViewCreateStretch() {
-    var stretchVertices = this.createStretchVertices();
+    let stretchVertices = this.createStretchVertices();
     this.geometry.morphTargets.push( { name: "stretch", vertices: stretchVertices } );
 };
 
 ZOR.DrainView.prototype.createStretchVertices = function ZORDrainViewCreateStretchVertices() {
-    var stretchVertices = [];
-    for ( var i = 0; i < this.geometry.vertices.length; i ++ ) {
+    let stretchVertices = [];
+    for ( let i = 0; i < this.geometry.vertices.length; i ++ ) {
         stretchVertices[i] = this.geometry.vertices[ i ].clone();
         stretchVertices[i].z = 0;
     }
@@ -195,7 +195,7 @@ ZOR.DrainView.prototype.updateStretch = function ZORDrainViewUpdateStretch( dist
 
 ZOR.DrainView.prototype.updateTaper = function ZORDrainViewUpdateTaper( scale, influence_index ) {
     // https://www.desmos.com/calculator/dpjwagi0va
-    var influence = 0.85 - Math.pow(scale / config.MAX_PLAYER_RADIUS, 2) / 2;
+    let influence = 0.85 - Math.pow(scale / config.MAX_PLAYER_RADIUS, 2) / 2;
     this.mesh.morphTargetInfluences[ influence_index ] = influence;
 };
 
@@ -204,14 +204,14 @@ ZOR.DrainView.prototype.updateTaper = function ZORDrainViewUpdateTaper( scale, i
 /////////////////////
 
 ZOR.DrainView.prototype.createDrainerTaper = function ZORDrainViewCreateDrainerTaper() {
-    var taperVertices = this.createDrainerTaperVertices();
+    let taperVertices = this.createDrainerTaperVertices();
     this.geometry.morphTargets.push( { name: "drainer_taper", vertices: taperVertices } );
 };
 
 ZOR.DrainView.prototype.createDrainerTaperVertices = function ZORDrainViewCreateDrainerTaperVertices() {
-    var taperVertices = [];
-    var radius;
-    for ( var i = 0; i < this.geometry.vertices.length; i ++ ) {
+    let taperVertices = [];
+    let radius;
+    for ( let i = 0; i < this.geometry.vertices.length; i ++ ) {
         taperVertices[i] = this.geometry.vertices[ i ].clone();
         radius = 1 - (taperVertices[i].z + config.DRAIN_MAX_DISTANCE/2 ) / this.initialCylinderLength;
         taperVertices[i].x *= radius;
@@ -229,14 +229,14 @@ ZOR.DrainView.prototype.updateDrainerTaper = function ZORDrainViewUpdateDrainerT
 /////////////////////
 
 ZOR.DrainView.prototype.createDraineeTaper = function ZORDrainViewCreateDraineeTaper() {
-    var taperVertices = this.createDraineeTaperVertices();
+    let taperVertices = this.createDraineeTaperVertices();
     this.geometry.morphTargets.push( { name: "drainee_taper", vertices: taperVertices } );
 };
 
 ZOR.DrainView.prototype.createDraineeTaperVertices = function ZORDrainViewCreateDraineeTaperVertices() {
-    var taperVertices = [];
-    var radius;
-    for ( var i = 0; i < this.geometry.vertices.length; i ++ ) {
+    let taperVertices = [];
+    let radius;
+    for ( let i = 0; i < this.geometry.vertices.length; i ++ ) {
         taperVertices[i] = this.geometry.vertices[ i ].clone();
         radius = (taperVertices[i].z + config.DRAIN_MAX_DISTANCE/2 ) / this.initialCylinderLength;
         taperVertices[i].x *= radius;
@@ -255,13 +255,13 @@ ZOR.DrainView.prototype.updateDraineeTaper = function ZORDrainViewUpdateDraineeT
 
 
 ZOR.DrainView.prototype.createPinch = function ZORDrainViewCreatePinch( distance ) {
-    var pinchVertices = this.createPinchVertices( distance );
+    let pinchVertices = this.createPinchVertices( distance );
     this.geometry.morphTargets.push( { name: "pinch", vertices: pinchVertices } );
 };
 
 ZOR.DrainView.prototype.createPinchVertices = function ZORDrainViewCreatePinchVertices( distance ) {
-    var pinchVertices = [];
-    for ( var i = 0; i < this.geometry.vertices.length; i ++ ) {
+    let pinchVertices = [];
+    for ( let i = 0; i < this.geometry.vertices.length; i ++ ) {
         pinchVertices[i] = this.geometry.vertices[ i ].clone();
         pinchVertices[i].x *= -this.pinch(pinchVertices[i].z + distance/2, distance);
         pinchVertices[i].y *= -this.pinch(pinchVertices[i].z + distance/2, distance);

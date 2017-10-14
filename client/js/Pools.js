@@ -1,4 +1,4 @@
-var ZOR = ZOR || {};
+
 
 ZOR.Pools = {};
 
@@ -7,10 +7,10 @@ ZOR.Pools = {};
 (function () {
 
     function createSphere(polycountx, polycounty) {
-        var polyx = polycountx || config.PLAYER_SPHERE_POLYCOUNT;
-        var polyy = polycounty || config.PLAYER_SPHERE_POLYCOUNT;
-        var mat = new THREE.MeshBasicMaterial();
-        var geo = new THREE.SphereGeometry(1, polyx, polyy);
+        let polyx = polycountx || config.PLAYER_SPHERE_POLYCOUNT;
+        let polyy = polycounty || config.PLAYER_SPHERE_POLYCOUNT;
+        let mat = new THREE.MeshBasicMaterial();
+        let geo = new THREE.SphereGeometry(1, polyx, polyy);
         return new THREE.Mesh(geo, mat);
     }
 

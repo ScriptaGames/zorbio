@@ -1,4 +1,4 @@
-var ZOR = ZOR || {};
+
 
 /**
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
@@ -27,7 +27,7 @@ ZOR.DangerView = function ZORDangerView() {
     this.mesh = new THREE.Mesh( this.geometry, this.material );
     this.mesh.position.copy( this.mesh.position );
 
-    var self = this;
+    let self = this;
     ZOR.UI.on('init', function injectDangerBeamShaders() {
         self.material.vertexShader   = document.getElementById('danger-vertex-shader').textContent;
         self.material.fragmentShader = document.getElementById('danger-frag-shader').textContent;
@@ -41,7 +41,7 @@ ZOR.DangerView.prototype.setPlayerView = function ZORDangerViewSetPlayerView(vie
 };
 
 ZOR.DangerView.prototype.update = function ZORDangerViewUpdate() {
-    var playerScale = this.playerView.mainSphere.scale.x;
+    let playerScale = this.playerView.mainSphere.scale.x;
     this.mesh.position.copy(this.playerView.mainSphere.position);
 
     this.mesh.scale.setScalar( (playerScale + 2.0) + playerScale/80 );

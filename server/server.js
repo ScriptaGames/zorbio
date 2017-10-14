@@ -7,16 +7,16 @@
 // raven.patchGlobal();
 
 //  Sample Node.js WebSocket Client-Server application
-var http            = require('http');
-var express         = require('express');
-var WebSocketServer = require('ws').Server;
-var AppProxy        = require('./AppProxy.js');
-var config          = require('../common/config.js');
-var packageJson     = require('../package.json');
-var _               = require('lodash');
-var url             = require('url');
-var validUrl        = require('valid-url');
-var uuid            = require("node-uuid");
+let http            = require('http');
+let express         = require('express');
+let WebSocketServer = require('ws').Server;
+let AppProxy        = require('./AppProxy.js');
+let config          = require('../common/config.js');
+let packageJson     = require('../package.json');
+let _               = require('lodash');
+let url             = require('url');
+let validUrl        = require('valid-url');
+let uuid            = require("node-uuid");
 
 // Patch console.x methods in order to add timestamp information
 require("console-stamp")(console, {pattern: "mm/dd/yyyy HH:MM:ss.l"});
@@ -24,10 +24,10 @@ require("console-stamp")(console, {pattern: "mm/dd/yyyy HH:MM:ss.l"});
 /**
  *  Define the sample server.
  */
-var MainServer = function () {
+let MainServer = function () {
 
     //  Scope
-    var self = this;
+    let self = this;
 
 
     /*  ================================================================  */
@@ -91,7 +91,7 @@ var MainServer = function () {
         self.httpServer = http.Server(self.app);
 
         // Set up WebSocket Server
-        var options = {
+        let options = {
             port: self.ws_port,
         };
 
@@ -99,9 +99,9 @@ var MainServer = function () {
             options.verifyClient = function wssVerifyClient(info, callback) {
                 // make sure the origin is one of the approved origins
                 if (validUrl.is_web_uri(info.origin)) {
-                    var origin_values = _.values(config.BALANCERS);
-                    var hostname = url.parse(info.origin).hostname;
-                    var index = origin_values.indexOf(hostname);
+                    let origin_values = _.values(config.BALANCERS);
+                    let hostname = url.parse(info.origin).hostname;
+                    let index = origin_values.indexOf(hostname);
                     if (index != -1 && hostname != 'localhost') {
                         callback(true);  // valid origin
                         return true;
@@ -152,7 +152,7 @@ var MainServer = function () {
 /**
  *  main():  Main code.
  */
-var mainServer = new MainServer();
+let mainServer = new MainServer();
 mainServer.initialize();
 mainServer.start();
 

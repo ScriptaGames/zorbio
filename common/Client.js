@@ -1,11 +1,9 @@
 /**
  * Zorbio Game Client
  */
-var NODEJS = typeof module !== 'undefined' && module.exports;
+const NODEJS_CLIENT = typeof module !== 'undefined' && module.exports;
 
-var ZOR = ZOR || {};
-
-if (NODEJS) {
+if (NODEJS_CLIENT) {
     global._ = require('lodash');
     global.UTIL = require('./util.js');
     global.config = require('./config.js');
@@ -30,7 +28,7 @@ ZOR.ZORClient = function ZORclient(handler) {
  * Connect to the game server based on config
  */
 ZOR.ZORClient.prototype.z_connectToServer = function ZORconnectToServer(uri) {
-    var self = this;
+    let self = this;
 
     this.z_ws = new WebSocket( uri );
     this.z_ws.binaryType = 'arraybuffer';
@@ -66,11 +64,11 @@ ZOR.ZORClient.prototype.z_sendEnterGame = function ZORsendEnterGame(meta) {
  * @param ws
  */
 ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
-    var self = this;
+    let self = this;
 
     ws.onmessage = function wsMessage(msg) {
         if (typeof msg.data === "string") {
-            var message = parseJson(msg.data);
+            let message = parseJson(msg.data);
 
             switch (message.op) {
                 case 'game_setup':
@@ -106,36 +104,37 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
             }
         }
         else {
-            var op = UTIL.readFirstByte(msg.data);
+            let op = UTIL.readFirstByte(msg.data);
 
             switch (op) {
                 case ZOR.Schemas.ops.INIT_GAME:
-                    handle_msg_init_game( ZOR.Schemas.initGameSchema.decode(msg.data) );
+                    handle_msg_init_game(ZOR.Schemas.initGameSchema.decode(msg.data));
                     break;
                 case ZOR.Schemas.ops.WELCOME:
-                    handle_msg_welcome( ZOR.Schemas.welcomeSchema.decode(msg.data) );
+                    handle_msg_welcome(ZOR.Schemas.welcomeSchema.decode(msg.data));
                     break;
                 case ZOR.Schemas.ops.ACTOR_UPDATES:
-                    handle_msg_actor_updates( ZOR.Schemas.actorUpdatesSchema.decode(msg.data) );
+                    handle_msg_actor_updates(ZOR.Schemas.actorUpdatesSchema.decode(msg.data));
                     break;
                 case ZOR.Schemas.ops.TICK_SLOW:
-                    handle_msg_server_tick_slow( ZOR.Schemas.tickSlowSchema.decode(msg.data) );
+                    handle_msg_server_tick_slow(ZOR.Schemas.tickSlowSchema.decode(msg.data));
                     break;
                 case ZOR.Schemas.ops.YOU_DIED:
-                    handle_msg_you_died( ZOR.Schemas.youDied.decode(msg.data) );
+                    handle_msg_you_died(ZOR.Schemas.youDied.decode(msg.data));
                     break;
                 case ZOR.Schemas.ops.LEADERBOARDS_UPDATE:
-                    handle_msg_leaderboard_update( ZOR.Schemas.leaderboardUpdateSchema.decode(msg.data) );
+                    handle_msg_leaderboard_update(ZOR.Schemas.leaderboardUpdateSchema.decode(msg.data));
                     break;
-                default:
+                default: {
                     // // see if this is a player fast update
-                    var msgView = new Float32Array(msg.data);
+                    const msgView = new Float32Array(msg.data);
                     if (msgView[0] === ZOR.Schemas.ops.CLIENT_POSITION_RAPID) {
                         handle_msg_client_position_rapid(msgView);
                     }
                     else {
                         console.error("Error: Unknown binary op code: ", op);
                     }
+                }
             }
         }
     };
@@ -183,7 +182,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     }
 
     function handle_msg_player_join(message) {
-        var newPlayer = message.player;
+        let newPlayer = message.player;
 
         if (self.z_playerModel && (newPlayer.id === self.z_playerModel.id)) {
             return; // ignore own join message
@@ -209,7 +208,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     function handle_msg_actor_updates(msg) {
         if (self.z_playerModel) {
             // Record gap since last actor update was received
-            var nowTime = Date.now();
+            let nowTime = Date.now();
             self.z_actorUpdateGap = nowTime - self.z_playerModel.au_receive_metric.last_time;
             self.z_playerModel.au_receive_metric.last_time = nowTime;
         }
@@ -231,8 +230,8 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     }
 
     function handle_msg_player_died(msg) {
-        var attackingPlayerId = msg.attackingPlayerId;
-        var targetPlayerId = msg.targetPlayerId;
+        let attackingPlayerId = msg.attackingPlayerId;
+        let targetPlayerId = msg.targetPlayerId;
 
         if (!self.z_playerModel || (attackingPlayerId !== self.z_playerModel.id)) {
             // someone else killed another player
@@ -282,14 +281,14 @@ ZOR.ZORClient.prototype.z_sendRespawn = function ZORsendRespawn() {
 ZOR.ZORClient.prototype.z_sendPing = function sendPing() {
     this.z_zorPingStart = Date.now();
 
-    var fps = this.z_handler.z_handle_send_ping();
+    let fps = this.z_handler.z_handle_send_ping();
 
     this.z_ws.send(JSON.stringify({op: 'zor_ping', lastPing: this.z_zorPingDuration, fps: fps}));
 };
 
 
 ZOR.ZORClient.prototype.z_setIntervalMethods = function ZORsetIntervalMethods() {
-    var self = this;
+    let self = this;
 
     // start sending heartbeat
     self.z_interval_id_heartbeat = setInterval(function sendPing() {
@@ -301,13 +300,13 @@ ZOR.ZORClient.prototype.z_setIntervalMethods = function ZORsetIntervalMethods() 
 
 ZOR.ZORClient.prototype.z_sendPlayerUpdate = function ZORsendPlayerUpdate(playerSphere, food_capture_queue) {
     // save metrics
-    var nowTime = Date.now();
-    var gap = nowTime - this.z_playerModel.pp_send_metric.last_time;
+    let nowTime = Date.now();
+    let gap = nowTime - this.z_playerModel.pp_send_metric.last_time;
     this.z_playerModel.pp_send_metric.last_time = nowTime;
-    var bufferedAmount = this.z_ws.bufferedAmount;
+    let bufferedAmount = this.z_ws.bufferedAmount;
 
     // Send oldest position and most recent 4 positions
-    var playerUpdateMessage = {
+    let playerUpdateMessage = {
         0: ZOR.Schemas.ops.PLAYER_UPDATE,
         player_id: this.z_playerModel.id,
         sphere_id: playerSphere.id,
@@ -355,7 +354,7 @@ ZOR.ZORClient.prototype.z_sendSpeedBoostStop = function ZORsendSpeedBoostStop() 
  * Request the leaderboards from the server.
  */
 ZOR.ZORClient.prototype.z_sendLeaderboardsRequest = function ZORsendLeaderboardsRequest() {
-    var msg = {
+    let msg = {
         0: ZOR.Schemas.ops.LEADERBOARDS_REQUEST,
     };
 
@@ -366,4 +365,4 @@ ZOR.ZORClient.prototype.z_clearIntervalMethods = function ZORclearIntervalMethod
     clearInterval(this.z_interval_id_heartbeat);
 };
 
-if (NODEJS) module.exports = ZOR.ZORClient;
+if (NODEJS_CLIENT) module.exports = ZOR.ZORClient;

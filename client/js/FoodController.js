@@ -4,7 +4,7 @@
  * @param fogCenterPosition
  * @constructor
  */
-var FoodController = function ZORFoodController(model, fogCenterPosition) {
+let FoodController = function ZORFoodController(model, fogCenterPosition) {
 
     this.model = model;
     this.view = new FoodView();
@@ -93,16 +93,16 @@ var FoodController = function ZORFoodController(model, fogCenterPosition) {
     this.checkFoodCaptures = function ZORFoodControllerCheckFoodCaptures(thePlayer, callback) {
         //var start = performance.now();
 
-        var i, l;
-        var dist = 0;
-        var mainSphere = thePlayer.view.mainSphere;
-        var sphere_radius = thePlayer.radius();
+        let i, l;
+        let dist = 0;
+        let mainSphere = thePlayer.view.mainSphere;
+        let sphere_radius = thePlayer.radius();
 
-        var foodList = this.octree.search( mainSphere.position, sphere_radius + 25 );
+        let foodList = this.octree.search( mainSphere.position, sphere_radius + 25 );
 
         for ( i = 0, l = foodList.length; i < l; i++ ) {
-            var octreeObj = foodList[i];
-            var fi = foodList[i].object.fi;
+            let octreeObj = foodList[i];
+            let fi = foodList[i].object.fi;
             if ( this.aliveFood( fi ) ) {
 
                 dist = octreeObj.position.distanceTo( mainSphere.position );

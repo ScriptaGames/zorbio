@@ -1,4 +1,4 @@
-var ZOR = ZOR || {};
+
 
 ZOR.ZORMessageHandler = {};
 
@@ -38,7 +38,7 @@ ZOR.ZORMessageHandler.z_handle_game_setup = function ZORhandleGameSetup() {
  */
 ZOR.ZORMessageHandler.z_handle_send_ping = function ZORhandleSendPing() {
     // Send ping to track latency, client heartbeat, and fps
-    var fps = Math.round(ZOR.LagScale.get_fps());
+    let fps = Math.round(ZOR.LagScale.get_fps());
 
     player.model.fps_metric.add(fps);
 
@@ -58,7 +58,7 @@ ZOR.ZORMessageHandler.z_handleNetworkTermination = function ZORhandleNetworkTerm
 
 ZOR.ZORMessageHandler.z_handle_actor_updates = function ZORhandleActorUpdates(actors) {
     actors.forEach(function updateEachActor(serverActor) {
-        var clientActor = zorbioModel.getActorById(serverActor.id);
+        let clientActor = zorbioModel.getActorById(serverActor.id);
 
         if (clientActor) {
             clientActor.position.copy(serverActor.position);
@@ -66,7 +66,7 @@ ZOR.ZORMessageHandler.z_handle_actor_updates = function ZORhandleActorUpdates(ac
 
             if (clientActor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
                 clientActor.drain_target_id = serverActor.drain_target_id;
-                var playerController = ZOR.Game.players[clientActor.playerId];
+                let playerController = ZOR.Game.players[clientActor.playerId];
                 if (playerController) {
                     playerController.setSpeedBoostActive(serverActor.speed_boosting);
                 }
@@ -132,7 +132,7 @@ ZOR.ZORMessageHandler.z_handle_speed_boost_stop = function ZORhandleSpeedBoostSt
 };
 
 ZOR.ZORMessageHandler.z_handle_client_position_rapid = function ZORhandleClientPositionRapid(messageView) {
-    var clientActor = zorbioModel.getActorById(messageView[1]);
+    let clientActor = zorbioModel.getActorById(messageView[1]);
 
     if (clientActor) {
         clientActor.position.set(messageView[2], messageView[3], messageView[4]);

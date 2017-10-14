@@ -1,8 +1,6 @@
-var NODEJS = typeof module !== 'undefined' && module.exports;
+const NODEJS_ENV_DEV = typeof module !== 'undefined' && module.exports;
 
-var ZOR = ZOR || {};
-
-ZOR.Env = {
+const DEV_SETTINGS = {
     WORLD_SIZE        : 1000,
     MAX_BOTS          : 10,
     FOOD_DENSITY      : 10,
@@ -20,4 +18,10 @@ ZOR.Env = {
     ENABLE_BACKEND_SERVICE : false,
 };
 
-if (NODEJS) module.exports = ZOR.Env;
+if (NODEJS_ENV_DEV) {
+    let ZOR = {};
+    ZOR.Env = DEV_SETTINGS;
+    module.exports = ZOR.Env;
+} else {
+    ZOR.Env = DEV_SETTINGS;
+}
