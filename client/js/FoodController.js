@@ -82,7 +82,7 @@ var FoodController = function ZORFoodController(model, fogCenterPosition) {
      * Hide multiple foods
      */
     this.hideFoodMultiple = function ZORFoodViewHideFoodMultipleFood(foodToHide) {
-       this.view.hideFoodMultiple(foodToHide);
+        this.view.hideFoodMultiple(foodToHide);
     };
 
     /**

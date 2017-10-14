@@ -1,8 +1,25 @@
 {
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
     "extends": ["eslint:recommended", "google"],
     "rules": {
+        "indent": [
+            "error",
+            4,
+            { "SwitchCase": 1 }
+        ],
         "no-var": "off",
-        "no-multi-spaces": "off",
+        "no-multi-spaces": [
+            "off",
+            {
+                "ignoreEOLComments": true,
+                "exceptions": { "VariableDeclarator": true }
+            }
+        ],
         "no-undef": "off",
         "max-len": [2, {
             "code": 180,
@@ -36,6 +53,7 @@
         "one-var": "off",
         "no-throw-literal": "off",
         "no-irregular-whitespace": "off",
-        "array-bracket-spacing": "off"
+        "array-bracket-spacing": "off",
+        "no-dupe-keys": "off"
     }
 }

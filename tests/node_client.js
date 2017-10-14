@@ -7,7 +7,7 @@ var _         = require('lodash');
 
 global.zorbioModel = new Zorbio.Model();
 
-global.gameStart = false;
+global.gameStart  = false;
 global.playerDead = false;
 
 console.log("Starting headless zorbio node client to: " + process.argv[2]);
@@ -32,11 +32,11 @@ setTimeout(function () {
 
 // Simulates animate() loop
 setInterval(function () {
-   if (global.gameStart && !global.playerDead) {
-       addRecentPosition();
-       zorClient.z_sendClientPositionRapid(global.player.sphere.id, global.player.sphere.position);
-       throttledPlayerUpdate(global.player.sphere, []);
-   }
+    if (global.gameStart && !global.playerDead) {
+        addRecentPosition();
+        zorClient.z_sendClientPositionRapid(global.player.sphere.id, global.player.sphere.position);
+        throttledPlayerUpdate(global.player.sphere, []);
+    }
 }, 16);
 
 function sendPlayerUpdate() {
@@ -49,11 +49,16 @@ function sendPlayerUpdate() {
 
     zorClient.z_sendPlayerUpdate(global.player.sphere, []);
 }
+
 var throttledPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
 
 
 function addRecentPosition() {
-    var p = {x: global.player.sphere.position.x, y: global.player.sphere.position.y, z: global.player.sphere.position.z};
+    var p = {
+        x: global.player.sphere.position.x,
+        y: global.player.sphere.position.y,
+        z: global.player.sphere.position.z
+    };
 
     var time = Date.now() - global.player.createdTime;  // milliseconds since the player was created
     global.player.sphere.recentPositions.push({position: p, radius: global.player.sphere.scale, time: time});
@@ -62,4 +67,3 @@ function addRecentPosition() {
         global.player.sphere.recentPositions.shift();  // remove the oldest position
     }
 }
-

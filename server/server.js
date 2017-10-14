@@ -67,10 +67,13 @@ var MainServer = function () {
         //  Process on exit and signals.
         process.on('exit', function() { self.terminator(0); });
 
-        ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
-         'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM',
-        ].forEach(function(element) {
-            process.on(element, function() { self.terminator(element); });
+        [
+            'SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
+            'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM',
+        ].forEach(function (element) {
+            process.on(element, function () {
+                self.terminator(element);
+            });
         });
     };
 
