@@ -154,13 +154,16 @@ ZOR.DrainView.prototype.updateVisibility = function ZORDrainViewUpdateVisibility
     }
 };
 
-ZOR.DrainView.prototype.updatePosition = function ZORDrainViewUpdatePosition(  drainer_pos, drainee_pos, drainer_scale, drainee_scale ) {
-    // position and angle the cylinder correctly
-    let drainer_edge_pos = drainee_pos.clone().sub( drainer_pos ).normalize().multiplyScalar( -drainee_scale ).add( drainer_pos );
-    let drainee_edge_pos = drainer_pos.clone().sub( drainee_pos ).normalize().multiplyScalar( -drainer_scale ).add( drainee_pos );
-    this.mesh.position.copy( drainer_edge_pos.add( drainee_edge_pos ).divideScalar(2) );
-    this.mesh.lookAt( drainer_pos );
-};
+ZOR.DrainView.prototype.updatePosition =
+    function ZORDrainViewUpdatePosition(drainer_pos, drainee_pos, drainer_scale, drainee_scale) {
+        // position and angle the cylinder correctly
+        let drainer_edge_pos = drainee_pos.clone().sub(drainer_pos).normalize().multiplyScalar(-drainee_scale)
+            .add(drainer_pos);
+        let drainee_edge_pos = drainer_pos.clone().sub(drainee_pos).normalize().multiplyScalar(-drainer_scale)
+            .add(drainee_pos);
+        this.mesh.position.copy(drainer_edge_pos.add(drainee_edge_pos).divideScalar(2));
+        this.mesh.lookAt(drainer_pos);
+    };
 
 ZOR.DrainView.prototype.updateUniforms = function ZORDrainViewUpdateUniforms( drainee, distance ) {
     this.time += ZOR.LagScale.get() / config.DRAIN_RADIO_FREQUENCY;

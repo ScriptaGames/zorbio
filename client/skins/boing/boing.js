@@ -27,11 +27,6 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
             vertexShader: document.getElementById('skin-boing-vertex-shader').textContent,
             fragmentShader: document.getElementById('skin-boing-fragment-shader').textContent,
             transparent: true,
-            // this allows spheres to clip each other nicely, BUT it makes spheres appear on top of the cube boundary. :/
-            // depthFunc      : THREE.LessDepth,
-            // depthTest      : false,
-            // depthWrite     : true,
-            // blending       : THREE.AdditiveBlending,
         }),
         behavior: {
         },

@@ -207,7 +207,10 @@ function createScene() {
             materialArray[i].map.minFilter = THREE.LinearFilter;
         }
         let skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
-        let skyboxGeom = new THREE.BoxGeometry( zorbioModel.worldSize.x, zorbioModel.worldSize.y, zorbioModel.worldSize.z, 1, 1, 1 );
+        let skyboxGeom = new THREE.BoxGeometry(
+            zorbioModel.worldSize.x,
+            zorbioModel.worldSize.y,
+            zorbioModel.worldSize.z, 1, 1, 1);
         let skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
         skybox.renderOrder = -10;
         scene.add( skybox );
@@ -531,7 +534,8 @@ function handleKeyup(evt) {
 function handleMouseDown(evt) {
     if (!gameStart || player.isDead) return;
 
-    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
+    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any
+        && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
         if (player.isSpeedBoostReady()) {
             zorClient.z_sendSpeedBoostStart();
         }
@@ -541,7 +545,8 @@ function handleMouseDown(evt) {
 function handleMouseUp(evt) {
     if (!gameStart || player.isDead) return;
 
-    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
+    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any
+        && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
         player.speedBoostStop();
         zorClient.z_sendSpeedBoostStop();
     }

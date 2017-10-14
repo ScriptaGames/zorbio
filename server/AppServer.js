@@ -780,7 +780,8 @@ let AppServer = function(id, app, server_label, port) {
 
         for (let i = 0, l = self.model.food_respawning.length; i < l; ++i) {
             if (self.model.food_respawning[i] > 0) {
-                self.model.food_respawning[i] = Math.max(  self.model.food_respawning[i] - config.TICK_SLOW_INTERVAL, 0 );
+                let timeLeft = self.model.food_respawning[i] - config.TICK_SLOW_INTERVAL;
+                self.model.food_respawning[i] = Math.max( timeLeft, 0 );
 
                 if (self.model.food_respawning[i] === 0) {
                     // queue up food respawn to send to clients
@@ -875,7 +876,8 @@ let AppServer = function(id, app, server_label, port) {
             ', Players: ' + self.status.real_player_count +
             ', socket_uuid_map: ' + self.status.socket_uuid_map);
     }
-    self.logServerStatusNth = UTIL.nth(logServerStatus, Math.floor(config.STATUS_LOG_DELAY / config.TICK_FAST_INTERVAL));
+    self.logServerStatusNth = UTIL.nth(logServerStatus,
+        Math.floor(config.STATUS_LOG_DELAY / config.TICK_FAST_INTERVAL));
 
     /**
      * Main server loop for general updates to the client that should be as fast as

@@ -112,7 +112,8 @@ ZOR.Drain.amount = function ZORDrainAmount( distance ) {
  */
 ZOR.Drain.bonusAmount = function ZORDrainBonusAmount( drainer_size, drainee_size ) {
     // https://www.desmos.com/calculator/fzrj7f2b6l
-    return config.DRAIN_SIZE_INFLUENCE * (drainee_size - drainer_size) / (config.MAX_PLAYER_RADIUS - config.INITIAL_PLAYER_RADIUS) + 1;
+    return config.DRAIN_SIZE_INFLUENCE * (drainee_size - drainer_size) / (config.MAX_PLAYER_RADIUS
+        - config.INITIAL_PLAYER_RADIUS) + 1;
 };
 
 // if we're in nodejs, export the root ZOR object

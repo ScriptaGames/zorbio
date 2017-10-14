@@ -208,7 +208,11 @@ ZOR.PlayerController.prototype.applyVelocity = function ZORPlayerControllerApply
 };
 
 ZOR.PlayerController.prototype.addRecentPosition = function ZORPlayerControllerAddRecentPosition() {
-    let p = {x: this.view.mainSphere.position.x, y: this.view.mainSphere.position.y, z: this.view.mainSphere.position.z};
+    let p = {
+        x: this.view.mainSphere.position.x,
+        y: this.view.mainSphere.position.y,
+        z: this.view.mainSphere.position.z
+    };
 
     let time = Date.now() - this.model.createdTime;  // milliseconds since the player was created
     this.model.sphere.recentPositions.push({position: p, radius: this.radius(), time: time});

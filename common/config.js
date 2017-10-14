@@ -30,9 +30,10 @@ config.REQUIRE_ALPHA_KEY = true;
 ////////////////////////////////////////////////////////////////////////
 
 config.WORLD_SIZE       = 2000;
-config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 ) + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
 config.MAX_BOTS         = 20;
 config.MAX_BOT_RADIUS   = 100;
+config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 )
+    + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ));
 
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //
@@ -235,10 +236,12 @@ config.CAMERA_ZOOM_STEP_SIZE = 0.0175;
 config.CAMERA_ZOOM_DISTANCE_INITIAL = 100;
 config.CAMERA_ZOOM_DISTANCE_FINAL = 500;
 config.CAMERA_ZOOM_STEP_BUFFER = 0.5;  // size buffer before zooming out or zooming in to prevent flip-flopping
-config.CAMERA_ZOOM_STEP_S = (config.CAMERA_ZOOM_DISTANCE_FINAL - config.CAMERA_ZOOM_DISTANCE_INITIAL) / (config.MAX_PLAYER_RADIUS - config.INITIAL_PLAYER_RADIUS);
+config.CAMERA_ZOOM_STEP_S = (config.CAMERA_ZOOM_DISTANCE_FINAL - config.CAMERA_ZOOM_DISTANCE_INITIAL)
+    / (config.MAX_PLAYER_RADIUS - config.INITIAL_PLAYER_RADIUS);
 config.GET_CAMERA_MIN_DISTANCE = function getCameraMinDistance(r) {
     //https://www.desmos.com/calculator/ceeki1bpbk
-    return (Math.floor(r * config.CAMERA_ZOOM_STEP_S * config.CAMERA_ZOOM_STEP_SIZE) / config.CAMERA_ZOOM_STEP_SIZE) + config.CAMERA_ZOOM_DISTANCE_INITIAL;
+    return (Math.floor(r * config.CAMERA_ZOOM_STEP_S * config.CAMERA_ZOOM_STEP_SIZE) / config.CAMERA_ZOOM_STEP_SIZE)
+        + config.CAMERA_ZOOM_DISTANCE_INITIAL;
 };
 config.CAMERA_ZOOM_STEPS = {};
 function generateCameraZoomSteps() {

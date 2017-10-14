@@ -87,7 +87,8 @@ Validators.movement = function() {
             }
 
             if (config.DEBUG) {
-                //console.log("expected, tolerated, actual, dist, time:", expectedSpeed, maxToleratedSpeed, actualSpeed, vdist, time);
+                // console.log("expected, tolerated, actual, dist, time:",
+                //     expectedSpeed, maxToleratedSpeed, actualSpeed, vdist, time);
 
                 maxSpeed = Math.max(maxSpeed, actualSpeed);
 

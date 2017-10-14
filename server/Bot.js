@@ -21,7 +21,16 @@ let Bot = function(scale, model) {
     let position = self.model.getSafeSpawnPosition(10);
 
     // Create the player model
-    self.player = new Zorbio.Player(self.id, self.name, self.colorCode, Zorbio.PlayerTypes.BOT, position, self.scale, null, self.skin_name);
+    self.player = new Zorbio.Player(
+        self.id,
+        self.name,
+        self.colorCode,
+        Zorbio.PlayerTypes.BOT,
+        position,
+        self.scale,
+        null,
+        self.skin_name
+    );
 
     self.movementPaterns = {
 

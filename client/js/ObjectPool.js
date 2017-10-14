@@ -83,7 +83,8 @@ ZOR.ObjectPool.prototype._nextAvailable = function ZORObjectPoolNextAvailable() 
 
 /**
  * Updates the internal reference to the next available index.
- * @param {number} [i] optionally provide a known index of an available object.  if not provided, one will be searched for.
+ * @param {number} [i] optionally provide a known index of an available object.
+ * If not provided, one will be searched for.
  */
 ZOR.ObjectPool.prototype._updateNextAvailable = function ZORObjectPoolUpdateNextAvailable(i) {
     this._i = i || this._nextAvailable();

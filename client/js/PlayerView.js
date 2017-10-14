@@ -284,7 +284,8 @@ ZOR.PlayerView.prototype.updateLineTrails = function ZORPlayerViewupdateLineTrai
     if (!this.trail.initialized) return;
 
     // Increase trail width based on sphere scale but prevent giant width trails
-    this.trail.material.uniforms.lineWidth.value = this.skin.trail.customScale * config.TRAIL_LINE_WIDTH * (1 + (this.mainSphere.scale.x  / 10));
+    this.trail.material.uniforms.lineWidth.value = this.skin.trail.customScale * config.TRAIL_LINE_WIDTH
+        * (1 + (this.mainSphere.scale.x  / 10));
 
     for (let line_i = 0; line_i < this.skin.trail.origins.length; ++line_i) {
         this.trail.lines[line_i].advance(this.mainSphere.localToWorld(this.skin.trail.origins[line_i].clone()));
@@ -422,7 +423,8 @@ ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove() {
  * @returns {number}
  */
 ZOR.PlayerView.prototype.getCaptureEmitterLifetime = function ZORPlayerViewGetCaptureEmitterLifetime() {
-    return Math.floor((this.capture.emitter.maxAge.value + this.capture.emitter.maxAge.spread + this.capture.emitter.duration + 0.1) * 1000);
+    return Math.floor((this.capture.emitter.maxAge.value + this.capture.emitter.maxAge.spread
+        + this.capture.emitter.duration + 0.1) * 1000);
 };
 
 ZOR.PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {

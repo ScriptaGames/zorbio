@@ -28,11 +28,6 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
             vertexShader: document.getElementById('skin-default-vertex-shader').textContent,
             fragmentShader: document.getElementById('skin-default-fragment-shader').textContent,
             transparent: true,
-            // this allows spheres to clip each other nicely, BUT it makes spheres appear on top of the cube boundary. :/
-            // depthFunc      : THREE.LessDepth,
-            // depthTest      : false,
-            // depthWrite     : true,
-            // blending       : THREE.AdditiveBlending,
         }),
         behavior: {
             faceCamera: false, // should OTHER player's spheres face the camera?

@@ -129,12 +129,12 @@ THREE.TrackballControls = function( object, domElement ) {
     let getMouseOnCircle = ( function() {
         let vector = new THREE.Vector2();
 
-        return function getMouseOnCircle( pageX, pageY ) {
-            vector.set(
-                config.X_AXIS_MULT * ( ( pageX - _this.screen.width * 0.5 - _this.screen.left ) / ( _this.screen.width * 0.5 ) ),
-                config.Y_AXIS_MULT * ( ( _this.screen.height + 2 * ( _this.screen.top - pageY ) ) / _this.screen.width ) // screen.width intentional
-            );
-
+        return function getMouseOnCircle(pageX, pageY) {
+            let x = config.X_AXIS_MULT
+                * ((pageX - _this.screen.width * 0.5 - _this.screen.left) / (_this.screen.width * 0.5));
+            let y = config.Y_AXIS_MULT
+                * ((_this.screen.height + 2 * (_this.screen.top - pageY)) / _this.screen.width );  // screen.width intentional
+            vector.set(x, y);
             return vector;
         };
     }() );
@@ -246,7 +246,8 @@ THREE.TrackballControls = function( object, domElement ) {
                     _panStart.copy( _panEnd );
                 }
                 else {
-                    _panStart.add( mouseChange.subVectors( _panEnd, _panStart ).multiplyScalar( _this.dynamicDampingFactor ) );
+                    _panStart.add( mouseChange.subVectors( _panEnd, _panStart )
+                        .multiplyScalar( _this.dynamicDampingFactor ) );
                 }
             }
         };
