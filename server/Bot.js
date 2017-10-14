@@ -1,8 +1,9 @@
-let config = require('../common/config.js');
-let Zorbio = require('../common/zorbio.js');
-let UTIL   = require('../common/util.js');
-let _      = require('lodash');
+let config   = require('../common/config.js');
+let Zorbio   = require('../common/zorbio.js');
+let UTIL     = require('../common/util.js');
+let _        = require('lodash');
 let datasets = require('datasets');
+let THREE    = require('three');
 
 let Bot = function (scale, model) {
     //  Scope

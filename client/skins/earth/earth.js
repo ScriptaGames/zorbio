@@ -1,7 +1,13 @@
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global THREE:true
+global playerFogCenter:true
+global SPE:true
+*/
 
 ZOR.PlayerSkins = ZOR.PlayerSkins || {};
-
-//
 
 ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
     let opacity = playerView.is_current_player ? 0.2 : 0.6;

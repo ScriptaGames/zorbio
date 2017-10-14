@@ -1,4 +1,7 @@
-
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global ZOR:true
+*/
 
 /**
  * ZOR.Pool contains various types of pre-allocated objects to be used.

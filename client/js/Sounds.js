@@ -1,4 +1,12 @@
-
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global Modernizr:true
+global Howl:true
+global Wad:true
+global _:true
+*/
 
 ZOR.Sounds = (function ZORSounds() {
 

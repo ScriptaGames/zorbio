@@ -12,6 +12,7 @@ let perfNow       = require("performance-now");
 let uuid          = require("node-uuid");
 let cookie        = require("cookie");
 let Backend       = require("./Backend.js");
+let _             = require("lodash");
 
 /**
  * This module contains all of the app logic and state,

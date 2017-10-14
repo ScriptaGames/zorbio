@@ -1,12 +1,20 @@
-// Configuration values.  Values defined here are available to both the client and
-// the server.
+/**
+ * Configuration values.  Values defined here are available to both the client
+ * and the server.
+ */
+
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global linodeNearLocation:true
+global _:true
+global ZOR:true
+*/
 
 const NODEJS_CONFIG = typeof module !== 'undefined' && module.exports;
 
 
 if (NODEJS_CONFIG) {
     global.self = {}; // threejs expects there to be a global named 'self'... for some reason..
-    global.THREE = require('three');
     global._ = require('lodash');
     global.ZOR = { Env: require('../common/environment.js') };
 }

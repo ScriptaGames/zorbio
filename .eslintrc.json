@@ -20,7 +20,7 @@
                 "exceptions": { "VariableDeclarator": true }
             }
         ],
-        "no-undef": "off",
+//        "no-undef": "off",
         "max-len": [2, {
             "code": 180,
             "ignoreUrls": true

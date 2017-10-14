@@ -1,3 +1,8 @@
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+*/
+
 global.player = null;
 
 let ZORClient = require('../common/Client.js');

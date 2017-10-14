@@ -1,5 +1,17 @@
 // this is here to prep for modularizing (de-globalifying) this file
 
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global UTIL:true
+global THREE:true
+global _:true
+global isMobile:true
+global ga:true
+global linodeNearLocation:true
+global FoodController:true
+*/
 
 ZOR.Game = {};
 
@@ -630,7 +642,7 @@ function handleServerTick(serverTickData) {
         }
 
         // handle food captures
-        for (i = 0, l = serverTickData.fc.length; i < l; ++i) {
+        for (let i = 0, l = serverTickData.fc.length; i < l; ++i) {
             foodController.hideFood( serverTickData.fc[i] );
         }
     }

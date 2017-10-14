@@ -1,3 +1,9 @@
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global ZOR:true
+global schemapack:true
+*/
+
 const NODEJS_SCHEMAS = typeof module !== 'undefined' && module.exports;
 
 if (NODEJS_SCHEMAS) global.schemapack = require('schemapack');

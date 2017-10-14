@@ -1,3 +1,8 @@
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global ZOR:true
+*/
+
 const NODEJS_DRAIN = typeof module !== 'undefined' && module.exports;
 
 let THREE;

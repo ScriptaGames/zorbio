@@ -1,4 +1,14 @@
-
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global UTIL:true
+global THREE:true
+global _:true
+global playerFogCenter:true
+global SPE:true
+global camera:true
+*/
 
 /**
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks

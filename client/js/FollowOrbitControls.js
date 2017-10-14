@@ -8,6 +8,11 @@
  */
 /*global THREE, console */
 
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+*/
+
 ( function () {
 
     function cameraRoll(camera) {

@@ -1,7 +1,13 @@
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global THREE:true
+global playerFogCenter:true
+global SPE:true
+*/
 
 ZOR.PlayerSkins = ZOR.PlayerSkins || {};
-
-//
 
 ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
     const color = new THREE.Color('#D71C26');

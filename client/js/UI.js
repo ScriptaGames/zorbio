@@ -3,6 +3,20 @@
  *  handling chat display etc.
  */
 
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global THREE:true
+global _:true
+global startGame:true
+global isMobile:true
+global ga:true
+global Modernizr:true
+global respawnPlayer:true
+global Ractive:true
+global adsbygoogle:true
+*/
 
 
 ZOR.UI = function ZORUI() {

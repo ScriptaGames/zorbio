@@ -1,11 +1,17 @@
-
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global ZOR:true
+global config:true
+global THREE:true
+global playerFogCenter:true
+global UTIL:true
+*/
 
 /**
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
  * visually, and how to move it's different 3D pieces around.
  * @param playerView
  */
-
 ZOR.DrainView = function ZORDrainView() {
 
     this.MORPH_INDEX_STRETCH       = 0;

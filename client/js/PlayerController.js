@@ -1,4 +1,12 @@
-
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global UTIL:true
+global THREE:true
+global zorbioModel:true
+global player:true
+*/
 
 /**
  * This is the Player Controller that is the C in MVC, it has model that syncs state to the server, and a view

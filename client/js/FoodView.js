@@ -1,3 +1,12 @@
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global UTIL:true
+global THREE:true
+global _:true
+*/
+
 /**
  * Thew View part of Food MVC
  * @constructor

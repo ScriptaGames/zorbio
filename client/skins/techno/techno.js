@@ -1,3 +1,10 @@
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global THREE:true
+global playerFogCenter:true
+*/
 
 ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 

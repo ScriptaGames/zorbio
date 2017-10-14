@@ -1,3 +1,12 @@
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global ZOR:true
+global config:true
+global THREE:true
+global FoodView:true
+global player:true
+*/
+
 /**
  * The Controller part of Food MVC
  * @param model

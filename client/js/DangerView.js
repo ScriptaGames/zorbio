@@ -1,11 +1,17 @@
-
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global ZOR:true
+global THREE:true
+global UTIL:true
+global player:true
+global camera:true
+*/
 
 /**
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
  * visually, and how to move it's different 3D pieces around.
  * @param playerView
  */
-
 ZOR.DangerView = function ZORDangerView() {
 
     this.geometry = new THREE.SphereGeometry( 1, 64, 64 );

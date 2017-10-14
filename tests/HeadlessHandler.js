@@ -1,3 +1,8 @@
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global _:true
+*/
+
 let ZOR = {};
 
 let Zorbio = require('../common/zorbio.js');

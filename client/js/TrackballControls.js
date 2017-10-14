@@ -5,6 +5,15 @@
  * @author Luca Antiga  / http://lantiga.github.io
  */
 
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global UTIL:true
+global THREE:true
+global _:true
+*/
+
 THREE.TrackballControls = function ( object, domElement ) {
 
     let _this = this;

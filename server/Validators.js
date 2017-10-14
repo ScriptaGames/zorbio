@@ -1,8 +1,9 @@
-let config = require('../common/config.js');
-let _ = require('lodash');
+let config    = require('../common/config.js');
+let _         = require('lodash');
 let alphakeys = require('./alphakeys');
-let UTIL = require('../common/util');
+let UTIL      = require('../common/util');
 let profanity = require('./profanity');
+let THREE     = require('three');
 
 let Validators = {};
 
@@ -245,8 +246,8 @@ Validators.playerSphereScale = function (sphere) {
 /**
  * Checks for a valid nick
  *
- * @param {String} nickname
  * @returns {boolean}
+ * @param key
  */
 Validators.validAlphaKey = function ZORValidatorsValidAlphaKey(key) {
     if (!config.REQUIRE_ALPHA_KEY) return true;
