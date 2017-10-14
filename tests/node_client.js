@@ -30,13 +30,13 @@ let playerMeta = {
 zorClient.z_connectToServer(process.argv[2]);
 
 // Give the socket time to connect, then enter the game
-setTimeout(function () {
+setTimeout(function() {
     console.log("Entering game...");
     zorClient.z_sendEnterGame(playerMeta);
 }, 6000);
 
 // Simulates animate() loop
-setInterval(function () {
+setInterval(function() {
     if (global.gameStart && !global.playerDead) {
         addRecentPosition();
         zorClient.z_sendClientPositionRapid(global.player.sphere.id, global.player.sphere.position);

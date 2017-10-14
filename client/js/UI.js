@@ -344,11 +344,11 @@ ZOR.UI = function ZORUI() {
         setInterval(advanceMarquee, 5432);
 
         // call all the registered init handlers
-        _.each(init_handlers, function (f) { f(); });
+        _.each(init_handlers, function(f) { f(); });
     }
 
     function stateSetter(newState) {
-        return function (context) {
+        return function(context) {
             console.log('changing to ' + newState);
             state(newState);
         };
@@ -356,7 +356,7 @@ ZOR.UI = function ZORUI() {
 
     function showAd() {
         // There is a weird race condition with googles ads that require a timeout to make it work
-        setTimeout(function () {
+        setTimeout(function() {
             console.log("showing ad");
             (adsbygoogle = window.adsbygoogle || []).push({});
         }, 250);

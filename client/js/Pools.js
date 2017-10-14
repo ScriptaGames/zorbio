@@ -9,7 +9,7 @@ ZOR.Pools = {};
 
 // Sphere mesh pools
 
-(function () {
+(function() {
 
     function createSphere(polycountx, polycounty) {
         let polyx = polycountx || config.PLAYER_SPHERE_POLYCOUNT;

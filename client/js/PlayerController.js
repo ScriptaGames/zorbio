@@ -34,11 +34,11 @@ ZOR.PlayerController = function ZORPlayerController(model, scene, current) {
         this.initView(scene);
     }
 
-    this.model.abilities.speed_boost.on('activate', function () {
+    this.model.abilities.speed_boost.on('activate', function() {
         ZOR.Sounds.sfx.woosh.play();
     });
 
-    this.model.abilities.speed_boost.on('deactivate', function () {
+    this.model.abilities.speed_boost.on('deactivate', function() {
         ZOR.Sounds.sfx.woosh.stop();
     });
 };

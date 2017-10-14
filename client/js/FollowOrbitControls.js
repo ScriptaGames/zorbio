@@ -13,7 +13,7 @@
 global config:true
 */
 
-( function () {
+( function() {
 
     function cameraRoll(camera) {
         let cameraRollMatrix = new THREE.Matrix4();
@@ -31,7 +31,7 @@ global config:true
         };
     }
 
-    function FollowOrbitConstraint ( object ) {
+    function FollowOrbitConstraint( object ) {
 
         this.object = object;
 
@@ -86,25 +86,25 @@ global config:true
 
         // API
 
-        this.getPolarAngle = function () {
+        this.getPolarAngle = function() {
 
             return phi;
 
         };
 
-        this.getAzimuthalAngle = function () {
+        this.getAzimuthalAngle = function() {
 
             return theta;
 
         };
 
-        this.rotateLeft = function ( angle ) {
+        this.rotateLeft = function( angle ) {
 
             thetaDelta -= angle * config.X_AXIS_MULT;
 
         };
 
-        this.rotateUp = function ( angle ) {
+        this.rotateUp = function( angle ) {
 
             phiDelta -= angle * config.Y_AXIS_MULT;
 
@@ -115,7 +115,7 @@ global config:true
 
             let v = new THREE.Vector3();
 
-            return function panLeft ( distance ) {
+            return function panLeft( distance ) {
 
                 let te = this.object.matrix.elements;
 
@@ -134,7 +134,7 @@ global config:true
 
             let v = new THREE.Vector3();
 
-            return function panUp ( distance ) {
+            return function panUp( distance ) {
 
                 let te = this.object.matrix.elements;
 
@@ -150,7 +150,7 @@ global config:true
 
         // pass in x,y of change desired in pixel space,
         // right and down are positive
-        this.pan = function ( deltaX, deltaY, screenWidth, screenHeight ) {
+        this.pan = function( deltaX, deltaY, screenWidth, screenHeight ) {
             // perspective
             let position = scope.object.position;
             let offset = position.clone().sub( scope.target.position );
@@ -165,11 +165,11 @@ global config:true
             scope.panUp( 2 * dir * deltaY * targetDistance / screenHeight );
         };
 
-        this.dollyIn = function ( dollyScale ) {
+        this.dollyIn = function( dollyScale ) {
             scale /= dollyScale;
         };
 
-        this.dollyOut = function ( dollyScale ) {
+        this.dollyOut = function( dollyScale ) {
             scale *= dollyScale;
         };
 
@@ -186,7 +186,7 @@ global config:true
 
             scope.upside_down = false;
 
-            return function () {
+            return function() {
 
                 let position = this.object.position;
 
@@ -303,7 +303,7 @@ global config:true
     //    Zoom - middle mouse, or mousewheel / touch: two finger spread or squish
     //    Pan - right mouse, or arrow keys / touch: three finter swipe
 
-    THREE.FollowOrbitControls = function ( object, domElement ) {
+    THREE.FollowOrbitControls = function( object, domElement ) {
 
         let constraint = new FollowOrbitConstraint( object );
 
@@ -321,13 +321,13 @@ global config:true
 
         } );
 
-        this.getPolarAngle = function () {
+        this.getPolarAngle = function() {
 
             return constraint.getPolarAngle();
 
         };
 
-        this.getAzimuthalAngle = function () {
+        this.getAzimuthalAngle = function() {
 
             return constraint.getAzimuthalAngle();
 
@@ -417,7 +417,7 @@ global config:true
 
         }
 
-        this.update = function () {
+        this.update = function() {
 
             if ( this.autoRotate && state === STATE.NONE ) {
 
@@ -457,7 +457,7 @@ global config:true
 
         };
 
-        this.reset = function () {
+        this.reset = function() {
 
             state = STATE.NONE;
 
@@ -855,7 +855,7 @@ global config:true
 
         object: {
 
-            get: function () {
+            get: function() {
 
                 return this.constraint.object;
 
@@ -865,7 +865,7 @@ global config:true
 
         velocityRequest: {
 
-            get: function () {
+            get: function() {
 
                 return this.constraint.velocityRequest;
 
@@ -875,13 +875,13 @@ global config:true
 
         target: {
 
-            get: function () {
+            get: function() {
 
                 return this.constraint.target;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 // console.warn( 'THREE.FollowOrbitControls: target is now immutable. Use target.set() instead.' );
                 this.constraint.target = value;
@@ -892,13 +892,13 @@ global config:true
 
         minDistance : {
 
-            get: function () {
+            get: function() {
 
                 return this.constraint.minDistance;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 this.constraint.minDistance = value;
 
@@ -908,13 +908,13 @@ global config:true
 
         maxDistance : {
 
-            get: function () {
+            get: function() {
 
                 return this.constraint.maxDistance;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 this.constraint.maxDistance = value;
 
@@ -924,13 +924,13 @@ global config:true
 
         minZoom : {
 
-            get: function () {
+            get: function() {
 
                 return this.constraint.minZoom;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 this.constraint.minZoom = value;
 
@@ -940,13 +940,13 @@ global config:true
 
         maxZoom : {
 
-            get: function () {
+            get: function() {
 
                 return this.constraint.maxZoom;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 this.constraint.maxZoom = value;
 
@@ -956,13 +956,13 @@ global config:true
 
         minPolarAngle : {
 
-            get: function () {
+            get: function() {
 
                 return this.constraint.minPolarAngle;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 this.constraint.minPolarAngle = value;
 
@@ -972,13 +972,13 @@ global config:true
 
         maxPolarAngle : {
 
-            get: function () {
+            get: function() {
 
                 return this.constraint.maxPolarAngle;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 this.constraint.maxPolarAngle = value;
 
@@ -988,13 +988,13 @@ global config:true
 
         minAzimuthAngle : {
 
-            get: function () {
+            get: function() {
 
                 return this.constraint.minAzimuthAngle;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 this.constraint.minAzimuthAngle = value;
 
@@ -1004,13 +1004,13 @@ global config:true
 
         maxAzimuthAngle : {
 
-            get: function () {
+            get: function() {
 
                 return this.constraint.maxAzimuthAngle;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 this.constraint.maxAzimuthAngle = value;
 
@@ -1020,13 +1020,13 @@ global config:true
 
         enableDamping : {
 
-            get: function () {
+            get: function() {
 
                 return this.constraint.enableDamping;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 this.constraint.enableDamping = value;
 
@@ -1036,13 +1036,13 @@ global config:true
 
         dampingFactor : {
 
-            get: function () {
+            get: function() {
 
                 return this.constraint.dampingFactor;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 this.constraint.dampingFactor = value;
 
@@ -1054,14 +1054,14 @@ global config:true
 
         noZoom: {
 
-            get: function () {
+            get: function() {
 
                 console.warn( 'THREE.FollowOrbitControls: .noZoom has been deprecated. Use .enableZoom instead.' );
                 return ! this.enableZoom;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 console.warn( 'THREE.FollowOrbitControls: .noZoom has been deprecated. Use .enableZoom instead.' );
                 this.enableZoom = ! value;
@@ -1072,14 +1072,14 @@ global config:true
 
         noRotate: {
 
-            get: function () {
+            get: function() {
 
                 console.warn( 'THREE.FollowOrbitControls: .noRotate has been deprecated. Use .enableRotate instead.' );
                 return ! this.enableRotate;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 console.warn( 'THREE.FollowOrbitControls: .noRotate has been deprecated. Use .enableRotate instead.' );
                 this.enableRotate = ! value;
@@ -1090,14 +1090,14 @@ global config:true
 
         noPan: {
 
-            get: function () {
+            get: function() {
 
                 console.warn( 'THREE.FollowOrbitControls: .noPan has been deprecated. Use .enablePan instead.' );
                 return ! this.enablePan;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 console.warn( 'THREE.FollowOrbitControls: .noPan has been deprecated. Use .enablePan instead.' );
                 this.enablePan = ! value;
@@ -1108,14 +1108,14 @@ global config:true
 
         noKeys: {
 
-            get: function () {
+            get: function() {
 
                 console.warn( 'THREE.FollowOrbitControls: .noKeys has been deprecated. Use .enableKeys instead.' );
                 return ! this.enableKeys;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 console.warn( 'THREE.FollowOrbitControls: .noKeys has been deprecated. Use .enableKeys instead.' );
                 this.enableKeys = ! value;
@@ -1126,14 +1126,14 @@ global config:true
 
         staticMoving : {
 
-            get: function () {
+            get: function() {
 
                 console.warn( 'THREE.FollowOrbitControls: .staticMoving has been deprecated. Use .enableDamping instead.' );
                 return ! this.constraint.enableDamping;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 console.warn( 'THREE.FollowOrbitControls: .staticMoving has been deprecated. Use .enableDamping instead.' );
                 this.constraint.enableDamping = ! value;
@@ -1144,14 +1144,14 @@ global config:true
 
         dynamicDampingFactor : {
 
-            get: function () {
+            get: function() {
 
                 console.warn( 'THREE.FollowOrbitControls: .dynamicDampingFactor has been renamed. Use .dampingFactor instead.' );
                 return this.constraint.dampingFactor;
 
             },
 
-            set: function ( value ) {
+            set: function( value ) {
 
                 console.warn( 'THREE.FollowOrbitControls: .dynamicDampingFactor has been renamed. Use .dampingFactor instead.' );
                 this.constraint.dampingFactor = value;

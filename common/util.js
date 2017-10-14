@@ -57,7 +57,7 @@ UTIL.getRandomArbitrary = function UTILGetRandomArbitrary(min, max) {
  * @param {String} nickname
  * @returns {Boolean}
  */
-UTIL.validNick = function UTILValidNick (nickname) {
+UTIL.validNick = function UTILValidNick(nickname) {
     let regex = /^\w*$/;
     return regex.exec(nickname) !== null;
 };

@@ -42,7 +42,7 @@ ZOR.ZORClient.prototype.z_connectToServer = function ZORconnectToServer(uri) {
     this.z_ws = new WebSocket( uri );
     this.z_ws.binaryType = 'arraybuffer';
 
-    this.z_ws.onopen = function wsOpen () {
+    this.z_ws.onopen = function wsOpen() {
         console.log("WebSocket connection established and ready.");
         self.z_setupSocket(self.z_ws);
     };

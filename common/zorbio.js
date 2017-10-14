@@ -462,7 +462,7 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     // Abilities
     this.abilities = {};
     this.abilities.speed_boost = new ZOR.SpeedBoostAbility(this.sphere);
-    this.abilities.speed_boost.on('deactivate', function () {
+    this.abilities.speed_boost.on('deactivate', function() {
         // start validating again at the regular speed
         self.sphere.recentPositions = [];
     });

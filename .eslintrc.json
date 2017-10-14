@@ -25,7 +25,7 @@
             "code": 180,
             "ignoreUrls": true
         }],
-        "space-before-function-paren": "off",
+//        "space-before-function-paren": "off",
         "quotes": "off",
         "no-console": "off",
         "camelcase": "off",

@@ -5,7 +5,7 @@ let _        = require('lodash');
 let datasets = require('datasets');
 let THREE    = require('three');
 
-let Bot = function (scale, model) {
+let Bot = function(scale, model) {
     //  Scope
     let self = this;
     self.model = model;

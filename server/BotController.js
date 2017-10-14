@@ -2,7 +2,7 @@ let config = require('../common/config.js');
 let Zorbio = require('../common/zorbio.js');
 let Bot    = require('./Bot.js');
 
-let BotController = function (model) {
+let BotController = function(model) {
     //  Scope
     let self = this;
 

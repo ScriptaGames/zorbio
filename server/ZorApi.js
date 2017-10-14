@@ -9,7 +9,7 @@ let Zorbio    = require('../common/zorbio.js');
  * @param sockets
  * @constructor
  */
-let ZorApi = function zorApi (app, instances) {
+let ZorApi = function zorApi(app, instances) {
     self.app = app;
     self.instances = instances;
 
@@ -18,7 +18,7 @@ let ZorApi = function zorApi (app, instances) {
     ///////////////////////////////////////////////////////////////////
 
     // Basic Auth
-    self.basicAuth = function appBasicAuth (req, res, next) {
+    self.basicAuth = function appBasicAuth(req, res, next) {
         let user = basicAuth(req);
         //noinspection JSUnresolvedVariable
         if (!user || !user.name || !user.pass) {
@@ -40,7 +40,7 @@ let ZorApi = function zorApi (app, instances) {
     /**
      * API to return the current count of players on this server
      */
-    self.app.get('/api/games', function (req, res) {
+    self.app.get('/api/games', function(req, res) {
         let total_players = 0;
         let total_bots = 0;
         let total_clients = 0;
@@ -77,7 +77,7 @@ let ZorApi = function zorApi (app, instances) {
     /**
      * API to return the current count of players on this server
      */
-    self.app.get('/api/games/:game_id/players/count', function (req, res) {
+    self.app.get('/api/games/:game_id/players/count', function(req, res) {
         let instance = self.instances[req.params.game_id];
         if (instance) {
             let count = instance.model.players.length;
@@ -92,7 +92,7 @@ let ZorApi = function zorApi (app, instances) {
     /**
      * API to return all the player objects on this server
      */
-    self.app.get('/api/games/:game_id/players', function (req, res) {
+    self.app.get('/api/games/:game_id/players', function(req, res) {
         let instance = self.instances[req.params.game_id];
         if (instance) {
             res.setHeader('content-type', 'application/json');
@@ -106,7 +106,7 @@ let ZorApi = function zorApi (app, instances) {
     /**
      * API to return all the player objects on this server
      */
-    self.app.get('/api/games/:game_id/out', function (req, res) {
+    self.app.get('/api/games/:game_id/out', function(req, res) {
         let instance = self.instances[req.params.game_id];
         if (instance) {
             res.setHeader('content-type', 'application/json');
@@ -120,7 +120,7 @@ let ZorApi = function zorApi (app, instances) {
     /**
      * API to return all the actor objects on this server
      */
-    self.app.get('/api/games/:game_id/actors', function (req, res) {
+    self.app.get('/api/games/:game_id/actors', function(req, res) {
         let instance = self.instances[req.params.game_id];
         if (instance) {
             res.setHeader('content-type', 'application/json');
@@ -134,7 +134,7 @@ let ZorApi = function zorApi (app, instances) {
     /**
      * API to return all the actor objects on this server
      */
-    self.app.get('/api/games/:game_id/food', function (req, res) {
+    self.app.get('/api/games/:game_id/food', function(req, res) {
         let instance = self.instances[req.params.game_id];
         if (instance) {
             let foodModel = {};
@@ -154,7 +154,7 @@ let ZorApi = function zorApi (app, instances) {
     /**
      * API to number of socket connections
      */
-    self.app.get('/api/games/:game_id/clients/count', function (req, res) {
+    self.app.get('/api/games/:game_id/clients/count', function(req, res) {
         let instance = self.instances[req.params.game_id];
         if (instance) {
             let clientIds = Object.getOwnPropertyNames(instance.clients);

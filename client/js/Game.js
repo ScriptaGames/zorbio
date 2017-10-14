@@ -90,7 +90,7 @@ function startGame(type) {
 
     if (config.MUSIC_ENABLED) {
         ZOR.Sounds.stopMusic();
-        setTimeout(function () { ZOR.Sounds.playMusic('play') }, 1000);
+        setTimeout(function() { ZOR.Sounds.playMusic('play') }, 1000);
     }
 
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
@@ -127,7 +127,7 @@ function respawnPlayer() {
     console.log("Respawning player: ", player.getPlayerId());
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
     ZOR.Sounds.stopMusic();
-    setTimeout(function () { ZOR.Sounds.playMusic('play') }, 1000);
+    setTimeout(function() { ZOR.Sounds.playMusic('play') }, 1000);
     gameStart = false;
     zorClient.z_sendRespawn();
 }
@@ -136,7 +136,7 @@ function createScene() {
 
     // a function to reveal the canvas after a few frames have been drawn.
     // turns into a noop afterwards.
-    let revealCanvas = _.after(4, function () {
+    let revealCanvas = _.after(4, function() {
         canvas.classList.add('active');
         ZOR.UI.engine.set('loading', false);
     });

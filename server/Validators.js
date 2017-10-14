@@ -18,11 +18,11 @@ Validators.ErrorCodes = {
 
 Validators.v3 = new THREE.Vector3();
 
-Validators.is_profane = function (str) {
+Validators.is_profane = function(str) {
     return profanity.filter(str).indexOf('*') >= 0;
 };
 
-Validators.movement = function () {
+Validators.movement = function() {
 
     let MS_PER_FRAME = 1/60 * 1000;
     let recentSpeeds = [];
@@ -36,7 +36,7 @@ Validators.movement = function () {
     let point_a = new THREE.Vector3();
     let point_b = new THREE.Vector3();
 
-    return function (sphere, actor, model) {
+    return function(sphere, actor, model) {
         if (!config.ENABLE_VALIDATION) return 0;
 
         // Give the player a grace period while they are loading before validating movement.
@@ -132,7 +132,7 @@ Validators.movement = function () {
 
 Validators.movementSampled = UTIL.nth( Validators.movement, config.MOVE_VALIDATION_SAMPLE_RATE );
 
-Validators.foodCapture = function (model, fi, sphere, radius) {
+Validators.foodCapture = function(model, fi, sphere, radius) {
     if (!config.ENABLE_VALIDATION) return 0;
 
     // Make sure this actor is in the model
@@ -165,7 +165,7 @@ Validators.foodCapture = function (model, fi, sphere, radius) {
     return 0;
 };
 
-Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, sendingSphere) {
+Validators.playerCapture = function(attackingPlayerId, targetPlayerId, model, sendingSphere) {
     if (!config.ENABLE_VALIDATION) return 0;
 
     // Make sure target is in model
@@ -221,7 +221,7 @@ Validators.playerCapture = function (attackingPlayerId, targetPlayerId, model, s
     return 0;  // valid capture
 };
 
-Validators.playerSphereScale = function (sphere) {
+Validators.playerSphereScale = function(sphere) {
     if (!config.ENABLE_VALIDATION) return 0;
 
     let recentPositions = sphere.recentPositions;

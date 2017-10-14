@@ -22,7 +22,7 @@ let _             = require("lodash");
  * @param port
  * @constructor
  */
-let AppServer = function (id, app, server_label, port) {
+let AppServer = function(id, app, server_label, port) {
     //  Scope
     let self = this;
 
@@ -544,7 +544,7 @@ let AppServer = function (id, app, server_label, port) {
         self.status.au_send_metric.add(send_gap);
     };
 
-    self.foodCapture = function appFoodCapture (player, fi, actor, origRadius) {
+    self.foodCapture = function appFoodCapture(player, fi, actor, origRadius) {
         let food_value = config.FOOD_GET_VALUE(origRadius);
 
         let err = Validators.foodCapture(self.model, fi, actor, origRadius);

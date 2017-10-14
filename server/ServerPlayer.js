@@ -7,7 +7,7 @@ let ServerPlayer = function ZORServerPlayer(player_id, name, color, skin, type, 
 
     let self = this;
 
-    this.abilities.speed_boost.on('update', function () {
+    this.abilities.speed_boost.on('update', function() {
 
         // Get active duration in seconds
         let active_duration = self.abilities.speed_boost.active_duration / 1000;

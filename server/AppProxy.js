@@ -6,7 +6,7 @@ let rq        = require('request');
 let cookie    = require('cookie');
 
 
-let AppProxy = function (wss, app, server_label, port) {
+let AppProxy = function(wss, app, server_label, port) {
     //  Scope
     let self = this;
     self.wss = wss;
@@ -22,7 +22,7 @@ let AppProxy = function (wss, app, server_label, port) {
     self.api = new ZorApi(self.app, self.gameInstances);
 
     // Route to write sticky session cookie for linode nodebalancer at given location
-    self.app.get('/nbsrv/:nb/:id', function (req, res) {
+    self.app.get('/nbsrv/:nb/:id', function(req, res) {
         let balancer = req.params.nb;
         let node_id = req.params.id;
 
@@ -40,7 +40,7 @@ let AppProxy = function (wss, app, server_label, port) {
     });
 
     // Route to set the cookie at the nodebalancer subdomain and bounce back to homepage
-    self.app.get('/nbsrv_bounce/:id', function (req, res) {
+    self.app.get('/nbsrv_bounce/:id', function(req, res) {
         let node_id = req.params.id;
 
         // Set a new cookie with the name
@@ -96,7 +96,7 @@ let AppProxy = function (wss, app, server_label, port) {
 
         console.log("Checking version...");
 
-        rq.get(options, function (error, response, body) {
+        rq.get(options, function(error, response, body) {
             if (!error && response.statusCode === 200) {
                 try {
                     let res = JSON.parse(body);

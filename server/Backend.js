@@ -10,7 +10,7 @@ let App42 = require("./lib/app42/node_sdk/app42.js");
  * Abstraction of implementing service, so implmentation can be switched out if needed.
  * @constructor
  */
-let Backend = function () {
+let Backend = function() {
     if (!config.ENABLE_BACKEND_SERVICE) return;
 
     //  Scope
@@ -57,13 +57,13 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
 
     let child = exec(command);  // Execute command
 
-    child.stdout.on('data', function (data) {
+    child.stdout.on('data', function(data) {
         result += data;
     });
-    child.stderr.on('data', function (data) {
+    child.stderr.on('data', function(data) {
         result += data;
     });
-    child.on('close', function () {
+    child.on('close', function() {
         try {
             jsonResponse = JSON.parse(result);
             if (jsonResponse && jsonResponse.app42.response.success === true) {
@@ -102,13 +102,13 @@ Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, 
 
     let child = exec(command);  // Execute command
 
-    child.stdout.on('data', function (data) {
+    child.stdout.on('data', function(data) {
         result += data;
     });
-    child.stderr.on('data', function (data) {
+    child.stderr.on('data', function(data) {
         result += data;
     });
-    child.on('close', function () {
+    child.on('close', function() {
         try {
             jsonResponse = JSON.parse(result);
             if (jsonResponse && jsonResponse.app42.response.success === true) {
