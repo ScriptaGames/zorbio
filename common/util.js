@@ -206,14 +206,12 @@ function hitzn( p, r, v, w ) {
  * @returns {Boolean} whether the wall would be hit after applying given velocity
  */
 UTIL.checkWallCollision = function UTILcheckWallCollision( p, r, v, w ) {
-
     return hitxp( p, r, v, w ) ||
         hitxn( p, r, v, w ) ||
         hityp( p, r, v, w ) ||
         hityn( p, r, v, w ) ||
         hitzp( p, r, v, w ) ||
         hitzn( p, r, v, w );
-
 };
 
 /**

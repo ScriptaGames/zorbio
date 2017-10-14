@@ -364,7 +364,6 @@ let AppServer = function(id, app, server_label, port) {
                 msg.food_capture_queue.forEach(function captureEachFood(food_entry) {
                     self.foodCapture(currentPlayer, food_entry.fi, actor, food_entry.radius);
                 });
-
             } else {
                 switch (err) {
                     case Validators.ErrorCodes.SPEED_TO_FAST:
@@ -468,7 +467,6 @@ let AppServer = function(id, app, server_label, port) {
             drain_target = drainers[player_id][0];
 
             if (drain_target && drain_target.id > 0) {
-
                 drainee_id = drain_target.id;
 
                 drainer.drain_target_id = drainee_id;
@@ -591,7 +589,6 @@ let AppServer = function(id, app, server_label, port) {
             p1 = players_array[i];
 
             while (j--) {
-
                 if (i === j) continue; // don't compare player to itself
 
                 // find the distance between these two players
@@ -658,7 +655,6 @@ let AppServer = function(id, app, server_label, port) {
     };
 
     self.capturePlayer = function appCapturePlayer(attackingPlayerId, targetPlayerId) {
-
         let attackingPlayer = self.model.getPlayerById(attackingPlayerId);
         let targetPlayer = self.model.getPlayerById(targetPlayerId);
 

@@ -54,7 +54,6 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
         p1 = players_array[i];
 
         while ( j-- ) {
-
             if (i === j) continue; // don't compare player to itself
 
             // find the distance between these two players
@@ -69,7 +68,6 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
 
             // if a player is close enough and small enough, save the p2's id
             if ( distance <= config.DRAIN_MAX_DISTANCE ) {
-
                 if ( p1_scale < p2_scale ) {
                     // if new drain is better than old drain, it wins
                     if (!drain[ p1.id ][0] || distance < drain[ p1.id ][0].dist) {

@@ -31,7 +31,7 @@
         "camelcase": "off",
 //        "semi": "off",
         "valid-jsdoc": "off",
-        "padded-blocks": "off",
+//        "padded-blocks": "off",
         "brace-style": "off",
         "space-before-blocks": "off",
         "prefer-rest-params": "off",

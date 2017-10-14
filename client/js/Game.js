@@ -62,7 +62,6 @@ ZOR.Game.fullscreen = function go_fullscreen() {
 };
 
 function startGame(type) {
-
     let fake_renderer, missing_extensions;
 
     // Before we do anything, make sure WebGL is supported by this browser
@@ -133,7 +132,6 @@ function respawnPlayer() {
 }
 
 function createScene() {
-
     // a function to reveal the canvas after a few frames have been drawn.
     // turns into a noop afterwards.
     let revealCanvas = _.after(4, function() {
@@ -154,7 +152,6 @@ function createScene() {
     }
 
     function init() {
-
         canvas = document.getElementById('render-canvas');
         scene = new THREE.Scene();
         // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
@@ -277,11 +274,9 @@ function createScene() {
     }
 
     function render() {
-
         ZOR.Game.renderer.render( scene, camera );
 
         revealCanvas();
-
     }
 }
 
@@ -399,7 +394,6 @@ function updateTargetLock() {
         let playerMesh     = intersects[0].object;
 
         if (playerMesh && playerMesh.player_id > 0) {
-
             let targeting_self = playerMesh.player_id === player.model.id;
 
             if (!targeting_self) {

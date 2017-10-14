@@ -9,7 +9,6 @@ global _:true
 */
 
 ZOR.Sounds = (function ZORSounds() {
-
     // A simple helper function to avoid repetition when creating Howl objects
     // for our sfx
     function howlSfx(path, custom) {
@@ -127,5 +126,4 @@ ZOR.Sounds = (function ZORSounds() {
     initSfxHacks();
 
     return sounds;
-
 })();

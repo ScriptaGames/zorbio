@@ -266,7 +266,6 @@ ZOR.Model.prototype.findNearestPlayerSphere = function ZORfindNearestPlayerSpher
  * @returns {boolean}
  */
 ZOR.Model.prototype.isSafeSpawnPosition = function ZORIsSafeSpawnPosition( nearest ) {
-
     if (nearest.dist < nearest.sphere.scale && nearest.sphere.scale > config.INITIAL_PLAYER_RADIUS) {
         return false;
     }
@@ -306,7 +305,6 @@ ZOR.Actor.prototype.reduce = function ZORActorReduce() {
 };
 
 ZOR.Actor.prototype.pushRecentPosition = function ZORActorPushRecentPosition(position) {
-
     // make a copy of the position
     position.position = new THREE.Vector3(position.position.x, position.position.y, position.position.z);
 
@@ -726,7 +724,6 @@ ZOR.expireLocks = function ZORExpireLocks() {
  * Static ID Generator, used to generate player IDs
  */
 ZOR.IdGenerator = function ZORIdGenerator() {
-
     let next_id = 0;
 
     function get_next_id() {

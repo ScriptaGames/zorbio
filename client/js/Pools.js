@@ -10,7 +10,6 @@ ZOR.Pools = {};
 // Sphere mesh pools
 
 (function() {
-
     function createSphere(polycountx, polycounty) {
         let polyx = polycountx || config.PLAYER_SPHERE_POLYCOUNT;
         let polyy = polycounty || config.PLAYER_SPHERE_POLYCOUNT;
@@ -21,7 +20,6 @@ ZOR.Pools = {};
 
     ZOR.Pools.spheres = new ZOR.ObjectPool(createSphere);
     ZOR.Pools.lowPolySpheres = new ZOR.ObjectPool(createSphere, [20, 10]);
-
 }());
 
 // Drain view pool

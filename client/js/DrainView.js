@@ -13,7 +13,6 @@ global UTIL:true
  * @param playerView
  */
 ZOR.DrainView = function ZORDrainView() {
-
     this.MORPH_INDEX_STRETCH       = 0;
     this.MORPH_INDEX_DRAINER_TAPER = 1;
     this.MORPH_INDEX_DRAINEE_TAPER = 2;
@@ -82,7 +81,6 @@ ZOR.DrainView = function ZORDrainView() {
 ZOR.DrainView.prototype.setPlayerView = function ZORDrainViewSetPlayerView(view) {
     this.playerView = view;
     this.material.uniforms.erColor.value = new THREE.Color(this.playerView.playerColor);
-
 };
 
 ZOR.DrainView.prototype.pinch = function pinch(x, h) {
@@ -93,7 +91,6 @@ ZOR.DrainView.prototype.pinch = function pinch(x, h) {
 };
 
 ZOR.DrainView.prototype.update = function ZORDrainViewUpdate( drain_target_id ) {
-
     if (drain_target_id === 0) {
         this.hide();
         return;  // no drain target

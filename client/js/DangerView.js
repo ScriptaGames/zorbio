@@ -13,7 +13,6 @@ global camera:true
  * @param playerView
  */
 ZOR.DangerView = function ZORDangerView() {
-
     this.geometry = new THREE.SphereGeometry( 1, 64, 64 );
     this.material = new THREE.ShaderMaterial({
         uniforms: {

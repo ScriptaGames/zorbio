@@ -20,7 +20,6 @@ global adsbygoogle:true
 
 
 ZOR.UI = function ZORUI() {
-
     let engine; // the UI engine, currently Ractive
     let initialized = false;
 
@@ -231,7 +230,6 @@ ZOR.UI = function ZORUI() {
      */
 
     function on( event, handler ) {
-
         // 'init' is a custom event owned by UI.js
         if (event === 'init') {
             if (initialized) {
@@ -252,7 +250,6 @@ ZOR.UI = function ZORUI() {
      */
 
     function validate_browser_features() {
-
         let missing_feature_names = _.chain(missing_browser_features())
             .keys()
             .union(config.BROWSER_FORCE_DISABLED_FEATURES)
@@ -288,7 +285,6 @@ ZOR.UI = function ZORUI() {
     }
 
     function init() {
-
         let partials = _.map( document.querySelectorAll('script[type="text/ractive"]'), make_partial ); // register all ractive templates as partials
 
         let mainTemplate;
@@ -366,7 +362,6 @@ ZOR.UI = function ZORUI() {
      * Initialize all the UI event handlers.
      */
     function init_events() {
-
         if (localStorage.alpha_key) {
             engine.set('alpha_key', localStorage.alpha_key);
         }
@@ -551,7 +546,6 @@ ZOR.UI = function ZORUI() {
         if (indirectVisitor) {
             uidata.marquee_messages.unshift('Bookmark us at <a href="http://zor.bio" target="_top">http://<strong>zor.bio</strong></a>!');
         }
-
     }
 
     /**
@@ -604,6 +598,5 @@ ZOR.UI = function ZORUI() {
     fetch_then_init();
 
     return api;
-
 }();
 

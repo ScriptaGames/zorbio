@@ -25,7 +25,6 @@ require("console-stamp")(console, {pattern: "mm/dd/yyyy HH:MM:ss.l"});
  *  Define the sample server.
  */
 let MainServer = function() {
-
     //  Scope
     let self = this;
 

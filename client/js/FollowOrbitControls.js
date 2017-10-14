@@ -14,7 +14,6 @@ global config:true
 */
 
 ( function() {
-
     function cameraRoll(camera) {
         let cameraRollMatrix = new THREE.Matrix4();
 
@@ -32,7 +31,6 @@ global config:true
     }
 
     function FollowOrbitConstraint( object ) {
-
         this.object = object;
 
         cameraRoll(this.object);
@@ -87,36 +85,26 @@ global config:true
         // API
 
         this.getPolarAngle = function() {
-
             return phi;
-
         };
 
         this.getAzimuthalAngle = function() {
-
             return theta;
-
         };
 
         this.rotateLeft = function( angle ) {
-
             thetaDelta -= angle * config.X_AXIS_MULT;
-
         };
 
         this.rotateUp = function( angle ) {
-
             phiDelta -= angle * config.Y_AXIS_MULT;
-
         };
 
         // pass in distance in world space to move left
         this.panLeft = function() {
-
             let v = new THREE.Vector3();
 
             return function panLeft( distance ) {
-
                 let te = this.object.matrix.elements;
 
                 // get X column of matrix
@@ -124,18 +112,14 @@ global config:true
                 v.multiplyScalar( - distance );
 
                 scope.velocityRequest.add( v );
-
             };
-
         }();
 
         // pass in distance in world space to move up
         this.panUp = function() {
-
             let v = new THREE.Vector3();
 
             return function panUp( distance ) {
-
                 let te = this.object.matrix.elements;
 
                 // get Y column of matrix
@@ -143,9 +127,7 @@ global config:true
                 v.multiplyScalar( distance );
 
                 scope.velocityRequest.add( v );
-
             };
-
         }();
 
         // pass in x,y of change desired in pixel space,
@@ -174,7 +156,6 @@ global config:true
         };
 
         this.update = function() {
-
             let offset = new THREE.Vector3();
 
             // so camera.up is the orbit axis
@@ -187,7 +168,6 @@ global config:true
             scope.upside_down = false;
 
             return function() {
-
                 let position = this.object.position;
 
                 offset.copy( position ).sub( this.target.position );
@@ -257,15 +237,11 @@ global config:true
                 this.object.lookAt( this.target.position );
 
                 if ( this.enableDamping === true ) {
-
                     thetaDelta *= ( 1 - this.dampingFactor );
                     phiDelta *= ( 1 - this.dampingFactor );
-
                 } else {
-
                     thetaDelta = 0;
                     phiDelta = 0;
-
                 }
 
                 scale = 1;
@@ -277,21 +253,16 @@ global config:true
                 if ( zoomChanged ||
                     lastPosition.distanceToSquared( this.object.position ) > EPS ||
                         8 * ( 1 - lastQuaternion.dot( this.object.quaternion ) ) > EPS ) {
-
                     lastPosition.copy( this.object.position );
                     lastQuaternion.copy( this.object.quaternion );
                     zoomChanged = false;
 
                     return true;
-
                 }
 
                 return false;
-
             };
-
         }();
-
     }
 
 
@@ -304,7 +275,6 @@ global config:true
     //    Pan - right mouse, or arrow keys / touch: three finter swipe
 
     THREE.FollowOrbitControls = function( object, domElement ) {
-
         let constraint = new FollowOrbitConstraint( object );
 
         this.domElement = ( domElement !== undefined ) ? domElement : document;
@@ -314,23 +284,17 @@ global config:true
         Object.defineProperty( this, 'constraint', {
 
             get: function() {
-
                 return constraint;
-
             }
 
         } );
 
         this.getPolarAngle = function() {
-
             return constraint.getPolarAngle();
-
         };
 
         this.getAzimuthalAngle = function() {
-
             return constraint.getAzimuthalAngle();
-
         };
 
         // Set to false to disable this control
@@ -410,23 +374,17 @@ global config:true
         // pass in x,y of change desired in pixel space,
         // right and down are positive
         function pan( deltaX, deltaY ) {
-
             let element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
             constraint.pan( deltaX, deltaY, element.clientWidth, element.clientHeight );
-
         }
 
         this.update = function() {
-
             if ( this.autoRotate && state === STATE.NONE ) {
-
                 constraint.rotateLeft( getAutoRotationAngle() );
-
             }
 
             if ( config.STEERING.NAME === 'FOLLOW' ) {
-
                 if ( scope.enableRotate === false ) return;
 
                 spin.setX( element.clientWidth  / 2 - mouseX );
@@ -446,19 +404,14 @@ global config:true
                 constraint.rotateUp( spin.y );
 
                 rotateStart.copy( rotateEnd );
-
             }
 
             if ( constraint.update() === true ) {
-
                 this.dispatchEvent( changeEvent );
-
             }
-
         };
 
         this.reset = function() {
-
             state = STATE.NONE;
 
             this.target.position.copy( this.target0 );
@@ -469,54 +422,41 @@ global config:true
             this.dispatchEvent( changeEvent );
 
             this.update();
-
         };
 
         function getAutoRotationAngle() {
-
             return 2 * Math.PI / 60 / 60 * scope.autoRotateSpeed;
-
         }
 
         function getZoomScale() {
-
             return Math.pow( 0.95, scope.zoomSpeed );
-
         }
 
         function onMouseDown( event ) {
-
             if ( scope.enabled === false ) return;
             if ( config.STEERING.NAME !== 'DRAG' ) return;
 
             event.preventDefault();
 
             if ( event.button === scope.mouseButtons.ORBIT ) {
-
                 if ( scope.enableRotate === false ) return;
 
                 state = STATE.ROTATE;
 
                 rotateStart.set( event.clientX, event.clientY );
-
             } else if ( event.button === scope.mouseButtons.PAN ) {
-
                 if ( scope.enablePan === false ) return;
 
                 state = STATE.PAN;
 
                 panStart.set( event.clientX, event.clientY );
-
             }
 
             if ( state !== STATE.NONE ) {
-
                 document.addEventListener( 'mousemove', onMouseMove, false );
                 document.addEventListener( 'mouseup', onMouseUp, false );
                 scope.dispatchEvent( startEvent );
-
             }
-
         }
 
         function slopewell( r ) {
@@ -524,7 +464,6 @@ global config:true
         }
 
         function onMouseMove( event ) {
-
             mouseX = event.clientX;
             mouseY = event.clientY;
 
@@ -536,7 +475,6 @@ global config:true
             let element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
             if ( state === STATE.ROTATE ) {
-
                 if ( scope.enableRotate === false ) return;
 
                 rotateEnd.set( event.clientX, event.clientY );
@@ -549,28 +487,20 @@ global config:true
                 constraint.rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight * scope.rotateSpeed );
 
                 rotateStart.copy( rotateEnd );
-
             } else if ( state === STATE.DOLLY ) {
-
                 if ( scope.enableZoom === false ) return;
 
                 dollyEnd.set( event.clientX, event.clientY );
                 dollyDelta.subVectors( dollyEnd, dollyStart );
 
                 if ( dollyDelta.y > 0 ) {
-
                     constraint.dollyIn( getZoomScale() );
-
                 } else if ( dollyDelta.y < 0 ) {
-
                     constraint.dollyOut( getZoomScale() );
-
                 }
 
                 dollyStart.copy( dollyEnd );
-
             } else if ( state === STATE.PAN ) {
-
                 if ( scope.enablePan === false ) return;
 
                 panEnd.set( event.clientX, event.clientY );
@@ -579,26 +509,21 @@ global config:true
                 pan( panDelta.x, panDelta.y );
 
                 panStart.copy( panEnd );
-
             }
 
             if ( state !== STATE.NONE ) scope.update();
-
         }
 
         function onMouseUp( /* event */ ) {
-
             if ( scope.enabled === false ) return;
 
             document.removeEventListener( 'mousemove', onMouseMove, false );
             document.removeEventListener( 'mouseup', onMouseUp, false );
             scope.dispatchEvent( endEvent );
             state = STATE.NONE;
-
         }
 
         function onMouseWheel( event ) {
-
             if ( scope.enabled === false || scope.enableZoom === false || state !== STATE.NONE ) return;
 
             event.preventDefault();
@@ -607,41 +532,30 @@ global config:true
             let delta = 0;
 
             if ( event.wheelDelta !== undefined ) {
-
                 // WebKit / Opera / Explorer 9
 
                 delta = event.wheelDelta;
-
             } else if ( event.detail !== undefined ) {
-
                 // Firefox
 
                 delta = - event.detail;
-
             }
 
             if ( delta > 0 ) {
-
                 constraint.dollyOut( getZoomScale() );
-
             } else if ( delta < 0 ) {
-
                 constraint.dollyIn( getZoomScale() );
-
             }
 
             scope.update();
             scope.dispatchEvent( startEvent );
             scope.dispatchEvent( endEvent );
-
         }
 
         function onKeyDown(event) {
-
             if (scope.enabled === false || scope.enableKeys === false || scope.enablePan === false) return;
 
             switch (event.keyCode) {
-
                 case scope.keys.UP:
                     pan(0, scope.keyPanSpeed);
                     scope.update();
@@ -661,20 +575,15 @@ global config:true
                     pan(-scope.keyPanSpeed, 0);
                     scope.update();
                     break;
-
             }
-
         }
 
         function touchstart(event) {
-
             if (scope.enabled === false) return;
 
             switch (event.touches.length) {
-
                 // one-fingered touch: rotate
                 case 1: {
-
                     if (scope.enableRotate === false) return;
 
                     state = STATE.TOUCH_ROTATE;
@@ -685,7 +594,6 @@ global config:true
 
                 // two-fingered touch: dolly
                 case 2: {
-
                     if (scope.enableZoom === false) return;
 
                     state = STATE.TOUCH_DOLLY;
@@ -699,7 +607,6 @@ global config:true
 
                 // three-fingered touch: pan
                 case 3: {
-
                     if (scope.enablePan === false) return;
 
                     state = STATE.TOUCH_PAN;
@@ -709,15 +616,12 @@ global config:true
                 }
                 default:
                     state = STATE.NONE;
-
             }
 
             if (state !== STATE.NONE) scope.dispatchEvent(startEvent);
-
         }
 
         function touchmove(event) {
-
             if (scope.enabled === false) return;
 
             event.preventDefault();
@@ -726,10 +630,8 @@ global config:true
             let element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
             switch (event.touches.length) {
-
                 // one-fingered touch: rotate
                 case 1: {
-
                     if (scope.enableRotate === false) return;
                     if (state !== STATE.TOUCH_ROTATE) return;
 
@@ -749,7 +651,6 @@ global config:true
 
                 // two-fingered touch: dolly
                 case 2: {
-
                     if (scope.enableZoom === false) return;
                     if (state !== STATE.TOUCH_DOLLY) return;
 
@@ -761,13 +662,9 @@ global config:true
                     dollyDelta.subVectors(dollyEnd, dollyStart);
 
                     if (dollyDelta.y > 0) {
-
                         constraint.dollyOut(getZoomScale());
-
                     } else if (dollyDelta.y < 0) {
-
                         constraint.dollyIn(getZoomScale());
-
                     }
 
                     dollyStart.copy(dollyEnd);
@@ -778,7 +675,6 @@ global config:true
 
                 // three-fingered touch: pan
                 case 3: {
-
                     if (scope.enablePan === false) return;
                     if (state !== STATE.TOUCH_PAN) return;
 
@@ -798,22 +694,17 @@ global config:true
         }
 
         function touchend( /* event */ ) {
-
             if ( scope.enabled === false ) return;
 
             scope.dispatchEvent( endEvent );
             state = STATE.NONE;
-
         }
 
         function contextmenu( event ) {
-
             event.preventDefault();
-
         }
 
         this.dispose = function() {
-
             this.domElement.removeEventListener( 'contextmenu', contextmenu, false );
             this.domElement.removeEventListener( 'mousedown', onMouseDown, false );
             this.domElement.removeEventListener( 'mousewheel', onMouseWheel, false );
@@ -827,7 +718,6 @@ global config:true
             document.removeEventListener( 'mouseup', onMouseUp, false );
 
             window.removeEventListener( 'keydown', onKeyDown, false );
-
         };
 
         this.domElement.addEventListener( 'contextmenu', contextmenu, false );
@@ -845,7 +735,6 @@ global config:true
 
         // force an update at start
         this.update();
-
     };
 
     THREE.FollowOrbitControls.prototype = Object.create( THREE.EventDispatcher.prototype );
@@ -856,9 +745,7 @@ global config:true
         object: {
 
             get: function() {
-
                 return this.constraint.object;
-
             }
 
         },
@@ -866,9 +753,7 @@ global config:true
         velocityRequest: {
 
             get: function() {
-
                 return this.constraint.velocityRequest;
-
             }
 
         },
@@ -876,16 +761,12 @@ global config:true
         target: {
 
             get: function() {
-
                 return this.constraint.target;
-
             },
 
             set: function( value ) {
-
                 // console.warn( 'THREE.FollowOrbitControls: target is now immutable. Use target.set() instead.' );
                 this.constraint.target = value;
-
             }
 
         },
@@ -893,15 +774,11 @@ global config:true
         minDistance : {
 
             get: function() {
-
                 return this.constraint.minDistance;
-
             },
 
             set: function( value ) {
-
                 this.constraint.minDistance = value;
-
             }
 
         },
@@ -909,15 +786,11 @@ global config:true
         maxDistance : {
 
             get: function() {
-
                 return this.constraint.maxDistance;
-
             },
 
             set: function( value ) {
-
                 this.constraint.maxDistance = value;
-
             }
 
         },
@@ -925,15 +798,11 @@ global config:true
         minZoom : {
 
             get: function() {
-
                 return this.constraint.minZoom;
-
             },
 
             set: function( value ) {
-
                 this.constraint.minZoom = value;
-
             }
 
         },
@@ -941,15 +810,11 @@ global config:true
         maxZoom : {
 
             get: function() {
-
                 return this.constraint.maxZoom;
-
             },
 
             set: function( value ) {
-
                 this.constraint.maxZoom = value;
-
             }
 
         },
@@ -957,15 +822,11 @@ global config:true
         minPolarAngle : {
 
             get: function() {
-
                 return this.constraint.minPolarAngle;
-
             },
 
             set: function( value ) {
-
                 this.constraint.minPolarAngle = value;
-
             }
 
         },
@@ -973,15 +834,11 @@ global config:true
         maxPolarAngle : {
 
             get: function() {
-
                 return this.constraint.maxPolarAngle;
-
             },
 
             set: function( value ) {
-
                 this.constraint.maxPolarAngle = value;
-
             }
 
         },
@@ -989,15 +846,11 @@ global config:true
         minAzimuthAngle : {
 
             get: function() {
-
                 return this.constraint.minAzimuthAngle;
-
             },
 
             set: function( value ) {
-
                 this.constraint.minAzimuthAngle = value;
-
             }
 
         },
@@ -1005,15 +858,11 @@ global config:true
         maxAzimuthAngle : {
 
             get: function() {
-
                 return this.constraint.maxAzimuthAngle;
-
             },
 
             set: function( value ) {
-
                 this.constraint.maxAzimuthAngle = value;
-
             }
 
         },
@@ -1021,15 +870,11 @@ global config:true
         enableDamping : {
 
             get: function() {
-
                 return this.constraint.enableDamping;
-
             },
 
             set: function( value ) {
-
                 this.constraint.enableDamping = value;
-
             }
 
         },
@@ -1037,15 +882,11 @@ global config:true
         dampingFactor : {
 
             get: function() {
-
                 return this.constraint.dampingFactor;
-
             },
 
             set: function( value ) {
-
                 this.constraint.dampingFactor = value;
-
             }
 
         },
@@ -1055,17 +896,13 @@ global config:true
         noZoom: {
 
             get: function() {
-
                 console.warn( 'THREE.FollowOrbitControls: .noZoom has been deprecated. Use .enableZoom instead.' );
                 return ! this.enableZoom;
-
             },
 
             set: function( value ) {
-
                 console.warn( 'THREE.FollowOrbitControls: .noZoom has been deprecated. Use .enableZoom instead.' );
                 this.enableZoom = ! value;
-
             }
 
         },
@@ -1073,17 +910,13 @@ global config:true
         noRotate: {
 
             get: function() {
-
                 console.warn( 'THREE.FollowOrbitControls: .noRotate has been deprecated. Use .enableRotate instead.' );
                 return ! this.enableRotate;
-
             },
 
             set: function( value ) {
-
                 console.warn( 'THREE.FollowOrbitControls: .noRotate has been deprecated. Use .enableRotate instead.' );
                 this.enableRotate = ! value;
-
             }
 
         },
@@ -1091,17 +924,13 @@ global config:true
         noPan: {
 
             get: function() {
-
                 console.warn( 'THREE.FollowOrbitControls: .noPan has been deprecated. Use .enablePan instead.' );
                 return ! this.enablePan;
-
             },
 
             set: function( value ) {
-
                 console.warn( 'THREE.FollowOrbitControls: .noPan has been deprecated. Use .enablePan instead.' );
                 this.enablePan = ! value;
-
             }
 
         },
@@ -1109,17 +938,13 @@ global config:true
         noKeys: {
 
             get: function() {
-
                 console.warn( 'THREE.FollowOrbitControls: .noKeys has been deprecated. Use .enableKeys instead.' );
                 return ! this.enableKeys;
-
             },
 
             set: function( value ) {
-
                 console.warn( 'THREE.FollowOrbitControls: .noKeys has been deprecated. Use .enableKeys instead.' );
                 this.enableKeys = ! value;
-
             }
 
         },
@@ -1127,17 +952,13 @@ global config:true
         staticMoving : {
 
             get: function() {
-
                 console.warn( 'THREE.FollowOrbitControls: .staticMoving has been deprecated. Use .enableDamping instead.' );
                 return ! this.constraint.enableDamping;
-
             },
 
             set: function( value ) {
-
                 console.warn( 'THREE.FollowOrbitControls: .staticMoving has been deprecated. Use .enableDamping instead.' );
                 this.constraint.enableDamping = ! value;
-
             }
 
         },
@@ -1145,21 +966,16 @@ global config:true
         dynamicDampingFactor : {
 
             get: function() {
-
                 console.warn( 'THREE.FollowOrbitControls: .dynamicDampingFactor has been renamed. Use .dampingFactor instead.' );
                 return this.constraint.dampingFactor;
-
             },
 
             set: function( value ) {
-
                 console.warn( 'THREE.FollowOrbitControls: .dynamicDampingFactor has been renamed. Use .dampingFactor instead.' );
                 this.constraint.dampingFactor = value;
-
             }
 
         }
 
     } );
-
 }() );

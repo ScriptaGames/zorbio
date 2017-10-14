@@ -12,7 +12,6 @@ global _:true
  * @constructor
  */
 let FoodView = function ZORFoodView() {
-
     this.initialized = false;
 
     this.drawFood = function ZORFoodViewDrawFood(scene, food, foodCount, fogCenterPosition, octree) {
@@ -36,7 +35,6 @@ let FoodView = function ZORFoodView() {
         let X, Y, Z, R, G, B;
         let offset = 0;
         for (let i = 0, l = foodCount; i < l; i++) {
-
             X = food[ offset     ];
             Y = food[ offset + 1 ];
             Z = food[ offset + 2 ];

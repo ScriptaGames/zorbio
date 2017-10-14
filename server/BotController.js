@@ -85,7 +85,6 @@ let BotController = function(model) {
     self.hasBots = function botHasBots() {
         return self.bots.length > 0;
     };
-
 };
 
 module.exports = BotController;

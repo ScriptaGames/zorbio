@@ -5,7 +5,6 @@ global ZOR:true
 */
 
 ZOR.LagScale = function ZORLagScale() {
-
     let IDEAL_FRAME_MS = 1/60 * 1000;
 
     let time  = get_time();

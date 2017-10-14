@@ -163,7 +163,6 @@ ZOR.PlayerController.prototype.setScale = function ZORPlayerControllerSetScale(s
 };
 
 ZOR.PlayerController.prototype.update = function ZORPlayerControllerUpdate(scene, camera, camera_controls, lag_scale) {
-
     // first update any player abilities
     this.model.abilities.speed_boost.update();
 

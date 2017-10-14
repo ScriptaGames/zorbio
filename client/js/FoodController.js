@@ -14,7 +14,6 @@ global player:true
  * @constructor
  */
 let FoodController = function ZORFoodController(model, fogCenterPosition) {
-
     this.model = model;
     this.view = new FoodView();
     this.fogCenterPosition = new THREE.Vector3();
@@ -46,7 +45,6 @@ let FoodController = function ZORFoodController(model, fogCenterPosition) {
      * @param fogCenterPosition
      */
     this.update = function ZORFoodControllerUpdate(fogCenterPosition) {
-
         // update the center position of the fog
         this.fogCenterPosition.copy(fogCenterPosition);
 
@@ -113,7 +111,6 @@ let FoodController = function ZORFoodController(model, fogCenterPosition) {
             let octreeObj = foodList[i];
             let fi = foodList[i].object.fi;
             if ( this.aliveFood( fi ) ) {
-
                 dist = octreeObj.position.distanceTo( mainSphere.position );
                 if ( dist <= ( sphere_radius + config.FOOD_CAPTURE_ASSIST ) ) {
                     callback( fi );

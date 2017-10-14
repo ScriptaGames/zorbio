@@ -23,7 +23,6 @@ Validators.is_profane = function(str) {
 };
 
 Validators.movement = function() {
-
     let MS_PER_FRAME = 1/60 * 1000;
     let recentSpeeds = [];
     let currentScale = 1;

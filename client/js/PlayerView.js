@@ -378,7 +378,6 @@ ZOR.PlayerView.prototype.removeTrail = function ZORPlayerViewRemoveTrail() {
         }
         this.trail.initialized = false;
     }
-
 };
 
 ZOR.PlayerView.prototype.removeCaptureParticles = function ZORPlayerViewRemoveCaptureParticles() {

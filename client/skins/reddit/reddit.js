@@ -10,7 +10,6 @@ global SPE:true
 ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 
 ZOR.PlayerSkins.reddit = function ZORRedditSkin(playerView) {
-
     return {
         poolname: 'spheres',
         material: new THREE.ShaderMaterial({
