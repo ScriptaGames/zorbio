@@ -50,7 +50,7 @@ ZOR.ZORMessageHandler.z_handleNetworkTermination = function ZORhandleNetworkTerm
     process.exit();
 };
 
-ZOR.ZORMessageHandler.z_handle_actor_updates = function ZORhandleActorUpdates(actors) {
+ZOR.ZORMessageHandler.z_handle_actor_updates = function ZORhandleActorUpdates() {
     // Headless don't really care about updating other players positions or size
 };
 
@@ -60,12 +60,12 @@ ZOR.ZORMessageHandler.z_handle_player_join = function ZORhandlePlayerJoin(newPla
     console.log('Player joined: ', newPlayer.id, newPlayer.name);
 };
 
-ZOR.ZORMessageHandler.z_handle_server_tick = function ZORHandleServerTick(data) {
+ZOR.ZORMessageHandler.z_handle_server_tick = function ZORHandleServerTick() {
     // don't care about anything in server tick slow
 };
 
 
-ZOR.ZORMessageHandler.z_handle_captured_player = function ZORHandleCapturePlayer(targetPlayerId) {
+ZOR.ZORMessageHandler.z_handle_captured_player = function ZORHandleCapturePlayer() {
     // Headless doesn't caputure players
 };
 
@@ -92,7 +92,7 @@ ZOR.ZORMessageHandler.z_handle_kick = function ZORhandleKick(reason) {
     global.playerDead = true;
 };
 
-ZOR.ZORMessageHandler.handle_speed_boost_res = function ZORhandleSpeedBoostRes(is_valid) {
+ZOR.ZORMessageHandler.handle_speed_boost_res = function ZORhandleSpeedBoostRes() {
     // Headless does not speedboost
 };
 
@@ -100,11 +100,11 @@ ZOR.ZORMessageHandler.z_handle_speed_boost_stop = function ZORhandleSpeedBoostSt
     // Headless does not speedboost
 };
 
-ZOR.ZORMessageHandler.z_handle_client_position_rapid = function ZORhandleClientPositionRapid(messageView) {
+ZOR.ZORMessageHandler.z_handle_client_position_rapid = function ZORhandleClientPositionRapid() {
     // dont care about updating client positions
 };
 
-ZOR.ZORMessageHandler.z_handle_leaderboard_update = function ZORHandLeaderboardUpdate(data) {
+ZOR.ZORMessageHandler.z_handle_leaderboard_update = function ZORHandLeaderboardUpdate() {
     // dont care
 };
 

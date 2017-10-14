@@ -10,7 +10,6 @@ global _:true
 global isMobile:true
 global ga:true
 global linodeNearLocation:true
-global FoodController:true
 */
 
 ZOR.Game = {};
@@ -183,7 +182,7 @@ function createScene() {
         camera.position.set(0, 0, 0);
 
         // food
-        foodController = new FoodController(zorbioModel, camera.position, scene);
+        foodController = new ZOR.FoodController(zorbioModel, camera.position, scene);
         foodController.drawFood(scene);
 
         // Hide currently respawning food

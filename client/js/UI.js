@@ -7,7 +7,6 @@
 /*
 global config:true
 global ZOR:true
-global THREE:true
 global _:true
 global startGame:true
 global isMobile:true
@@ -348,7 +347,7 @@ ZOR.UI = function ZORUI() {
     }
 
     function stateSetter(newState) {
-        return function(context) {
+        return function() {
             console.log('changing to ' + newState);
             state(newState);
         };
@@ -359,6 +358,9 @@ ZOR.UI = function ZORUI() {
         setTimeout(function() {
             console.log("showing ad");
             (adsbygoogle = window.adsbygoogle || []).push({});
+            if (adsbygoogle) {
+                // suppress eslint no-unused-vars error
+            }
         }, 250);
     }
 

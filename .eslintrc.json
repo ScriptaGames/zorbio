@@ -1,7 +1,6 @@
 {
     "env": {
         "browser": true,
-        "commonjs": true,
         "es6": true,
         "node": true
     },
@@ -13,19 +12,10 @@
         //        "space-before-function-paren": "off",
         //        "no-var": "off",
         //        "no-undef": "off",
-        "no-unused-vars": "off",
+        //        "no-unused-vars": "off",
         //        "semi": "off",
         //        "padded-blocks": "off",
         //        "space-before-blocks": "off",
-        "max-len": [
-            "error",
-            {
-                "code": 120,
-                "ignoreUrls": true,
-                "ignoreStrings": true,
-                "ignoreTrailingComments": true
-            }
-        ],
         "quotes": "off",
         "valid-jsdoc": "off",
         "prefer-rest-params": "off",
@@ -51,6 +41,12 @@
         "no-multi-spaces": "off",
         "no-console": "off",
         "camelcase": "off",
+        "no-unused-vars": [
+            "error",
+            {
+                "varsIgnorePattern": "startGame|respawnPlayer|createScene|initCameraAndPlayer|handle.*"
+            }
+        ],
         "brace-style": [
             "error",
             "stroustrup"
@@ -60,6 +56,15 @@
             4,
             {
                 "SwitchCase": 1
+            }
+        ],
+        "max-len": [
+            "error",
+            {
+                "code": 120,
+                "ignoreUrls": true,
+                "ignoreStrings": true,
+                "ignoreTrailingComments": true
             }
         ]
     }

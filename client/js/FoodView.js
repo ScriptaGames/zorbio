@@ -11,7 +11,7 @@ global _:true
  * Thew View part of Food MVC
  * @constructor
  */
-let FoodView = function ZORFoodView() {
+ZOR.FoodView = function ZORFoodView() {
     this.initialized = false;
 
     this.drawFood = function ZORFoodViewDrawFood(scene, food, foodCount, fogCenterPosition, octree) {

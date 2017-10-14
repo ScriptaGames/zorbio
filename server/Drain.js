@@ -1,25 +1,5 @@
-// ESLint global declarations: https://eslint.org/docs/rules/no-undef
-/*
-global ZOR:true
-*/
-
-const NODEJS_DRAIN = typeof module !== 'undefined' && module.exports;
-
-let THREE;
-let _;
-let UTIL;
-let config;
-
-
-// if we're running in nodejs, import THREE.  for browser, assume it's
-// already there.
-if (NODEJS_DRAIN) {
-    THREE  = require('three');
-    _      = require('lodash');
-    UTIL   = require('./util.js');
-    config = require('./config.js');
-    ZOR    = require('../common/zorbio.js');
-}
+let config = require('../common/config.js');
+let ZOR    = require('../common/zorbio.js');
 
 ZOR.Drain = {};
 
@@ -116,5 +96,4 @@ ZOR.Drain.bonusAmount = function ZORDrainBonusAmount( drainer_size, drainee_size
         - config.INITIAL_PLAYER_RADIUS) + 1;
 };
 
-// if we're in nodejs, export the root ZOR object
-if (NODEJS_DRAIN) module.exports = ZOR.Drain;
+module.exports = ZOR.Drain;

@@ -3,7 +3,6 @@
 global ZOR:true
 global config:true
 global THREE:true
-global FoodView:true
 global player:true
 */
 
@@ -13,9 +12,9 @@ global player:true
  * @param fogCenterPosition
  * @constructor
  */
-let FoodController = function ZORFoodController(model, fogCenterPosition) {
+ZOR.FoodController = function ZORFoodController(model, fogCenterPosition) {
     this.model = model;
-    this.view = new FoodView();
+    this.view = new ZOR.FoodView();
     this.fogCenterPosition = new THREE.Vector3();
 
     this.fogCenterPosition.copy(fogCenterPosition);
