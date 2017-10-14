@@ -122,7 +122,7 @@ let AppProxy = function(wss, app, server_label, port) {
             else {
                 console.error('Error response code form getting zorbio-version from github');
             }
-        }).on('error', function(){
+        }).on('error', function() {
             console.error('Error http request failed to get zorbio-version from github');
         }).end();
     };
