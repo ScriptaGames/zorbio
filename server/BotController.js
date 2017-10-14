@@ -22,7 +22,7 @@ let BotController = function(model) {
         self.model.players.push(bot.player);
         self.model.addActor(bot.player.sphere);
 
-        console.log("Spawned bot: ", bot.name, bot.player.id, bot.scale, self.currentSpawnCycle);
+        console.log('Spawned bot: ', bot.name, bot.player.id, bot.scale, self.currentSpawnCycle);
 
         return bot;
     };
@@ -70,7 +70,7 @@ let BotController = function(model) {
         // remove from model
         self.model.removePlayer(bot.player.id);
 
-        console.log("Removed bot: ", bot.id, bot.name, bot.scale);
+        console.log('Removed bot: ', bot.id, bot.name, bot.scale);
 
         return bot;
     };

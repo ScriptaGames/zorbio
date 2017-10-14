@@ -598,10 +598,10 @@ UTIL.filterName = function UTILFilterName(name) {
     let filtered_name = xssFilters.inHTMLData(name);
 
     // now also remove quotes because they break the backend
-    filtered_name = filtered_name.replace(/["']/g, "");
+    filtered_name = filtered_name.replace(/["']/g, '');
 
     if (UTIL.isBlank(filtered_name)) {
-        filtered_name = "Guest";
+        filtered_name = 'Guest';
     }
     else if (name.length > config.MAX_PLAYER_NAME_LENGTH) {
         filtered_name = filtered_name.substr(0, config.MAX_PLAYER_NAME_LENGTH);

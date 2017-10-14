@@ -43,7 +43,7 @@ ZOR.ZORClient.prototype.z_connectToServer = function ZORconnectToServer(uri) {
     this.z_ws.binaryType = 'arraybuffer';
 
     this.z_ws.onopen = function wsOpen() {
-        console.log("WebSocket connection established and ready.");
+        console.log('WebSocket connection established and ready.');
         self.z_setupSocket(self.z_ws);
     };
 };
@@ -64,7 +64,7 @@ ZOR.ZORClient.prototype.z_sendEnterGame = function ZORsendEnterGame(meta) {
             key: meta.key
         }));
 
-        console.log("Send enter game");
+        console.log('Send enter game');
     }
 };
 
@@ -76,7 +76,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     let self = this;
 
     ws.onmessage = function wsMessage(msg) {
-        if (typeof msg.data === "string") {
+        if (typeof msg.data === 'string') {
             let message = parseJson(msg.data);
 
             switch (message.op) {
@@ -141,7 +141,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
                         handle_msg_client_position_rapid(msgView);
                     }
                     else {
-                        console.error("Error: Unknown binary op code: ", op);
+                        console.error('Error: Unknown binary op code: ', op);
                     }
                 }
             }
@@ -156,7 +156,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     };
 
     ws.onerror = function wsError(e) {
-        console.error("Websocket error occured", e);
+        console.error('Websocket error occured', e);
     };
 
     function parseJson(msg) {
@@ -177,7 +177,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     }
 
     function handle_msg_welcome(msg) {
-        console.log("Welcome: ", msg.player.name);
+        console.log('Welcome: ', msg.player.name);
 
         self.z_playerModel = self.z_handler.z_handle_welcome(msg);
 
@@ -263,7 +263,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     }
 
     function handle_msg_speeding_warning() {
-        console.log("WARNING! You are speeding!");
+        console.log('WARNING! You are speeding!');
     }
 
     function handle_msg_speed_boost_res(msg) {
@@ -271,7 +271,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     }
 
     function handle_msg_speed_boost_stop() {
-        console.log("Received speed boost STOP");
+        console.log('Received speed boost STOP');
         self.z_handler.z_handle_speed_boost_stop();
         self.z_sendSpeedBoostStop();
     }
@@ -352,11 +352,11 @@ ZOR.ZORClient.prototype.z_sendClientPositionRapid = function ZORsendClientPositi
 };
 
 ZOR.ZORClient.prototype.z_sendSpeedBoostStart = function ZORsendSpeedBoostStart() {
-    this.z_ws.send(JSON.stringify({op: "speed_boost_start"}));
+    this.z_ws.send(JSON.stringify({op: 'speed_boost_start'}));
 };
 
 ZOR.ZORClient.prototype.z_sendSpeedBoostStop = function ZORsendSpeedBoostStop() {
-    this.z_ws.send(JSON.stringify({op: "speed_boost_stop"}));
+    this.z_ws.send(JSON.stringify({op: 'speed_boost_stop'}));
 };
 
 /**

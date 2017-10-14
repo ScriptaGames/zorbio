@@ -13,7 +13,7 @@ const DEV_SETTINGS = {
     FOOD_VALUE        : 5,
     DEBUG             : true,
     HEARTBEAT_ENABLE  : false,
-    BALANCER          : "LOCAL",
+    BALANCER          : 'LOCAL',
     CHECK_ORIGIN      : false,
     CHECK_VERSION     : false,
     REQUIRE_ALPHA_KEY : false,

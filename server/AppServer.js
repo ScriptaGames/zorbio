@@ -8,11 +8,11 @@ let WebSocket     = require('ws');
 let BotController = require('./BotController.js');
 let ServerPlayer  = require('./ServerPlayer.js');
 let Schemas       = require('../common/schemas.js');
-let perfNow       = require("performance-now");
-let uuid          = require("node-uuid");
-let cookie        = require("cookie");
-let Backend       = require("./Backend.js");
-let _             = require("lodash");
+let perfNow       = require('performance-now');
+let uuid          = require('node-uuid');
+let cookie        = require('cookie');
+let Backend       = require('./Backend.js');
+let _             = require('lodash');
 
 /**
  * This module contains all of the app logic and state,
@@ -73,7 +73,7 @@ let AppServer = function(id, app, server_label, port) {
         console.log.apply(null, arguments);
     };
 
-    self.log("Creating game instance with ID: ", self.id);
+    self.log('Creating game instance with ID: ', self.id);
 
     /**
      * Send message to all connected clients
@@ -130,7 +130,7 @@ let AppServer = function(id, app, server_label, port) {
         let player_not_in_model_count = 0;
 
         ws.on('message', function wsMessage(msg) {
-            if (typeof msg === "string") {
+            if (typeof msg === 'string') {
                 let message;
 
                 try {
@@ -138,7 +138,7 @@ let AppServer = function(id, app, server_label, port) {
                 }
                 catch(e) {
                     if (config.DEBUG) {
-                        console.error("error parsing json on message in wss: ", e);
+                        console.error('error parsing json on message in wss: ', e);
                     }
                     return;  // ignore
                 }
@@ -187,7 +187,7 @@ let AppServer = function(id, app, server_label, port) {
         });
 
         ws.on('error', function(e) {
-            console.error("WebSocket error occured for player_id", player_id, e);
+            console.error('WebSocket error occured for player_id', player_id, e);
         });
 
         function handle_enter_game(msg) {
@@ -201,7 +201,7 @@ let AppServer = function(id, app, server_label, port) {
             // Sanitize player name
             name = UTIL.filterName(name);
 
-            self.log("Player enter request: ", player_id, type, name, color, skin, key);
+            self.log('Player enter request: ', player_id, type, name, color, skin, key);
 
             // spawn the player
             handle_msg_respawn();
@@ -212,8 +212,8 @@ let AppServer = function(id, app, server_label, port) {
 
             if (currentPlayer && self.isPlayerInGame(currentPlayer.id)) {
                 // make sure this player isn't already connected and playing
-                self.log("Respawn error: Player is already in game");
-                self.kickPlayer(currentPlayer.id, "Forced respawn.");
+                self.log('Respawn error: Player is already in game');
+                self.kickPlayer(currentPlayer.id, 'Forced respawn.');
                 return;
             }
 
@@ -290,7 +290,7 @@ let AppServer = function(id, app, server_label, port) {
 
             currentPlayer.fps_metric.add(msg.fps);
 
-            ws.send(JSON.stringify({op: "zor_pong"}));
+            ws.send(JSON.stringify({op: 'zor_pong'}));
         }
 
         function handle_client_position_rapid(buffer) {
@@ -376,8 +376,8 @@ let AppServer = function(id, app, server_label, port) {
                     case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
                         player_not_in_model_count++;
                         if (player_not_in_model_count > config.MAX_NOT_IN_MODEL_ERRORS) {
-                            self.log("Player had to many not-in-model errors", player_not_in_model_count);
-                            self.kickPlayer(currentPlayer.id, "Disconnected from server");
+                            self.log('Player had to many not-in-model errors', player_not_in_model_count);
+                            self.kickPlayer(currentPlayer.id, 'Disconnected from server');
                             // self.removePlayerSocket(socket_uuid);
                         }
                         self.log("Recieved 'player_update' from player not in model!", sphere.id);
@@ -410,14 +410,14 @@ let AppServer = function(id, app, server_label, port) {
                 self.replenishBot();
             }
             else {
-                self.log("Menu socket connection closed: ", headers);
+                self.log('Menu socket connection closed: ', headers);
             }
         }
 
         function handle_msg_speed_boost_start() {
             if (currentPlayer.abilities.speed_boost.activate(currentPlayer)) {
                 // Tell client to activate speed boost
-                ws.send(JSON.stringify({op: "speed_boost_res", is_valid: true}));
+                ws.send(JSON.stringify({op: 'speed_boost_res', is_valid: true}));
             }
         }
 
@@ -528,7 +528,7 @@ let AppServer = function(id, app, server_label, port) {
 
         let responseBuffer = Schemas.leaderboardUpdateSchema.encode( responseMsg );
 
-        console.log("Sending leaderboards update");
+        console.log('Sending leaderboards update');
 
         ws.send(responseBuffer);
     };
@@ -664,7 +664,7 @@ let AppServer = function(id, app, server_label, port) {
         let targetPlayer = self.model.getPlayerById(targetPlayerId);
 
         if (!attackingPlayer || !targetPlayer) {
-            self.log("ERROR: player capture attacking or target player undefined.");
+            self.log('ERROR: player capture attacking or target player undefined.');
             return;
         }
 
@@ -673,7 +673,7 @@ let AppServer = function(id, app, server_label, port) {
             return;
         }
 
-        self.log("Capture player: ", attackingPlayerId, targetPlayerId);
+        self.log('Capture player: ', attackingPlayerId, targetPlayerId);
 
         // Increment player captures for the attacking player
         attackingPlayer.playerCaptures++;
@@ -724,7 +724,7 @@ let AppServer = function(id, app, server_label, port) {
         self.removePlayerFromModel(targetPlayerId);
 
         // Inform other clients that target player died
-        const msgObj = {op: "player_died", attackingPlayerId: attackingPlayerId, targetPlayerId: targetPlayerId};
+        const msgObj = {op: 'player_died', attackingPlayerId: attackingPlayerId, targetPlayerId: targetPlayerId};
         self.broadcast(JSON.stringify(msgObj));
     };
 
@@ -755,7 +755,7 @@ let AppServer = function(id, app, server_label, port) {
                 self.clients[uuid].close();
             }
             delete self.clients[uuid];
-            self.log("Deleted client socket: ", uuid);
+            self.log('Deleted client socket: ', uuid);
         }
     };
 
@@ -767,7 +767,7 @@ let AppServer = function(id, app, server_label, port) {
         self.model.players.forEach(function checkPlayerHeartbeats(player) {
             if (player && player.type != Zorbio.PlayerTypes.BOT && player.lastHeartbeat) {
                 if ((time - player.lastHeartbeat) > config.HEARTBEAT_TIMEOUT) {
-                    let msg = "You were kicked because last heartbeat was over " + (config.HEARTBEAT_TIMEOUT / 1000) + " seconds ago.";
+                    let msg = 'You were kicked because last heartbeat was over ' + (config.HEARTBEAT_TIMEOUT / 1000) + ' seconds ago.';
                     self.kickPlayer(player.id, msg);
                 }
             }
@@ -806,18 +806,18 @@ let AppServer = function(id, app, server_label, port) {
 
             // Check for infractions
             if (player.infractions_food > config.INFRACTION_TOLERANCE_FOOD) {
-                self.log("INFRACTION: Player reached food infraction tolerance:", id, player.infractions_food, config.INFRACTION_TOLERANCE_FOOD);
+                self.log('INFRACTION: Player reached food infraction tolerance:', id, player.infractions_food, config.INFRACTION_TOLERANCE_FOOD);
                 player.infractions_food = 0;
             }
             else if (player.infractions_pcap > config.INFRACTION_TOLERANCE_PCAP) {
-                self.log("INFRACTION: Player reached player capture infraction tolerance:", id, player.infractions_pcap, config.INFRACTION_TOLERANCE_PCAP);
+                self.log('INFRACTION: Player reached player capture infraction tolerance:', id, player.infractions_pcap, config.INFRACTION_TOLERANCE_PCAP);
                 player.infractions_pcap = 0;
             }
             else if (player.infractions_speed > config.INFRACTION_TOLERANCE_SPEED) {
-                self.kickPlayer(id, "You were removed because you had too many speed infractions.");
+                self.kickPlayer(id, 'You were removed because you had too many speed infractions.');
             }
             else if (player.infractions_scale > config.INFRACTION_TOLERANCE_SCALE) {
-                self.log("INFRACTION: Player reached scale infraction tolerance:", id, player.infractions_scale, config.INFRACTION_TOLERANCE_SCALE);
+                self.log('INFRACTION: Player reached scale infraction tolerance:', id, player.infractions_scale, config.INFRACTION_TOLERANCE_SCALE);
                 player.infractions_scale = 0;
             }
 
@@ -942,7 +942,7 @@ let AppServer = function(id, app, server_label, port) {
     };
 
     self.setServerMessage = function appSetServerMessage(msg) {
-        self.log("Setting server message: ", msg);
+        self.log('Setting server message: ', msg);
         self.serverMsg = msg;
     };
 
@@ -1001,15 +1001,15 @@ let AppServer = function(id, app, server_label, port) {
         // Get leaderboards from backend
         self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, 'today', 'now', function todayLeaders(leaders, success) {
             if (leaders && leaders.length > 0) self.leaders_1_day = leaders;
-            console.log("Retrieved 1 day leaderboard successfully?", success, self.leaders_1_day.length);
+            console.log('Retrieved 1 day leaderboard successfully?', success, self.leaders_1_day.length);
 
             self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-7 days', 'now', function sevenDayLeaders(leaders, success) {
                 if (leaders && leaders.length > 0) self.leaders_7_day = leaders;
-                console.log("Retrieved 7 day leaderboard successfully?", success, self.leaders_7_day.length);
+                console.log('Retrieved 7 day leaderboard successfully?', success, self.leaders_7_day.length);
 
                 self.backend.getLeadersByDate('zorbio', config.LEADERBOARD_LENGTH, '-30 days', 'now', function sevenDayLeaders(leaders, success) {
                     if (leaders && leaders.length > 0) self.leaders_30_day = leaders;
-                    console.log("Retrieved 30 day leaderboard successfully?", success, self.leaders_30_day.length);
+                    console.log('Retrieved 30 day leaderboard successfully?', success, self.leaders_30_day.length);
 
                     if (typeof successCallback === 'function') {
                         // success call back once all leaderboards are refreshed

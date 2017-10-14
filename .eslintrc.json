@@ -9,14 +9,14 @@
         "google"
     ],
     "rules": {
-        //        "space-before-function-paren": "off",
-        //        "no-var": "off",
-        //        "no-undef": "off",
-        //        "no-unused-vars": "off",
-        //        "semi": "off",
-        //        "padded-blocks": "off",
-        //        "space-before-blocks": "off",
-        "quotes": "off",
+//        "space-before-function-paren": "off",
+//        "no-var": "off",
+//        "no-undef": "off",
+//        "no-unused-vars": "off",
+//        "semi": "off",
+//        "padded-blocks": "off",
+//        "space-before-blocks": "off",
+//        "quotes": "off",
         "valid-jsdoc": "off",
         "prefer-rest-params": "off",
         "keyword-spacing": "off",
@@ -41,6 +41,14 @@
         "no-multi-spaces": "off",
         "no-console": "off",
         "camelcase": "off",
+        "quotes": [
+            "error",
+            "single",
+            {
+                "avoidEscape": true,
+                "allowTemplateLiterals": true
+            }
+        ],
         "no-unused-vars": [
             "error",
             {

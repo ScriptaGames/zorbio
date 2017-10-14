@@ -448,7 +448,7 @@ ZOR.PlayerView.prototype.adjustCamera = function ZORPlayerViewAdjustCamera(scale
     if (newDist != this.cameraMinDistance) {
         if (this.shouldChangeMinDist(newDist)) {
             // buffer reached, now switch. See: https://github.com/Jared-Sprague/zorbio/issues/273
-            console.log("New camera minDistance: ", newDist);
+            console.log('New camera minDistance: ', newDist);
             this.cameraMinDistance = newDist;
         }
     }

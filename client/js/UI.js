@@ -114,13 +114,13 @@ ZOR.UI = function ZORUI() {
         screen_y         : 0,
         player_size      : 0,
         numberCommas     : function numberCommas(x) {
-            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         },
         showAd           : showAd,
-        flip_x           : JSON.parse(localStorage.flip_x || "false"),
-        flip_y           : JSON.parse(localStorage.flip_y || "false"),
-        hide_own_trail   : JSON.parse(localStorage.hide_own_trail || "false"),
-        steering         : localStorage.steering || "follow",
+        flip_x           : JSON.parse(localStorage.flip_x || 'false'),
+        flip_y           : JSON.parse(localStorage.flip_y || 'false'),
+        hide_own_trail   : JSON.parse(localStorage.hide_own_trail || 'false'),
+        steering         : localStorage.steering || 'follow',
         music_enabled    : config.MUSIC_ENABLED,
         volume           : {
             music : config.VOLUME_MUSIC_INITIAL,
@@ -356,7 +356,7 @@ ZOR.UI = function ZORUI() {
     function showAd() {
         // There is a weird race condition with googles ads that require a timeout to make it work
         setTimeout(function() {
-            console.log("showing ad");
+            console.log('showing ad');
             (adsbygoogle = window.adsbygoogle || []).push({});
             if (adsbygoogle) {
                 // suppress eslint no-unused-vars error
@@ -459,12 +459,12 @@ ZOR.UI = function ZORUI() {
             startGame(ZOR.PlayerTypes.PLAYER);
         });
 
-        config.HIDE_OWN_TRAIL = JSON.parse(localStorage.hide_own_trail || "false") ? true : false;
+        config.HIDE_OWN_TRAIL = JSON.parse(localStorage.hide_own_trail || 'false') ? true : false;
 
-        config.STEERING = config.STEERING_METHODS["MOUSE_" + uidata.steering.toUpperCase()];
+        config.STEERING = config.STEERING_METHODS['MOUSE_' + uidata.steering.toUpperCase()];
 
-        config.X_AXIS_MULT = JSON.parse(localStorage.flip_x || "false") ? -1 : 1;
-        config.Y_AXIS_MULT = JSON.parse(localStorage.flip_y || "false") ? -1 : 1;
+        config.X_AXIS_MULT = JSON.parse(localStorage.flip_x || 'false') ? -1 : 1;
+        config.Y_AXIS_MULT = JSON.parse(localStorage.flip_y || 'false') ? -1 : 1;
         on( ACTIONS.TOGGLE_Y_AXIS, axisToggler('y'));
         on( ACTIONS.TOGGLE_X_AXIS, axisToggler('x'));
 
@@ -549,8 +549,8 @@ ZOR.UI = function ZORUI() {
 
         // put important message(s) first
 
-        let inIframe = window.frameElement && window.frameElement.nodeName == "IFRAME";
-        let indirectVisitor = inIframe || document.referrer !== "";
+        let inIframe = window.frameElement && window.frameElement.nodeName == 'IFRAME';
+        let indirectVisitor = inIframe || document.referrer !== '';
         if (indirectVisitor) {
             uidata.marquee_messages.unshift('Bookmark us at <a href="http://zor.bio" target="_top">http://<strong>zor.bio</strong></a>!');
         }
@@ -569,7 +569,7 @@ ZOR.UI = function ZORUI() {
      * Fetch Ractive templates and GLSL shaders, then init UI.
      */
     function fetch_then_init() {
-        let needs_fetching = document.querySelector('script[type="text/ractive"]').innerHTML === "";
+        let needs_fetching = document.querySelector('script[type="text/ractive"]').innerHTML === '';
 
         if (needs_fetching) {
             let scripts = document.querySelectorAll('script[type="text/ractive"], script[type^=x-shader]');

@@ -94,7 +94,7 @@ let AppProxy = function(wss, app, server_label, port) {
             url: 'https://raw.githubusercontent.com/ScriptaGames/zorbio-version/master/version.json',
         };
 
-        console.log("Checking version...");
+        console.log('Checking version...');
 
         rq.get(options, function(error, response, body) {
             if (!error && response.statusCode === 200) {
@@ -103,12 +103,12 @@ let AppProxy = function(wss, app, server_label, port) {
                     let local_version = pjson.version + '-' + pjson.build;
 
                     if (local_version !== res.version) {
-                        console.log("version out of date, local  version:", local_version);
-                        console.log("version out of date, remote version:", res.version);
+                        console.log('version out of date, local  version:', local_version);
+                        console.log('version out of date, remote version:', res.version);
 
                         // notify all game instances that the version is out of date
                         for (let i = 0; i < self.gameInstances.length; i++) {
-                            self.gameInstances[i].setServerMessage("Server restart imminent!");
+                            self.gameInstances[i].setServerMessage('Server restart imminent!');
                         }
                     }
                     else {

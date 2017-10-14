@@ -116,7 +116,7 @@ ZOR.ZORMessageHandler.z_handle_leaderboard_update = function ZORHandLeaderboardU
 ZOR.ZORMessageHandler.z_handle_captured_player = function ZORHandleCapturePlayer(targetPlayerId) {
     if (!gameStart) return;
 
-    console.log("YOU CAPTURED PLAYER! ", targetPlayerId);
+    console.log('YOU CAPTURED PLAYER! ', targetPlayerId);
 
     handleSuccessfulPlayerCapture(targetPlayerId);
 };

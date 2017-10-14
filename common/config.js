@@ -73,7 +73,7 @@ if (!NODEJS_CONFIG) {
         }
 
         let linode_location = linodeNearLocation();
-        console.log("Location near: ", linode_location);
+        console.log('Location near: ', linode_location);
 
         //TODO: if all locations have active node balancers this switch is not nessicary
         switch (linode_location) {

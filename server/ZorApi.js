@@ -36,7 +36,7 @@ let ZorApi = function zorApi(app, instances) {
             res.sendStatus(401);
         }
     };
-    self.app.all("/api/*", self.basicAuth);
+    self.app.all('/api/*', self.basicAuth);
 
     /**
      * API to return the current count of players on this server
@@ -83,7 +83,7 @@ let ZorApi = function zorApi(app, instances) {
         if (instance) {
             let count = instance.model.players.length;
             res.setHeader('content-type', 'application/json');
-            res.send( "{\"count\": " + count + "}" );
+            res.send( '{"count": ' + count + '}' );
         }
         else {
             res.sendStatus(406);
@@ -161,7 +161,7 @@ let ZorApi = function zorApi(app, instances) {
             let clientIds = Object.getOwnPropertyNames(instance.clients);
             let count = typeof clientIds.length !== 'undefined' ? clientIds.length : 0;
             res.setHeader('content-type', 'application/json');
-            res.send( "{\"count\": " + count + "}" );
+            res.send( '{"count": ' + count + '}' );
         }
         else {
             res.sendStatus(406);

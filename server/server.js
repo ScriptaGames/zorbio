@@ -16,10 +16,10 @@ let packageJson     = require('../package.json');
 let _               = require('lodash');
 let url             = require('url');
 let validUrl        = require('valid-url');
-let uuid            = require("node-uuid");
+let uuid            = require('node-uuid');
 
 // Patch console.x methods in order to add timestamp information
-require("console-stamp")(console, {pattern: "mm/dd/yyyy HH:MM:ss.l"});
+require('console-stamp')(console, {pattern: 'mm/dd/yyyy HH:MM:ss.l'});
 
 /**
  *  Define the sample server.
@@ -42,7 +42,7 @@ let MainServer = function() {
         self.ws_port = process.env.WS_PORT || config.WS_PORT;
         self.server_label = process.env.SERVER_LABEL || uuid.v4();
 
-        console.log("http_port, ws_port, server_label", self.http_port, self.ws_port, self.server_label);
+        console.log('http_port, ws_port, server_label', self.http_port, self.ws_port, self.server_label);
     };
 
 
@@ -51,7 +51,7 @@ let MainServer = function() {
      *  Terminate server on receipt of the specified signal.
      */
     self.terminator = function(sig) {
-        if (typeof sig === "string") {
+        if (typeof sig === 'string') {
             console.log('Received %s - terminating sample server ...', sig);
             process.exit(1);
         }
@@ -108,7 +108,7 @@ let MainServer = function() {
                         return true;
                     }
                 }
-                console.warn("Invalid origin: ", info.origin);
+                console.warn('Invalid origin: ', info.origin);
                 callback(false);
                 return false;
             };
@@ -143,7 +143,7 @@ let MainServer = function() {
         //  Start the app on the specific interface (and port).
         if (config.ENABLE_HTTP_SERVER) {
             self.httpServer.listen(self.http_port, function() {
-                console.log("Zorbio v" + packageJson.version + "-" + packageJson.build + " is listening on http://localhost:" + self.http_port);
+                console.log('Zorbio v' + packageJson.version + '-' + packageJson.build + ' is listening on http://localhost:' + self.http_port);
             });
         }
     };

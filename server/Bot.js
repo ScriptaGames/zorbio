@@ -15,7 +15,7 @@ let Bot = function(scale, model) {
     let skin_distribution = ['earth', 'boing', 'default', 'default'];
     self.skin_name = skin_distribution[UTIL.getRandomIntInclusive(0, skin_distribution.length - 1)];
     self.id = Zorbio.IdGenerator.get_next_id();
-    self.name = "AI " + _.sample(Bot.prototype.names);
+    self.name = 'AI ' + _.sample(Bot.prototype.names);
     self.scale = scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);
 
     let position = self.model.getSafeSpawnPosition(10);

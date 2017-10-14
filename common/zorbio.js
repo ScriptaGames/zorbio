@@ -715,11 +715,11 @@ ZOR.expireLocks = function ZORExpireLocks() {
         let id = lockIds[i];
 
         if (ZOR.lock[id] > 0) {
-            console.log("Lock expiring in: ", id, ZOR.lock[id]);
+            console.log('Lock expiring in: ', id, ZOR.lock[id]);
             ZOR.lock[id] -= config.TICK_SLOW_INTERVAL;
         }
         else {
-            console.log("lock expired:", id);
+            console.log('lock expired:', id);
             delete ZOR.lock[id];
         }
     }

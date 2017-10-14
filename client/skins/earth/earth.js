@@ -16,13 +16,13 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
         poolname: 'spheres',
         material: new THREE.ShaderMaterial({
             uniforms: {
-                "c"           : { type : "f",  value : 1.41803 },
-                "p"           : { type : "f",  value : 2.71828 },
-                spherePos     : { type : "v3", value : playerView.model.sphere.position },
-                mainSpherePos : { type : "v3", value : playerFogCenter },
-                FOG_FAR       : { type : "f",  value : config.FOG_FAR },
-                FOG_ENABLED   : { type : "f",  value : ~~config.FOG_ENABLED },
-                sphereTexture : { type : "t",  value : new THREE.TextureLoader().load( "skins/earth/earth-sphere-map.jpg" ) },
+                'c'           : { type : 'f',  value : 1.41803 },
+                'p'           : { type : 'f',  value : 2.71828 },
+                spherePos     : { type : 'v3', value : playerView.model.sphere.position },
+                mainSpherePos : { type : 'v3', value : playerFogCenter },
+                FOG_FAR       : { type : 'f',  value : config.FOG_FAR },
+                FOG_ENABLED   : { type : 'f',  value : ~~config.FOG_ENABLED },
+                sphereTexture : { type : 't',  value : new THREE.TextureLoader().load( 'skins/earth/earth-sphere-map.jpg' ) },
             },
             vertexShader: document.getElementById('skin-earth-vertex-shader').textContent,
             fragmentShader: document.getElementById('skin-earth-fragment-shader').textContent,
@@ -35,7 +35,7 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
             group: {
                 scale: Math.max(window.innerWidth, window.innerHeight),
                 texture: {
-                    value:  new THREE.TextureLoader().load( "skins/earth/trail.png" ),
+                    value:  new THREE.TextureLoader().load( 'skins/earth/trail.png' ),
                 },
                 maxParticleCount: 800,
             },
@@ -83,7 +83,7 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
                 scale: Math.max(window.innerWidth, window.innerHeight),
                 maxParticleCount: 1000,
                 texture: {
-                    value: new THREE.TextureLoader().load( "textures/smokeparticle.png" ),
+                    value: new THREE.TextureLoader().load( 'textures/smokeparticle.png' ),
                 },
                 blending: THREE.AdditiveBlending,
             },

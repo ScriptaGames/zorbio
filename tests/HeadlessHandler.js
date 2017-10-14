@@ -41,7 +41,7 @@ ZOR.ZORMessageHandler.z_handle_send_ping = function ZORhandleSendPing() {
 
 ZOR.ZORMessageHandler.z_handle_pong = function ZORhandlePong(duration) {
     global.player.ping_metric.add(duration);
-    console.log("Ping: ", duration);
+    console.log('Ping: ', duration);
 };
 
 ZOR.ZORMessageHandler.z_handleNetworkTermination = function ZORhandleNetworkTermination() {
@@ -73,7 +73,7 @@ ZOR.ZORMessageHandler.z_handle_you_died = function ZORHandleYouDied(msg) {
     global.playerDead = true;
     global.gameStart = false;
 
-    console.log("YOU DIED! You were alive for " + msg.time_alive + " seconds. Killed by: ", msg.attacking_player_id);
+    console.log('YOU DIED! You were alive for ' + msg.time_alive + ' seconds. Killed by: ', msg.attacking_player_id);
 };
 
 ZOR.ZORMessageHandler.z_handle_player_died = function ZORHandlePlayerDied(capturedPlayerId) {
@@ -87,7 +87,7 @@ ZOR.ZORMessageHandler.z_handle_remove_player = function ZORHandleRemovePlayer(pl
 };
 
 ZOR.ZORMessageHandler.z_handle_kick = function ZORhandleKick(reason) {
-    console.log("you were kicked: ", reason);
+    console.log('you were kicked: ', reason);
     global.gameStart = false;
     global.playerDead = true;
 };

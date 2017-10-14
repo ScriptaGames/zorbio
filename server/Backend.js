@@ -3,7 +3,7 @@ let exec   = require('child_process').exec;
 let util   = require('util');
 
 // Current implmentating service: App42
-let App42 = require("./lib/app42/node_sdk/app42.js");
+let App42 = require('./lib/app42/node_sdk/app42.js');
 
 /**
  * Genetic interface for backend services such as document store, and social auth.
@@ -28,10 +28,10 @@ Backend.prototype.storageOpCallback = function BackendStorageOpCallback(object) 
             // noop
         }
         else {
-            console.error("Error storing json data in App42");
-            console.error("Error Message is: ", result_JSON.app42Fault.message);
-            console.error("Error Detail is: ", result_JSON.app42Fault.details);
-            console.error("Error Code is: ", result_JSON.app42Fault.appErrorCode);
+            console.error('Error storing json data in App42');
+            console.error('Error Message is: ', result_JSON.app42Fault.message);
+            console.error('Error Detail is: ', result_JSON.app42Fault.details);
+            console.error('Error Code is: ', result_JSON.app42Fault.appErrorCode);
         }
     }
     catch (e) {
@@ -68,7 +68,7 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
         try {
             jsonResponse = JSON.parse(result);
             if (jsonResponse && jsonResponse.app42.response.success === true) {
-                console.log("Successfully saved score: ", gameName, userName, score);
+                console.log('Successfully saved score: ', gameName, userName, score);
 
                 if (typeof successCallback === 'function') {
                     successCallback(jsonResponse);

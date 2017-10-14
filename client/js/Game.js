@@ -112,7 +112,7 @@ function startGame(type) {
         color: colorCode,
     };
 
-    document.querySelector("meta[name=theme-color]").content = colorHex;
+    document.querySelector('meta[name=theme-color]').content = colorHex;
 
     // Initialize player size ui element
     ZOR.UI.engine.set('player_color', colorCode);
@@ -128,7 +128,7 @@ function startGame(type) {
 }
 
 function respawnPlayer() {
-    console.log("Respawning player: ", player.getPlayerId());
+    console.log('Respawning player: ', player.getPlayerId());
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
     ZOR.Sounds.stopMusic();
     setTimeout(function() {
@@ -455,7 +455,7 @@ function updateTargetLock() {
         // not looking at anything so clear target name after timeout
         player.setTargetLock(0);
         ZOR.UI.target_clear_timeout_id = setTimeout(ZOR.UI.clearTarget, 4000);
-        console.log("clearing target lock");
+        console.log('clearing target lock');
     }
 }
 let throttledUpdateTargetLock = _.throttle(updateTargetLock, 100);
@@ -481,10 +481,10 @@ function captureFood(fi) {
     foodController.hideFood(fi);
 }
 
-window.addEventListener("keydown", handleKeydown);
-window.addEventListener("keyup", handleKeyup);
-window.addEventListener("mousedown", handleMouseDown);
-window.addEventListener("mouseup", handleMouseUp);
+window.addEventListener('keydown', handleKeydown);
+window.addEventListener('keyup', handleKeyup);
+window.addEventListener('mousedown', handleMouseDown);
+window.addEventListener('mouseup', handleMouseUp);
 
 window.onload = function homeOnload() {
     zorClient.z_connectToServer('ws://' + config.BALANCER + ':' + config.WS_PORT);
@@ -663,7 +663,7 @@ function handleServerTick(serverTickData) {
 }
 
 function handleLeaderboardUpdate(leaderboards) {
-    console.log("Updating leaderboards");
+    console.log('Updating leaderboards');
     ZOR.UI.engine.set('leaderboard.data', leaderboards);
 }
 
@@ -700,14 +700,14 @@ function handleOtherPlayercapture(capturedPlayerID) {
         windDownTime = capturedPlayer.getWindDownTime();
     }
 
-    console.log("Player died:  ", capturedPlayerID);
+    console.log('Player died:  ', capturedPlayerID);
     removePlayerFromGame(capturedPlayerID, windDownTime);
 }
 
 function handleDeath(msg) {
     let attackingPlayerId = msg.attacking_player_id;
 
-    console.log("YOU DIED! You were alive for " + msg.time_alive + " seconds. Killed by: ", attackingPlayerId);
+    console.log('YOU DIED! You were alive for ' + msg.time_alive + ' seconds. Killed by: ', attackingPlayerId);
     setDeadState();
 
     ZOR.Sounds.playMusic('gameover');
@@ -741,7 +741,7 @@ function handlePlayerKick(reason) {
     // Send server message to the UI (either real message, or undefined)
     ZOR.UI.engine.set('kicked_message', reason);
 
-    console.log("you were kicked: ", reason);
+    console.log('you were kicked: ', reason);
 }
 
 function setDeadState() {

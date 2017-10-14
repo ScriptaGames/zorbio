@@ -82,7 +82,7 @@ Validators.movement = function() {
             // do the actual validation
             if (actualSpeed > maxToleratedSpeed) {
                 // speeding
-                console.log("Player Speed to fast! expected, tolerated, actual:", expectedSpeed, maxToleratedSpeed, actualSpeed, sphere.id);
+                console.log('Player Speed to fast! expected, tolerated, actual:', expectedSpeed, maxToleratedSpeed, actualSpeed, sphere.id);
                 return Validators.ErrorCodes.SPEED_TO_FAST;
             }
 
@@ -117,8 +117,8 @@ Validators.movement = function() {
 
                     let avgDiff = oldAvgSpeed - currentAvgSpeed;
                     let maxDiff = oldMaxSpeed - maxSpeed;
-                    console.log("avgDiff", avgDiff);
-                    console.log("maxDiff", maxDiff);
+                    console.log('avgDiff', avgDiff);
+                    console.log('maxDiff', maxDiff);
                     console.log('maxSpeed, avgSpeed, speed, scale:', maxSpeed, currentAvgSpeed, actualSpeed, sphere.scale);
 
                     showAvgDiff = false;
@@ -154,11 +154,11 @@ Validators.foodCapture = function(model, fi, sphere, radius) {
 
     // Make sure the sphere is in range of the food being captured
     if (vdist > tolerance) {
-        console.log("----------------");
-        console.log("INVALID: food capture: fi, sphere_id, radius, vdist, tolerance", fi, sphere.id, radius, vdist, tolerance);
-        console.log("DEBUG: food capture: food_index, food_x, food_y, food_z", food_index, food_x, food_y, food_z);
-        console.log("DEBUG: food capture: sphere_id, sphere_x, sphere_y, sphere_z", sphere.id, sphere.position.x, sphere.position.y, sphere.position.z);
-        console.log("----------------");
+        console.log('----------------');
+        console.log('INVALID: food capture: fi, sphere_id, radius, vdist, tolerance', fi, sphere.id, radius, vdist, tolerance);
+        console.log('DEBUG: food capture: food_index, food_x, food_y, food_z', food_index, food_x, food_y, food_z);
+        console.log('DEBUG: food capture: sphere_id, sphere_x, sphere_y, sphere_z', sphere.id, sphere.position.x, sphere.position.y, sphere.position.z);
+        console.log('----------------');
         return Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR;
     }
 
@@ -201,10 +201,10 @@ Validators.playerCapture = function(attackingPlayerId, targetPlayerId, model, se
 
             vdist = aPosition.distanceTo(bPosition);
 
-            console.log("Validating player capture distance", vdist, captureDist);
+            console.log('Validating player capture distance', vdist, captureDist);
 
             if (vdist < captureDist) {
-                console.log("valid capture!");
+                console.log('valid capture!');
                 validCapture = true;
                 break;
             }
@@ -237,7 +237,7 @@ Validators.playerSphereScale = function(sphere) {
 
     // make sure the expected scale within tolerance
     if (actualScale > (expectedScale + config.PLAYER_SCALE_EXTRA_TOLERANCE)) {
-        console.log("player to big expectedScale, actualScale: ", expectedScale, actualScale);
+        console.log('player to big expectedScale, actualScale: ', expectedScale, actualScale);
         return Validators.ErrorCodes.PLAYER_SCALE_TO_BIG;
     }
 

@@ -39,18 +39,18 @@ ZOR.DrainView = function ZORDrainView() {
 
     this.material = new THREE.ShaderMaterial({
         uniforms: {
-            time          : { type : "f",  value : this.time },
-            power         : { type : "f",  value : 0 },
-            erColor       : { type : "c",  value : 0 },
-            eeColor       : { type : "c",  value : 0 },
-            erSize        : { type : "f",  value : 0 },
-            eeSize        : { type : "f",  value : 0 },
-            sizeSpread    : { type : "f",  value : config.MAX_PLAYER_RADIUS - config.INITIAL_PLAYER_RADIUS },
-            len           : { type : "f",  value : 0 },
-            mainSpherePos : { type : "v3", value : playerFogCenter },
-            pos           : { type : "v3", value : new THREE.Vector3() },
-            FOG_FAR       : { type : "f",  value : config.FOG_FAR },
-            FOG_ENABLED   : { type : "f",  value : ~~config.FOG_ENABLED },
+            time          : { type : 'f',  value : this.time },
+            power         : { type : 'f',  value : 0 },
+            erColor       : { type : 'c',  value : 0 },
+            eeColor       : { type : 'c',  value : 0 },
+            erSize        : { type : 'f',  value : 0 },
+            eeSize        : { type : 'f',  value : 0 },
+            sizeSpread    : { type : 'f',  value : config.MAX_PLAYER_RADIUS - config.INITIAL_PLAYER_RADIUS },
+            len           : { type : 'f',  value : 0 },
+            mainSpherePos : { type : 'v3', value : playerFogCenter },
+            pos           : { type : 'v3', value : new THREE.Vector3() },
+            FOG_FAR       : { type : 'f',  value : config.FOG_FAR },
+            FOG_ENABLED   : { type : 'f',  value : ~~config.FOG_ENABLED },
         },
         side           : THREE.DoubleSide,
         transparent    : true,
@@ -183,7 +183,7 @@ ZOR.DrainView.prototype.updateUniforms = function ZORDrainViewUpdateUniforms( dr
 
 ZOR.DrainView.prototype.createStretch = function ZORDrainViewCreateStretch() {
     let stretchVertices = this.createStretchVertices();
-    this.geometry.morphTargets.push( { name: "stretch", vertices: stretchVertices } );
+    this.geometry.morphTargets.push( { name: 'stretch', vertices: stretchVertices } );
 };
 
 ZOR.DrainView.prototype.createStretchVertices = function ZORDrainViewCreateStretchVertices() {
@@ -211,7 +211,7 @@ ZOR.DrainView.prototype.updateTaper = function ZORDrainViewUpdateTaper( scale, i
 
 ZOR.DrainView.prototype.createDrainerTaper = function ZORDrainViewCreateDrainerTaper() {
     let taperVertices = this.createDrainerTaperVertices();
-    this.geometry.morphTargets.push( { name: "drainer_taper", vertices: taperVertices } );
+    this.geometry.morphTargets.push( { name: 'drainer_taper', vertices: taperVertices } );
 };
 
 ZOR.DrainView.prototype.createDrainerTaperVertices = function ZORDrainViewCreateDrainerTaperVertices() {
@@ -236,7 +236,7 @@ ZOR.DrainView.prototype.updateDrainerTaper = function ZORDrainViewUpdateDrainerT
 
 ZOR.DrainView.prototype.createDraineeTaper = function ZORDrainViewCreateDraineeTaper() {
     let taperVertices = this.createDraineeTaperVertices();
-    this.geometry.morphTargets.push( { name: "drainee_taper", vertices: taperVertices } );
+    this.geometry.morphTargets.push( { name: 'drainee_taper', vertices: taperVertices } );
 };
 
 ZOR.DrainView.prototype.createDraineeTaperVertices = function ZORDrainViewCreateDraineeTaperVertices() {
@@ -262,7 +262,7 @@ ZOR.DrainView.prototype.updateDraineeTaper = function ZORDrainViewUpdateDraineeT
 
 ZOR.DrainView.prototype.createPinch = function ZORDrainViewCreatePinch( distance ) {
     let pinchVertices = this.createPinchVertices( distance );
-    this.geometry.morphTargets.push( { name: "pinch", vertices: pinchVertices } );
+    this.geometry.morphTargets.push( { name: 'pinch', vertices: pinchVertices } );
 };
 
 ZOR.DrainView.prototype.createPinchVertices = function ZORDrainViewCreatePinchVertices( distance ) {
