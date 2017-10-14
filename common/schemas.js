@@ -161,7 +161,7 @@ ZOR.Schemas = function ZORSchemas() {
         welcomeSchema: schemapack.build(op_welcome),
         leaderboardRequestSchema: schemapack.build(op_leaderboards_request),
         leaderboardUpdateSchema: schemapack.build(op_leaderboards_update),
-    }
+    };
 }();
 
 if (NODEJS_SCHEMAS) module.exports = ZOR.Schemas;

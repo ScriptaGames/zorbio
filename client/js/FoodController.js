@@ -124,5 +124,5 @@ let FoodController = function ZORFoodController(model, fogCenterPosition) {
 
         //var end = performance.now();
         //console.log("duration: ", end - start);
-    }
+    };
 };

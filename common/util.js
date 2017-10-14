@@ -521,7 +521,7 @@ UTIL.nth = function nth(f, n) {
         else {
             _i++;
         }
-    }
+    };
 };
 
 /**

@@ -368,10 +368,10 @@ ZOR.UI = function ZORUI() {
     function init_events() {
 
         if (localStorage.alpha_key) {
-            engine.set('alpha_key', localStorage.alpha_key)
+            engine.set('alpha_key', localStorage.alpha_key);
         }
         if (localStorage.player_name) {
-            engine.set('player_name', localStorage.player_name)
+            engine.set('player_name', localStorage.player_name);
         }
 
         // volume change handlers
@@ -396,7 +396,7 @@ ZOR.UI = function ZORUI() {
                 config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
                 localStorage.steering = 'drag';
             }
-            else { return }
+            else { return; }
 
             engine.set('steering', value);
         });
@@ -478,7 +478,7 @@ ZOR.UI = function ZORUI() {
                     uidata[lsKey] = false;
                 }
                 localStorage[lsKey] = uidata[lsKey];
-            }
+            };
         }
 
         on( ACTIONS.PAGE_RELOAD, location.reload.bind(location) );

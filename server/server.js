@@ -43,7 +43,7 @@ let MainServer = function() {
         self.ws_port = process.env.WS_PORT || config.WS_PORT;
         self.server_label = process.env.SERVER_LABEL || uuid.v4();
 
-        console.log("http_port, ws_port, server_label", self.http_port, self.ws_port, self.server_label)
+        console.log("http_port, ws_port, server_label", self.http_port, self.ws_port, self.server_label);
     };
 
 

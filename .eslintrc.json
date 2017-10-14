@@ -29,7 +29,7 @@
         "quotes": "off",
         "no-console": "off",
         "camelcase": "off",
-        "semi": "off",
+//        "semi": "off",
         "valid-jsdoc": "off",
         "padded-blocks": "off",
         "brace-style": "off",

@@ -45,7 +45,7 @@ let BotController = function(model) {
         let num = 0;
         self.model.players.forEach(function eachPlayer(player) {
             if (player.type === Zorbio.PlayerTypes.BOT && player.sphere.scale >= 90) {
-                num++
+                num++;
             }
         });
         return num;
@@ -84,7 +84,7 @@ let BotController = function(model) {
 
     self.hasBots = function botHasBots() {
         return self.bots.length > 0;
-    }
+    };
 
 };
 

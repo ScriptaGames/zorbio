@@ -90,7 +90,7 @@ function startGame(type) {
 
     if (config.MUSIC_ENABLED) {
         ZOR.Sounds.stopMusic();
-        setTimeout(function() { ZOR.Sounds.playMusic('play') }, 1000);
+        setTimeout(function() { ZOR.Sounds.playMusic('play'); }, 1000);
     }
 
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
@@ -127,7 +127,7 @@ function respawnPlayer() {
     console.log("Respawning player: ", player.getPlayerId());
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
     ZOR.Sounds.stopMusic();
-    setTimeout(function() { ZOR.Sounds.playMusic('play') }, 1000);
+    setTimeout(function() { ZOR.Sounds.playMusic('play'); }, 1000);
     gameStart = false;
     zorClient.z_sendRespawn();
 }
@@ -265,7 +265,7 @@ function createScene() {
         else if (player && player.isDead) {
             fogCenter = player.model.sphere.position;
         } else {
-            fogCenter = {x: 0, y: 0, z: 0}
+            fogCenter = {x: 0, y: 0, z: 0};
         }
 
         playerFogCenter.copy(fogCenter);

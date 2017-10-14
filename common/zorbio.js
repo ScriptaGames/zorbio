@@ -394,7 +394,7 @@ ZOR.PlayerSphere.prototype.reduce = function ZORPlayerSphereReduce(tiny) {
         reducedActor.playerId = this.playerId;
     }
 
-    return reducedActor
+    return reducedActor;
 };
 
 /**
@@ -499,7 +499,7 @@ ZOR.Player.prototype.reduce = function ZORPlayerReduce() {
         name: this.name,
         type: this.type,
         sphere: this.sphere.reduce(),
-    }
+    };
 };
 
 /**
@@ -604,7 +604,7 @@ ZOR.Ability = function ZORAbility() {
 
     this.on = function ZORAbilityOn(eventName, func) {
         self.events[eventName].push(func);
-    }
+    };
 };
 
 ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
