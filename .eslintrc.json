@@ -32,7 +32,7 @@
 //        "semi": "off",
         "valid-jsdoc": "off",
 //        "padded-blocks": "off",
-        "brace-style": "off",
+        "brace-style": ["error", "stroustrup"],
         "space-before-blocks": "off",
         "prefer-rest-params": "off",
         "keyword-spacing": "off",

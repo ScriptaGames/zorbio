@@ -135,7 +135,8 @@ let AppServer = function(id, app, server_label, port) {
 
                 try {
                     message = JSON.parse(msg);
-                } catch(e) {
+                }
+                catch(e) {
                     if (config.DEBUG) {
                         console.error("error parsing json on message in wss: ", e);
                     }
@@ -346,7 +347,8 @@ let AppServer = function(id, app, server_label, port) {
             let actor = self.model.getActorById(sphere.id);
             if (!actor) {
                 err = Validators.ErrorCodes.PLAYER_NOT_IN_MODEL;
-            } else {
+            }
+            else {
                 err = Validators.movementSampled(sphere, actor, self.model);
             }
 
@@ -364,7 +366,8 @@ let AppServer = function(id, app, server_label, port) {
                 msg.food_capture_queue.forEach(function captureEachFood(food_entry) {
                     self.foodCapture(currentPlayer, food_entry.fi, actor, food_entry.radius);
                 });
-            } else {
+            }
+            else {
                 switch (err) {
                     case Validators.ErrorCodes.SPEED_TO_FAST:
                         ws.send(JSON.stringify({op: 'speeding_warning'}));
@@ -438,7 +441,8 @@ let AppServer = function(id, app, server_label, port) {
             let cookies = cookie.parse(cookie_header);
             //noinspection JSUnresolvedVariable
             nb_srv_id = cookies.NB_SRVID ? cookies.NB_SRVID : '';
-        } catch (e) {
+        }
+        catch (e) {
             return nb_srv_id;
         }
 
@@ -558,7 +562,8 @@ let AppServer = function(id, app, server_label, port) {
 
             // Queue to notify clients of food capture so they can update their food view
             self.model.food_captured_queue.push(fi);
-        } else {
+        }
+        else {
             switch (err) {
                 case Validators.ErrorCodes.FOOD_CAPTURE_TO_FAR:
                     // inform client of invalid capture, and make them shrink, mark infraction
@@ -780,7 +785,8 @@ let AppServer = function(id, app, server_label, port) {
                 if (self.model.food_respawning[i] === 0) {
                     // queue up food respawn to send to clients
                     self.model.food_respawn_ready_queue.push(i);
-                } else {
+                }
+                else {
                     self.model.food_respawning_indexes.push(i);
                 }
             }

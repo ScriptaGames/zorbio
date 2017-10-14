@@ -183,7 +183,9 @@ ZOR.Model.prototype.removePlayer = function ZORModelRemovePlayer(id) {
     let playerIndex = UTIL.findIndexById(this.players, id);
     let player = this.players[playerIndex];
 
-    let actorIndex = _.findIndex(this.actors, function(o) { return o.playerId == id; });
+    let actorIndex = _.findIndex(this.actors, function(o) {
+        return o.playerId == id;
+    });
     let actor = this.actors[actorIndex];
 
     if (player) {
@@ -341,7 +343,8 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
     if (scale) {
         this.scale = scale;
         this.expectedScale = scale;
-    } else {
+    }
+    else {
         this.scale = config.INITIAL_PLAYER_RADIUS;
         this.expectedScale = config.INITIAL_PLAYER_RADIUS;
     }
@@ -349,7 +352,8 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
     if (velocity) {
         this.velocity = velocity;
         UTIL.toVector3(this, 'velocity');
-    } else {
+    }
+    else {
         this.velocity = {x: 0, y: 0, z: 0};
     }
 
@@ -713,7 +717,8 @@ ZOR.expireLocks = function ZORExpireLocks() {
         if (ZOR.lock[id] > 0) {
             console.log("Lock expiring in: ", id, ZOR.lock[id]);
             ZOR.lock[id] -= config.TICK_SLOW_INTERVAL;
-        } else {
+        }
+        else {
             console.log("lock expired:", id);
             delete ZOR.lock[id];
         }

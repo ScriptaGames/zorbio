@@ -565,7 +565,9 @@ UTIL.toArrayBuffer = function UTILtoArrayBuffer(buffer) {
  * @return {number}
  */
 UTIL.findIndexById = function UTILFindINdexById(theArray, id) {
-    return _.findIndex(theArray, function(o) { return o.id == id; });
+    return _.findIndex(theArray, function(o) {
+        return o.id == id;
+    });
 };
 
 /**

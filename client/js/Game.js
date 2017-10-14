@@ -52,11 +52,14 @@ ZOR.Game.fullscreen = function go_fullscreen() {
     let el = document.body;
     if (el.requestFullscreen) {
         el.requestFullscreen();
-    } else if (el.msRequestFullscreen) {
+    }
+    else if (el.msRequestFullscreen) {
         el.msRequestFullscreen();
-    } else if (el.mozRequestFullScreen) {
+    }
+    else if (el.mozRequestFullScreen) {
         el.mozRequestFullScreen();
-    } else if (el.webkitRequestFullscreen) {
+    }
+    else if (el.webkitRequestFullscreen) {
         el.webkitRequestFullscreen();
     }
 };
@@ -75,7 +78,8 @@ function startGame(type) {
         if (missing_extensions) {
             throw new Error('missing WebGL extensions');
         }
-    } catch (e) {
+    }
+    catch (e) {
         console.error('Failed to init game.  Possible WebGL failure.  Original error below.');
         console.error(e.message);
         ZOR.UI.state( ZOR.UI.STATES.GAME_INIT_ERROR );
@@ -89,7 +93,9 @@ function startGame(type) {
 
     if (config.MUSIC_ENABLED) {
         ZOR.Sounds.stopMusic();
-        setTimeout(function() { ZOR.Sounds.playMusic('play'); }, 1000);
+        setTimeout(function() {
+            ZOR.Sounds.playMusic('play');
+        }, 1000);
     }
 
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
@@ -126,7 +132,9 @@ function respawnPlayer() {
     console.log("Respawning player: ", player.getPlayerId());
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
     ZOR.Sounds.stopMusic();
-    setTimeout(function() { ZOR.Sounds.playMusic('play'); }, 1000);
+    setTimeout(function() {
+        ZOR.Sounds.playMusic('play');
+    }, 1000);
     gameStart = false;
     zorClient.z_sendRespawn();
 }
@@ -144,7 +152,8 @@ function createScene() {
     try {
         init();
         animate();
-    } catch (e) {
+    }
+    catch (e) {
         console.error('Failed to init game.  Possible WebGL failure.  Original error below.');
         ZOR.UI.engine.set('loading', false);
         ZOR.UI.state( ZOR.UI.STATES.GAME_INIT_ERROR );
@@ -261,7 +270,8 @@ function createScene() {
         }
         else if (player && player.isDead) {
             fogCenter = player.model.sphere.position;
-        } else {
+        }
+        else {
             fogCenter = {x: 0, y: 0, z: 0};
         }
 

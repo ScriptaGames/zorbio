@@ -15,6 +15,7 @@ if (NODEJS_ENV_PROD) {
     let ZOR = {};
     ZOR.Env = PROD_SETTINGS;
     module.exports = ZOR.Env;
-} else {
+}
+else {
     ZOR.Env = PROD_SETTINGS;
 }

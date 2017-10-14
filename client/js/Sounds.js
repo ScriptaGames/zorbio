@@ -37,7 +37,9 @@ ZOR.Sounds = (function ZORSounds() {
 
     let sounds = {
         musicVolume: function(vol) {
-            _.each(sounds.music, function(music) { music.volume(vol); });
+            _.each(sounds.music, function(music) {
+                music.volume(vol);
+            });
             localStorage.volume_music = vol;
             console.log(`set music volume to ${vol}`);
         },
@@ -54,7 +56,9 @@ ZOR.Sounds = (function ZORSounds() {
             sounds.music[name].play();
         },
         stopMusic: function() {
-            _.forEach(sounds.music, function(music) { music.stop(); });
+            _.forEach(sounds.music, function(music) {
+                music.stop();
+            });
         },
         music: {
             menu     : howlSfx('veus/Zorbio_MainMenu.ogg.mp3', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),

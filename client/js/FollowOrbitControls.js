@@ -239,7 +239,8 @@ global config:true
                 if ( this.enableDamping === true ) {
                     thetaDelta *= ( 1 - this.dampingFactor );
                     phiDelta *= ( 1 - this.dampingFactor );
-                } else {
+                }
+                else {
                     thetaDelta = 0;
                     phiDelta = 0;
                 }
@@ -444,7 +445,8 @@ global config:true
                 state = STATE.ROTATE;
 
                 rotateStart.set( event.clientX, event.clientY );
-            } else if ( event.button === scope.mouseButtons.PAN ) {
+            }
+            else if ( event.button === scope.mouseButtons.PAN ) {
                 if ( scope.enablePan === false ) return;
 
                 state = STATE.PAN;
@@ -487,7 +489,8 @@ global config:true
                 constraint.rotateUp( 2 * Math.PI * rotateDelta.y / element.clientHeight * scope.rotateSpeed );
 
                 rotateStart.copy( rotateEnd );
-            } else if ( state === STATE.DOLLY ) {
+            }
+            else if ( state === STATE.DOLLY ) {
                 if ( scope.enableZoom === false ) return;
 
                 dollyEnd.set( event.clientX, event.clientY );
@@ -495,12 +498,14 @@ global config:true
 
                 if ( dollyDelta.y > 0 ) {
                     constraint.dollyIn( getZoomScale() );
-                } else if ( dollyDelta.y < 0 ) {
+                }
+                else if ( dollyDelta.y < 0 ) {
                     constraint.dollyOut( getZoomScale() );
                 }
 
                 dollyStart.copy( dollyEnd );
-            } else if ( state === STATE.PAN ) {
+            }
+            else if ( state === STATE.PAN ) {
                 if ( scope.enablePan === false ) return;
 
                 panEnd.set( event.clientX, event.clientY );
@@ -535,7 +540,8 @@ global config:true
                 // WebKit / Opera / Explorer 9
 
                 delta = event.wheelDelta;
-            } else if ( event.detail !== undefined ) {
+            }
+            else if ( event.detail !== undefined ) {
                 // Firefox
 
                 delta = - event.detail;
@@ -543,7 +549,8 @@ global config:true
 
             if ( delta > 0 ) {
                 constraint.dollyOut( getZoomScale() );
-            } else if ( delta < 0 ) {
+            }
+            else if ( delta < 0 ) {
                 constraint.dollyIn( getZoomScale() );
             }
 
@@ -663,7 +670,8 @@ global config:true
 
                     if (dollyDelta.y > 0) {
                         constraint.dollyOut(getZoomScale());
-                    } else if (dollyDelta.y < 0) {
+                    }
+                    else if (dollyDelta.y < 0) {
                         constraint.dollyIn(getZoomScale());
                     }
 

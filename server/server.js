@@ -64,7 +64,9 @@ let MainServer = function() {
      */
     self.setupTerminationHandlers = function() {
         //  Process on exit and signals.
-        process.on('exit', function() { self.terminator(0); });
+        process.on('exit', function() {
+            self.terminator(0);
+        });
 
         [
             'SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',

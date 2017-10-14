@@ -178,7 +178,8 @@ ZOR.UI = function ZORUI() {
         let template;
         try {
             template = JSON.parse(el.textContent);
-        } catch (e) {
+        }
+        catch (e) {
             template = el.textContent;
         }
         return [name, template];
@@ -293,7 +294,8 @@ ZOR.UI = function ZORUI() {
             // succeed.  If it was not precompiled (ie, dev mode), this will
             // fail and fall back to catch.
             mainTemplate = JSON.parse(document.querySelector('#ui-template').textContent);
-        } catch (e) {
+        }
+        catch (e) {
             mainTemplate = document.querySelector('#ui-template').textContent;
         }
 
@@ -340,7 +342,9 @@ ZOR.UI = function ZORUI() {
         setInterval(advanceMarquee, 5432);
 
         // call all the registered init handlers
-        _.each(init_handlers, function(f) { f(); });
+        _.each(init_handlers, function(f) {
+            f();
+        });
     }
 
     function stateSetter(newState) {
@@ -391,7 +395,9 @@ ZOR.UI = function ZORUI() {
                 config.STEERING = config.STEERING_METHODS.MOUSE_DRAG;
                 localStorage.steering = 'drag';
             }
-            else { return; }
+            else {
+                return;
+            }
 
             engine.set('steering', value);
         });

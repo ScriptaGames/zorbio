@@ -33,7 +33,8 @@ Backend.prototype.storageOpCallback = function BackendStorageOpCallback(object) 
             console.error("Error Detail is: ", result_JSON.app42Fault.details);
             console.error("Error Code is: ", result_JSON.app42Fault.appErrorCode);
         }
-    } catch (e) {
+    }
+    catch (e) {
         console.error("Error parsing return object from app42's saveOrUpdateDocumentByKeyValue, value is: ", object);
     }
 };
@@ -73,7 +74,8 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
                     successCallback(jsonResponse);
                 }
             }
-        } catch (e) {
+        }
+        catch (e) {
             console.error('Caught exception parsing json response from Backend.saveScore service: ');
             console.error(result);
             console.error(e);
@@ -135,7 +137,8 @@ Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, 
 
                 callback(filteredLeaders, true);
             }
-        } catch (e) {
+        }
+        catch (e) {
             console.error('Caught exception parsing json response from Backend.getLeadersByDate service: ');
             console.error(result);
             console.error(e);

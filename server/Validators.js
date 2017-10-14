@@ -180,7 +180,8 @@ Validators.playerCapture = function(attackingPlayerId, targetPlayerId, model, se
 
     if (sendingSphere.playerId === attackingPlayerId) {
         otherSphere = targetPlayer.sphere;
-    } else {
+    }
+    else {
         otherSphere = attackingPlayerSphere;
     }
 

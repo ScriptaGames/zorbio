@@ -40,7 +40,9 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
         trail: {
             type: 'line',
             customScale: 1.0,
-            lineWidth: function lineWidth( p ) { return p; },
+            lineWidth: function lineWidth( p ) {
+                return p;
+            },
             origins: [
                 new THREE.Vector3(0.9, 0, 0),
                 new THREE.Vector3(-0.9, 0, 0),

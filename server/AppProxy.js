@@ -114,7 +114,8 @@ let AppProxy = function(wss, app, server_label, port) {
                     else {
                         console.log('Version is up-to-date', local_version);
                     }
-                } catch (e) {
+                }
+                catch (e) {
                     console.error('Caught exception parsing json from zorbio-version');
                 }
             }
