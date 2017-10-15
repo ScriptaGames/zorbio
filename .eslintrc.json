@@ -21,7 +21,7 @@
 //        "prefer-rest-params": "off",
 //        "keyword-spacing": "off",
         "require-jsdoc": "off",
-        "spaced-comment": "off",
+//        "spaced-comment": "off",
         "new-cap": "off",
         "block-spacing": "off",
         "key-spacing": "off",
@@ -41,6 +41,23 @@
         "no-multi-spaces": "off",
         "no-console": "off",
         "camelcase": "off",
+        "spaced-comment": [
+            "error",
+            "always",
+            {
+                "line": {
+                    "exceptions": [
+                        "/"
+                    ]
+                },
+                "block": {
+                    "exceptions": [
+                        "*"
+                    ],
+                    "balanced": true
+                }
+            }
+        ],
         "valid-jsdoc": [
             "error",
             {

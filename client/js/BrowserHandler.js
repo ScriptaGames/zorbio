@@ -93,13 +93,13 @@ ZOR.ZORMessageHandler.z_handle_actor_updates = function ZORhandleActorUpdates(ac
 };
 
 ZOR.ZORMessageHandler.z_handle_player_join = function ZORhandlePlayerJoin(newPlayer) {
-    //Add new player if it's already added
+    // Add new player if it's already added
     if (!ZOR.Game.players[newPlayer.id]) {
         // Create new player controller and add to player controllers array
         ZOR.Game.players[newPlayer.id] = new ZOR.PlayerController(newPlayer, scene);
     }
 
-    //Keep model in sync with the server
+    // Keep model in sync with the server
     zorbioModel.addPlayer(newPlayer);
 
     console.log('Player joined: ', newPlayer.id, newPlayer.name);

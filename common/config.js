@@ -75,7 +75,7 @@ if (!NODEJS_CONFIG) {
         let linode_location = linodeNearLocation();
         console.log('Location near: ', linode_location);
 
-        //TODO: if all locations have active node balancers this switch is not nessicary
+        // TODO: if all locations have active node balancers this switch is not nessicary
         switch (linode_location) {
             case 'london':
             case 'frankfurt':
@@ -239,7 +239,7 @@ config.CAMERA_ZOOM_STEP_BUFFER = 0.5;  // size buffer before zooming out or zoom
 config.CAMERA_ZOOM_STEP_S = (config.CAMERA_ZOOM_DISTANCE_FINAL - config.CAMERA_ZOOM_DISTANCE_INITIAL)
     / (config.MAX_PLAYER_RADIUS - config.INITIAL_PLAYER_RADIUS);
 config.GET_CAMERA_MIN_DISTANCE = function getCameraMinDistance(r) {
-    //https://www.desmos.com/calculator/ceeki1bpbk
+    // https://www.desmos.com/calculator/ceeki1bpbk
     return (Math.floor(r * config.CAMERA_ZOOM_STEP_S * config.CAMERA_ZOOM_STEP_SIZE) / config.CAMERA_ZOOM_STEP_SIZE)
         + config.CAMERA_ZOOM_DISTANCE_INITIAL;
 };

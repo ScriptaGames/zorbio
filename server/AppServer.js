@@ -439,7 +439,7 @@ let AppServer = function(id, app, server_label, port) {
 
         try {
             let cookies = cookie.parse(cookie_header);
-            //noinspection JSUnresolvedVariable
+            // noinspection JSUnresolvedVariable
             nb_srv_id = cookies.NB_SRVID ? cookies.NB_SRVID : '';
         }
         catch (e) {

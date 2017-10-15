@@ -198,7 +198,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
             return; // ignore own join message
         }
 
-        //Initialize THREE objects
+        // Initialize THREE objects
         UTIL.toVector3(newPlayer.sphere, 'position');
         UTIL.toVector3(newPlayer.sphere, 'velocity');
 
@@ -338,7 +338,7 @@ ZOR.ZORClient.prototype.z_sendPlayerUpdate = function ZORsendPlayerUpdate(player
 ZOR.ZORClient.prototype.z_sendClientPositionRapid = function ZORsendClientPositionRapid(actor_id, position) {
     if (!config.ENABLE_RAPID_UPDATES) return;
 
-    //first byte op code
+    // first byte op code
     this.z_rapidSendView[0] = ZOR.Schemas.ops.CLIENT_POSITION_RAPID;
 
     // actor id

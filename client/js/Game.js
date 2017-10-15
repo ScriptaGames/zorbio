@@ -29,7 +29,7 @@ if (config.FOG_ENABLED) {
 // Player
 let player;
 
-//TODO: get rid of this globals, refactor into MVC Player and Food controllers
+// TODO: get rid of this globals, refactor into MVC Player and Food controllers
 let playerFogCenter = new THREE.Vector3();
 
 // Game state
@@ -564,7 +564,7 @@ function keyDown( key ) {
         player.moveForward(camera);
     }
     else if ( key === 's' ) {
-        //TODO: refactor this to player.stop() based on autorun value
+        // TODO: refactor this to player.stop() based on autorun value
         player.moveBackward(camera);
     }
 }
@@ -578,7 +578,7 @@ function keyJustPressed(key) {
 }
 
 function keyReleased(key) {
-    //console.log('key ' + key + ' released');
+    // console.log('key ' + key + ' released');
     if (key === 'w' && config.AUTO_RUN_ENABLED) {
         if (player.isSpeedBoostActive()) {
             player.speedBoostStop();

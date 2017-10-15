@@ -32,7 +32,7 @@ ZOR.FoodController = function ZORFoodController(model, fogCenterPosition) {
         // percent between 0 and 1 that nodes will overlap each other
         // helps insert objects that lie over more than one node
         overlapPct: 0.15,
-        //scene: scene
+        // scene: scene
     } );
 
     this.drawFood = function ZORFoodControllerDrawFood(scene) {
@@ -98,7 +98,7 @@ ZOR.FoodController = function ZORFoodController(model, fogCenterPosition) {
      * @param {Function} callback
      */
     this.checkFoodCaptures = function ZORFoodControllerCheckFoodCaptures(thePlayer, callback) {
-        //var start = performance.now();
+        // var start = performance.now();
 
         let i, l;
         let dist = 0;
@@ -120,7 +120,7 @@ ZOR.FoodController = function ZORFoodController(model, fogCenterPosition) {
             }
         }
 
-        //var end = performance.now();
-        //console.log("duration: ", end - start);
+        // var end = performance.now();
+        // console.log("duration: ", end - start);
     };
 };

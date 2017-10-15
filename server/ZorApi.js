@@ -19,14 +19,14 @@ let ZorApi = function zorApi(app, instances) {
     // Basic Auth
     self.basicAuth = function appBasicAuth(req, res, next) {
         let user = basicAuth(req);
-        //noinspection JSUnresolvedVariable
+        // noinspection JSUnresolvedVariable
         if (!user || !user.name || !user.pass) {
             res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
             res.sendStatus(401);
             return;
         }
 
-        //noinspection JSUnresolvedVariable
+        // noinspection JSUnresolvedVariable
         if (user.name === 'zoruser' && user.pass === 'Z0r-b!0') {
             next();
         }

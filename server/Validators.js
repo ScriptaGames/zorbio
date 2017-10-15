@@ -53,8 +53,8 @@ Validators.movement = function() {
             let time = latestPosition.time - oldestPosition.time;
             let minTime = ((config.PLAYER_POSITIONS_WINDOW * MS_PER_FRAME) - 100);
 
-            //console.log("time, minTime: ", time, minTime);
-            //console.log("recent positions length: ", actor.recentPositions.length);
+            // console.log("time, minTime: ", time, minTime);
+            // console.log("recent positions length: ", actor.recentPositions.length);
 
             if (actor.recentPositions.length < config.PLAYER_POSITIONS_WINDOW || time < minTime) {
                 return 0; // only can calculate enough time has passed
@@ -241,7 +241,7 @@ Validators.playerSphereScale = function(sphere) {
         return Validators.ErrorCodes.PLAYER_SCALE_TO_BIG;
     }
 
-    return 0;  //no error
+    return 0;  // no error
 };
 
 /**
