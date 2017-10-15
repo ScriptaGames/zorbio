@@ -32,8 +32,14 @@ ZOR.FoodView = function ZORFoodView() {
         // copy food translate and food color values from the food array
         // into the typed arrays for the particle system
 
-        let X, Y, Z, R, G, B;
+        let X;
+        let Y;
+        let Z;
+        let R;
+        let G;
+        let B;
         let offset = 0;
+
         for (let i = 0, l = foodCount; i < l; i++) {
             X = food[offset];
             Y = food[offset + 1];

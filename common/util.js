@@ -380,7 +380,9 @@ let foodCrayons = {
     },
 
     'octant': function foodColoringOctant( x, y, z ) {
-        let r, g, b;
+        let r;
+        let g;
+        let b;
 
         // based on: https://en.wikipedia.org/wiki/Octant_(solid_geometry)
         if (x >= 0 && y >= 0 && z >= 0) {

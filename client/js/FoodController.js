@@ -100,7 +100,8 @@ ZOR.FoodController = function ZORFoodController(model, fogCenterPosition) {
     this.checkFoodCaptures = function ZORFoodControllerCheckFoodCaptures(thePlayer, callback) {
         // var start = performance.now();
 
-        let i, l;
+        let i;
+        let l;
         let dist = 0;
         let mainSphere = thePlayer.view.mainSphere;
         let sphere_radius = thePlayer.radius();

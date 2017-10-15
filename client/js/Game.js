@@ -66,7 +66,8 @@ ZOR.Game.fullscreen = function go_fullscreen() {
 };
 
 function startGame(type) {
-    let fake_renderer, missing_extensions;
+    let fake_renderer;
+    let missing_extensions;
 
     // Before we do anything, make sure WebGL is supported by this browser
     try {
