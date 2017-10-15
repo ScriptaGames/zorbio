@@ -72,7 +72,7 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
 
 ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
     if (!actor.id) {
-        throw 'Actors must have an ID';
+        throw new Error('Actors must have an ID');
     }
 
     this.actors.push(actor);
@@ -161,7 +161,7 @@ ZOR.Model.prototype.getRealPlayers = function ZORModelGetRealPlayers() {
 
 ZOR.Model.prototype.addPlayer = function ZORModelAddPlayer(player, replace) {
     if (!player.id) {
-        throw 'players must have an ID';
+        throw new Error('players must have an ID');
     }
 
     let replacePlayer = replace || false;
