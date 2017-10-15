@@ -343,7 +343,7 @@ UTIL.getFoodCrayon = function UTILfoodColoring( type ) {
 
 let foodCrayons = {
 
-    random: function foodColoringRandom() {
+    'random': function foodColoringRandom() {
         return {
             r: UTIL.getRandomIntInclusive(0, 255) / 255,
             g: UTIL.getRandomIntInclusive(0, 255) / 255,
@@ -351,7 +351,7 @@ let foodCrayons = {
         };
     },
 
-    hsl01: function foodColoringHSL01( x, y, z ) {
+    'hsl01': function foodColoringHSL01( x, y, z ) {
         let h = ( x + y + z ) / (2*config.WORLD_SIZE);
         let s = 1.0;
         let l = 0.6;
@@ -363,7 +363,7 @@ let foodCrayons = {
         };
     },
 
-    rgbcube: function foodColoringRgbCube( x, y, z ) {
+    'rgbcube': function foodColoringRgbCube( x, y, z ) {
         return {
             r: 0.5 + x / config.WORLD_SIZE,
             g: 0.5 + y / config.WORLD_SIZE,

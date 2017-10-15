@@ -31,7 +31,7 @@
 //        "no-redeclare": "off",
 //        "curly": "off",
 //        "comma-spacing": "off",
-        "quote-props": "off",
+//        "quote-props": "off",
         "one-var": "off",
         "no-throw-literal": "off",
         "no-irregular-whitespace": "off",
