@@ -86,11 +86,11 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
 /**
  * Get the list of top players by start and end date.  Dates are in string format following this:
  * http://php.net/manual/en/function.strtotime.php  e.g. "-7 days" or "now"
- * @param gameName
- * @param limit
- * @param startDate
- * @param endDate
- * @param callback
+ * @param {string} gameName
+ * @param {number} limit
+ * @param {string} startDate
+ * @param {string} endDate
+ * @param {Function} callback
  */
 Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, limit, startDate, endDate, callback) {
     if (!config.ENABLE_BACKEND_SERVICE) return;

@@ -53,8 +53,6 @@ ZOR.ObjectPool.prototype.return = function ZORObjectPoolReturn(obj) {
 
 /**
  * Add a new object to the end of the pool.
- *
- * @return {Object} a reference to the object that was just added
  */
 ZOR.ObjectPool.prototype._add = function ZORObjectPoolAdd() {
     let i = this._pool.length;

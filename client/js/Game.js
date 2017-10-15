@@ -669,6 +669,7 @@ function handleLeaderboardUpdate(leaderboards) {
 
 /**
  * Current player has captured someone.
+ * @param {number} capturedPlayerID
  */
 function handleSuccessfulPlayerCapture(capturedPlayerID) {
     let sound = ZOR.Sounds.sfx.player_capture;
@@ -686,6 +687,7 @@ function handleSuccessfulPlayerCapture(capturedPlayerID) {
 
 /**
  * A player captured another player.  Current playre not involved.
+ * @param {number} capturedPlayerID
  */
 function handleOtherPlayercapture(capturedPlayerID) {
     let sound = ZOR.Sounds.sfx.player_capture;

@@ -49,6 +49,7 @@ let MainServer = function() {
     /**
      *  terminator === the termination handler
      *  Terminate server on receipt of the specified signal.
+     * @param {string} sig
      */
     self.terminator = function(sig) {
         if (typeof sig === 'string') {

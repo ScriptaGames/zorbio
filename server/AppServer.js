@@ -16,10 +16,10 @@ let _             = require('lodash');
 
 /**
  * This module contains all of the app logic and state,
- * @param id
- * @param app
- * @param server_label
- * @param port
+ * @param {number} id
+ * @param {Object} app
+ * @param {string} server_label
+ * @param {number} port
  * @constructor
  */
 let AppServer = function(id, app, server_label, port) {
@@ -77,7 +77,7 @@ let AppServer = function(id, app, server_label, port) {
 
     /**
      * Send message to all connected clients
-     * @param data
+     * @param {Object} data
      */
     self.broadcast = function appBroadcast(data) {
         let propNames = Object.getOwnPropertyNames(self.clients);
@@ -92,8 +92,8 @@ let AppServer = function(id, app, server_label, port) {
 
     /**
      * Sends a websocket message to a specific websocket by player id
-     * @param player_id the id of the player ot send to
-     * @param msg
+     * @param {number} player_id the id of the player ot send to
+     * @param {*} msg
      */
     self.sendToPlayer = function appSendToPlayer(player_id, msg) {
         let ws = self.clients[self.socket_uuid_map[player_id]];
@@ -429,7 +429,7 @@ let AppServer = function(id, app, server_label, port) {
     /**
      * Safe method to parse Linode NB_SRVID cookie if it exists.  the NB_SRVID is the id of the nodebalancer node
      * this client will be routed too.
-     * @param cookie_header
+     * @param {string} cookie_header
      * @returns {string}
      */
     self.parseNbSrvIdCookie = function appParseNbSrvIdCookie(cookie_header) {
@@ -621,8 +621,8 @@ let AppServer = function(id, app, server_label, port) {
 
     /**
      * Compares two players to see if a capture should occur
-     * @param p1
-     * @param p2
+     * @param {Object} p1
+     * @param {Object} p2
      * @returns {*} returns folse if no capture, other wise the ids of attacking and target players
      */
     self.checkPlayerCapture = function appCheckPlayerCapture(p1, p2) {
@@ -911,7 +911,7 @@ let AppServer = function(id, app, server_label, port) {
 
     /**
      * Returns the count of players based on type
-     * @param type
+     * @param {string} type
      * @returns {number}
      */
     self.getPlayerCount = function appGetPlayerCount(type) {

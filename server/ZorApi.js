@@ -4,9 +4,8 @@ let Zorbio    = require('../common/zorbio.js');
 
 /**
  * Api for accessing and updating game state through http.
- * @param app
- * @param model
- * @param sockets
+ * @param {Object} app
+ * @param {Object[]} instances
  * @constructor
  */
 let ZorApi = function zorApi(app, instances) {

@@ -113,7 +113,7 @@ ZOR.FoodView = function ZORFoodView() {
 
     /**
      * Checks if a food index is alive and can be eaten
-     * @param fi
+     * @param {number} fi
      * @returns {boolean}
      */
     this.aliveFood = function ZORFoodViewAliveFood(fi) {
@@ -122,7 +122,7 @@ ZOR.FoodView = function ZORFoodView() {
 
     /**
      * Hide the food at the index.
-     * @param fi
+     * @param {number} fi
      */
     this.hideFood = function ZORFoodViewHideFood(fi) {
         this.respawning[fi] = config.FOOD_RESPAWN_ANIM_DURATION + 1; // hide food
@@ -131,7 +131,7 @@ ZOR.FoodView = function ZORFoodView() {
 
     /**
      * Show the food at the index
-     * @param fi
+     * @param {number} fi
      */
     this.showFood = function ZORFoodViewShowFood(fi) {
         this.respawning[fi] = config.FOOD_RESPAWN_ANIM_DURATION;
@@ -139,6 +139,7 @@ ZOR.FoodView = function ZORFoodView() {
 
     /**
      * Hide multiple foods
+     * @param {Object[]} foodToHide
      */
     this.hideFoodMultiple = function ZORFoodViewHideFoodMultiple(foodToHide) {
         _.each( foodToHide, this.hideFood.bind(this) );

@@ -246,9 +246,8 @@ Validators.playerSphereScale = function(sphere) {
 
 /**
  * Checks for a valid nick
- *
+ * @param {string} key
  * @returns {boolean}
- * @param key
  */
 Validators.validAlphaKey = function ZORValidatorsValidAlphaKey(key) {
     if (!config.REQUIRE_ALPHA_KEY) return true;

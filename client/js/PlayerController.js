@@ -11,10 +11,10 @@ global player:true
 /**
  * This is the Player Controller that is the C in MVC, it has model that syncs state to the server, and a view
  * for rendering.
- * @param model
- * @param scene
+ * @param {Object} model
+ * @param {Object} scene
+ * @param {boolean} current Is this the current player
  * @constructor
- *
  */
 ZOR.PlayerController = function ZORPlayerController(model, scene, current) {
     this.model = new ZOR.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
@@ -107,16 +107,6 @@ ZOR.PlayerController.prototype.getWindDownTime = function ZORPlayerControllerGet
 
 ZOR.PlayerController.prototype.grow = function ZORPlayerControllerGrow(amount) {
     this.model.sphere.scale += amount;
-};
-
-/**
- * Grow the player in an animation
- * @param amount Amount to grow
- * @param num_frames Number of frames to animate growth
- */
-ZOR.PlayerController.prototype.animatedGrow = function ZORPlayerControllerAnimatedGrow(amount, num_frames) {
-    this._animated_grow_frames = num_frames;
-    this._animated_grow_amount = amount / num_frames;
 };
 
 ZOR.PlayerController.prototype.refreshSphereModel = function ZORPlayerControllerRefreshSphereModel() {
@@ -276,7 +266,7 @@ ZOR.PlayerController.prototype.isSpeedBoostReady = function ZORPlayerControllerI
 /**
  * Set the activity state of the speed boost on the model, for tracking other players speed boost.
  * NOTE: this does NOT activate speed boost, just sets the active flag for other players.
- * @param state
+ * @param {boolean} state
  */
 ZOR.PlayerController.prototype.setSpeedBoostActive = function ZORPlayerControllerSetSpeedBoostActive(state) {
     this.model.abilities.speed_boost.active = state;

@@ -22,7 +22,7 @@ if (NODEJS_CLIENT) {
 
 /**
  * Zorbio game client can be used in a browser or headless
- * @param handler
+ * @param {Object} handler
  * @constructor
  */
 ZOR.ZORClient = function ZORclient(handler) {
@@ -35,6 +35,7 @@ ZOR.ZORClient = function ZORclient(handler) {
 
 /**
  * Connect to the game server based on config
+ * @param {string} uri
  */
 ZOR.ZORClient.prototype.z_connectToServer = function ZORconnectToServer(uri) {
     let self = this;
@@ -51,7 +52,7 @@ ZOR.ZORClient.prototype.z_connectToServer = function ZORconnectToServer(uri) {
 /**
  * Send message to enter the game.  This is the function that sends all the initial player
  * Meta data, like name, skin, etc.
- * @param meta
+ * @param {Object} meta
  */
 ZOR.ZORClient.prototype.z_sendEnterGame = function ZORsendEnterGame(meta) {
     if (this.z_ws.readyState === WebSocket.OPEN) {
@@ -70,7 +71,7 @@ ZOR.ZORClient.prototype.z_sendEnterGame = function ZORsendEnterGame(meta) {
 
 /**
  * Sets up all the message and event handlers for the socket.
- * @param ws
+ * @param {Object} ws
  */
 ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     let self = this;

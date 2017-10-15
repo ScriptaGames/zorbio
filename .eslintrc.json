@@ -17,7 +17,7 @@
 //        "padded-blocks": "off",
 //        "space-before-blocks": "off",
 //        "quotes": "off",
-        "valid-jsdoc": "off",
+//        "valid-jsdoc": "off",
         "prefer-rest-params": "off",
         "keyword-spacing": "off",
         "require-jsdoc": "off",
@@ -41,6 +41,17 @@
         "no-multi-spaces": "off",
         "no-console": "off",
         "camelcase": "off",
+        "valid-jsdoc": [
+            "error",
+            {
+                "requireParamDescription": false,
+                "requireReturnDescription": false,
+                "requireReturn": false,
+                "prefer": {
+                    "returns": "returns"
+                }
+            }
+        ],
         "quotes": [
             "error",
             "single",

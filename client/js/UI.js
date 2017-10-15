@@ -160,8 +160,8 @@ ZOR.UI = function ZORUI() {
 
     /**
      * Sets UI data and saves to local storage
-     * @param key
-     * @param value
+     * @param {string} key
+     * @param {Object} value
      */
     function setAndSave(key, value) {
         engine.set(key, value);
@@ -560,6 +560,7 @@ ZOR.UI = function ZORUI() {
      * Automatically update UI every N frames.  The largest implication is how
      * quickly the leaderboard is updated when new leaderboard data is received
      * from the server.
+     * @returns {Function}
      */
     function get_updater() {
         return _.throttle( engine.update.bind(engine), 1000 );
@@ -582,6 +583,8 @@ ZOR.UI = function ZORUI() {
 
     /**
      * Given a script element, fetch its `src` and inject the response into the element.
+     * @param {Object} el
+     * @returns {Object}
      */
     function fetch_inject(el) {
         return fetch( el.src ).then( get_fetch_text ).then( mk_script_injector(el) );
@@ -589,6 +592,8 @@ ZOR.UI = function ZORUI() {
 
     /**
      * From a `fetch` API response, get the text.
+     * @param {Object} response
+     * @returns {string}
      */
     function get_fetch_text(response) {
         return response.text();
@@ -596,6 +601,8 @@ ZOR.UI = function ZORUI() {
 
     /**
      * Return a function which will inject text into an element.
+     * @param {Object} element
+     * @returns {Function}
      */
     function mk_script_injector(element) {
         return function script_injector(text) {

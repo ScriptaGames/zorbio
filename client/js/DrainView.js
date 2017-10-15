@@ -10,7 +10,7 @@ global UTIL:true
 /**
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
  * visually, and how to move it's different 3D pieces around.
- * @param playerView
+ * @constructor
  */
 ZOR.DrainView = function ZORDrainView() {
     this.MORPH_INDEX_STRETCH       = 0;
@@ -277,6 +277,7 @@ ZOR.DrainView.prototype.createPinchVertices = function ZORDrainViewCreatePinchVe
 
 /**
  * Remove all drain objects from the scene.
+ * @param {Object} scene
  */
 ZOR.DrainView.prototype.dispose = function ZORDrainViewDispose(scene) {
     UTIL.threeFree(scene, this.mesh);

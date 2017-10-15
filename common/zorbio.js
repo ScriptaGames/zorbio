@@ -82,7 +82,7 @@ ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
 /**
  * Reduce the model to just what is needed to sync state between client and server.  Helps reduce size of message
  * over the wire.
- * @returns Object
+ * @returns {Object}
  */
 ZOR.Model.prototype.reduce = function ZORModelReduce() {
     // Send the bare minimum to init the game on the client
@@ -101,9 +101,9 @@ ZOR.Model.prototype.reduce = function ZORModelReduce() {
 
 /**
  * Returns reduced array
- * @param array
- * @param tiny True if should be reduced to the smallest possible object
- * @returns {Array}
+ * @param {Object[]} array
+ * @param {boolean} tiny True if should be reduced to the smallest possible object
+ * @returns {Object[]}
  */
 ZOR.Model.prototype.reduceObjects = function ZORModelReduceObjects(array, tiny) {
     let reduced = [];
@@ -118,8 +118,8 @@ ZOR.Model.prototype.reduceObjects = function ZORModelReduceObjects(array, tiny) 
 
 /**
  * Returns reduced actors array
- * @param tiny True if you want to reduce them to tiny actors
- * @returns {Array}
+ * @param {boolean} tiny True if you want to reduce them to tiny actors
+ * @returns {Object[]}
  */
 ZOR.Model.prototype.reduceActors = function ZORModelReduceActors(tiny) {
     return this.reduceObjects(this.actors, tiny);
@@ -127,7 +127,8 @@ ZOR.Model.prototype.reduceActors = function ZORModelReduceActors(tiny) {
 
 /**
  * Return the actor object matching id
- * @param id
+ * @param {number} id
+ * @returns {Object}
  */
 ZOR.Model.prototype.getActorById = function ZORModelGetActorById(id) {
     return this.actors[UTIL.findIndexById(this.actors, id)];
@@ -135,7 +136,8 @@ ZOR.Model.prototype.getActorById = function ZORModelGetActorById(id) {
 
 /**
  * Return the player object matching id
- * @param id
+ * @param {number} id
+ * @returns {Object}
  */
 ZOR.Model.prototype.getPlayerById = function ZORModelGetPlayersById(id) {
     return this.players[UTIL.findIndexById(this.players, id)];
@@ -143,6 +145,7 @@ ZOR.Model.prototype.getPlayerById = function ZORModelGetPlayersById(id) {
 
 /**
  * Return an array of non-bot players
+ * @returns {Object[]}
  */
 ZOR.Model.prototype.getRealPlayers = function ZORModelGetRealPlayers() {
     let real_players = [];
@@ -205,7 +208,8 @@ ZOR.Model.prototype.removePlayer = function ZORModelRemovePlayer(id) {
 
 /**
  * Returns the safest spawn position within a limited number of tries
- * @param num_tries
+ * @param {number} num_tries
+ * @returns {Object}
  */
 ZOR.Model.prototype.getSafeSpawnPosition = function ZORGetSafeSpawnPosition( num_tries ) {
     num_tries = num_tries || 1;
@@ -238,7 +242,7 @@ ZOR.Model.prototype.getSafeSpawnPosition = function ZORGetSafeSpawnPosition( num
 
 /**
  * Returns the distance to the nearest player form this position*
- * @param position
+ * @param {Object} position
  * @returns {{sphere: null, dist: number}}
  */
 ZOR.Model.prototype.findNearestPlayerSphere = function ZORfindNearestPlayerSphere( position ) {
@@ -264,7 +268,7 @@ ZOR.Model.prototype.findNearestPlayerSphere = function ZORfindNearestPlayerSpher
 
 /**
  * Returns true of this is a safe spawn position based on current player positions in the model
- * @param nearest
+ * @param {Object} nearest
  * @returns {boolean}
  */
 ZOR.Model.prototype.isSafeSpawnPosition = function ZORIsSafeSpawnPosition( nearest ) {
@@ -329,6 +333,13 @@ ZOR.Actor.prototype.pushRecentPosition = function ZORActorPushRecentPosition(pos
 
 /**
  * ZOR.PlayerSphere is a constructor for creating a player's sphere.
+ * @param {number} playerId
+ * @param {number} color
+ * @param {Object} position
+ * @param {number} scale
+ * @param {Object} velocity
+ * @param {string} skin
+ * @constructor
  */
 ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, velocity, skin) {
     // call super class constructor
@@ -375,7 +386,8 @@ ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
 
 /**
  * Returns the reduced actor with just the data important to sync between client and server
- * @returns {Object}
+ * @param {boolean} tiny
+ * @returns {{id: *, position: *, velocity: *, scale: *, drain_target_id: *, speed_boosting: *}}
  */
 ZOR.PlayerSphere.prototype.reduce = function ZORPlayerSphereReduce(tiny) {
     let is_tiny = tiny || false;
@@ -410,7 +422,7 @@ ZOR.PlayerSphere.prototype.radius = function ZORPlayerSphereRadius() {
 
 /**
  * Grow the sphere an expected amount.  Returns the increase delta.
- * @param amount
+ * @param {number} amount
  * @returns {number}
  */
 ZOR.PlayerSphere.prototype.growExpected = function ZORPlayerSphereGrowExpected(amount) {
@@ -444,13 +456,14 @@ ZOR.PlayerTypes = Object.freeze({
 
 /**
  * Zor Player model
- * @param id
- * @param name
- * @param color
- * @param type
- * @param position
- * @param scale
- * @param velocity
+ * @param {number} id
+ * @param {string} name
+ * @param {number} color
+ * @param {string} type
+ * @param {Object} position
+ * @param {number} scale
+ * @param {object} velocity
+ * @param {string} skin
  * @constructor
  */
 ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity, skin) {
@@ -494,6 +507,7 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
 
 /**
  * Reduce the player to the bare minimum needed to sync between client and server
+ * @returns {{id: *, name: *, type: *, sphere}}
  */
 ZOR.Player.prototype.reduce = function ZORPlayerReduce() {
     return {
@@ -506,6 +520,7 @@ ZOR.Player.prototype.reduce = function ZORPlayerReduce() {
 
 /**
  * Reduce the player to the bare minimum needed to sync between client and server
+ * @returns {Object}
  */
 ZOR.Player.prototype.getMetrics = function ZORPlayerGetMetrics() {
     let metrics = this.reduce();

@@ -456,7 +456,7 @@ ZOR.PlayerView.prototype.adjustCamera = function ZORPlayerViewAdjustCamera(scale
 
 /**
  * Returns true if the camera min distance should change
- * @param calulatedDist
+ * @param {number} calulatedDist
  * @returns {boolean}
  */
 ZOR.PlayerView.prototype.shouldChangeMinDist = function ZORPlayerViewShouldChangeMinDist(calulatedDist) {

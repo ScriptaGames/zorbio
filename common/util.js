@@ -22,6 +22,7 @@ let UTIL = {};
  * @param {Number} n the number to clamp
  * @param {Number} min the range's lower bound
  * @param {Number} max the range's upper bound
+ * @returns {number}
  */
 UTIL.clamp = function UTILClamp(n, min, max) {
     if (min > max) throw new Error('invalid clamp, min is greater than max');
@@ -249,6 +250,7 @@ UTIL.adjustVelocityWallHit = function UTILadjustVelocityWallHit( p, r, v, w ) {
  *
  * @param {Number} r percentage distance from center of the screen, for example
  * 0.5 would mean halfway between screen center and screen edge.
+ * @returns {number}
  */
 UTIL.slopewell = function slopewell( r ) {
     return Math.max(0, ( -config.STEERING.WELL + r ) / config.STEERING.SLOPE);
@@ -257,8 +259,8 @@ UTIL.slopewell = function slopewell( r ) {
 /**
  * Get a random world coordinate which a sphere could be placed in.  Because
  * the world is a cube, the coordinate can be used on any axis.
- *
- * @returns {Number}
+ * @param {number} d
+ * @returns {number}
  */
 UTIL.safeRandomCoordinate = function UTILsafeRandomCoordinate(d) {
     let devide = d || 1;
@@ -315,6 +317,9 @@ UTIL.trimFloat = function UTILTrimFloat(num, trim) {
 /**
  * Utility function used to push data into the
  * array while maintaining the sort order.
+ * @param {Object[]} array
+ * @param {Object} value
+ * @param {Object} iteratee
  */
 UTIL.sortedObjectPush = function UTILSortedObjectPush( array, value, iteratee ) {
     array.splice( _.sortedIndexBy(array, value, iteratee) , 0, value );
@@ -324,9 +329,10 @@ UTIL.sortedObjectPush = function UTILSortedObjectPush( array, value, iteratee ) 
  * Given a food coloring name, returns a function for generating that food
  * coloring style.
  *
- * @param {String} name the
+ * @param {String} type the
  * @example UTIL.foodColoring('random');
  * @example UTIL.foodColoring('rgbcube');
+ * @returns {*}
  */
 UTIL.getFoodCrayon = function UTILfoodColoring( type ) {
     return foodCrayons[type];
@@ -507,6 +513,7 @@ let foodMaps = {
  *
  * @param {Function} f the function to wrap
  * @param {Number} n execute the function every `n` times
+ * @returns {Function}
  */
 UTIL.nth = function nth(f, n) {
     let _i = 0;
@@ -524,7 +531,7 @@ UTIL.nth = function nth(f, n) {
 
 /**
  * Test if a string is undefinted null or blank
- * @param str
+ * @param {string} str
  * @returns {Boolean}
  */
 UTIL.isBlank = function isBlank(str) {
@@ -533,9 +540,9 @@ UTIL.isBlank = function isBlank(str) {
 
 /**
  * pushes an element onto the front of an array and shifts the oldest element out based on max_length
- * @param arr
- * @param value
- * @param max_length
+ * @param {Object[]} arr
+ * @param {*} value
+ * @param {number} max_length
  */
 UTIL.pushShift = function UTILPushShift(arr, value, max_length) {
     arr.push(value);
@@ -546,7 +553,7 @@ UTIL.pushShift = function UTILPushShift(arr, value, max_length) {
 
 /**
  * Converts a node.js buffer to an ArrayBuffer
- * @param buffer
+ * @param {Object} buffer
  * @returns {ArrayBuffer}
  */
 UTIL.toArrayBuffer = function UTILtoArrayBuffer(buffer) {
@@ -560,8 +567,8 @@ UTIL.toArrayBuffer = function UTILtoArrayBuffer(buffer) {
 
 /**
  * Returns the index of the element matching given id.  used for looking up things like players in an array.
- * @param theArray
- * @param id
+ * @param {Object[]} theArray
+ * @param {number} id
  * @return {number}
  */
 UTIL.findIndexById = function UTILFindINdexById(theArray, id) {
@@ -572,7 +579,7 @@ UTIL.findIndexById = function UTILFindINdexById(theArray, id) {
 
 /**
  * Returns the first byte of an array buffer
- * @param arrayBuffer
+ * @param {Object} arrayBuffer
  * @returns {number}
  */
 UTIL.readFirstByte = function UTILReadFirstByte(arrayBuffer) {
@@ -582,7 +589,7 @@ UTIL.readFirstByte = function UTILReadFirstByte(arrayBuffer) {
 
 /**
  * Returns the first float of an array buffer
- * @param arrayBuffer
+ * @param {Object} arrayBuffer
  * @returns {float}
  */
 UTIL.readFirstFloat = function UTILReadFirstByte(arrayBuffer) {
@@ -612,9 +619,9 @@ UTIL.filterName = function UTILFilterName(name) {
 
 /**
  * Lerp two values
- * @param v0
- * @param v1
- * @param t
+ * @param {number} v0
+ * @param {number} v1
+ * @param {number} t
  * @returns {number}
  */
 UTIL.lerp = function UTILLerp(v0, v1, t) {

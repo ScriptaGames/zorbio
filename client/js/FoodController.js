@@ -8,8 +8,8 @@ global player:true
 
 /**
  * The Controller part of Food MVC
- * @param model
- * @param fogCenterPosition
+ * @param {Object} model
+ * @param {Object} fogCenterPosition
  * @constructor
  */
 ZOR.FoodController = function ZORFoodController(model, fogCenterPosition) {
@@ -41,7 +41,7 @@ ZOR.FoodController = function ZORFoodController(model, fogCenterPosition) {
 
     /**
      * Any updates to be run during main loop
-     * @param fogCenterPosition
+     * @param {Object} fogCenterPosition
      */
     this.update = function ZORFoodControllerUpdate(fogCenterPosition) {
         // update the center position of the fog
@@ -60,7 +60,7 @@ ZOR.FoodController = function ZORFoodController(model, fogCenterPosition) {
 
     /**
      * Checks if a food index is alive and can be eaten
-     * @param fi
+     * @param {number} fi
      * @returns {boolean}
      */
     this.aliveFood = function ZORFoodControllerAliveFood(fi) {
@@ -69,7 +69,7 @@ ZOR.FoodController = function ZORFoodController(model, fogCenterPosition) {
 
     /**
      * Hide the food at the index.
-     * @param fi
+     * @param {number} fi
      */
     this.hideFood = function ZORFoodControllerHideFood(fi) {
         this.view.hideFood(fi);
@@ -78,7 +78,7 @@ ZOR.FoodController = function ZORFoodController(model, fogCenterPosition) {
 
     /**
      * Show the food at the index
-     * @param fi
+     * @param {number} fi
      */
     this.showFood = function ZORFoodControllerShowFood(fi) {
         this.view.showFood(fi);
@@ -86,6 +86,7 @@ ZOR.FoodController = function ZORFoodController(model, fogCenterPosition) {
 
     /**
      * Hide multiple foods
+     * @param {number[]} foodToHide
      */
     this.hideFoodMultiple = function ZORFoodViewHideFoodMultipleFood(foodToHide) {
         this.view.hideFoodMultiple(foodToHide);
@@ -93,8 +94,8 @@ ZOR.FoodController = function ZORFoodController(model, fogCenterPosition) {
 
     /**
      * Checks for food captures and executes a callback for each capture
-     * @param thePlayer
-     * @param callback
+     * @param {Object} thePlayer
+     * @param {Function} callback
      */
     this.checkFoodCaptures = function ZORFoodControllerCheckFoodCaptures(thePlayer, callback) {
         //var start = performance.now();
