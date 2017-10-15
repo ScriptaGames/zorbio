@@ -6,9 +6,9 @@ global ZOR:true
 const NODEJS_ENV_PROD = typeof module !== 'undefined' && module.exports;
 
 const PROD_SETTINGS = {
-    CHECK_ORIGIN      : true,
-    CHECK_VERSION     : false,
-    REQUIRE_ALPHA_KEY : false,
+    CHECK_ORIGIN     : true,
+    CHECK_VERSION    : false,
+    REQUIRE_ALPHA_KEY: false,
 };
 
 if (NODEJS_ENV_PROD) {

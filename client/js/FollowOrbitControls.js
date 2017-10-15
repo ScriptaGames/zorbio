@@ -349,7 +349,7 @@ global config:true
         let dollyEnd = new THREE.Vector2();
         let dollyDelta = new THREE.Vector2();
 
-        let STATE = { NONE : - 1, ROTATE : 0, DOLLY : 1, PAN : 2, TOUCH_ROTATE : 3, TOUCH_DOLLY : 4, TOUCH_PAN : 5 };
+        let STATE = { NONE: - 1, ROTATE: 0, DOLLY: 1, PAN: 2, TOUCH_ROTATE: 3, TOUCH_DOLLY: 4, TOUCH_PAN: 5 };
 
         let mouseX = 0;
         let mouseY = 0;
@@ -779,7 +779,7 @@ global config:true
 
         },
 
-        minDistance : {
+        minDistance: {
 
             get: function() {
                 return this.constraint.minDistance;
@@ -791,7 +791,7 @@ global config:true
 
         },
 
-        maxDistance : {
+        maxDistance: {
 
             get: function() {
                 return this.constraint.maxDistance;
@@ -803,7 +803,7 @@ global config:true
 
         },
 
-        minZoom : {
+        minZoom: {
 
             get: function() {
                 return this.constraint.minZoom;
@@ -815,7 +815,7 @@ global config:true
 
         },
 
-        maxZoom : {
+        maxZoom: {
 
             get: function() {
                 return this.constraint.maxZoom;
@@ -827,7 +827,7 @@ global config:true
 
         },
 
-        minPolarAngle : {
+        minPolarAngle: {
 
             get: function() {
                 return this.constraint.minPolarAngle;
@@ -839,7 +839,7 @@ global config:true
 
         },
 
-        maxPolarAngle : {
+        maxPolarAngle: {
 
             get: function() {
                 return this.constraint.maxPolarAngle;
@@ -851,7 +851,7 @@ global config:true
 
         },
 
-        minAzimuthAngle : {
+        minAzimuthAngle: {
 
             get: function() {
                 return this.constraint.minAzimuthAngle;
@@ -863,7 +863,7 @@ global config:true
 
         },
 
-        maxAzimuthAngle : {
+        maxAzimuthAngle: {
 
             get: function() {
                 return this.constraint.maxAzimuthAngle;
@@ -875,7 +875,7 @@ global config:true
 
         },
 
-        enableDamping : {
+        enableDamping: {
 
             get: function() {
                 return this.constraint.enableDamping;
@@ -887,7 +887,7 @@ global config:true
 
         },
 
-        dampingFactor : {
+        dampingFactor: {
 
             get: function() {
                 return this.constraint.dampingFactor;
@@ -957,7 +957,7 @@ global config:true
 
         },
 
-        staticMoving : {
+        staticMoving: {
 
             get: function() {
                 console.warn( 'THREE.FollowOrbitControls: .staticMoving has been deprecated. Use .enableDamping instead.' );
@@ -971,7 +971,7 @@ global config:true
 
         },
 
-        dynamicDampingFactor : {
+        dynamicDampingFactor: {
 
             get: function() {
                 console.warn( 'THREE.FollowOrbitControls: .dynamicDampingFactor has been renamed. Use .dampingFactor instead.' );

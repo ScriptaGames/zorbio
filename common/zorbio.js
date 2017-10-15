@@ -87,15 +87,15 @@ ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
 ZOR.Model.prototype.reduce = function ZORModelReduce() {
     // Send the bare minimum to init the game on the client
     return {
-        actors: this.reduceObjects(this.actors),
-        players: this.reduceObjects(this.players),
-        worldSize: this.worldSize,
-        food: this.food,
-        foodCount: this.foodCount,
-        foodDensity: this.foodDensity,
-        food_respawning: this.food_respawning,
+        actors                  : this.reduceObjects(this.actors),
+        players                 : this.reduceObjects(this.players),
+        worldSize               : this.worldSize,
+        food                    : this.food,
+        foodCount               : this.foodCount,
+        foodDensity             : this.foodDensity,
+        food_respawning         : this.food_respawning,
         food_respawn_ready_queue: this.food_respawn_ready_queue,
-        food_respawning_indexes: this.food_respawning_indexes,
+        food_respawning_indexes : this.food_respawning_indexes,
     };
 };
 
@@ -285,12 +285,12 @@ ZOR.Model.prototype.isSafeSpawnPosition = function ZORIsSafeSpawnPosition( neare
  * in Zorbio.
  */
 ZOR.ActorTypes = Object.freeze({
-    UNDEFINED     : 'UNDEFINED',
-    PLAYER_SPHERE : 'PLAYER_SPHERE',
-    FOOD          : 'FOOD',
-    PORTAL        : 'PORTAL',
-    OBSTACLE      : 'OBSTACLE',
-    SPECTATOR     : 'SPECTATOR'
+    UNDEFINED    : 'UNDEFINED',
+    PLAYER_SPHERE: 'PLAYER_SPHERE',
+    FOOD         : 'FOOD',
+    PORTAL       : 'PORTAL',
+    OBSTACLE     : 'OBSTACLE',
+    SPECTATOR    : 'SPECTATOR'
 });
 
 /**
@@ -393,12 +393,12 @@ ZOR.PlayerSphere.prototype.reduce = function ZORPlayerSphereReduce(tiny) {
     let is_tiny = tiny || false;
 
     let reducedActor = {
-        id: this.id,
-        position: this.position,
-        velocity: this.velocity,
-        scale: this.scale,
+        id             : this.id,
+        position       : this.position,
+        velocity       : this.velocity,
+        scale          : this.scale,
         drain_target_id: this.drain_target_id,
-        speed_boosting: this.speed_boosting,
+        speed_boosting : this.speed_boosting,
     };
 
     if (!is_tiny) {
@@ -449,9 +449,9 @@ ZOR.PlayerSphere.prototype.growExpected = function ZORPlayerSphereGrowExpected(a
  * ZOR.PlayerTypes Types of players
  */
 ZOR.PlayerTypes = Object.freeze({
-    SPECTATOR : 'SPECTATOR',
-    PLAYER    : 'PLAYER',
-    BOT       : 'BOT',
+    SPECTATOR: 'SPECTATOR',
+    PLAYER   : 'PLAYER',
+    BOT      : 'BOT',
 });
 
 /**
@@ -511,9 +511,9 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
  */
 ZOR.Player.prototype.reduce = function ZORPlayerReduce() {
     return {
-        id: this.id,
-        name: this.name,
-        type: this.type,
+        id    : this.id,
+        name  : this.name,
+        type  : this.type,
         sphere: this.sphere.reduce(),
     };
 };
@@ -614,9 +614,9 @@ ZOR.Ability = function ZORAbility() {
     this.update     = undefined; // implemented by subclass
 
     self.events = {
-        activate: [],
+        activate  : [],
         deactivate: [],
-        update: [],
+        update    : [],
     };
 
     this.on = function ZORAbilityOn(eventName, func) {
@@ -751,7 +751,7 @@ ZOR.IdGenerator = function ZORIdGenerator() {
     }
 
     return {
-        get_next_id : get_next_id
+        get_next_id: get_next_id
     };
 }();
 

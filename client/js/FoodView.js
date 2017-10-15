@@ -67,17 +67,17 @@ ZOR.FoodView = function ZORFoodView() {
 
         this.material = new THREE.RawShaderMaterial( {
             uniforms: {
-                map: { type: 't', value: new THREE.TextureLoader().load( 'textures/soft-square.png' ) },
-                mainSpherePos              : { type : 'v3', value : fogCenterPosition },
-                FOG_FAR                    : { type : 'f',  value : config.FOG_FAR },
-                FOG_ENABLED                : { type : 'f',  value : ~~config.FOG_ENABLED },
-                ALPHA_ENABLED              : { type : 'f',  value : ~~config.FOOD_ALPHA_ENABLED },
-                FOOD_RESPAWN_ANIM_DURATION : { type : 'f',  value : config.FOOD_RESPAWN_ANIM_DURATION },
+                map                       : { type: 't', value: new THREE.TextureLoader().load( 'textures/soft-square.png' ) },
+                mainSpherePos             : { type: 'v3', value: fogCenterPosition },
+                FOG_FAR                   : { type: 'f',  value: config.FOG_FAR },
+                FOG_ENABLED               : { type: 'f',  value: ~~config.FOG_ENABLED },
+                ALPHA_ENABLED             : { type: 'f',  value: ~~config.FOOD_ALPHA_ENABLED },
+                FOOD_RESPAWN_ANIM_DURATION: { type: 'f',  value: config.FOOD_RESPAWN_ANIM_DURATION },
             },
-            vertexShader: document.getElementById( 'food-vertex-shader' ).textContent,
+            vertexShader  : document.getElementById( 'food-vertex-shader' ).textContent,
             fragmentShader: document.getElementById( 'food-frag-shader' ).textContent,
-            depthTest: true,
-            depthWrite: true,
+            depthTest     : true,
+            depthWrite    : true,
             // alphaTest: 0.5,
             // transparent: true,
         } );

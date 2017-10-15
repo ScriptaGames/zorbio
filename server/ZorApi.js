@@ -51,10 +51,10 @@ let ZorApi = function zorApi(app, instances) {
             let player_count = instance.getPlayerCount(Zorbio.PlayerTypes.PLAYER);
             let bot_count    = instance.getPlayerCount(Zorbio.PlayerTypes.BOT);
             let instance_info = {
-                id: instance.id,
+                id     : instance.id,
                 clients: client_count,
                 players: player_count,
-                bots: bot_count,
+                bots   : bot_count,
             };
             total_clients += client_count;
             total_players += player_count;
@@ -64,10 +64,10 @@ let ZorApi = function zorApi(app, instances) {
 
         let response = {
             total_players: total_players,
-            total_bots: total_bots,
+            total_bots   : total_bots,
             total_clients: total_clients,
-            percent_full:  (total_players / (config.MAX_PLAYERS_PER_INSTANCE * config.NUM_GAME_INSTANCES)) * 100,
-            games: games,
+            percent_full : (total_players / (config.MAX_PLAYERS_PER_INSTANCE * config.NUM_GAME_INSTANCES)) * 100,
+            games        : games,
         };
 
         res.setHeader('content-type', 'application/json');

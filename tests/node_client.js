@@ -20,11 +20,11 @@ console.log('Starting headless zorbio node client to: ' + process.argv[2]);
 let zorClient = new ZORClient(handler);
 
 let playerMeta = {
-    color: 3,
-    key: 'mathisfreedom',
+    color     : 3,
+    key       : 'mathisfreedom',
     playerName: 'test2',
     playerType: 'PLAYER',
-    skin: 'default',
+    skin      : 'default',
 };
 
 zorClient.z_connectToServer(process.argv[2]);

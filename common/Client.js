@@ -57,12 +57,12 @@ ZOR.ZORClient.prototype.z_connectToServer = function ZORconnectToServer(uri) {
 ZOR.ZORClient.prototype.z_sendEnterGame = function ZORsendEnterGame(meta) {
     if (this.z_ws.readyState === WebSocket.OPEN) {
         this.z_ws.send(JSON.stringify({
-            op: 'enter_game',
-            type: meta.playerType,
-            name: meta.playerName,
+            op   : 'enter_game',
+            type : meta.playerType,
+            name : meta.playerName,
             color: meta.color,
-            skin: meta.skin,
-            key: meta.key
+            skin : meta.skin,
+            key  : meta.key
         }));
 
         console.log('Send enter game');
@@ -317,17 +317,17 @@ ZOR.ZORClient.prototype.z_sendPlayerUpdate = function ZORsendPlayerUpdate(player
 
     // Send oldest position and most recent 4 positions
     let playerUpdateMessage = {
-        0: ZOR.Schemas.ops.PLAYER_UPDATE,
-        player_id: this.z_playerModel.id,
-        sphere_id: playerSphere.id,
-        pp_gap: gap,
-        au_gap: this.z_actorUpdateGap,
-        buffered_mount: bufferedAmount,
-        latest_position: playerSphere.recentPositions[playerSphere.recentPositions.length - 1],
-        prev_position_1: playerSphere.recentPositions[playerSphere.recentPositions.length - 2],
-        prev_position_2: playerSphere.recentPositions[playerSphere.recentPositions.length - 3],
-        prev_position_3: playerSphere.recentPositions[playerSphere.recentPositions.length - 4],
-        oldest_position: playerSphere.recentPositions[0],
+        0                 : ZOR.Schemas.ops.PLAYER_UPDATE,
+        player_id         : this.z_playerModel.id,
+        sphere_id         : playerSphere.id,
+        pp_gap            : gap,
+        au_gap            : this.z_actorUpdateGap,
+        buffered_mount    : bufferedAmount,
+        latest_position   : playerSphere.recentPositions[playerSphere.recentPositions.length - 1],
+        prev_position_1   : playerSphere.recentPositions[playerSphere.recentPositions.length - 2],
+        prev_position_2   : playerSphere.recentPositions[playerSphere.recentPositions.length - 3],
+        prev_position_3   : playerSphere.recentPositions[playerSphere.recentPositions.length - 4],
+        oldest_position   : playerSphere.recentPositions[0],
         food_capture_queue: food_capture_queue,
     };
 

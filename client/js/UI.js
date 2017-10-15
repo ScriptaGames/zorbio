@@ -34,20 +34,20 @@ ZOR.UI = function ZORUI() {
      */
 
     let STATES = {
-        INITIAL             : 'menu-game-screen',
-        MENU_SCREEN         : 'menu-game-screen',
-        MENU_GAME_SCREEN    : 'menu-game-screen',
-        MENU_STORE_SCREEN   : 'menu-store-screen',
-        MENU_CONFIG_SCREEN  : 'menu-config-screen',
-        MENU_CREDITS_SCREEN : 'menu-credits-screen',
-        PLAYING             : 'playing',
-        PLAYING_CONFIG      : 'playing-config',
-        RESPAWN_SCREEN      : 'menu-respawn-screen',
-        KICKED_SCREEN       : 'kicked-screen',
-        GAME_INIT_ERROR     : 'game-init-error',
-        SERVER_MSG_SCREEN   : 'server-msg-screen',
-        TUTORIAL_SCREEN     : 'menu-tutorial-screen',
-        LEADERBOARD_SCREEN  : 'menu-leaderboard-screen',
+        INITIAL            : 'menu-game-screen',
+        MENU_SCREEN        : 'menu-game-screen',
+        MENU_GAME_SCREEN   : 'menu-game-screen',
+        MENU_STORE_SCREEN  : 'menu-store-screen',
+        MENU_CONFIG_SCREEN : 'menu-config-screen',
+        MENU_CREDITS_SCREEN: 'menu-credits-screen',
+        PLAYING            : 'playing',
+        PLAYING_CONFIG     : 'playing-config',
+        RESPAWN_SCREEN     : 'menu-respawn-screen',
+        KICKED_SCREEN      : 'kicked-screen',
+        GAME_INIT_ERROR    : 'game-init-error',
+        SERVER_MSG_SCREEN  : 'server-msg-screen',
+        TUTORIAL_SCREEN    : 'menu-tutorial-screen',
+        LEADERBOARD_SCREEN : 'menu-leaderboard-screen',
     };
 
     /**
@@ -55,34 +55,34 @@ ZOR.UI = function ZORUI() {
      */
 
     let ACTIONS = {
-        PLAYER_LOGIN_KEYPRESS    : 'player-login-keypress',
-        PLAYER_LOGIN             : 'player-login',
-        PLAYER_RESPAWN           : 'player-respawn',
-        PAGE_RELOAD              : 'page-reload',
-        SHOW_MENU                : 'show-menu',
-        SHOW_TUTORIAL            : 'show-tutorial',
-        SHOW_LEADERBOARD         : 'show-leaderboard',
-        SHOW_PLAYING_CONFIG      : 'show-playing-config',
-        SHOW_PREVIOUS            : 'show-previous',
+        PLAYER_LOGIN_KEYPRESS: 'player-login-keypress',
+        PLAYER_LOGIN         : 'player-login',
+        PLAYER_RESPAWN       : 'player-respawn',
+        PAGE_RELOAD          : 'page-reload',
+        SHOW_MENU            : 'show-menu',
+        SHOW_TUTORIAL        : 'show-tutorial',
+        SHOW_LEADERBOARD     : 'show-leaderboard',
+        SHOW_PLAYING_CONFIG  : 'show-playing-config',
+        SHOW_PREVIOUS        : 'show-previous',
 
-        UPDATE_LEADERBOARD       : 'update-leaderboard',
-        SHOW_LEADERBOARD_1D      : 'show-leaderboard-1d',
-        SHOW_LEADERBOARD_7D      : 'show-leaderboard-7d',
-        SHOW_LEADERBOARD_30D     : 'show-leaderboard-30d',
+        UPDATE_LEADERBOARD  : 'update-leaderboard',
+        SHOW_LEADERBOARD_1D : 'show-leaderboard-1d',
+        SHOW_LEADERBOARD_7D : 'show-leaderboard-7d',
+        SHOW_LEADERBOARD_30D: 'show-leaderboard-30d',
 
-        SHOW_MENU_GAME_SCREEN    : 'show-menu-game-screen',
-        SHOW_MENU_STORE_SCREEN   : 'show-menu-store-screen',
-        SHOW_MENU_CONFIG_SCREEN  : 'show-menu-config-screen',
-        SHOW_MENU_CREDITS_SCREEN : 'show-menu-credits-screen',
+        SHOW_MENU_GAME_SCREEN   : 'show-menu-game-screen',
+        SHOW_MENU_STORE_SCREEN  : 'show-menu-store-screen',
+        SHOW_MENU_CONFIG_SCREEN : 'show-menu-config-screen',
+        SHOW_MENU_CREDITS_SCREEN: 'show-menu-credits-screen',
 
-        TOGGLE_Y_AXIS            : 'toggle-y-axis',
-        TOGGLE_X_AXIS            : 'toggle-x-axis',
-        TOGGLE_OWN_TRAIL         : 'toggle-own-trail',
-        VOLUME_MUSIC             : 'volume-music',
-        VOLUME_SFX               : 'volume-sfx',
-        SET_STEERING             : 'set-steering',
+        TOGGLE_Y_AXIS   : 'toggle-y-axis',
+        TOGGLE_X_AXIS   : 'toggle-x-axis',
+        TOGGLE_OWN_TRAIL: 'toggle-own-trail',
+        VOLUME_MUSIC    : 'volume-music',
+        VOLUME_SFX      : 'volume-sfx',
+        SET_STEERING    : 'set-steering',
 
-        SET_SKIN                 : 'set-skin',
+        SET_SKIN: 'set-skin',
     };
 
     /**
@@ -106,40 +106,40 @@ ZOR.UI = function ZORUI() {
         leaders          : [],
         leaderboard      : {
             activeBoard: 'leaders_1_day',
-            data: {},
+            data       : {},
         },
-        is_mobile        : isMobile.any,
-        loading          : true,
-        screen_x         : 0,
-        screen_y         : 0,
-        player_size      : 0,
-        numberCommas     : function numberCommas(x) {
+        is_mobile   : isMobile.any,
+        loading     : true,
+        screen_x    : 0,
+        screen_y    : 0,
+        player_size : 0,
+        numberCommas: function numberCommas(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         },
-        showAd           : showAd,
-        flip_x           : JSON.parse(localStorage.flip_x || 'false'),
-        flip_y           : JSON.parse(localStorage.flip_y || 'false'),
-        hide_own_trail   : JSON.parse(localStorage.hide_own_trail || 'false'),
-        steering         : localStorage.steering || 'follow',
-        music_enabled    : config.MUSIC_ENABLED,
-        volume           : {
-            music : config.VOLUME_MUSIC_INITIAL,
-            sfx   : config.VOLUME_SFX_INITIAL,
+        showAd        : showAd,
+        flip_x        : JSON.parse(localStorage.flip_x || 'false'),
+        flip_y        : JSON.parse(localStorage.flip_y || 'false'),
+        hide_own_trail: JSON.parse(localStorage.hide_own_trail || 'false'),
+        steering      : localStorage.steering || 'follow',
+        music_enabled : config.MUSIC_ENABLED,
+        volume        : {
+            music: config.VOLUME_MUSIC_INITIAL,
+            sfx  : config.VOLUME_SFX_INITIAL,
         },
-        marquee_messages : [],
-        marquee_index    : 0,
-        target           : undefined,
+        marquee_messages: [],
+        marquee_index   : 0,
+        target          : undefined,
     };
 
     // the public functions exposes by this module (may be modified during execution)
     let api = {
-        STATES      : STATES,
-        ACTIONS     : ACTIONS,
-        data        : uidata,
-        state       : state,
-        on          : on,
-        clearTarget : clearTarget,
-        setAndSave  : setAndSave,
+        STATES        : STATES,
+        ACTIONS       : ACTIONS,
+        data          : uidata,
+        state         : state,
+        on            : on,
+        clearTarget   : clearTarget,
+        setAndSave    : setAndSave,
         advanceMarquee: advanceMarquee,
     };
 
@@ -217,9 +217,9 @@ ZOR.UI = function ZORUI() {
 
         // Send google analytics event
         ga('send', {
-            hitType: 'event',
+            hitType      : 'event',
             eventCategory: 'StateChange',
-            eventAction: newstate,
+            eventAction  : newstate,
         });
 
         return uidata.state;
@@ -300,8 +300,8 @@ ZOR.UI = function ZORUI() {
 
         Ractive.DEBUG = config.DEBUG;
         engine = new Ractive({
-            el: '#ui-overlay',
-            data: uidata,
+            el      : '#ui-overlay',
+            data    : uidata,
             template: mainTemplate,
             partials: _.fromPairs(partials),
         });
@@ -440,10 +440,10 @@ ZOR.UI = function ZORUI() {
 
             // send event to google analytics
             ga('send', {
-                hitType: 'event',
+                hitType      : 'event',
                 eventCategory: 'button',
-                eventAction: 'use_skin_button',
-                eventLabel: skin,
+                eventAction  : 'use_skin_button',
+                eventLabel   : skin,
             });
             startGame(ZOR.PlayerTypes.PLAYER);
         });
@@ -451,10 +451,10 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
             // send event to google analytics
             ga('send', {
-                hitType: 'event',
+                hitType      : 'event',
                 eventCategory: 'button',
-                eventAction: 'play_button',
-                eventLabel: 'mouse_click'
+                eventAction  : 'play_button',
+                eventLabel   : 'mouse_click'
             });
             startGame(ZOR.PlayerTypes.PLAYER);
         });
@@ -491,9 +491,9 @@ ZOR.UI = function ZORUI() {
             if (respawnPlayer) {
                 // send event to google analytics
                 ga('send', {
-                    hitType: 'event',
+                    hitType      : 'event',
                     eventCategory: 'button',
-                    eventAction: 'respawn_button',
+                    eventAction  : 'respawn_button',
                 });
                 respawnPlayer();
             }
@@ -507,10 +507,10 @@ ZOR.UI = function ZORUI() {
                 if (startGame) {
                     // send event to google analytics
                     ga('send', {
-                        hitType: 'event',
+                        hitType      : 'event',
                         eventCategory: 'button',
-                        eventAction: 'play_button',
-                        eventLabel: 'enter_key'
+                        eventAction  : 'play_button',
+                        eventLabel   : 'enter_key'
                     });
                     startGame(ZOR.PlayerTypes.PLAYER);
                 }

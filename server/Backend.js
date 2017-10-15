@@ -121,7 +121,7 @@ Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, 
                     // Filter out the meta data like date and score id, all we want is the name and the score
                     leaders.forEach(function eachLeader(leader) {
                         let filteredLeader = {
-                            name: leader.userName,
+                            name : leader.userName,
                             score: leader.value,
                         };
                         filteredLeaders.push(filteredLeader);
@@ -130,7 +130,7 @@ Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, 
                 else if (leaders && leaders.userName && leaders.value) {
                     // Handle 1 score for range
                     filteredLeaders.push({
-                        name: leaders.userName,
+                        name : leaders.userName,
                         score: leaders.value,
                     });
                 }

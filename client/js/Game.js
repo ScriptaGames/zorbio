@@ -109,9 +109,9 @@ function startGame(type) {
     ZOR.Game.playerMeta = {
         playerType: type,
         playerName: name,
-        key: key,
-        skin: localStorage.getItem('skin') || 'default',
-        color: colorCode,
+        key       : key,
+        skin      : localStorage.getItem('skin') || 'default',
+        color     : colorCode,
     };
 
     document.querySelector('meta[name=theme-color]').content = colorHex;
@@ -430,10 +430,10 @@ function updateTargetLock() {
                     }
 
                     let target = {
-                        name: pointedPlayer.model.name,
-                        size: currentSize,
-                        color: pointedPlayer.model.sphere.color,
-                        warning: warning,
+                        name         : pointedPlayer.model.name,
+                        size         : currentSize,
+                        color        : pointedPlayer.model.sphere.color,
+                        warning      : warning,
                         warning_color: warning_color,
                     };
 
@@ -494,12 +494,12 @@ window.onload = function homeOnload() {
 
 let KeysDown = {};
 let KeyCodes = {
-    87 : 'w',
-    83 : 's',
-    65 : 'a',
-    68 : 'd',
-    32 : 'space',
-    16 : 'shift'
+    87: 'w',
+    83: 's',
+    65: 'a',
+    68: 'd',
+    32: 'space',
+    16: 'shift'
 };
 
 let ListenForKeys = Object.keys(KeyCodes);
@@ -722,11 +722,11 @@ function handleDeath(msg) {
 
     // Set finaly data about the player from the server
     let playerStats = {
-        drainAmount: msg.drain_ammount,
-        foodCaptures: msg.food_captures,
+        drainAmount   : msg.drain_ammount,
+        foodCaptures  : msg.food_captures,
         playerCaptures: msg.player_captures,
-        score: msg.score,
-        size: msg.size,
+        score         : msg.score,
+        size          : msg.size,
     };
 
     // stop woosh in case player was speed boosting
@@ -761,21 +761,21 @@ function gaPerformanceMetrics() {
 
         if (ping > 0) {
             ga('send', {
-                hitType: 'timing',
+                hitType       : 'timing',
                 timingCategory: 'Ping',
-                timingVar: 'ping',
-                timingValue: ping,
-                timingLabel: linodeNearLocation(),
+                timingVar     : 'ping',
+                timingValue   : ping,
+                timingLabel   : linodeNearLocation(),
             });
         }
 
         if (fps > 0) {
             ga('send', {
-                hitType: 'timing',
+                hitType       : 'timing',
                 timingCategory: 'FPS',
-                timingVar: 'fps',
-                timingValue: fps,
-                timingLabel: isMobile.any ? 'mobile' : 'desktop',
+                timingVar     : 'fps',
+                timingValue   : fps,
+                timingLabel   : isMobile.any ? 'mobile' : 'desktop',
             });
         }
     }

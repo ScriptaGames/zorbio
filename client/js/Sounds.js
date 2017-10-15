@@ -13,13 +13,13 @@ ZOR.Sounds = (function ZORSounds() {
     // for our sfx
     function howlSfx(path, custom) {
         let conf = _.assign({
-            src: ['../sfx/' + path],
+            src     : ['../sfx/' + path],
             autoplay: false,
-            loop: false,
-            volume: config.VOLUME_SFX_INITIAL,
-            buffer: false,
-            preload: true,
-            volume: 0.3,
+            loop    : false,
+            volume  : config.VOLUME_SFX_INITIAL,
+            buffer  : false,
+            preload : true,
+            volume  : 0.3,
         }, custom);
         return new Howl(conf);
     }
@@ -61,9 +61,9 @@ ZOR.Sounds = (function ZORSounds() {
             });
         },
         music: {
-            menu     : howlSfx('veus/Zorbio_MainMenu.ogg.mp3', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
-            play     : howlSfx('veus/Zorbio_GamePlay.ogg.mp3', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
-            gameover : howlSfx('veus/Zorbio_GameOver.ogg.mp3', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
+            menu    : howlSfx('veus/Zorbio_MainMenu.ogg.mp3', { loop: true, volume: config.VOLUME_MUSIC_INITIAL }),
+            play    : howlSfx('veus/Zorbio_GamePlay.ogg.mp3', { loop: true, volume: config.VOLUME_MUSIC_INITIAL }),
+            gameover: howlSfx('veus/Zorbio_GameOver.ogg.mp3', { loop: true, volume: config.VOLUME_MUSIC_INITIAL }),
         },
         sfx: {
             // Only commented out food capture because it's worth saving the
@@ -82,23 +82,23 @@ ZOR.Sounds = (function ZORSounds() {
 
             // a chime sound for food capture
             food_capture: howlSfx('veus/Effects/LowPitchLazer.ogg.mp3'),
-            woosh: wadSfx({
+            woosh       : wadSfx({
                 source: 'noise',
                 volume: 0.35,
-                env: {
-                    attack: 0.5,
-                    decay: 0.5,
+                env   : {
+                    attack : 0.5,
+                    decay  : 0.5,
                     sustain: 1,
-                    hold: 3600, // a long time... 1 hour
+                    hold   : 3600, // a long time... 1 hour
                     release: .5
                 },
                 filter: {
-                    type: 'lowpass',
+                    type     : 'lowpass',
                     frequency: 300,
-                    q: 1.0
+                    q        : 1.0
                 },
             }),
-            state_change: howlSfx('food_capture/D3.mp3'),
+            state_change  : howlSfx('food_capture/D3.mp3'),
             player_capture: howlSfx('veus/Effects/LowPitchDrop.ogg.mp3'),
         },
         playFromPos: function ZORSoundsPlayFromPos(sound, earObject, soundPos) {

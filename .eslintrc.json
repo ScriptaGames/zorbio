@@ -22,8 +22,8 @@
 //        "keyword-spacing": "off",
 //        "spaced-comment": "off",
 //        "new-cap": "off",
-        "block-spacing": "off",
-        "key-spacing": "off",
+//        "block-spacing": "off",
+//        "key-spacing": "off",
         "comma-dangle": "off",
         "no-multiple-empty-lines": "off",
         "object-curly-spacing": "off",
@@ -41,6 +41,16 @@
         "no-console": "off",
         "camelcase": "off",
         "require-jsdoc": "off",
+        "key-spacing": [
+            "error",
+            {
+                "align": {
+                    "beforeColon": false,
+                    "afterColon": true,
+                    "on": "colon"
+                }
+            }
+        ],
         "new-cap": [
             "error",
             {

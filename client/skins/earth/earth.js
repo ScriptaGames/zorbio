@@ -16,26 +16,26 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
         poolname: 'spheres',
         material: new THREE.ShaderMaterial({
             uniforms: {
-                'c'           : { type : 'f',  value : 1.41803 },
-                'p'           : { type : 'f',  value : 2.71828 },
-                spherePos     : { type : 'v3', value : playerView.model.sphere.position },
-                mainSpherePos : { type : 'v3', value : playerFogCenter },
-                FOG_FAR       : { type : 'f',  value : config.FOG_FAR },
-                FOG_ENABLED   : { type : 'f',  value : ~~config.FOG_ENABLED },
-                sphereTexture : { type : 't',  value : new THREE.TextureLoader().load( 'skins/earth/earth-sphere-map.jpg' ) },
+                'c'          : { type: 'f',  value: 1.41803 },
+                'p'          : { type: 'f',  value: 2.71828 },
+                spherePos    : { type: 'v3', value: playerView.model.sphere.position },
+                mainSpherePos: { type: 'v3', value: playerFogCenter },
+                FOG_FAR      : { type: 'f',  value: config.FOG_FAR },
+                FOG_ENABLED  : { type: 'f',  value: ~~config.FOG_ENABLED },
+                sphereTexture: { type: 't',  value: new THREE.TextureLoader().load( 'skins/earth/earth-sphere-map.jpg' ) },
             },
-            vertexShader: document.getElementById('skin-earth-vertex-shader').textContent,
+            vertexShader  : document.getElementById('skin-earth-vertex-shader').textContent,
             fragmentShader: document.getElementById('skin-earth-fragment-shader').textContent,
-            transparent: true,
+            transparent   : true,
         }),
         behavior: {
         },
         trail: {
-            type: 'particle',
+            type : 'particle',
             group: {
-                scale: Math.max(window.innerWidth, window.innerHeight),
+                scale  : Math.max(window.innerWidth, window.innerHeight),
                 texture: {
-                    value:  new THREE.TextureLoader().load( 'skins/earth/trail.png' ),
+                    value: new THREE.TextureLoader().load( 'skins/earth/trail.png' ),
                 },
                 maxParticleCount: 800,
             },
@@ -45,10 +45,10 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
                     // spread: 2,
                 },
                 position: {
-                    value: new THREE.Vector3(0, 0, 0),
-                    spread: new THREE.Vector3(0, 0, 0),
-                    spreadClamp: new THREE.Vector3(0, 0, 0),
-                    radius: 5,
+                    value       : new THREE.Vector3(0, 0, 0),
+                    spread      : new THREE.Vector3(0, 0, 0),
+                    spreadClamp : new THREE.Vector3(0, 0, 0),
+                    radius      : 5,
                     distribution: SPE.distributions.SPHERE,
                 },
 
@@ -57,7 +57,7 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
                 },
 
                 angle: {
-                    value: [0],
+                    value : [0],
                     spread: [8, 0],
                 },
 
@@ -73,22 +73,22 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
                     value: [6, 0],
                 },
 
-                particleCount: 800,
+                particleCount   : 800,
                 activeMultiplier: 0.1,
             },
         },
         capture: {
             customScale: 1.0,
-            group: {
-                scale: Math.max(window.innerWidth, window.innerHeight),
+            group      : {
+                scale           : Math.max(window.innerWidth, window.innerHeight),
                 maxParticleCount: 1000,
-                texture: {
+                texture         : {
                     value: new THREE.TextureLoader().load( 'textures/smokeparticle.png' ),
                 },
                 blending: THREE.AdditiveBlending,
             },
             emitter: {
-                type: SPE.distributions.SPHERE,
+                type    : SPE.distributions.SPHERE,
                 position: {
                     spread: new THREE.Vector3( 10 ),
                     radius: 10,
@@ -106,9 +106,9 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
                     value: [new THREE.Color('yellow'), new THREE.Color('red')],
                 },
                 particleCount: 100,
-                alive: false,
-                duration: 0.05,
-                maxAge: {
+                alive        : false,
+                duration     : 0.05,
+                maxAge       : {
                     value: 1,
                 },
             },
@@ -118,7 +118,7 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
 
 ZOR.PlayerSkins.earth.meta = {
     friendly_name: 'Planet Earth',
-    name: 'earth',
-    preview: 'skins/earth/thumb.jpg',
-    sort: 2,
+    name         : 'earth',
+    preview      : 'skins/earth/thumb.jpg',
+    sort         : 2,
 };

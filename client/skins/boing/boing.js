@@ -16,24 +16,24 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
         poolname: 'lowPolySpheres',
         material: new THREE.ShaderMaterial({
             uniforms: {
-                'c'           : { type : 'f',  value : 1.41803 },
-                'p'           : { type : 'f',  value : 2.71828 },
-                spherePos     : { type : 'v3', value : playerView.model.sphere.position },
-                mainSpherePos : { type : 'v3', value : playerFogCenter },
-                FOG_FAR       : { type : 'f',  value : config.FOG_FAR },
-                FOG_ENABLED   : { type : 'f',  value : ~~config.FOG_ENABLED },
-                sphereTexture : { type : 't',  value : new THREE.TextureLoader().load( 'skins/boing/texture.jpg' ) },
+                'c'          : { type: 'f',  value: 1.41803 },
+                'p'          : { type: 'f',  value: 2.71828 },
+                spherePos    : { type: 'v3', value: playerView.model.sphere.position },
+                mainSpherePos: { type: 'v3', value: playerFogCenter },
+                FOG_FAR      : { type: 'f',  value: config.FOG_FAR },
+                FOG_ENABLED  : { type: 'f',  value: ~~config.FOG_ENABLED },
+                sphereTexture: { type: 't',  value: new THREE.TextureLoader().load( 'skins/boing/texture.jpg' ) },
             },
-            vertexShader: document.getElementById('skin-boing-vertex-shader').textContent,
+            vertexShader  : document.getElementById('skin-boing-vertex-shader').textContent,
             fragmentShader: document.getElementById('skin-boing-fragment-shader').textContent,
-            transparent: true,
+            transparent   : true,
         }),
         behavior: {
         },
         trail: {
-            type: 'line',
+            type       : 'line',
             customScale: 1.0,
-            lineWidth: function lineWidth( p ) {
+            lineWidth  : function lineWidth( p ) {
                 return p;
             },
             origins: [
@@ -44,16 +44,16 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
         },
         capture: {
             customScale: 1.0,
-            group: {
-                scale: Math.max(window.innerWidth, window.innerHeight),
+            group      : {
+                scale           : Math.max(window.innerWidth, window.innerHeight),
                 maxParticleCount: 1000,
-                texture: {
+                texture         : {
                     value: new THREE.TextureLoader().load( 'skins/boing/trail.png' ),
                 },
                 blending: THREE.AdditiveBlending,
             },
             emitter: {
-                type: SPE.distributions.SPHERE,
+                type    : SPE.distributions.SPHERE,
                 position: {
                     spread: new THREE.Vector3( 5 ),
                     radius: 10,
@@ -71,9 +71,9 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
                     value: [color],
                 },
                 particleCount: 70,
-                alive: false,
-                duration: 0.05,
-                maxAge: {
+                alive        : false,
+                duration     : 0.05,
+                maxAge       : {
                     value: 1,
                 },
             },
@@ -83,7 +83,7 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
 
 ZOR.PlayerSkins.boing.meta = {
     friendly_name: 'Boing',
-    name: 'boing',
-    preview: 'skins/boing/thumb.jpg',
-    sort: 3,
+    name         : 'boing',
+    preview      : 'skins/boing/thumb.jpg',
+    sort         : 3,
 };

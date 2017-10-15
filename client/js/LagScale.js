@@ -35,8 +35,8 @@ ZOR.LagScale = function ZORLagScale() {
     }
 
     return {
-        update  : update,
-        get     : get,
-        get_fps : get_fps,
+        update : update,
+        get    : get,
+        get_fps: get_fps,
     };
 }();

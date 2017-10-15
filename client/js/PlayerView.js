@@ -141,19 +141,19 @@ ZOR.PlayerView.prototype.initParticleTrails = function ZORPlayerViewInitParticle
 ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails() {
     // Create the line material
     this.trail.material = new THREE.MeshLineMaterial( {
-        useMap: 0,
-        color: this.skin.trail.color,
-        opacity: 1,
-        resolution: new THREE.Vector2( window.innerWidth, window.innerHeight ),
+        useMap         : 0,
+        color          : this.skin.trail.color,
+        opacity        : 1,
+        resolution     : new THREE.Vector2( window.innerWidth, window.innerHeight ),
         sizeAttenuation: 1,
-        lineWidth: this.skin.trail.customScale * config.TRAIL_LINE_WIDTH,
-        near: camera.near,
-        far: camera.far,
-        depthTest: true,
-        blending: THREE.AdditiveBlending,
-        transparent: false,
-        side: THREE.DoubleSide,
-        visibility: 1,
+        lineWidth      : this.skin.trail.customScale * config.TRAIL_LINE_WIDTH,
+        near           : camera.near,
+        far            : camera.far,
+        depthTest      : true,
+        blending       : THREE.AdditiveBlending,
+        transparent    : false,
+        side           : THREE.DoubleSide,
+        visibility     : 1,
     });
 
     this.trail.origins = [];

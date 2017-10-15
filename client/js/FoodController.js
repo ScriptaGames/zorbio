@@ -24,14 +24,14 @@ ZOR.FoodController = function ZORFoodController(model, fogCenterPosition) {
         // when undeferred = true, objects are inserted immediately
         // instead of being deferred until next octree.update() call
         // this may decrease performance as it forces a matrix update
-        undeferred: true,
+        undeferred      : true,
         // set the max depth of tree
-        depthMax: Infinity,
+        depthMax        : Infinity,
         // max number of objects before nodes split or merge
         objectsThreshold: 8,
         // percent between 0 and 1 that nodes will overlap each other
         // helps insert objects that lie over more than one node
-        overlapPct: 0.15,
+        overlapPct      : 0.15,
         // scene: scene
     } );
 

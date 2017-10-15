@@ -8,12 +8,12 @@ let THREE     = require('three');
 let Validators = {};
 
 Validators.ErrorCodes = {
-    PLAYER_NOT_IN_MODEL: 1,
-    FOOD_CAPTURE_TO_FAR: 2,
+    PLAYER_NOT_IN_MODEL  : 1,
+    FOOD_CAPTURE_TO_FAR  : 2,
     PLAYER_CAPTURE_TO_FAR: 3,
-    NO_CHANGE: 4,
-    SPEED_TO_FAST: 5,
-    PLAYER_SCALE_TO_BIG: 6,
+    NO_CHANGE            : 4,
+    SPEED_TO_FAST        : 5,
+    PLAYER_SCALE_TO_BIG  : 6,
 };
 
 Validators.v3 = new THREE.Vector3();

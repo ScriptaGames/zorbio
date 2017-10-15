@@ -53,14 +53,14 @@ let AppServer = function(id, app, server_label, port) {
      * Status object to send to a remote data store for monitoring and analytics
      */
     self.status = {
-        doctype: 'game_instance_status',
-        uuid: self.uuid,
-        clients: 0,
+        doctype          : 'game_instance_status',
+        uuid             : self.uuid,
+        clients          : 0,
         real_player_count: 0,
-        players_metrics: [],
-        socket_uuid_map: 0,
-        tick_time_metric: new Zorbio.Metric(50),
-        au_send_metric: new Zorbio.Metric(100),
+        players_metrics  : [],
+        socket_uuid_map  : 0,
+        tick_time_metric : new Zorbio.Metric(50),
+        au_send_metric   : new Zorbio.Metric(100),
     };
 
     /**
@@ -224,7 +224,7 @@ let AppServer = function(id, app, server_label, port) {
 
             // Send welcome message
             let msg = {
-                0: Schemas.ops.WELCOME,
+                0     : Schemas.ops.WELCOME,
                 player: currentPlayer.reduce(),
             };
             let buffer = Schemas.welcomeSchema.encode(msg);
@@ -336,10 +336,10 @@ let AppServer = function(id, app, server_label, port) {
             // Build the validation object
             let latestPosition = msg.latest_position;
             let sphere = {
-                id: msg.sphere_id,
+                id            : msg.sphere_id,
                 oldestPosition: msg.oldest_position,
                 latestPosition: latestPosition,
-                scale: latestPosition.radius,
+                scale         : latestPosition.radius,
             };
 
             // Fixes bug #145 the client may send one last position update before they are removed from the game
@@ -510,9 +510,9 @@ let AppServer = function(id, app, server_label, port) {
     self.sendInitGame = function appSendInitGame(ws, NB_SRVID) {
         let initialModel = self.model.reduce();
         let initGameMessage = {
-            0: Schemas.ops.INIT_GAME,
+            0       : Schemas.ops.INIT_GAME,
             NB_SRVID: NB_SRVID,
-            model: initialModel,
+            model   : initialModel,
         };
         let buffer = Schemas.initGameSchema.encode(initGameMessage);
         ws.send(buffer);
@@ -520,9 +520,9 @@ let AppServer = function(id, app, server_label, port) {
 
     self.sendLeaderboardsUpdate = function appSendLeaderboardsUpdate(ws) {
         let responseMsg = {
-            0: Schemas.ops.LEADERBOARDS_UPDATE,
-            leaders_1_day: self.leaders_1_day,
-            leaders_7_day: self.leaders_7_day,
+            0             : Schemas.ops.LEADERBOARDS_UPDATE,
+            leaders_1_day : self.leaders_1_day,
+            leaders_7_day : self.leaders_7_day,
             leaders_30_day: self.leaders_30_day,
         };
 
@@ -699,14 +699,14 @@ let AppServer = function(id, app, server_label, port) {
             let drain_amount = config.GET_PADDED_INT( targetPlayer.drainAmount );
 
             const msgObj = {
-                0: Schemas.ops.YOU_DIED,
+                0                  : Schemas.ops.YOU_DIED,
                 attacking_player_id: attackingPlayerId,
-                food_captures: targetPlayer.foodCaptures,
-                player_captures: targetPlayer.playerCaptures,
-                drain_ammount: drain_amount,
-                time_alive: time_alive,
-                score: score,
-                size: size,
+                food_captures      : targetPlayer.foodCaptures,
+                player_captures    : targetPlayer.playerCaptures,
+                drain_ammount      : drain_amount,
+                time_alive         : time_alive,
+                score              : score,
+                size               : size,
             };
 
             let buffer = Schemas.youDied.encode(msgObj);
@@ -825,7 +825,7 @@ let AppServer = function(id, app, server_label, port) {
             let score = player.getScore();
             let leader = {
                 player_id: id,
-                score: score,
+                score    : score,
             };
             UTIL.sortedObjectPush(self.model.leaders, leader, 'score');
         });
@@ -839,9 +839,9 @@ let AppServer = function(id, app, server_label, port) {
      */
     self.sendServerTickData = function appSendServerTickData() {
         let serverTickData = {
-            fr: self.model.food_respawn_ready_queue,
-            fc: self.model.food_captured_queue,
-            sm: self.serverMsg,
+            fr     : self.model.food_respawn_ready_queue,
+            fc     : self.model.food_captured_queue,
+            sm     : self.serverMsg,
             leaders: self.model.leaders,
         };
 

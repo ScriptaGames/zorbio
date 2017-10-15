@@ -99,16 +99,16 @@ if (!NODEJS_CONFIG) {
 }
 
 config.BALANCERS = Object.freeze({
-    LOCAL:     'localhost',
-    fremont:   'uswest.zor.bio',
-    dallas:    'uscentral.zor.bio',
-    newark:    'useast.zor.bio',
-    london:    'uk.zor.bio',
-    frankfurt: 'eu.zor.bio',
-    singapore: 'apac.zor.bio',
-    prod:      'zor.bio',
-    prodwww:   'www.zor.bio',
-    zorb_io:   'zorb.io',
+    LOCAL      : 'localhost',
+    fremont    : 'uswest.zor.bio',
+    dallas     : 'uscentral.zor.bio',
+    newark     : 'useast.zor.bio',
+    london     : 'uk.zor.bio',
+    frankfurt  : 'eu.zor.bio',
+    singapore  : 'apac.zor.bio',
+    prod       : 'zor.bio',
+    prodwww    : 'www.zor.bio',
+    zorb_io    : 'zorb.io',
     zorb_io_www: 'www.zorb.io',
 });
 
@@ -138,15 +138,15 @@ config.INITIAL_PLAYER_SCORE  = config.GET_PADDED_INT(config.INITIAL_PLAYER_RADIU
 config.AUTO_RUN_ENABLED      = true;
 config.STEERING_METHODS      = Object.freeze({ // enum-ish
     MOUSE_DRAG: {
-        NAME: 'DRAG',
-        SPEED : 0.18,
+        NAME : 'DRAG',
+        SPEED: 0.18,
     },
     MOUSE_FOLLOW: {
         // https://www.desmos.com/calculator/wszojiyufd
-        NAME  : 'FOLLOW',
-        WELL  : 0.01, // mouse follow deadzone, defined as percentage distance from screen center
-        SLOPE : 10,   // rate at which rotation increases once outside the well
-        SPEED : 0.3,  // higher makes camera rotate faster
+        NAME : 'FOLLOW',
+        WELL : 0.01, // mouse follow deadzone, defined as percentage distance from screen center
+        SLOPE: 10,   // rate at which rotation increases once outside the well
+        SPEED: 0.3,  // higher makes camera rotate faster
     },
 });
 config.STEERING = config.STEERING_METHODS.MOUSE_FOLLOW;
@@ -312,9 +312,9 @@ config.COLORS = [
 
 config.SKINS = {
     default: 'default',
-    earth: 'earth',
-    boing: 'boing',
-    reddit: 'reddit',
+    earth  : 'earth',
+    boing  : 'boing',
+    reddit : 'reddit',
 };
 
 
