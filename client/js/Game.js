@@ -552,7 +552,7 @@ function handleMouseUp(evt) {
 }
 
 function handleKeysDown() {
-    for( let key in KeysDown ) {
+    for ( let key in KeysDown ) {
         if (KeysDown[key]) {
             keyDown(key);
         }

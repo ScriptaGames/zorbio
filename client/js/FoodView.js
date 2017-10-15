@@ -100,7 +100,7 @@ ZOR.FoodView = function ZORFoodView() {
         let duration = config.FOOD_RESPAWN_ANIM_DURATION;
         let lsGet = ZOR.LagScale.get;
 
-        while( i-- ) {
+        while ( i-- ) {
             v = c[i];
 
             if ( v <= duration ) {

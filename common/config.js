@@ -250,7 +250,7 @@ function generateCameraZoomSteps() {
     let cur_distance = config.GET_CAMERA_MIN_DISTANCE(scale);
     let new_dist = 0;
 
-    while(scale <= config.MAX_PLAYER_RADIUS * 2) {
+    while (scale <= config.MAX_PLAYER_RADIUS * 2) {
         new_dist = config.GET_CAMERA_MIN_DISTANCE(scale);
 
         if (new_dist > cur_distance) {

@@ -19,7 +19,7 @@
 //        "quotes": "off",
 //        "valid-jsdoc": "off",
 //        "prefer-rest-params": "off",
-        "keyword-spacing": "off",
+//        "keyword-spacing": "off",
         "require-jsdoc": "off",
         "spaced-comment": "off",
         "new-cap": "off",

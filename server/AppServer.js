@@ -136,7 +136,7 @@ let AppServer = function(id, app, server_label, port) {
                 try {
                     message = JSON.parse(msg);
                 }
-                catch(e) {
+                catch (e) {
                     if (config.DEBUG) {
                         console.error('error parsing json on message in wss: ', e);
                     }
