@@ -66,11 +66,11 @@ let AppServer = function(id, app, server_label, port) {
     /**
      * Console.log wrapper so we can include instance id for filtering
      */
-    self.log = function appLog() {
+    self.log = function appLog(...args) {
         // prepend instance id to message
-        arguments[0] = '[' + self.id + '] ' + arguments[0];
+        args[0] = '[' + self.id + '] ' + args[0];
 
-        console.log.apply(null, arguments);
+        console.log.apply(null, args);
     };
 
     self.log('Creating game instance with ID: ', self.id);

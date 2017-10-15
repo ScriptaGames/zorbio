@@ -518,10 +518,10 @@ let foodMaps = {
 UTIL.nth = function nth(f, n) {
     let _i = 0;
     let _n = Math.max(n, 0);
-    return function() {
+    return function(...args) {
         if (_i === _n) {
             _i = 0;
-            return f.apply(this, arguments);
+            return f.apply(this, args);
         }
         else {
             _i++;
