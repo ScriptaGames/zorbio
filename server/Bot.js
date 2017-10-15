@@ -37,7 +37,11 @@ let Bot = function(scale, model) {
         // hold still
         hold: function moveHold() {
             let sphere = self.player.sphere;
-            self.player.sphere.pushRecentPosition({position: sphere.position, radius: sphere.scale, time: Date.now()});
+            self.player.sphere.pushRecentPosition({
+                position: sphere.position,
+                radius  : sphere.scale,
+                time    : Date.now(),
+            });
         },
 
         // move the bot to 0, 0, 0
@@ -53,7 +57,7 @@ let Bot = function(scale, model) {
 
             sphere.position.add(centerPos);
 
-            sphere.pushRecentPosition({position: sphere.position, radius: sphere.scale, time: Date.now()});
+            sphere.pushRecentPosition({ position: sphere.position, radius: sphere.scale, time: Date.now() });
         },
 
         // chase a target actor
@@ -72,7 +76,7 @@ let Bot = function(scale, model) {
 
             sphere.position.add(targetPos);
 
-            sphere.pushRecentPosition({position: sphere.position, radius: sphere.scale, time: Date.now()});
+            sphere.pushRecentPosition({ position: sphere.position, radius: sphere.scale, time: Date.now() });
         },
 
         // move to a random points
@@ -100,7 +104,7 @@ let Bot = function(scale, model) {
 
             sphere.position.add(targetPos);
 
-            sphere.pushRecentPosition({position: sphere.position, radius: sphere.scale, time: Date.now()});
+            sphere.pushRecentPosition({ position: sphere.position, radius: sphere.scale, time: Date.now() });
         },
     };
 

@@ -45,7 +45,7 @@ ZOR.PlayerController = function ZORPlayerController(model, scene, current) {
 
 ZOR.PlayerController.prototype.queueFoodCapture = function ZORPlayerControllerQueueFoodCapture(fi) {
     // queue food capture to send to server on next position update
-    this.food_capture_queue.push({fi: fi, radius: this.radius()});
+    this.food_capture_queue.push({ fi: fi, radius: this.radius() });
 };
 
 ZOR.PlayerController.prototype.getPlayerId = function ZORPlayerControllerGetPlayerId() {
@@ -205,7 +205,7 @@ ZOR.PlayerController.prototype.addRecentPosition = function ZORPlayerControllerA
     };
 
     let time = Date.now() - this.model.createdTime;  // milliseconds since the player was created
-    this.model.sphere.recentPositions.push({position: p, radius: this.radius(), time: time});
+    this.model.sphere.recentPositions.push({ position: p, radius: this.radius(), time: time });
 
     if (this.model.sphere.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {
         this.model.sphere.recentPositions.shift();  // remove the oldest position

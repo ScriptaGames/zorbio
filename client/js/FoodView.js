@@ -55,7 +55,7 @@ ZOR.FoodView = function ZORFoodView() {
             colors[ offset + 2 ] = B;
 
             // Add this food object to the Octree
-            let foodObj = {x: X, y: Y, z: Z, radius: 1, fi: i};
+            let foodObj = { x: X, y: Y, z: Z, radius: 1, fi: i };
             octree.add( foodObj );
 
             offset += 3;

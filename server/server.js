@@ -19,7 +19,7 @@ let validUrl        = require('valid-url');
 let uuid            = require('node-uuid');
 
 // Patch console.x methods in order to add timestamp information
-require('console-stamp')(console, {pattern: 'mm/dd/yyyy HH:MM:ss.l'});
+require('console-stamp')(console, { pattern: 'mm/dd/yyyy HH:MM:ss.l' });
 
 /**
  *  Define the sample server.

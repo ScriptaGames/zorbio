@@ -182,7 +182,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
 
         self.z_playerModel = self.z_handler.z_handle_welcome(msg);
 
-        ws.send(JSON.stringify({op: 'player_ready'}));
+        ws.send(JSON.stringify({ op: 'player_ready' }));
     }
 
     function handle_msg_game_setup() {
@@ -285,7 +285,7 @@ ZOR.ZORClient.prototype.z_handleNetworkTermination = function ZORhandleNetworkTe
 
 ZOR.ZORClient.prototype.z_sendRespawn = function ZORsendRespawn() {
     gameStart = false;
-    this.z_ws.send(JSON.stringify({op: 'respawn'}));
+    this.z_ws.send(JSON.stringify({ op: 'respawn' }));
 };
 
 ZOR.ZORClient.prototype.z_sendPing = function sendPing() {
@@ -293,7 +293,7 @@ ZOR.ZORClient.prototype.z_sendPing = function sendPing() {
 
     let fps = this.z_handler.z_handle_send_ping();
 
-    this.z_ws.send(JSON.stringify({op: 'zor_ping', lastPing: this.z_zorPingDuration, fps: fps}));
+    this.z_ws.send(JSON.stringify({ op: 'zor_ping', lastPing: this.z_zorPingDuration, fps: fps }));
 };
 
 
@@ -352,11 +352,11 @@ ZOR.ZORClient.prototype.z_sendClientPositionRapid = function ZORsendClientPositi
 };
 
 ZOR.ZORClient.prototype.z_sendSpeedBoostStart = function ZORsendSpeedBoostStart() {
-    this.z_ws.send(JSON.stringify({op: 'speed_boost_start'}));
+    this.z_ws.send(JSON.stringify({ op: 'speed_boost_start' }));
 };
 
 ZOR.ZORClient.prototype.z_sendSpeedBoostStop = function ZORsendSpeedBoostStop() {
-    this.z_ws.send(JSON.stringify({op: 'speed_boost_stop'}));
+    this.z_ws.send(JSON.stringify({ op: 'speed_boost_stop' }));
 };
 
 /**

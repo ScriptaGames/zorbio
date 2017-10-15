@@ -276,7 +276,7 @@ function createScene() {
             fogCenter = player.model.sphere.position;
         }
         else {
-            fogCenter = {x: 0, y: 0, z: 0};
+            fogCenter = { x: 0, y: 0, z: 0 };
         }
 
         playerFogCenter.copy(fogCenter);

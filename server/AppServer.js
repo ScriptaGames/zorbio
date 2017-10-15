@@ -238,12 +238,12 @@ let AppServer = function(id, app, server_label, port) {
 
             if (Validators.is_profane(currentPlayer.name)) {
                 console.error('Kicking for profane name:', currentPlayer.name, JSON.stringify(headers));
-                ws.send(JSON.stringify({op: 'kick', reason: 'Invalid username'}));
+                ws.send(JSON.stringify({ op: 'kick', reason: 'Invalid username' }));
                 ws.close(config.CLOSE_NO_RESTART, "close but don't reload client page");
             }
             else if (!Validators.validAlphaKey(key)) {
                 console.error('ALPHA KEY INVALID');
-                ws.send(JSON.stringify({op: 'kick', reason: 'Invalid alpha key'}));
+                ws.send(JSON.stringify({ op: 'kick', reason: 'Invalid alpha key' }));
                 ws.close();
             }
             else {
@@ -255,12 +255,12 @@ let AppServer = function(id, app, server_label, port) {
                 currentPlayer.spawnTime = Date.now();
 
                 // Pass any data to the for final setup
-                ws.send(JSON.stringify({op: 'game_setup'}));
+                ws.send(JSON.stringify({ op: 'game_setup' }));
 
                 // give the client player time to load the game before notifying other players to add them
                 setTimeout(function playerJoinDelay() {
                     // Notify other clients that player has joined
-                    self.broadcast(JSON.stringify({op: 'player_join', player: currentPlayer}));
+                    self.broadcast(JSON.stringify({ op: 'player_join', player: currentPlayer }));
 
                     // Add the player to the model
                     self.model.addPlayer(currentPlayer, true);
@@ -274,7 +274,7 @@ let AppServer = function(id, app, server_label, port) {
                         let bot = self.botController.removeBot();
 
                         // notify other players that this bot was removed
-                        self.broadcast(JSON.stringify({op: 'remove_player', playerId: bot.player.id}));
+                        self.broadcast(JSON.stringify({ op: 'remove_player', playerId: bot.player.id }));
                     }
                 }, 200);
             }
@@ -290,7 +290,7 @@ let AppServer = function(id, app, server_label, port) {
 
             currentPlayer.fps_metric.add(msg.fps);
 
-            ws.send(JSON.stringify({op: 'zor_pong'}));
+            ws.send(JSON.stringify({ op: 'zor_pong' }));
         }
 
         function handle_client_position_rapid(buffer) {
@@ -370,7 +370,7 @@ let AppServer = function(id, app, server_label, port) {
             else {
                 switch (err) {
                     case Validators.ErrorCodes.SPEED_TO_FAST:
-                        ws.send(JSON.stringify({op: 'speeding_warning'}));
+                        ws.send(JSON.stringify({ op: 'speeding_warning' }));
                         self.model.getPlayerById(currentPlayer.id).infractions_speed++;
                         break;
                     case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
@@ -398,7 +398,7 @@ let AppServer = function(id, app, server_label, port) {
                 }
 
                 // notify other clients to remove this player
-                self.broadcast(JSON.stringify({op: 'remove_player', playerId: player_id}));
+                self.broadcast(JSON.stringify({ op: 'remove_player', playerId: player_id }));
 
                 self.removePlayerFromModel(player_id);
 
@@ -417,7 +417,7 @@ let AppServer = function(id, app, server_label, port) {
         function handle_msg_speed_boost_start() {
             if (currentPlayer.abilities.speed_boost.activate(currentPlayer)) {
                 // Tell client to activate speed boost
-                ws.send(JSON.stringify({op: 'speed_boost_res', is_valid: true}));
+                ws.send(JSON.stringify({ op: 'speed_boost_res', is_valid: true }));
             }
         }
 
@@ -535,7 +535,7 @@ let AppServer = function(id, app, server_label, port) {
 
     self.sendActorUpdates = function appSendActorUpdates() {
         let tinyActors = self.model.reduceActors(true);
-        let actorUpdatesMessage = {0: Schemas.ops.ACTOR_UPDATES, actors: tinyActors};
+        let actorUpdatesMessage = { 0: Schemas.ops.ACTOR_UPDATES, actors: tinyActors };
         let buffer = Schemas.actorUpdatesSchema.encode(actorUpdatesMessage);
         self.broadcast(buffer);
 
@@ -648,10 +648,10 @@ let AppServer = function(id, app, server_label, port) {
                 // if distance is less than radius of p2 and p2 larger than p1, p2 captures p1
 
                 if (distance < (p1_scale + config.PLAYER_CAPTURE_EXTRA_TOLERANCE) && p1_scale > p2_scale) {
-                    return {attackingPlayerId: p1.id, targetPlayerId: p2.id};
+                    return { attackingPlayerId: p1.id, targetPlayerId: p2.id };
                 }
                 else if (distance < (p2_scale + config.PLAYER_CAPTURE_EXTRA_TOLERANCE) && p2_scale > p1_scale) {
-                    return {attackingPlayerId: p2.id, targetPlayerId: p1.id};
+                    return { attackingPlayerId: p2.id, targetPlayerId: p1.id };
                 }
             }
         }
@@ -688,7 +688,7 @@ let AppServer = function(id, app, server_label, port) {
 
         if (attackingPlayer.type != Zorbio.PlayerTypes.BOT) {
             // Inform the attacking player that they captured target player
-            self.sendToPlayer(attackingPlayerId, JSON.stringify({op: 'captured_player', targetPlayerId: targetPlayerId}));
+            self.sendToPlayer(attackingPlayerId, JSON.stringify({ op: 'captured_player', targetPlayerId: targetPlayerId }));
         }
 
         if (targetPlayer.type != Zorbio.PlayerTypes.BOT) {
@@ -724,7 +724,7 @@ let AppServer = function(id, app, server_label, port) {
         self.removePlayerFromModel(targetPlayerId);
 
         // Inform other clients that target player died
-        const msgObj = {op: 'player_died', attackingPlayerId: attackingPlayerId, targetPlayerId: targetPlayerId};
+        const msgObj = { op: 'player_died', attackingPlayerId: attackingPlayerId, targetPlayerId: targetPlayerId };
         self.broadcast(JSON.stringify(msgObj));
     };
 
@@ -736,10 +736,10 @@ let AppServer = function(id, app, server_label, port) {
         self.log('kicking player: ', playerId, reason);
 
         // notify player that they are kicked
-        self.sendToPlayer(playerId, JSON.stringify({op: 'kick', reason: reason}));
+        self.sendToPlayer(playerId, JSON.stringify({ op: 'kick', reason: reason }));
 
         // notify other clients
-        self.broadcast(JSON.stringify({op: 'remove_player', playerId: playerId}));
+        self.broadcast(JSON.stringify({ op: 'remove_player', playerId: playerId }));
 
         self.removePlayerFromModel(playerId);
     };
@@ -845,7 +845,7 @@ let AppServer = function(id, app, server_label, port) {
             leaders: self.model.leaders,
         };
 
-        let tickSlowMessage = {0: Schemas.ops.TICK_SLOW, tick_data: serverTickData};
+        let tickSlowMessage = { 0: Schemas.ops.TICK_SLOW, tick_data: serverTickData };
         let buffer = Schemas.tickSlowSchema.encode(tickSlowMessage);
         self.broadcast(buffer);
 
@@ -937,7 +937,7 @@ let AppServer = function(id, app, server_label, port) {
             let bot = self.botController.spawnBot();
 
             // Notify other clients that bot has joined
-            self.broadcast(JSON.stringify({op: 'player_join', player: bot.player}));
+            self.broadcast(JSON.stringify({ op: 'player_join', player: bot.player }));
         }
     };
 

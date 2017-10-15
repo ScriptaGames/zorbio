@@ -66,7 +66,7 @@ function addRecentPosition() {
     };
 
     let time = Date.now() - global.player.createdTime;  // milliseconds since the player was created
-    global.player.sphere.recentPositions.push({position: p, radius: global.player.sphere.scale, time: time});
+    global.player.sphere.recentPositions.push({ position: p, radius: global.player.sphere.scale, time: time });
 
     if (global.player.sphere.recentPositions.length > config.PLAYER_POSITIONS_WINDOW) {
         global.player.sphere.recentPositions.shift();  // remove the oldest position

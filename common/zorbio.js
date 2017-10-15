@@ -225,7 +225,7 @@ ZOR.Model.prototype.getSafeSpawnPosition = function ZORGetSafeSpawnPosition( num
             }
             else {
                 // to close to a player try a new one
-                tried_positions.push({position: position.clone(), near_distance: nearest.dist});
+                tried_positions.push({ position: position.clone(), near_distance: nearest.dist });
                 position = UTIL.randomHorizontalPosition();
                 console.log('Not a safe spawn position, trying a new one');
             }
@@ -247,7 +247,7 @@ ZOR.Model.prototype.getSafeSpawnPosition = function ZORGetSafeSpawnPosition( num
 ZOR.Model.prototype.findNearestPlayerSphere = function ZORfindNearestPlayerSphere( position ) {
     let distance = 0;
     let min_distance = 0;
-    let nearest_sphere = {sphere: null, dist: config.WORLD_SIZE};
+    let nearest_sphere = { sphere: null, dist: config.WORLD_SIZE };
 
     // Iterate over players find closest one
     for (let i = 0, l = this.players.length; i < l; i++) {
@@ -364,7 +364,7 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
         UTIL.toVector3(this, 'velocity');
     }
     else {
-        this.velocity = {x: 0, y: 0, z: 0};
+        this.velocity = { x: 0, y: 0, z: 0 };
     }
 
     this.color = color;

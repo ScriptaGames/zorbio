@@ -10,7 +10,7 @@ if (NODEJS_SCHEMAS) global.schemapack = require('schemapack');
 
 
 ZOR.Schemas = function ZORSchemas() {
-    let vector3 = {x: 'float32', y: 'float32', z: 'float32'};
+    let vector3 = { x: 'float32', y: 'float32', z: 'float32' };
     let actor = {
         id             : 'varuint',
         position       : vector3,
@@ -43,7 +43,7 @@ ZOR.Schemas = function ZORSchemas() {
     let model = {
         actors                  : [actor],
         players                 : [player],
-        worldSize               : {x: 'uint16', y: 'uint16', z: 'uint16'},
+        worldSize               : { x: 'uint16', y: 'uint16', z: 'uint16' },
         food                    : ['int16'],
         foodCount               : 'uint32',
         foodDensity             : 'uint8',
