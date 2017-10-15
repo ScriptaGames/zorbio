@@ -66,7 +66,7 @@ ZOR.PlayerSkins.reddit = function ZORRedditSkin(playerView) {
                     value: [1, 0],
                 },
                 color: {
-                    value: [new THREE.Color('yellow'),new THREE.Color('red')],
+                    value: [new THREE.Color('yellow'), new THREE.Color('red')],
                 },
                 particleCount: 100,
                 alive        : true,

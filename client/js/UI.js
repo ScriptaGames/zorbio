@@ -421,15 +421,15 @@ ZOR.UI = function ZORUI() {
 
         //
 
-        on( ACTIONS.SHOW_MENU_GAME_SCREEN   , stateSetter( STATES.MENU_GAME_SCREEN ) );
-        on( ACTIONS.SHOW_MENU_GAME_SCREEN   , stateSetter( STATES.MENU_GAME_SCREEN ) );
-        on( ACTIONS.SHOW_MENU_STORE_SCREEN  , stateSetter( STATES.MENU_STORE_SCREEN ) );
-        on( ACTIONS.SHOW_MENU_CONFIG_SCREEN , stateSetter( STATES.MENU_CONFIG_SCREEN ) );
+        on( ACTIONS.SHOW_MENU_GAME_SCREEN, stateSetter( STATES.MENU_GAME_SCREEN ) );
+        on( ACTIONS.SHOW_MENU_GAME_SCREEN, stateSetter( STATES.MENU_GAME_SCREEN ) );
+        on( ACTIONS.SHOW_MENU_STORE_SCREEN, stateSetter( STATES.MENU_STORE_SCREEN ) );
+        on( ACTIONS.SHOW_MENU_CONFIG_SCREEN, stateSetter( STATES.MENU_CONFIG_SCREEN ) );
         on( ACTIONS.SHOW_MENU_CREDITS_SCREEN, stateSetter( STATES.MENU_CREDITS_SCREEN ) );
-        on( ACTIONS.SHOW_TUTORIAL           , stateSetter( STATES.TUTORIAL_SCREEN ) );
-        on( ACTIONS.SHOW_LEADERBOARD        , stateSetter( STATES.LEADERBOARD_SCREEN ) );
-        on( ACTIONS.SHOW_PLAYING_CONFIG     , stateSetter( STATES.PLAYING_CONFIG ) );
-        on( ACTIONS.SHOW_MENU               , stateSetter( STATES.MENU_SCREEN ) );
+        on( ACTIONS.SHOW_TUTORIAL, stateSetter( STATES.TUTORIAL_SCREEN ) );
+        on( ACTIONS.SHOW_LEADERBOARD, stateSetter( STATES.LEADERBOARD_SCREEN ) );
+        on( ACTIONS.SHOW_PLAYING_CONFIG, stateSetter( STATES.PLAYING_CONFIG ) );
+        on( ACTIONS.SHOW_MENU, stateSetter( STATES.MENU_SCREEN ) );
         on( ACTIONS.SHOW_PREVIOUS, function ZORShowPrevious() {
             state( uidata.prev_state );
         });

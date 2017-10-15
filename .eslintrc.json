@@ -30,7 +30,7 @@
 //        "computed-property-spacing": "off",
 //        "no-redeclare": "off",
 //        "curly": "off",
-        "comma-spacing": "off",
+//        "comma-spacing": "off",
         "quote-props": "off",
         "one-var": "off",
         "no-throw-literal": "off",

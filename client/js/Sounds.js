@@ -121,7 +121,7 @@ ZOR.Sounds = (function ZORSounds() {
         let id = sound.play();
         sound.mute(true, id);
         sound.volume(0, id);
-        sound.pos(1,1,1,id);
+        sound.pos(1, 1, 1, id);
 
         // woosh sound from wad needs to be started and stopped
         sounds.sfx.woosh.play();

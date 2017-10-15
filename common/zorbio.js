@@ -298,8 +298,8 @@ ZOR.ActorTypes = Object.freeze({
  * world.
  */
 ZOR.Actor = function ZORActor() {
-    this.position = new THREE.Vector3(0,0,0);
-    this.velocity = new THREE.Vector3(0,0,0);
+    this.position = new THREE.Vector3(0, 0, 0);
+    this.velocity = new THREE.Vector3(0, 0, 0);
     this.scale = 1;
     this.type = ZOR.ActorTypes.UNDEFINED;
     this.recentPositions = [];

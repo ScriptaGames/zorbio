@@ -325,7 +325,7 @@ UTIL.trimFloat = function UTILTrimFloat(num, trim) {
  * @param {Object} iteratee
  */
 UTIL.sortedObjectPush = function UTILSortedObjectPush( array, value, iteratee ) {
-    array.splice( _.sortedIndexBy(array, value, iteratee) , 0, value );
+    array.splice( _.sortedIndexBy(array, value, iteratee), 0, value );
 };
 
 /**
@@ -355,7 +355,7 @@ let foodCrayons = {
         let h = ( x + y + z ) / (2*config.WORLD_SIZE);
         let s = 1.0;
         let l = 0.6;
-        let color = new THREE.Color().setHSL(h,s,l);
+        let color = new THREE.Color().setHSL(h, s, l);
         return {
             r: color.r,
             g: color.g,
