@@ -2,12 +2,12 @@ let config = require('../common/config.js');
 let exec   = require('child_process').exec;
 let util   = require('util');
 
-// Current implmentating service: App42
+// Current implementing service: App42
 let App42 = require('./lib/app42/node_sdk/app42.js');
 
 /**
  * Genetic interface for backend services such as document store, and social auth.
- * Abstraction of implementing service, so implmentation can be switched out if needed.
+ * Abstraction of implementing service, so implementation can be switched out if needed.
  * @constructor
  */
 let Backend = function() {
@@ -92,7 +92,7 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
  * @param {string} endDate
  * @param {Function} callback
  */
-Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, limit, startDate, endDate, callback) {
+Backend.prototype.getLeadersByDate = function BackendGetLeadersByDate(gameName, limit, startDate, endDate, callback) {
     if (!config.ENABLE_BACKEND_SERVICE) return;
 
     let result = '';

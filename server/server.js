@@ -49,7 +49,7 @@ let MainServer = function() {
     /**
      *  terminator === the termination handler
      *  Terminate server on receipt of the specified signal.
-     * @param {string} sig
+     * @param {*} sig
      */
     self.terminator = function(sig) {
         if (typeof sig === 'string') {
@@ -104,7 +104,7 @@ let MainServer = function() {
                     let origin_values = _.values(config.BALANCERS);
                     let hostname = url.parse(info.origin).hostname;
                     let index = origin_values.indexOf(hostname);
-                    if (index != -1 && hostname != 'localhost') {
+                    if (index !== -1 && hostname !== 'localhost') {
                         callback(true);  // valid origin
                         return true;
                     }
