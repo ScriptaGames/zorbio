@@ -232,7 +232,7 @@ ZOR.Model.prototype.getSafeSpawnPosition = function ZORGetSafeSpawnPosition( num
         }
 
         // couldn't find a safe position in the number of tries so return the one that was farthest away
-        tried_positions = _.sortBy(tried_positions, ['near_distance']);
+        tried_positions = _.sortBy(tried_positions, ['near_distance']);
         position = tried_positions[tried_positions.length - 1].position;
     }
 

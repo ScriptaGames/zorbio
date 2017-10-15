@@ -34,7 +34,7 @@
 //        "quote-props": "off",
 //        "one-var": "off",
 //        "no-throw-literal": "off",
-        "no-irregular-whitespace": "off",
+//        "no-irregular-whitespace": "off",
         "array-bracket-spacing": "off",
         "no-dupe-keys": "off",
         "no-multi-spaces": "off",
