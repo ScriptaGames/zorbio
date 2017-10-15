@@ -307,7 +307,6 @@ ZOR.ZORClient.prototype.z_setIntervalMethods = function ZORsetIntervalMethods() 
 };
 
 
-
 ZOR.ZORClient.prototype.z_sendPlayerUpdate = function ZORsendPlayerUpdate(playerSphere, food_capture_queue) {
     // save metrics
     let nowTime = Date.now();

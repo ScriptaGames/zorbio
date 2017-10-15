@@ -19,7 +19,6 @@ if (NODEJS_ZORBIO) {
 }
 
 
-
 /**
  * ZOR.Model is a constructor that creates a new game model.  The model is
  * responsible for storing the state of the game world.  Players, positions,

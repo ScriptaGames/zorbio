@@ -9,7 +9,6 @@ const NODEJS_SCHEMAS = typeof module !== 'undefined' && module.exports;
 if (NODEJS_SCHEMAS) global.schemapack = require('schemapack');
 
 
-
 ZOR.Schemas = function ZORSchemas() {
     let vector3 = {x: 'float32', y: 'float32', z: 'float32'};
     let actor = {
