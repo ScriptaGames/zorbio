@@ -22,7 +22,7 @@ ZOR.Schemas = function ZORSchemas() {
         type           : 'string',
         color          : 'uint8',
         skin           : 'string',
-        playerId       : 'varuint'
+        playerId       : 'varuint',
     };
 
     let tiny_actor = {
@@ -50,7 +50,7 @@ ZOR.Schemas = function ZORSchemas() {
         foodDensity             : 'uint8',
         food_respawning         : ['varuint'],
         food_respawn_ready_queue: ['varuint'],
-        food_respawning_indexes : ['varuint']
+        food_respawning_indexes : ['varuint'],
     };
 
     let leader = {

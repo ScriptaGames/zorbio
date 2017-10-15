@@ -64,10 +64,10 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
                     spread: new THREE.Vector3( 100 ),
                 },
                 size: {
-                    value: [ 60, 0 ]
+                    value: [ 60, 0 ],
                 },
                 opacity: {
-                    value: [1, 0]
+                    value: [1, 0],
                 },
                 color: {
                     value: [color],

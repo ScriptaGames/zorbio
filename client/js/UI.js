@@ -454,7 +454,7 @@ ZOR.UI = function ZORUI() {
                 hitType      : 'event',
                 eventCategory: 'button',
                 eventAction  : 'play_button',
-                eventLabel   : 'mouse_click'
+                eventLabel   : 'mouse_click',
             });
             startGame(ZOR.PlayerTypes.PLAYER);
         });
@@ -510,7 +510,7 @@ ZOR.UI = function ZORUI() {
                         hitType      : 'event',
                         eventCategory: 'button',
                         eventAction  : 'play_button',
-                        eventLabel   : 'enter_key'
+                        eventLabel   : 'enter_key',
                     });
                     startGame(ZOR.PlayerTypes.PLAYER);
                 }

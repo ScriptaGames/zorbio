@@ -499,7 +499,7 @@ let KeyCodes = {
     65: 'a',
     68: 'd',
     32: 'space',
-    16: 'shift'
+    16: 'shift',
 };
 
 let ListenForKeys = Object.keys(KeyCodes);

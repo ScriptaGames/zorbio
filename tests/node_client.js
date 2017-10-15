@@ -62,7 +62,7 @@ function addRecentPosition() {
     let p = {
         x: global.player.sphere.position.x,
         y: global.player.sphere.position.y,
-        z: global.player.sphere.position.z
+        z: global.player.sphere.position.z,
     };
 
     let time = Date.now() - global.player.createdTime;  // milliseconds since the player was created

@@ -90,12 +90,12 @@ ZOR.Sounds = (function ZORSounds() {
                     decay  : 0.5,
                     sustain: 1,
                     hold   : 3600, // a long time... 1 hour
-                    release: .5
+                    release: .5,
                 },
                 filter: {
                     type     : 'lowpass',
                     frequency: 300,
-                    q        : 1.0
+                    q        : 1.0,
                 },
             }),
             state_change  : howlSfx('food_capture/D3.mp3'),

@@ -24,7 +24,7 @@
 //        "new-cap": "off",
 //        "block-spacing": "off",
 //        "key-spacing": "off",
-        "comma-dangle": "off",
+//        "comma-dangle": "off",
         "no-multiple-empty-lines": "off",
         "object-curly-spacing": "off",
         "computed-property-spacing": "off",

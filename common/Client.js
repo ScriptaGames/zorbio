@@ -62,7 +62,7 @@ ZOR.ZORClient.prototype.z_sendEnterGame = function ZORsendEnterGame(meta) {
             name : meta.playerName,
             color: meta.color,
             skin : meta.skin,
-            key  : meta.key
+            key  : meta.key,
         }));
 
         console.log('Send enter game');

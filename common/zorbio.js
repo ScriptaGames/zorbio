@@ -290,7 +290,7 @@ ZOR.ActorTypes = Object.freeze({
     FOOD         : 'FOOD',
     PORTAL       : 'PORTAL',
     OBSTACLE     : 'OBSTACLE',
-    SPECTATOR    : 'SPECTATOR'
+    SPECTATOR    : 'SPECTATOR',
 });
 
 /**
@@ -751,7 +751,7 @@ ZOR.IdGenerator = function ZORIdGenerator() {
     }
 
     return {
-        get_next_id: get_next_id
+        get_next_id: get_next_id,
     };
 }();
 

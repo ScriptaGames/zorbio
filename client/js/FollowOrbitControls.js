@@ -286,7 +286,7 @@ global config:true
 
             get: function() {
                 return constraint;
-            }
+            },
 
         } );
 
@@ -754,7 +754,7 @@ global config:true
 
             get: function() {
                 return this.constraint.object;
-            }
+            },
 
         },
 
@@ -762,7 +762,7 @@ global config:true
 
             get: function() {
                 return this.constraint.velocityRequest;
-            }
+            },
 
         },
 
@@ -775,7 +775,7 @@ global config:true
             set: function( value ) {
                 // console.warn( 'THREE.FollowOrbitControls: target is now immutable. Use target.set() instead.' );
                 this.constraint.target = value;
-            }
+            },
 
         },
 
@@ -787,7 +787,7 @@ global config:true
 
             set: function( value ) {
                 this.constraint.minDistance = value;
-            }
+            },
 
         },
 
@@ -799,7 +799,7 @@ global config:true
 
             set: function( value ) {
                 this.constraint.maxDistance = value;
-            }
+            },
 
         },
 
@@ -811,7 +811,7 @@ global config:true
 
             set: function( value ) {
                 this.constraint.minZoom = value;
-            }
+            },
 
         },
 
@@ -823,7 +823,7 @@ global config:true
 
             set: function( value ) {
                 this.constraint.maxZoom = value;
-            }
+            },
 
         },
 
@@ -835,7 +835,7 @@ global config:true
 
             set: function( value ) {
                 this.constraint.minPolarAngle = value;
-            }
+            },
 
         },
 
@@ -847,7 +847,7 @@ global config:true
 
             set: function( value ) {
                 this.constraint.maxPolarAngle = value;
-            }
+            },
 
         },
 
@@ -859,7 +859,7 @@ global config:true
 
             set: function( value ) {
                 this.constraint.minAzimuthAngle = value;
-            }
+            },
 
         },
 
@@ -871,7 +871,7 @@ global config:true
 
             set: function( value ) {
                 this.constraint.maxAzimuthAngle = value;
-            }
+            },
 
         },
 
@@ -883,7 +883,7 @@ global config:true
 
             set: function( value ) {
                 this.constraint.enableDamping = value;
-            }
+            },
 
         },
 
@@ -895,7 +895,7 @@ global config:true
 
             set: function( value ) {
                 this.constraint.dampingFactor = value;
-            }
+            },
 
         },
 
@@ -911,7 +911,7 @@ global config:true
             set: function( value ) {
                 console.warn( 'THREE.FollowOrbitControls: .noZoom has been deprecated. Use .enableZoom instead.' );
                 this.enableZoom = ! value;
-            }
+            },
 
         },
 
@@ -925,7 +925,7 @@ global config:true
             set: function( value ) {
                 console.warn( 'THREE.FollowOrbitControls: .noRotate has been deprecated. Use .enableRotate instead.' );
                 this.enableRotate = ! value;
-            }
+            },
 
         },
 
@@ -939,7 +939,7 @@ global config:true
             set: function( value ) {
                 console.warn( 'THREE.FollowOrbitControls: .noPan has been deprecated. Use .enablePan instead.' );
                 this.enablePan = ! value;
-            }
+            },
 
         },
 
@@ -953,7 +953,7 @@ global config:true
             set: function( value ) {
                 console.warn( 'THREE.FollowOrbitControls: .noKeys has been deprecated. Use .enableKeys instead.' );
                 this.enableKeys = ! value;
-            }
+            },
 
         },
 
@@ -967,7 +967,7 @@ global config:true
             set: function( value ) {
                 console.warn( 'THREE.FollowOrbitControls: .staticMoving has been deprecated. Use .enableDamping instead.' );
                 this.constraint.enableDamping = ! value;
-            }
+            },
 
         },
 
@@ -981,9 +981,9 @@ global config:true
             set: function( value ) {
                 console.warn( 'THREE.FollowOrbitControls: .dynamicDampingFactor has been renamed. Use .dampingFactor instead.' );
                 this.constraint.dampingFactor = value;
-            }
+            },
 
-        }
+        },
 
     } );
 }() );

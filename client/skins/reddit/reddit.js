@@ -60,10 +60,10 @@ ZOR.PlayerSkins.reddit = function ZORRedditSkin(playerView) {
                     spread: new THREE.Vector3( 100 ),
                 },
                 size: {
-                    value: [ 30, 0 ]
+                    value: [ 30, 0 ],
                 },
                 opacity: {
-                    value: [1, 0]
+                    value: [1, 0],
                 },
                 color: {
                     value: [new THREE.Color('yellow'),new THREE.Color('red')],

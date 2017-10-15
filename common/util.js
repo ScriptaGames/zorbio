@@ -295,7 +295,7 @@ UTIL.trimPosition = function UTILTrimPosition(position, trim) {
     return {
         x: +position.x.toFixed(trim),
         y: +position.y.toFixed(trim),
-        z: +position.z.toFixed(trim)
+        z: +position.z.toFixed(trim),
     };
 };
 
@@ -424,7 +424,7 @@ let foodCrayons = {
         return {
             r: r,
             g: g,
-            b: b
+            b: b,
         };
     },
 
