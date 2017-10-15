@@ -97,7 +97,7 @@ ZOR.PlayerSkins.earth = function ZOREarthSkin(playerView) {
                     spread: new THREE.Vector3( 100 ),
                 },
                 size: {
-                    value: [ 40, 0 ],
+                    value: [40, 0],
                 },
                 opacity: {
                     value: [1, 0],

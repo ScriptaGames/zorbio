@@ -27,7 +27,7 @@ ZOR.UI = function ZORUI() {
      * match the names provided by Modernizr.
      */
 
-    let REQUIRED_FEATURES = [ 'json', 'websockets', 'webgl', 'flexbox' ];
+    let REQUIRED_FEATURES = ['json', 'websockets', 'webgl', 'flexbox'];
 
     /**
      * An "enum" storing unique values for UI states.
