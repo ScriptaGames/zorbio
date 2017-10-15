@@ -28,8 +28,8 @@
 //        "no-multiple-empty-lines": "off",
 //        "object-curly-spacing": "off",
 //        "computed-property-spacing": "off",
-        "no-redeclare": "off",
-        "curly": "off",
+//        "no-redeclare": "off",
+//        "curly": "off",
         "comma-spacing": "off",
         "quote-props": "off",
         "one-var": "off",
@@ -41,6 +41,11 @@
         "no-console": "off",
         "camelcase": "off",
         "require-jsdoc": "off",
+        "curly": [
+            "error",
+            "multi-line",
+            "consistent"
+        ],
         "object-curly-spacing": [
             "error",
             "always"

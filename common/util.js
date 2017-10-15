@@ -232,14 +232,17 @@ UTIL.adjustVelocityWallHit = function UTILadjustVelocityWallHit( p, r, v, w ) {
     // avoid collision.  reducing to 0 causes small, fast spheres to sometimes
     // "hit" the wall before they are visibly touching it.
 
-    if ( hitxp( p, r, v, w ) || hitxn( p, r, v, w ) )
+    if ( hitxp( p, r, v, w ) || hitxn( p, r, v, w ) ) {
         vs.x = 0;
+    }
 
-    if ( hityp( p, r, v, w ) || hityn( p, r, v, w ) )
+    if ( hityp( p, r, v, w ) || hityn( p, r, v, w ) ) {
         vs.y = 0;
+    }
 
-    if ( hitzp( p, r, v, w ) || hitzn( p, r, v, w ) )
+    if ( hitzp( p, r, v, w ) || hitzn( p, r, v, w ) ) {
         vs.z = 0;
+    }
 
     return vs;
 };
