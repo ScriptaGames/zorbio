@@ -36,7 +36,7 @@
 //        "no-throw-literal": "off",
 //        "no-irregular-whitespace": "off",
 //        "array-bracket-spacing": "off",
-        "no-dupe-keys": "off",
+//        "no-dupe-keys": "off",
         "no-multi-spaces": "off",
         "no-console": "off",
         "camelcase": "off",

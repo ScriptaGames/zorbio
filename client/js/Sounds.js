@@ -19,7 +19,6 @@ ZOR.Sounds = (function ZORSounds() {
             volume  : config.VOLUME_SFX_INITIAL,
             buffer  : false,
             preload : true,
-            volume  : 0.3,
         }, custom);
         return new Howl(conf);
     }
