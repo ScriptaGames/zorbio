@@ -108,7 +108,7 @@ global config:true
                 let te = this.object.matrix.elements;
 
                 // get X column of matrix
-                v.set( te[ 0 ], te[ 1 ], te[ 2 ] );
+                v.set( te[0], te[1], te[2] );
                 v.multiplyScalar( - distance );
 
                 scope.velocityRequest.add( v );
@@ -123,7 +123,7 @@ global config:true
                 let te = this.object.matrix.elements;
 
                 // get Y column of matrix
-                v.set( te[ 4 ], te[ 5 ], te[ 6 ] );
+                v.set( te[4], te[5], te[6] );
                 v.multiplyScalar( distance );
 
                 scope.velocityRequest.add( v );

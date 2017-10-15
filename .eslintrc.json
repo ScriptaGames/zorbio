@@ -27,7 +27,7 @@
 //        "comma-dangle": "off",
 //        "no-multiple-empty-lines": "off",
 //        "object-curly-spacing": "off",
-        "computed-property-spacing": "off",
+//        "computed-property-spacing": "off",
         "no-redeclare": "off",
         "curly": "off",
         "comma-spacing": "off",

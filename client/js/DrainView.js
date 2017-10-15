@@ -70,10 +70,10 @@ ZOR.DrainView = function ZORDrainView() {
 
     this.mesh = new THREE.Mesh( this.geometry, this.material );
     this.mesh.renderOrder = 10;
-    this.mesh.morphTargetInfluences[ this.MORPH_INDEX_STRETCH       ] = 0;     // length of stretch
-    this.mesh.morphTargetInfluences[ this.MORPH_INDEX_DRAINER_TAPER ] = 0;     // radius at drainer's end
-    this.mesh.morphTargetInfluences[ this.MORPH_INDEX_DRAINEE_TAPER ] = 0;     // radius at drainee's end
-    this.mesh.morphTargetInfluences[ this.MORPH_INDEX_PINCH         ] = 0.065; // strength of pinch effect
+    this.mesh.morphTargetInfluences[this.MORPH_INDEX_STRETCH]       = 0;     // length of stretch
+    this.mesh.morphTargetInfluences[this.MORPH_INDEX_DRAINER_TAPER] = 0;     // radius at drainer's end
+    this.mesh.morphTargetInfluences[this.MORPH_INDEX_DRAINEE_TAPER] = 0;     // radius at drainee's end
+    this.mesh.morphTargetInfluences[this.MORPH_INDEX_PINCH]         = 0.065; // strength of pinch effect
 
     this.hide(); // initially hide
 };
@@ -189,20 +189,20 @@ ZOR.DrainView.prototype.createStretch = function ZORDrainViewCreateStretch() {
 ZOR.DrainView.prototype.createStretchVertices = function ZORDrainViewCreateStretchVertices() {
     let stretchVertices = [];
     for ( let i = 0; i < this.geometry.vertices.length; i ++ ) {
-        stretchVertices[i] = this.geometry.vertices[ i ].clone();
+        stretchVertices[i] = this.geometry.vertices[i].clone();
         stretchVertices[i].z = 0;
     }
     return stretchVertices;
 };
 
 ZOR.DrainView.prototype.updateStretch = function ZORDrainViewUpdateStretch( distance ) {
-    this.mesh.morphTargetInfluences[ this.MORPH_INDEX_STRETCH ] = 1 - distance / config.DRAIN_MAX_DISTANCE;
+    this.mesh.morphTargetInfluences[this.MORPH_INDEX_STRETCH] = 1 - distance / config.DRAIN_MAX_DISTANCE;
 };
 
 ZOR.DrainView.prototype.updateTaper = function ZORDrainViewUpdateTaper( scale, influence_index ) {
     // https://www.desmos.com/calculator/dpjwagi0va
     let influence = 0.85 - Math.pow(scale / config.MAX_PLAYER_RADIUS, 2) / 2;
-    this.mesh.morphTargetInfluences[ influence_index ] = influence;
+    this.mesh.morphTargetInfluences[influence_index] = influence;
 };
 
 /////////////////////
@@ -218,7 +218,7 @@ ZOR.DrainView.prototype.createDrainerTaperVertices = function ZORDrainViewCreate
     let taperVertices = [];
     let radius;
     for ( let i = 0; i < this.geometry.vertices.length; i ++ ) {
-        taperVertices[i] = this.geometry.vertices[ i ].clone();
+        taperVertices[i] = this.geometry.vertices[i].clone();
         radius = 1 - (taperVertices[i].z + config.DRAIN_MAX_DISTANCE/2 ) / this.initialCylinderLength;
         taperVertices[i].x *= radius;
         taperVertices[i].y *= radius;
@@ -243,7 +243,7 @@ ZOR.DrainView.prototype.createDraineeTaperVertices = function ZORDrainViewCreate
     let taperVertices = [];
     let radius;
     for ( let i = 0; i < this.geometry.vertices.length; i ++ ) {
-        taperVertices[i] = this.geometry.vertices[ i ].clone();
+        taperVertices[i] = this.geometry.vertices[i].clone();
         radius = (taperVertices[i].z + config.DRAIN_MAX_DISTANCE/2 ) / this.initialCylinderLength;
         taperVertices[i].x *= radius;
         taperVertices[i].y *= radius;
@@ -268,7 +268,7 @@ ZOR.DrainView.prototype.createPinch = function ZORDrainViewCreatePinch( distance
 ZOR.DrainView.prototype.createPinchVertices = function ZORDrainViewCreatePinchVertices( distance ) {
     let pinchVertices = [];
     for ( let i = 0; i < this.geometry.vertices.length; i ++ ) {
-        pinchVertices[i] = this.geometry.vertices[ i ].clone();
+        pinchVertices[i] = this.geometry.vertices[i].clone();
         pinchVertices[i].x *= -this.pinch(pinchVertices[i].z + distance/2, distance);
         pinchVertices[i].y *= -this.pinch(pinchVertices[i].z + distance/2, distance);
     }

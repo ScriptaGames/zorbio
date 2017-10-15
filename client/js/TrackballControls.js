@@ -108,8 +108,8 @@ THREE.TrackballControls = function( object, domElement ) {
     };
 
     this.handleEvent = function( event ) {
-        if ( typeof this[ event.type ] == 'function' ) {
-            this[ event.type ]( event );
+        if ( typeof this[event.type] == 'function' ) {
+            this[event.type]( event );
         }
     };
 
@@ -324,13 +324,13 @@ THREE.TrackballControls = function( object, domElement ) {
         if ( _state !== STATE.NONE ) {
             return;
         }
-        else if ( event.keyCode === _this.keys[ STATE.ROTATE ] && ! _this.noRotate ) {
+        else if ( event.keyCode === _this.keys[STATE.ROTATE] && ! _this.noRotate ) {
             _state = STATE.ROTATE;
         }
-        else if ( event.keyCode === _this.keys[ STATE.ZOOM ] && ! _this.noZoom ) {
+        else if ( event.keyCode === _this.keys[STATE.ZOOM] && ! _this.noZoom ) {
             _state = STATE.ZOOM;
         }
-        else if ( event.keyCode === _this.keys[ STATE.PAN ] && ! _this.noPan ) {
+        else if ( event.keyCode === _this.keys[STATE.PAN] && ! _this.noPan ) {
             _state = STATE.PAN;
         }
     }
@@ -437,18 +437,18 @@ THREE.TrackballControls = function( object, domElement ) {
         switch ( event.touches.length ) {
             case 1:
                 _state = STATE.TOUCH_ROTATE;
-                _moveCurr.copy( getMouseOnCircle( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
+                _moveCurr.copy( getMouseOnCircle( event.touches[0].pageX, event.touches[0].pageY ) );
                 _movePrev.copy( _moveCurr );
                 break;
 
             case 2: {
                 _state = STATE.TOUCH_ZOOM_PAN;
-                const dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
-                const dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
+                const dx = event.touches[0].pageX - event.touches[1].pageX;
+                const dy = event.touches[0].pageY - event.touches[1].pageY;
                 _touchZoomDistanceEnd = _touchZoomDistanceStart = Math.sqrt( dx * dx + dy * dy );
 
-                const x = ( event.touches[ 0 ].pageX + event.touches[ 1 ].pageX ) / 2;
-                const y = ( event.touches[ 0 ].pageY + event.touches[ 1 ].pageY ) / 2;
+                const x = ( event.touches[0].pageX + event.touches[1].pageX ) / 2;
+                const y = ( event.touches[0].pageY + event.touches[1].pageY ) / 2;
                 _panStart.copy( getMouseOnScreen( x, y ) );
                 _panEnd.copy( _panStart );
                 break;
@@ -469,16 +469,16 @@ THREE.TrackballControls = function( object, domElement ) {
         switch ( event.touches.length ) {
             case 1:
                 _movePrev.copy( _moveCurr );
-                _moveCurr.copy( getMouseOnCircle(  event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
+                _moveCurr.copy( getMouseOnCircle(  event.touches[0].pageX, event.touches[0].pageY ) );
                 break;
 
             case 2: {
-                const dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
-                const dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
+                const dx = event.touches[0].pageX - event.touches[1].pageX;
+                const dy = event.touches[0].pageY - event.touches[1].pageY;
                 _touchZoomDistanceEnd = Math.sqrt( dx * dx + dy * dy );
 
-                const x = ( event.touches[ 0 ].pageX + event.touches[ 1 ].pageX ) / 2;
-                const y = ( event.touches[ 0 ].pageY + event.touches[ 1 ].pageY ) / 2;
+                const x = ( event.touches[0].pageX + event.touches[1].pageX ) / 2;
+                const y = ( event.touches[0].pageY + event.touches[1].pageY ) / 2;
                 _panEnd.copy( getMouseOnScreen( x, y ) );
                 break;
             }
@@ -493,14 +493,14 @@ THREE.TrackballControls = function( object, domElement ) {
         switch ( event.touches.length ) {
             case 1:
                 _movePrev.copy( _moveCurr );
-                _moveCurr.copy( getMouseOnCircle(  event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
+                _moveCurr.copy( getMouseOnCircle(  event.touches[0].pageX, event.touches[0].pageY ) );
                 break;
 
             case 2: {
                 _touchZoomDistanceStart = _touchZoomDistanceEnd = 0;
 
-                const x = ( event.touches[ 0 ].pageX + event.touches[ 1 ].pageX ) / 2;
-                const y = ( event.touches[ 0 ].pageY + event.touches[ 1 ].pageY ) / 2;
+                const x = ( event.touches[0].pageX + event.touches[1].pageX ) / 2;
+                const y = ( event.touches[0].pageY + event.touches[1].pageY ) / 2;
                 _panEnd.copy( getMouseOnScreen( x, y ) );
                 _panStart.copy( _panEnd );
                 break;

@@ -358,7 +358,7 @@ if (NODEJS_CONFIG) {
 }
 else {
     // balancer is only used on the client
-    config.BALANCER = config.BALANCERS[ config.BALANCER ];
+    config.BALANCER = config.BALANCERS[config.BALANCER];
 
     // Disable console.log on the client, in production.  This should really go
     // into a client init function, but it's here for now.

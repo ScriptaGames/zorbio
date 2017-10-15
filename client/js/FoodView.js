@@ -35,24 +35,24 @@ ZOR.FoodView = function ZORFoodView() {
         let X, Y, Z, R, G, B;
         let offset = 0;
         for (let i = 0, l = foodCount; i < l; i++) {
-            X = food[ offset     ];
-            Y = food[ offset + 1 ];
-            Z = food[ offset + 2 ];
+            X = food[offset];
+            Y = food[offset + 1];
+            Z = food[offset + 2];
 
             let color = foodCrayon( X, Y, Z );
-            R = color.r;
-            G = color.g;
-            B = color.b;
+            R         = color.r;
+            G         = color.g;
+            B         = color.b;
 
-            respawning[ i ] = 0;
+            respawning[i] = 0;
 
-            translate[ offset     ] = X;
-            translate[ offset + 1 ] = Y;
-            translate[ offset + 2 ] = Z;
+            translate[offset]     = X;
+            translate[offset + 1] = Y;
+            translate[offset + 2] = Z;
 
-            colors[ offset     ] = R;
-            colors[ offset + 1 ] = G;
-            colors[ offset + 2 ] = B;
+            colors[offset]     = R;
+            colors[offset + 1] = G;
+            colors[offset + 2] = B;
 
             // Add this food object to the Octree
             let foodObj = { x: X, y: Y, z: Z, radius: 1, fi: i };

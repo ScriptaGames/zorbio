@@ -467,9 +467,9 @@ let foodMaps = {
                     let x = halfSize - ( i * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
                     let y = halfSize - ( j * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
                     let z = halfSize - ( k * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
-                    positions[ offset ]     = x;
-                    positions[ offset + 1 ] = y;
-                    positions[ offset + 2 ] = z;
+                    positions[offset]     = x;
+                    positions[offset + 1] = y;
+                    positions[offset + 2] = z;
 
                     offset += ints;
                 }
@@ -492,9 +492,9 @@ let foodMaps = {
                     let x = halfSize - ( i * blockSize );
                     let y = halfSize - ( j * blockSize );
                     let z = halfSize - ( k * blockSize );
-                    positions[ offset ]     = x;
-                    positions[ offset + 1 ] = y;
-                    positions[ offset + 2 ] = z;
+                    positions[offset]     = x;
+                    positions[offset + 1] = y;
+                    positions[offset + 2] = z;
 
                     offset += ints;
                 }
