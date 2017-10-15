@@ -20,9 +20,8 @@
 //        "valid-jsdoc": "off",
 //        "prefer-rest-params": "off",
 //        "keyword-spacing": "off",
-        "require-jsdoc": "off",
 //        "spaced-comment": "off",
-        "new-cap": "off",
+//        "new-cap": "off",
         "block-spacing": "off",
         "key-spacing": "off",
         "comma-dangle": "off",
@@ -41,6 +40,21 @@
         "no-multi-spaces": "off",
         "no-console": "off",
         "camelcase": "off",
+        "require-jsdoc": "off",
+        "new-cap": [
+            "error",
+            {
+                "capIsNewExceptions": [
+                    "GET_NEAR_BALANCER",
+                    "PLAYER_CAPTURE_VALUE",
+                    "PLAYER_GET_SPEED",
+                    "GET_PADDED_INT",
+                    "FOOD_GET_VALUE",
+                    "GET_CAMERA_MIN_DISTANCE",
+                    "Server"
+                ]
+            }
+        ],
         "spaced-comment": [
             "error",
             "always",

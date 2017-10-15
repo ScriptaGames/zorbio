@@ -1,4 +1,6 @@
-// this is here to prep for modularizing (de-globalifying) this file
+/********************************************************************
+ * Zorbio Game.js this is the games main bootstrap and event handler
+ ********************************************************************/
 
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
