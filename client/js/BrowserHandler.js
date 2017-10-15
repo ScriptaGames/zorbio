@@ -12,7 +12,7 @@ global handleServerTick:true
 global handleLeaderboardUpdate:true
 global handleSuccessfulPlayerCapture:true
 global handleDeath:true
-global handleOtherPlayercapture:true
+global handleOtherPlayerCapture:true
 global removePlayerFromGame:true
 global handlePlayerKick:true
 */
@@ -127,7 +127,7 @@ ZOR.ZORMessageHandler.z_handle_you_died = function ZORHandleYouDied(msg) {
 };
 
 ZOR.ZORMessageHandler.z_handle_player_died = function ZORHandlePlayerDied(capturedPlayerId) {
-    handleOtherPlayercapture(capturedPlayerId);
+    handleOtherPlayerCapture(capturedPlayerId);
 };
 
 ZOR.ZORMessageHandler.z_handle_remove_player = function ZORHandleRemovePlayer(playerId) {

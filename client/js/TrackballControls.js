@@ -107,7 +107,7 @@ THREE.TrackballControls = function( object, domElement ) {
     };
 
     this.handleEvent = function( event ) {
-        if ( typeof this[event.type] == 'function' ) {
+        if ( typeof this[event.type] === 'function' ) {
             this[event.type]( event );
         }
     };
@@ -313,6 +313,10 @@ THREE.TrackballControls = function( object, domElement ) {
 
     // listeners
 
+    /**
+     * handle key down
+     * @param {Object} event
+     */
     function keydown( event ) {
         if ( _this.enabled === false ) return;
 
@@ -334,6 +338,9 @@ THREE.TrackballControls = function( object, domElement ) {
         }
     }
 
+    /**
+     * handle key up
+     */
     function keyup() {
         if ( _this.enabled === false ) return;
 
@@ -342,6 +349,10 @@ THREE.TrackballControls = function( object, domElement ) {
         window.addEventListener( 'keydown', keydown, false );
     }
 
+    /**
+     * handle mouse down
+     * @param {Object} event
+     */
     function mousedown( event ) {
         if ( _this.enabled === false ) return;
 
@@ -373,6 +384,10 @@ THREE.TrackballControls = function( object, domElement ) {
         _this.dispatchEvent( startEvent );
     }
 
+    /**
+     * handle mouse move
+     * @param {Object} event
+     */
     function mousemove( event ) {
         if ( _this.enabled === false ) return;
 
@@ -391,6 +406,10 @@ THREE.TrackballControls = function( object, domElement ) {
         }
     }
 
+    /**
+     * handle mouse up
+     * @param {Object} event
+     */
     function mouseup( event ) {
         if ( _this.enabled === false ) return;
 
@@ -406,6 +425,10 @@ THREE.TrackballControls = function( object, domElement ) {
         _this.dispatchEvent( endEvent );
     }
 
+    /**
+     * Handle mouse wheel
+     * @param {Object} event
+     */
     function mousewheel( event ) {
         if ( _this.enabled === false ) return;
 
@@ -430,6 +453,10 @@ THREE.TrackballControls = function( object, domElement ) {
         _this.dispatchEvent( endEvent );
     }
 
+    /**
+     * handle touch start
+     * @param {Object} event
+     */
     function touchstart( event ) {
         if ( _this.enabled === false ) return;
 
@@ -459,6 +486,10 @@ THREE.TrackballControls = function( object, domElement ) {
         _this.dispatchEvent( startEvent );
     }
 
+    /**
+     * Handle touch move
+     * @param {Object} event
+     */
     function touchmove( event ) {
         if ( _this.enabled === false ) return;
 
@@ -486,6 +517,10 @@ THREE.TrackballControls = function( object, domElement ) {
         }
     }
 
+    /**
+     * Handle touch end
+     * @param {Object} event
+     */
     function touchend( event ) {
         if ( _this.enabled === false ) return;
 
@@ -510,6 +545,10 @@ THREE.TrackballControls = function( object, domElement ) {
         _this.dispatchEvent( endEvent );
     }
 
+    /**
+     * context menu
+     * @param {Object} event
+     */
     function contextmenu( event ) {
         event.preventDefault();
     }

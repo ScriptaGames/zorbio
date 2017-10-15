@@ -14,6 +14,10 @@ global config:true
 */
 
 ( function() {
+    /**
+     *
+     * @param {Object} camera
+     */
     function cameraRoll(camera) {
         let cameraRollMatrix = new THREE.Matrix4();
 
@@ -30,6 +34,11 @@ global config:true
         };
     }
 
+    /**
+     *
+     * @param {Object} object
+     * @constructor
+     */
     function FollowOrbitConstraint( object ) {
         this.object = object;
 
@@ -374,6 +383,12 @@ global config:true
         let element = scope.domElement === document ? scope.domElement.body : scope.domElement;
         // pass in x,y of change desired in pixel space,
         // right and down are positive
+
+        /**
+         *
+         * @param {number} deltaX
+         * @param {number} deltaY
+         */
         function pan( deltaX, deltaY ) {
             let element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
@@ -425,14 +440,26 @@ global config:true
             this.update();
         };
 
+        /**
+         *
+         * @returns {number}
+         */
         function getAutoRotationAngle() {
             return 2 * Math.PI / 60 / 60 * scope.autoRotateSpeed;
         }
 
+        /**
+         *
+         * @returns {number}
+         */
         function getZoomScale() {
             return Math.pow( 0.95, scope.zoomSpeed );
         }
 
+        /**
+         *
+         * @param {Object} event
+         */
         function onMouseDown( event ) {
             if ( scope.enabled === false ) return;
             if ( config.STEERING.NAME !== 'DRAG' ) return;
@@ -461,10 +488,19 @@ global config:true
             }
         }
 
+        /**
+         *
+         * @param {number} r
+         * @returns {number}
+         */
         function slopewell( r ) {
             return Math.min(0, -1 * config.STEERING.SLOPE * ( r - config.STEERING.WELL ));
         }
 
+        /**
+         *
+         * @param {Object} event
+         */
         function onMouseMove( event ) {
             mouseX = event.clientX;
             mouseY = event.clientY;
@@ -519,6 +555,9 @@ global config:true
             if ( state !== STATE.NONE ) scope.update();
         }
 
+        /**
+         *
+         */
         function onMouseUp( /* event */ ) {
             if ( scope.enabled === false ) return;
 
@@ -528,6 +567,10 @@ global config:true
             state = STATE.NONE;
         }
 
+        /**
+         *
+         * @param {Object} event
+         */
         function onMouseWheel( event ) {
             if ( scope.enabled === false || scope.enableZoom === false || state !== STATE.NONE ) return;
 
@@ -559,6 +602,10 @@ global config:true
             scope.dispatchEvent( endEvent );
         }
 
+        /**
+         *
+         * @param {Object} event
+         */
         function onKeyDown(event) {
             if (scope.enabled === false || scope.enableKeys === false || scope.enablePan === false) return;
 
@@ -585,6 +632,10 @@ global config:true
             }
         }
 
+        /**
+         *
+         * @param {Object} event
+         */
         function touchstart(event) {
             if (scope.enabled === false) return;
 
@@ -628,6 +679,10 @@ global config:true
             if (state !== STATE.NONE) scope.dispatchEvent(startEvent);
         }
 
+        /**
+         *
+         * @param {Object} event
+         */
         function touchmove(event) {
             if (scope.enabled === false) return;
 
@@ -701,6 +756,9 @@ global config:true
             }
         }
 
+        /**
+         *
+         */
         function touchend( /* event */ ) {
             if ( scope.enabled === false ) return;
 
@@ -708,6 +766,10 @@ global config:true
             state = STATE.NONE;
         }
 
+        /**
+         *
+         * @param {Object} event
+         */
         function contextmenu( event ) {
             event.preventDefault();
         }

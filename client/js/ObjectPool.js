@@ -9,22 +9,15 @@ global ZOR:true
  * property added to them, to make returning them to the pool more efficient.
  *
  * @constructor
- * @param {number} quantity how many objects to initialize
  * @param {function} create a function which creates and returns an object to place in the pool
- * @param {array} args an array of arguments to pass to the create function
+ * @param {*} args
  */
-
-ZOR.ObjectPool = function ZORObjectPool(create, args) {
+ZOR.ObjectPool = function ZORObjectPool(create, ...args) {
     this._create    = create;
     this._args      = args;
     this._pool      = [];
     this._available = [];
     this._i         = -1;
-    // this._available = new Uint8Array(quantity).fill(1);
-    // for(var i = 0; i < quantity; ++i) {
-    //     this._pool.push(create.apply([], args));
-    //     this._pool[i]._pool_index = i;
-    // }
 };
 
 /**
@@ -89,21 +82,3 @@ ZOR.ObjectPool.prototype._updateNextAvailable = function ZORObjectPoolUpdateNext
     // console.log('next available is ' + this._i);
 };
 
-
-// test
-
-// pool = new ZOR.ObjectPool(create, [1]);
-// function create(x) {
-//     return { n: x };
-// }
-
-// var a = pool.borrow();
-// console.log(a);
-// var b = pool.borrow();
-// pool.return(b);
-// var c = pool.borrow();
-// var d = pool.borrow();
-// var e = pool.borrow();
-// pool.return(e);
-// pool.return(d);
-// var f = pool.borrow();

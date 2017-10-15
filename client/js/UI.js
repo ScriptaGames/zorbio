@@ -146,6 +146,9 @@ ZOR.UI = function ZORUI() {
     // array of registered on-init handlers
     let init_handlers = [];
 
+    /**
+     * advance to the next marquee message
+     */
     function advanceMarquee() {
         let i = engine.get('marquee_index');
         i += 1;
@@ -153,9 +156,11 @@ ZOR.UI = function ZORUI() {
         engine.set('marquee_index', i);
     }
 
+    /**
+     * Clear the target player name that current player was aiming at
+     */
     function clearTarget() {
         engine.set('target', undefined);
-        // uidata.target = undefined;
     }
 
     /**
@@ -172,6 +177,11 @@ ZOR.UI = function ZORUI() {
      * The Ractive template engine.  Data + Templates = HTML
      */
 
+    /**
+     * Returns an array with the name and template code
+     * @param {Object} el
+     * @returns {string[]}
+     */
     function make_partial( el ) {
         let name = el.id.replace('-template', '');
         let template;
@@ -187,8 +197,9 @@ ZOR.UI = function ZORUI() {
     /**
      * Given a state string, returns true if it's a real, defined state,
      * otherwise false.
+     * @param {string} newstate
+     * @returns {boolean}
      */
-
     function valid_state( newstate ) {
         return _.includes( _.values( STATES ), newstate );
     }
@@ -196,19 +207,18 @@ ZOR.UI = function ZORUI() {
     /**
      * Given a valid state, change to that state.  With no arguments, returns
      * current state.
+     * @param {string} newstate
+     * @returns {string}
      */
-
     function state( newstate ) {
-        if (!newstate) return uidata.state;
-        if (newstate === state()) {
-            return;
-        }
-        else {
-            ZOR.Sounds.sfx.state_change.play();
-        }
+        if (!newstate || newstate === uidata.state) return uidata.state;
+
+        ZOR.Sounds.sfx.state_change.play();
+
         if (newstate !== uidata.prev_state) {
             uidata.prev_state = uidata.state;
         }
+
         if (typeof newstate !== 'undefined' && valid_state( newstate ) ) {
             console.log('entering state ' + newstate);
             uidata.state = newstate;
@@ -227,8 +237,9 @@ ZOR.UI = function ZORUI() {
 
     /**
      * Simple pass-through to Ractive's event handler.
+     * @param {string} event
+     * @param {Function} handler
      */
-
     function on( event, handler ) {
         // 'init' is a custom event owned by UI.js
         if (event === 'init') {
@@ -248,7 +259,6 @@ ZOR.UI = function ZORUI() {
     /**
      * Update the UI state with any missing browser features.
      */
-
     function validate_browser_features() {
         let missing_feature_names = _.chain(missing_browser_features())
             .keys()
@@ -270,8 +280,8 @@ ZOR.UI = function ZORUI() {
     /**
      * Get an object representing the browser features we need that came up
      * false in the Modernizr check.
+     * @returns {Object}
      */
-
     function missing_browser_features() {
         // find the own (non-inherited properties on the Modernizr object which
         // have a value of false (omitBy defaults to _.identity which grants us
@@ -279,11 +289,17 @@ ZOR.UI = function ZORUI() {
         return _.chain(Modernizr).forOwn().omitBy().value();
     }
 
+    /**
+     * Sets the UI screen size based on window
+     */
     function set_screen_size() {
         engine.set('screen_x', window.innerWidth);
         engine.set('screen_y', window.innerHeight);
     }
 
+    /**
+     * Init the UI
+     */
     function init() {
         let partials = _.map( document.querySelectorAll('script[type="text/ractive"]'), make_partial ); // register all ractive templates as partials
 
@@ -324,7 +340,7 @@ ZOR.UI = function ZORUI() {
         let i = uidata.skins.length;
         while (i--) {
             let skin = uidata.skins[i];
-            if (skin.meta.unlock_url && skin.meta.unlock_url != window.location.search) {
+            if (skin.meta.unlock_url && skin.meta.unlock_url !== window.location.search) {
                 uidata.skins.splice(i, 1);
             }
         }
@@ -346,6 +362,11 @@ ZOR.UI = function ZORUI() {
         });
     }
 
+    /**
+     * Returns a setter wrapper function for setting the state
+     * @param {string} newState
+     * @returns {Function}
+     */
     function stateSetter(newState) {
         return function() {
             console.log('changing to ' + newState);
@@ -353,6 +374,9 @@ ZOR.UI = function ZORUI() {
         };
     }
 
+    /**
+     * Shows the google ad
+     */
     function showAd() {
         // There is a weird race condition with googles ads that require a timeout to make it work
         setTimeout(function() {
@@ -468,6 +492,11 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.TOGGLE_Y_AXIS, axisToggler('y'));
         on( ACTIONS.TOGGLE_X_AXIS, axisToggler('x'));
 
+        /**
+         * Returns a function for toggling the Y axis
+         * @param {string} axis
+         * @returns {Function}
+         */
         function axisToggler(axis) {
             return function ZORToggleYAxis(context, e) {
                 let lsKey = 'flip_'+axis.toLowerCase();
@@ -549,7 +578,7 @@ ZOR.UI = function ZORUI() {
 
         // put important message(s) first
 
-        let inIframe = window.frameElement && window.frameElement.nodeName == 'IFRAME';
+        let inIframe = window.frameElement && window.frameElement.nodeName === 'IFRAME';
         let indirectVisitor = inIframe || document.referrer !== '';
         if (indirectVisitor) {
             uidata.marquee_messages.unshift('Bookmark us at <a href="http://zor.bio" target="_top">http://<strong>zor.bio</strong></a>!');

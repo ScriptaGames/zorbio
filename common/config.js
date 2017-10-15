@@ -264,6 +264,10 @@ config.GET_CAMERA_MIN_DISTANCE      = function getCameraMinDistance(r) {
 };
 config.CAMERA_ZOOM_STEPS            = {};
 
+/**
+ * This generates an array of zoom steps that the camera should either zoom out when a sphere scale gets big
+ * or zoom in when a sphere shrinks
+ */
 function generateCameraZoomSteps() {
     let scale        = config.INITIAL_PLAYER_RADIUS;
     let min_scale    = 0;

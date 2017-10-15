@@ -12,7 +12,6 @@
         "no-multi-spaces": "off",
         "no-console": "off",
         "camelcase": "off",
-        "require-jsdoc": "off",
         "curly": [
             "error",
             "multi-line",

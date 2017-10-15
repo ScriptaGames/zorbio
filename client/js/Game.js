@@ -65,6 +65,10 @@ ZOR.Game.fullscreen = function go_fullscreen() {
     }
 };
 
+/**
+ * Main bootstrap that starts game for a player
+ * @param {string} type
+ */
 function startGame(type) {
     let fake_renderer;
     let missing_extensions;
@@ -130,6 +134,9 @@ function startGame(type) {
     zorClient.z_sendEnterGame(ZOR.Game.playerMeta);
 }
 
+/**
+ * Respawns a player
+ */
 function respawnPlayer() {
     console.log('Respawning player: ', player.getPlayerId());
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
@@ -141,6 +148,9 @@ function respawnPlayer() {
     zorClient.z_sendRespawn();
 }
 
+/**
+ * Main function that creates the threejs scene and renders the game and starts the animate loop
+ */
 function createScene() {
     // a function to reveal the canvas after a few frames have been drawn.
     // turns into a noop afterwards.
@@ -162,6 +172,9 @@ function createScene() {
         throw e;
     }
 
+    /**
+     * Initialize the scene, camera, and actors
+     */
     function init() {
         canvas = document.getElementById('render-canvas');
         scene = new THREE.Scene();
@@ -185,7 +198,7 @@ function createScene() {
         camera.position.set(0, 0, 0);
 
         // food
-        foodController = new ZOR.FoodController(zorbioModel, camera.position, scene);
+        foodController = new ZOR.FoodController(zorbioModel, camera.position);
         foodController.drawFood(scene);
 
         // Hide currently respawning food
@@ -224,6 +237,9 @@ function createScene() {
         window.addEventListener( 'resize', onWindowResize, false );
     }
 
+    /**
+     * windows resize event handler
+     */
     function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -231,6 +247,9 @@ function createScene() {
         ZOR.Game.renderer.setSize( window.innerWidth, window.innerHeight );
     }
 
+    /**
+     * Main animate loop for rendering each frame of the game
+     */
     function animate() {
         requestAnimationFrame(animate);
 
@@ -288,6 +307,9 @@ function createScene() {
         render();
     }
 
+    /**
+     * Sends the scene and camera to be rendered by threejs renderer
+     */
     function render() {
         ZOR.Game.renderer.render( scene, camera );
 
@@ -295,6 +317,9 @@ function createScene() {
     }
 }
 
+/**
+ * Initialize the camera and player when the player first enters the game or respawns
+ */
 function initCameraAndPlayer() {
     // sphere
     // Create the player view and adds the player sphere to the scene
@@ -341,20 +366,26 @@ function initCameraAndPlayer() {
     playerFogCenter.copy(player.view.mainSphere.position);
 }
 
+/**
+ * Draws other players currently in the game
+ */
 function drawPlayers() {
     // Iterate over player
     zorbioModel.players.forEach(function drawEachPlayer(playerModel) {
-        if (playerModel.type != ZOR.PlayerTypes.SPECTATOR) {
+        if (playerModel.type !== ZOR.PlayerTypes.SPECTATOR) {
             let id = playerModel.id;
 
             // Only draw other players
             if (!player || (id !== player.getPlayerId())) {
-                ZOR.Game.players[id] = new ZOR.PlayerController(playerModel, scene);
+                ZOR.Game.players[id] = new ZOR.PlayerController(playerModel, scene, false);
             }
         }
     });
 }
 
+/**
+ * Updates all actors currently in the game every frame
+ */
 function updateActors() {
     // Iterate over actor properties in the actors object
     zorbioModel.actors.forEach(function updateEachActor(actor) {
@@ -377,6 +408,10 @@ function updateActors() {
     });
 }
 
+/**
+ * When a player dies they aren't imidately removed they first have a death animation.
+ * This function updates the view for that death animation i.e. particle explosion
+ */
 function updateDeadPlayers() {
     let dead_player_ids = Object.getOwnPropertyNames( ZOR.Game.dead_players );
     for (let i = 0, l = dead_player_ids.length; i < l; i++) {
@@ -387,11 +422,14 @@ function updateDeadPlayers() {
     }
 }
 
+/**
+ * This updates the players score and size meter in the UI
+ */
 function updatePlayerSizeUI() {
     let currentScore = player.getScore();
     let currentSize = player.getSize();
 
-    if (currentScore != player.lastScore || currentSize != player.lastSize) {
+    if (currentScore !== player.lastScore || currentSize !== player.lastSize) {
         ZOR.UI.engine.set('player_score', player.getScore());
         ZOR.UI.engine.set('player_size', currentSize);
         player.lastScore = currentScore;
@@ -400,6 +438,10 @@ function updatePlayerSizeUI() {
 }
 let throttledUpdatePlayerSizeUI = _.throttle(updatePlayerSizeUI, 70);
 
+/**
+ * Updates the target UI based on raycasting from the current player. The target
+ * is the name of another player sphere that they are looking at.
+ */
 function updateTargetLock() {
     // calculate objects intersecting the ray
     let intersects = raycaster.intersectObjects( ZOR.Game.player_meshes );
@@ -445,7 +487,7 @@ function updateTargetLock() {
                         pointedPlayer.lastSize = currentSize;
                         clearTimeout(ZOR.UI.target_clear_timeout_id);
                     }
-                    else if (currentSize != pointedPlayer.lastSize) {
+                    else if (currentSize !== pointedPlayer.lastSize) {
                         // Update target score
                         ZOR.UI.engine.set('target', target);
                         pointedPlayer.lastSize = currentSize;
@@ -463,6 +505,9 @@ function updateTargetLock() {
 }
 let throttledUpdateTargetLock = _.throttle(updateTargetLock, 100);
 
+/**
+ * Sends the player update message to the server throttled to tick fast interval
+ */
 function sendPlayerUpdate() {
     // Make sure model is synced with view
     player.refreshSphereModel();
@@ -479,6 +524,10 @@ function sendPlayerUpdate() {
 }
 let throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
 
+/**
+ * Handle current player capturing food
+ * @param {number} fi
+ */
 function captureFood(fi) {
     player.queueFoodCapture(fi);
     foodController.hideFood(fi);
@@ -505,6 +554,10 @@ let KeyCodes = {
 
 let ListenForKeys = Object.keys(KeyCodes);
 
+/**
+ * Handle key down event
+ * @param {Object} evt
+ */
 function handleKeydown(evt) {
     let we_care_about_this_key;
     let already_pressed;
@@ -522,6 +575,10 @@ function handleKeydown(evt) {
     }
 }
 
+/**
+ * Handle key up event
+ * @param {Object} evt
+ */
 function handleKeyup(evt) {
     if (!gameStart || player.isDead) return;
 
@@ -533,6 +590,10 @@ function handleKeyup(evt) {
     }
 }
 
+/**
+ * Handle mouse down event
+ * @param {Object} evt
+ */
 function handleMouseDown(evt) {
     if (!gameStart || player.isDead) return;
 
@@ -544,6 +605,10 @@ function handleMouseDown(evt) {
     }
 }
 
+/**
+ * Handle mouse up event
+ * @param {Object} evt
+ */
 function handleMouseUp(evt) {
     if (!gameStart || player.isDead) return;
 
@@ -554,6 +619,9 @@ function handleMouseUp(evt) {
     }
 }
 
+/**
+ * Handle keys down
+ */
 function handleKeysDown() {
     for ( let key in KeysDown ) {
         if (KeysDown[key]) {
@@ -562,16 +630,24 @@ function handleKeysDown() {
     }
 }
 
+/**
+ * Key down mapping for player controls
+ * @param {string} key
+ */
 function keyDown( key ) {
     if ( key === 'w' && !config.AUTO_RUN_ENABLED) {
         player.moveForward(camera);
     }
     else if ( key === 's' ) {
-        // TODO: refactor this to player.stop() based on autorun value
+        // TODO: refactor this to player.stop() based on auto run value
         player.moveBackward(camera);
     }
 }
 
+/**
+ * Key just pressed mapping for player controls
+ * @param {string} key
+ */
 function keyJustPressed(key) {
     if ( key === 'w' && config.AUTO_RUN_ENABLED) {
         if (player.isSpeedBoostReady()) {
@@ -580,6 +656,10 @@ function keyJustPressed(key) {
     }
 }
 
+/**
+ * Key released mapping for player controls
+ * @param {string} key
+ */
 function keyReleased(key) {
     // console.log('key ' + key + ' released');
     if (key === 'w' && config.AUTO_RUN_ENABLED) {
@@ -590,6 +670,11 @@ function keyReleased(key) {
     }
 }
 
+/**
+ * Completely remove a player from the game both their model and view
+ * @param {number} playerId
+ * @param {number} time
+ */
 function removePlayerFromGame(playerId, time) {
     let deadPlayer = ZOR.Game.players[playerId];
 
@@ -617,6 +702,11 @@ function removePlayerFromGame(playerId, time) {
     }, time);
 }
 
+/**
+ * Handle the server tick slow this includes leaders update and other housekeeping
+ * It gets called every config.TICK_SLOW_INTERVAL milliseconds
+ * @param {Object} serverTickData
+ */
 function handleServerTick(serverTickData) {
     if (!gameStart) return;
 
@@ -665,6 +755,10 @@ function handleServerTick(serverTickData) {
     ZOR.expireLocks();
 }
 
+/**
+ * Updates the leaderboard UI
+ * @param {Object} leaderboards
+ */
 function handleLeaderboardUpdate(leaderboards) {
     console.log('Updating leaderboards');
     ZOR.UI.engine.set('leaderboard.data', leaderboards);
@@ -689,10 +783,10 @@ function handleSuccessfulPlayerCapture(capturedPlayerID) {
 }
 
 /**
- * A player captured another player.  Current playre not involved.
+ * A player captured another player.  Current player not involved.
  * @param {number} capturedPlayerID
  */
-function handleOtherPlayercapture(capturedPlayerID) {
+function handleOtherPlayerCapture(capturedPlayerID) {
     let sound = ZOR.Sounds.sfx.player_capture;
     let capturedPlayer = ZOR.Game.players[capturedPlayerID];
     let windDownTime = 0;
@@ -709,6 +803,10 @@ function handleOtherPlayercapture(capturedPlayerID) {
     removePlayerFromGame(capturedPlayerID, windDownTime);
 }
 
+/**
+ * Handle GAME OVER for the current player
+ * @param {Object} msg
+ */
 function handleDeath(msg) {
     let attackingPlayerId = msg.attacking_player_id;
 
@@ -721,7 +819,7 @@ function handleDeath(msg) {
     let attackingActor = zorbioModel.getActorById(attackingPlayer.sphere.id);
     attackingPlayer.size = config.GET_PADDED_INT(attackingActor.scale);
 
-    // Set finaly data about the player from the server
+    // Set finally data about the player from the server
     let playerStats = {
         drainAmount   : msg.drain_ammount,
         foodCaptures  : msg.food_captures,
@@ -738,6 +836,10 @@ function handleDeath(msg) {
     ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
 }
 
+/**
+ * Handle kicking a player from the game
+ * @param {string} reason
+ */
 function handlePlayerKick(reason) {
     setDeadState();
 
@@ -749,12 +851,18 @@ function handlePlayerKick(reason) {
     console.log('you were kicked: ', reason);
 }
 
+/**
+ * Sets the state on the current player to dead
+ */
 function setDeadState() {
     player.beingCaptured = false;
     player.isDead = true;
     KeysDown = {};
 }
 
+/**
+ * Sends performance metrics like fps and ping to Google Analytics
+ */
 function gaPerformanceMetrics() {
     if (gameStart && !player.isDead) {
         let ping = player.model.ping_metric.mean;

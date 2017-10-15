@@ -44,6 +44,9 @@ setInterval(function() {
     }
 }, 16);
 
+/**
+ * send a player update to the server
+ */
 function sendPlayerUpdate() {
     if (!global.gameStart) return;
 
@@ -57,7 +60,9 @@ function sendPlayerUpdate() {
 
 let throttledPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
 
-
+/**
+ * add a recent position to the player sphere
+ */
 function addRecentPosition() {
     let p = {
         x: global.player.sphere.position.x,

@@ -4,6 +4,10 @@ const custom_dictionary = [
     'fuck', 'pussi',
 ];
 
+/**
+ * Add a new term to the bad word dictionary
+ * @param {string} term
+ */
 function add_term(term) {
     censor.dictionary.push(term);
 }

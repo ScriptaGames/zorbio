@@ -190,6 +190,11 @@ let AppServer = function(id, app, server_label, port) {
             console.error( 'WebSocket error occured for player_id', player_id, e );
         } );
 
+        /**
+         * Handle enter game message from the client this is the first message sent from
+         * a player who is connecting to the server
+         * @param {Object} msg
+         */
         function handle_enter_game(msg) {
             player_id = Zorbio.IdGenerator.get_next_id();
             type      = msg.type;
@@ -207,6 +212,10 @@ let AppServer = function(id, app, server_label, port) {
             handle_msg_respawn();
         }
 
+        /**
+         * Handle the respawn message from the client. This prepares the player object on the server
+         * but doesn't add them to the game until the player ready message is received.
+         */
         function handle_msg_respawn() {
             let position = self.model.getSafeSpawnPosition( 10 );
 
@@ -233,6 +242,10 @@ let AppServer = function(id, app, server_label, port) {
             self.log( 'User ' + currentPlayer.id + ' spawning into the game' );
         }
 
+        /**
+         * Handles the player ready message. The client is ready to go so lets add the player
+         * to the game state and the list of players. Replace any bots if needed.
+         */
         function handle_msg_player_ready() {
             self.log( 'Player ' + currentPlayer.id + ' client ready' );
 
@@ -280,6 +293,11 @@ let AppServer = function(id, app, server_label, port) {
             }
         }
 
+        /**
+         * Handle the ping message from the client. respond with pong and and records the
+         * clients ping latency to metrics.
+         * @param {Object} msg
+         */
         function handle_msg_zor_ping(msg) {
             currentPlayer.lastHeartbeat = Date.now();
 
@@ -293,6 +311,11 @@ let AppServer = function(id, app, server_label, port) {
             ws.send( JSON.stringify( { op: 'zor_pong' } ) );
         }
 
+        /**
+         * Handle the client position rapid update. A small binary message from players
+         * that is sent every frame (60Hz) with their ID and current position.
+         * @param {object} buffer
+         */
         function handle_client_position_rapid(buffer) {
             if (!config.ENABLE_RAPID_UPDATES) return;
 
@@ -310,10 +333,18 @@ let AppServer = function(id, app, server_label, port) {
             }
         }
 
+        /**
+         * Handle request for leaderboards data. Respond with recent leaderboards info.
+         */
         function handle_leaderboard_request() {
             self.sendLeaderboardsUpdate( ws );
         }
 
+        /**
+         * Handle regular player update message. This is sent every 50ms from the client,
+         * and contains their ID, position, food they've queued to eat, and recent positions.
+         * @param {object} buffer
+         */
         function handle_msg_player_update(buffer) {
             if (!currentPlayer) return;
 
@@ -386,6 +417,9 @@ let AppServer = function(id, app, server_label, port) {
             }
         }
 
+        /**
+         * Handle client closed connection
+         */
         function handle_close() {
             self.removePlayerSocket( socket_uuid );
 
@@ -414,6 +448,9 @@ let AppServer = function(id, app, server_label, port) {
             }
         }
 
+        /**
+         * Handle speed boost request form client.  Respond if valid or not.
+         */
         function handle_msg_speed_boost_start() {
             if (currentPlayer.abilities.speed_boost.activate( currentPlayer )) {
                 // Tell client to activate speed boost
@@ -421,6 +458,9 @@ let AppServer = function(id, app, server_label, port) {
             }
         }
 
+        /**
+         * Handle speed boost stop message. Deactivate ability on player.
+         */
         function handle_msg_speed_boost_stop() {
             currentPlayer.abilities.speed_boost.deactivate();
         }
@@ -858,6 +898,10 @@ let AppServer = function(id, app, server_label, port) {
         self.model.food_captured_queue      = [];
     };
 
+    /**
+     * Regularly log of server status
+     * @param {number} start
+     */
     function logServerStatus(start) {
         let tick_time   = perfNow() - start;
         let realPlayers = self.model.getRealPlayers();

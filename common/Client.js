@@ -25,7 +25,7 @@ if (NODEJS_CLIENT) {
  * @param {Object} handler
  * @constructor
  */
-ZOR.ZORClient = function ZORclient(handler) {
+ZOR.ZORClient = function ZORClient(handler) {
     this.z_zorPingDuration = -1;
     this.z_actorUpdateGap = 0;
     this.z_handler = handler;
@@ -37,7 +37,7 @@ ZOR.ZORClient = function ZORclient(handler) {
  * Connect to the game server based on config
  * @param {string} uri
  */
-ZOR.ZORClient.prototype.z_connectToServer = function ZORconnectToServer(uri) {
+ZOR.ZORClient.prototype.z_connectToServer = function ZORConnectToServer(uri) {
     let self = this;
 
     this.z_ws = new WebSocket( uri );
@@ -54,7 +54,7 @@ ZOR.ZORClient.prototype.z_connectToServer = function ZORconnectToServer(uri) {
  * Meta data, like name, skin, etc.
  * @param {Object} meta
  */
-ZOR.ZORClient.prototype.z_sendEnterGame = function ZORsendEnterGame(meta) {
+ZOR.ZORClient.prototype.z_sendEnterGame = function ZORSendEnterGame(meta) {
     if (this.z_ws.readyState === WebSocket.OPEN) {
         this.z_ws.send(JSON.stringify({
             op   : 'enter_game',
@@ -73,7 +73,7 @@ ZOR.ZORClient.prototype.z_sendEnterGame = function ZORsendEnterGame(meta) {
  * Sets up all the message and event handlers for the socket.
  * @param {Object} ws
  */
-ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
+ZOR.ZORClient.prototype.z_setupSocket = function ZORSetupSocket(ws) {
     let self = this;
 
     ws.onmessage = function wsMessage(msg) {
@@ -150,7 +150,7 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     };
 
     ws.onclose = function wsClose(e) {
-        if (e.code != config.CLOSE_NO_RESTART) {
+        if (e.code !== config.CLOSE_NO_RESTART) {
             self.z_handleNetworkTermination();
         }
         console.log('Connection closed:', e.code, e.reason);
@@ -160,11 +160,20 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
         console.error('Websocket error occured', e);
     };
 
+    /**
+     * Parses json
+     * @param {string} msg
+     * @returns {Object}
+     */
     function parseJson(msg) {
         // put in own function so we can see how long this takes in the profiler
         return JSON.parse(msg);
     }
 
+    /**
+     * Handles the init game message from the server
+     * @param {Object} msg
+     */
     function handle_msg_init_game(msg) {
         // iterate over actors and create THREE objects that don't serialize over websockets
         msg.model.actors.forEach(function eachActor(actor) {
@@ -177,6 +186,10 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
         self.z_handler.z_handle_init_game(msg.model);
     }
 
+    /**
+     * Handles the welcome message from the server
+     * @param {Object} msg
+     */
     function handle_msg_welcome(msg) {
         console.log('Welcome: ', msg.player.name);
 
@@ -185,14 +198,21 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
         ws.send(JSON.stringify({ op: 'player_ready' }));
     }
 
+    /**
+     * Handles the game setup message from the server signaling that the game is ready to start
+     */
     function handle_msg_game_setup() {
         console.log('Game setup');
         self.z_handler.z_handle_game_setup();
         self.z_setIntervalMethods();
     }
 
-    function handle_msg_player_join(message) {
-        let newPlayer = message.player;
+    /**
+     * Handle the player join message from the server
+     * @param {Object} msg
+     */
+    function handle_msg_player_join(msg) {
+        let newPlayer = msg.player;
 
         if (self.z_playerModel && (newPlayer.id === self.z_playerModel.id)) {
             return; // ignore own join message
@@ -205,16 +225,28 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
         self.z_handler.z_handle_player_join(newPlayer);
     }
 
+    /**
+     * Handle the pong response from the server
+     */
     function handle_msg_zor_pong() {
         self.z_zorPingDuration = Date.now() - self.z_zorPingStart;
 
         self.z_handler.z_handle_pong(self.z_zorPingDuration);
     }
 
+    /**
+     * Handle the client position rapid from the server.  This is a small binary message that just contains
+     * the player_id, position, and scale.  That can be sent every frame.  Currently disabled.
+     * @param {Float32Array} messageView
+     */
     function handle_msg_client_position_rapid(messageView) {
         self.z_handler.z_handle_client_position_rapid(messageView);
     }
 
+    /**
+     * Handles the actor update message
+     * @param {Object} msg
+     */
     function handle_msg_actor_updates(msg) {
         if (self.z_playerModel) {
             // Record gap since last actor update was received
@@ -226,19 +258,35 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
         self.z_handler.z_handle_actor_updates(msg.actors);
     }
 
+    /**
+     * Handles the captured player message
+     * @param {Object} msg
+     */
     function handle_msg_captured_player(msg) {
         self.z_handler.z_handle_captured_player(msg.targetPlayerId);
     }
 
+    /**
+     * Handles the you died message
+     * @param {Object} msg
+     */
     function handle_msg_you_died(msg) {
         self.z_handler.z_handle_you_died(msg);
         self.z_clearIntervalMethods();
     }
 
+    /**
+     * Handles the leaderboard update message
+     * @param {Object} msg
+     */
     function handle_msg_leaderboard_update(msg) {
         self.z_handler.z_handle_leaderboard_update(msg);
     }
 
+    /**
+     * Handle the player died message.  This means other player died not current player.
+     * @param {Object} msg
+     */
     function handle_msg_player_died(msg) {
         let attackingPlayerId = msg.attackingPlayerId;
         let targetPlayerId = msg.targetPlayerId;
@@ -249,28 +297,51 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
         }
     }
 
+    /**
+     * Handle server tick slow
+     * @param {Object} msg
+     */
     function handle_msg_server_tick_slow(msg) {
         if (!gameStart) return;
 
         self.z_handler.z_handle_server_tick(msg.tick_data);
     }
 
+    /**
+     * Handle kick message
+     * @param {Object} msg
+     */
     function handle_msg_kick(msg) {
         self.z_handler.z_handle_kick(msg.reason);
     }
 
+    /**
+     * Handle remove player message
+     * @param {Object} msg
+     */
     function handle_msg_remove_player(msg) {
         self.z_handler.z_handle_remove_player(msg.playerId);
     }
 
+    /**
+     * Handle speeding warning message
+     */
     function handle_msg_speeding_warning() {
         console.log('WARNING! You are speeding!');
     }
 
+    /**
+     * Handle speed boost response message from the server.  Signaling that a speed boost request is valid and should
+     * start.
+     * @param {Object} msg
+     */
     function handle_msg_speed_boost_res(msg) {
         self.z_handler.handle_speed_boost_res(msg.is_valid);
     }
 
+    /**
+     * Handle speed boost stop message. Server says stop speed boosting now!
+     */
     function handle_msg_speed_boost_stop() {
         console.log('Received speed boost STOP');
         self.z_handler.z_handle_speed_boost_stop();
@@ -278,12 +349,12 @@ ZOR.ZORClient.prototype.z_setupSocket = function ZORsetupSocket(ws) {
     }
 };
 
-ZOR.ZORClient.prototype.z_handleNetworkTermination = function ZORhandleNetworkTermination() {
+ZOR.ZORClient.prototype.z_handleNetworkTermination = function ZORHandleNetworkTermination() {
     this.z_clearIntervalMethods();
     this.z_handler.z_handleNetworkTermination();
 };
 
-ZOR.ZORClient.prototype.z_sendRespawn = function ZORsendRespawn() {
+ZOR.ZORClient.prototype.z_sendRespawn = function ZORSendRespawn() {
     gameStart = false;
     this.z_ws.send(JSON.stringify({ op: 'respawn' }));
 };
@@ -297,7 +368,7 @@ ZOR.ZORClient.prototype.z_sendPing = function sendPing() {
 };
 
 
-ZOR.ZORClient.prototype.z_setIntervalMethods = function ZORsetIntervalMethods() {
+ZOR.ZORClient.prototype.z_setIntervalMethods = function ZORSetIntervalMethods() {
     let self = this;
 
     // start sending heartbeat
@@ -307,7 +378,7 @@ ZOR.ZORClient.prototype.z_setIntervalMethods = function ZORsetIntervalMethods() 
 };
 
 
-ZOR.ZORClient.prototype.z_sendPlayerUpdate = function ZORsendPlayerUpdate(playerSphere, food_capture_queue) {
+ZOR.ZORClient.prototype.z_sendPlayerUpdate = function ZORSendPlayerUpdate(playerSphere, food_capture_queue) {
     // save metrics
     let nowTime = Date.now();
     let gap = nowTime - this.z_playerModel.pp_send_metric.last_time;
@@ -334,7 +405,7 @@ ZOR.ZORClient.prototype.z_sendPlayerUpdate = function ZORsendPlayerUpdate(player
     this.z_ws.send(ZOR.Schemas.playerUdateSchema.encode(playerUpdateMessage));
 };
 
-ZOR.ZORClient.prototype.z_sendClientPositionRapid = function ZORsendClientPositionRapid(actor_id, position) {
+ZOR.ZORClient.prototype.z_sendClientPositionRapid = function ZORSendClientPositionRapid(actor_id, position) {
     if (!config.ENABLE_RAPID_UPDATES) return;
 
     // first byte op code
@@ -351,18 +422,18 @@ ZOR.ZORClient.prototype.z_sendClientPositionRapid = function ZORsendClientPositi
     this.z_ws.send(this.z_rapidSendBuffer);
 };
 
-ZOR.ZORClient.prototype.z_sendSpeedBoostStart = function ZORsendSpeedBoostStart() {
+ZOR.ZORClient.prototype.z_sendSpeedBoostStart = function ZORSendSpeedBoostStart() {
     this.z_ws.send(JSON.stringify({ op: 'speed_boost_start' }));
 };
 
-ZOR.ZORClient.prototype.z_sendSpeedBoostStop = function ZORsendSpeedBoostStop() {
+ZOR.ZORClient.prototype.z_sendSpeedBoostStop = function ZORSendSpeedBoostStop() {
     this.z_ws.send(JSON.stringify({ op: 'speed_boost_stop' }));
 };
 
 /**
  * Request the leaderboards from the server.
  */
-ZOR.ZORClient.prototype.z_sendLeaderboardsRequest = function ZORsendLeaderboardsRequest() {
+ZOR.ZORClient.prototype.z_sendLeaderboardsRequest = function ZORSendLeaderboardsRequest() {
     let msg = {
         0: ZOR.Schemas.ops.LEADERBOARDS_REQUEST,
     };
@@ -370,7 +441,7 @@ ZOR.ZORClient.prototype.z_sendLeaderboardsRequest = function ZORsendLeaderboards
     this.z_ws.send(ZOR.Schemas.leaderboardRequestSchema.encode(msg));
 };
 
-ZOR.ZORClient.prototype.z_clearIntervalMethods = function ZORclearIntervalMethods() {
+ZOR.ZORClient.prototype.z_clearIntervalMethods = function ZORClearIntervalMethods() {
     clearInterval(this.z_interval_id_heartbeat);
 };
 

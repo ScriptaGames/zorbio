@@ -745,6 +745,10 @@ ZOR.expireLocks = function ZORExpireLocks() {
 ZOR.IdGenerator = function ZORIdGenerator() {
     let next_id = 0;
 
+    /**
+     * Returns the next id in sequence
+     * @returns {number}
+     */
     function get_next_id() {
         return ++next_id;
     }

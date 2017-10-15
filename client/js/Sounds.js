@@ -9,8 +9,12 @@ global _:true
 */
 
 ZOR.Sounds = (function ZORSounds() {
-    // A simple helper function to avoid repetition when creating Howl objects
-    // for our sfx
+    /**
+     * A simple helper function to avoid repetition when creating Howl objects for our sfx
+     * @param {string} path
+     * @param {Object} custom
+     * @returns {Howl}
+     */
     function howlSfx(path, custom) {
         let conf = _.assign({
             src     : ['../sfx/' + path],
@@ -23,8 +27,12 @@ ZOR.Sounds = (function ZORSounds() {
         return new Howl(conf);
     }
 
-    // A simple helper function for creating Wad sounds.  If Web Audio API
-    // isn't supported, returns a mock object which plays no sounds.
+    /**
+     * A simple helper function for creating Wad sounds.  If Web Audio API
+     * isn't supported, returns a mock object which plays no sounds.
+     * @param {Object} settings
+     * @returns {Object}
+     */
     function wadSfx(settings) {
         if (Modernizr.webaudio) {
             return new Wad(settings);
@@ -80,7 +88,7 @@ ZOR.Sounds = (function ZORSounds() {
             // }),
 
             // a chime sound for food capture
-            food_capture: howlSfx('veus/Effects/LowPitchLazer.ogg.mp3'),
+            food_capture: howlSfx('veus/Effects/LowPitchLazer.ogg.mp3', {}),
             woosh       : wadSfx({
                 source: 'noise',
                 volume: 0.35,
@@ -97,8 +105,8 @@ ZOR.Sounds = (function ZORSounds() {
                     q        : 1.0,
                 },
             }),
-            state_change  : howlSfx('food_capture/D3.mp3'),
-            player_capture: howlSfx('veus/Effects/LowPitchDrop.ogg.mp3'),
+            state_change  : howlSfx('food_capture/D3.mp3', {}),
+            player_capture: howlSfx('veus/Effects/LowPitchDrop.ogg.mp3', {}),
         },
         playFromPos: function ZORSoundsPlayFromPos(sound, earObject, soundPos) {
             let dist = earObject.position.distanceTo(soundPos);
@@ -112,6 +120,9 @@ ZOR.Sounds = (function ZORSounds() {
         sounds.music = {};
     }
 
+    /**
+     * Initialize sound fx hacks to deal with weird problems
+     */
     function initSfxHacks() {
         // The Howler sfx seem to be delayed and sound glitchy the first time
         // they're played.  This function attempts to fix that by playing them

@@ -11,10 +11,17 @@ ZOR.LagScale = function ZORLagScale() {
     let scale = 1;
     let fps   = IDEAL_FRAME_MS / 1000;
 
+    /**
+     * Wraps Date.now()
+     * @returns {number}
+     */
     function get_time() {
         return Date.now();
     }
 
+    /**
+     * Keeps a running average of the players fps
+     */
     function update() {
         if (config.LAG_SCALE_ENABLE) {
             let new_time = get_time();
@@ -26,10 +33,18 @@ ZOR.LagScale = function ZORLagScale() {
         }
     }
 
+    /**
+     * Getter for scale
+     * @returns {number}
+     */
     function get() {
         return scale;
     }
 
+    /**
+     * Getter for fps
+     * @returns {number}
+     */
     function get_fps() {
         return fps;
     }
