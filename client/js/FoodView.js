@@ -7,14 +7,23 @@ global THREE:true
 global _:true
 */
 
-/**
- * Thew View part of Food MVC
- * @constructor
- */
-ZOR.FoodView = function ZORFoodView() {
-    this.initialized = false;
+ZOR.FoodView = class ZORFoodView {
+    /**
+     * Thew View part of Food MVC
+     * @constructor
+     */
+    constructor() {
+        this.initialized = false;
+    }
 
-    this.drawFood = function ZORFoodViewDrawFood(scene, food, foodCount, fogCenterPosition, octree) {
+    /**
+     * @param {Object} scene the three.js scene
+     * @param {Array} food the food positions
+     * @param {Number} foodCount how many pieces of food there are
+     * @param {Object} fogCenterPosition the player's position, used for fog dimming
+     * @param {Object} octree an octree for efficient food collision testing
+     */
+    drawFood(scene, food, foodCount, fogCenterPosition, octree) {
         this.translate = new Float32Array( foodCount * 3 );
         this.colors = new Float32Array( foodCount * 3 );
         this.respawning = new Float32Array( foodCount );
@@ -95,16 +104,19 @@ ZOR.FoodView = function ZORFoodView() {
         scene.add( this.mesh );
 
         this.initialized = true;
-    };
+    }
 
-    this.update = function ZORFoodViewUpdate() {
+    /**
+     * Update tick for food.
+     */
+    update() {
         // Decrement each food value
 
         let c = this.respawning; // c = collection
         let i = c.length;        // i = index
         let v;                   // v = value
         let duration = config.FOOD_RESPAWN_ANIM_DURATION;
-        let lsGet = ZOR.LagScale.get;
+        let lsGet = ZOR.LagScale.get.bind(ZOR.LagScale);
 
         while ( i-- ) {
             v = c[i];
@@ -115,39 +127,39 @@ ZOR.FoodView = function ZORFoodView() {
         }
 
         this.mesh.geometry.attributes.respawning.needsUpdate = true;
-    };
+    }
 
     /**
      * Checks if a food index is alive and can be eaten
      * @param {number} fi
      * @returns {boolean}
      */
-    this.aliveFood = function ZORFoodViewAliveFood(fi) {
+    aliveFood(fi) {
         return this.respawning[fi] === 0;
-    };
+    }
 
     /**
      * Hide the food at the index.
      * @param {number} fi
      */
-    this.hideFood = function ZORFoodViewHideFood(fi) {
+    hideFood(fi) {
         this.respawning[fi] = config.FOOD_RESPAWN_ANIM_DURATION + 1; // hide food
-    };
+    }
 
 
     /**
      * Show the food at the index
      * @param {number} fi
      */
-    this.showFood = function ZORFoodViewShowFood(fi) {
+    showFood(fi) {
         this.respawning[fi] = config.FOOD_RESPAWN_ANIM_DURATION;
-    };
+    }
 
     /**
      * Hide multiple foods
      * @param {Object[]} foodToHide
      */
-    this.hideFoodMultiple = function ZORFoodViewHideFoodMultiple(foodToHide) {
+    hideFoodMultiple(foodToHide) {
         _.each( foodToHide, this.hideFood.bind(this) );
-    };
+    }
 };
