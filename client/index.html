@@ -115,10 +115,13 @@
         </div>
 
         <!-- FIRST PARTY -->
+        <script>
+            // Initialize the global ZOR object before any first party scripts This is the only 'var' in the code
+            // And was moved here so eslint doesn't error on it.
+            // This must be outside <div id="first_party"> in order for the build to work
+            var ZOR = {};
+        </script>
         <div id="first_party">
-            <script>
-                var ZOR = {}; // Initialize the global ZOR object before any first party scripts
-            </script>
             <script src="skins/default/default.js"></script>
             <script src="skins/earth/earth.js"></script>
             <script src="skins/boing/boing.js"></script>

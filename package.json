@@ -12,8 +12,8 @@
     "css": "./node_modules/.bin/lessc client/css/main.less client/css/main.css && node_modules/postcss-cli/bin/postcss --use autoprefixer -r client/css/main.css",
     "build": "bash build.sh",
     "build-upload": "bash build.sh --upload",
-    "uglify-theirs": "uglifyjs -o client/js/third.min.js",
-    "uglify-ours": "uglifyjs -o client/js/first.min.js --wrap ZOR -m -c --mangle-props mangle-regex=\"/^z_|^ZOR/\"",
+    "uglify-theirs": "./node_modules/.bin/uglifyjs -o client/js/third.min.js",
+    "uglify-ours": "./node_modules/.bin/uglifyjs -o client/js/first.min.js --wrap ZOR -m -c --mangle-props regex=\"/^z_|^ZOR/\"",
     "eslint": "./node_modules/.bin/eslint server client/js client/skins common tests/*.js"
   },
   "author": "Scripta Games, Inc.",
@@ -60,6 +60,6 @@
     "node-inspector": "1.1.1",
     "postcss-cli": "4.1.0",
     "supervisor": "0.12.0",
-    "uglify-js": "3.0.20"
+    "uglify-es": "3.1.3"
   }
 }
