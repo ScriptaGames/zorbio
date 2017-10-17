@@ -101,7 +101,7 @@ ZOR.UI = function ZORUI() {
         MAX_PLAYER_RADIUS: config.MAX_PLAYER_RADIUS,
         CAMERA_ZOOM_STEPS: _(config.CAMERA_ZOOM_STEPS).map('min').tail().value(),
         AUTHORS          : ['Michael Clayton', 'Jared Sprague'],
-        skins            : _(ZOR.PlayerSkins).map(_.partial(_.pick, _, 'meta')).sortBy('meta.sort').value(), // get the meta for every skin and sort them
+        skins            : _.sortBy(ZOR.SkinCatalog, 'sort'), // Sorted skin catalog array
         selected_skin    : localStorage.skin || 'default',
         leaders          : [],
         leaderboard      : {
@@ -340,7 +340,7 @@ ZOR.UI = function ZORUI() {
         let i = uidata.skins.length;
         while (i--) {
             let skin = uidata.skins[i];
-            if (skin.meta.unlock_url && skin.meta.unlock_url !== window.location.search) {
+            if (skin.unlock_url && skin.unlock_url !== window.location.search) {
                 uidata.skins.splice(i, 1);
             }
         }

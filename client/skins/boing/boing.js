@@ -81,9 +81,3 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
     };
 };
 
-ZOR.PlayerSkins.boing.meta = {
-    friendly_name: 'Boing',
-    name         : 'boing',
-    preview      : 'skins/boing/thumb.jpg',
-    sort         : 3,
-};

@@ -83,8 +83,8 @@
 
         <!-- SKINS -->
 
-        <script src="skins/standard/sphere.vert" id="skin-earth-vertex-shader" type="x-shader/x-vertex"></script>
-        <script src="skins/standard/sphere.frag" id="skin-earth-fragment-shader" type="x-shader/x-fragment"></script>
+        <script src="skins/standard/sphere.vert" id="skin-standard-vertex-shader" type="x-shader/x-vertex"></script>
+        <script src="skins/standard/sphere.frag" id="skin-standard-fragment-shader" type="x-shader/x-fragment"></script>
         <script src="skins/default/sphere.vert" id="skin-default-vertex-shader"   type="x-shader/x-vertex"></script>
         <script src="skins/default/sphere.frag" id="skin-default-fragment-shader" type="x-shader/x-fragment"></script>
         <script src="skins/boing/sphere.vert" id="skin-boing-vertex-shader"   type="x-shader/x-vertex"></script>
@@ -122,10 +122,12 @@
             var ZOR = {};
         </script>
         <div id="first_party">
+            <script src="js/ParticleFx.js"></script>
             <script src="skins/default/default.js"></script>
-            <script src="skins/standard/earth.js"></script>
+            <script src="skins/standard/standard.js"></script>
             <script src="skins/boing/boing.js"></script>
-            <script src="skins/reddit/reddit.js"></script>
+            <script src="lib/SkinCatalog.js"></script>
+            <script src="js/SkinFactory.js"></script>
             <script src="lib/environment.js"></script>
             <script src="js/ObjectPool.js"></script>
             <script src="js/config.js"></script>

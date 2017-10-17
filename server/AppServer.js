@@ -13,6 +13,7 @@ let uuid          = require( 'node-uuid' );
 let cookie        = require( 'cookie' );
 let Backend       = require( './Backend.js' );
 let _             = require( 'lodash' );
+let SkinCatalog   = require( '../common/SkinCatalog' );
 
 /**
  * This module contains all of the app logic and state
@@ -200,7 +201,7 @@ let AppServer = function(id, app, server_label, port) {
             type      = msg.type;
             name      = msg.name;
             color     = msg.color;
-            skin      = config.SKINS[msg.skin] ? msg.skin : 'default';  // validate skin name
+            skin      = SkinCatalog[msg.skin] ? msg.skin : 'default';  // validate skin name
             key       = msg.key;
 
             // Sanitize player name

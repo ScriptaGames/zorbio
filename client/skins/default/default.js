@@ -4,13 +4,17 @@ global config:true
 global ZOR:true
 global THREE:true
 global playerFogCenter:true
-global SPE:true
 */
 
 ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 
 ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
     const color = new THREE.Color(playerView.playerColor);
+
+    const captureParticles = ZOR.ParticleFx['bubbles'];
+
+    // customize bubble capture particles based on skin primary color
+    captureParticles.emitter.color.value = [color];
 
     return {
         poolname: 'spheres',
@@ -44,48 +48,7 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
             ],
             color: color,
         },
-        capture: {
-            customScale: 1.0,
-            group      : {
-                scale           : Math.max(window.innerWidth, window.innerHeight),
-                maxParticleCount: 1000,
-                texture         : {
-                    value: new THREE.TextureLoader().load( 'skins/default/trail.png' ),
-                },
-                blending: THREE.AdditiveBlending,
-            },
-            emitter: {
-                type    : SPE.distributions.SPHERE,
-                position: {
-                    spread: new THREE.Vector3( 5 ),
-                    radius: 10,
-                },
-                velocity: {
-                    spread: new THREE.Vector3( 100 ),
-                },
-                size: {
-                    value: [60, 0],
-                },
-                opacity: {
-                    value: [1, 0],
-                },
-                color: {
-                    value: [color],
-                },
-                particleCount: 70,
-                alive        : false,
-                duration     : 0.05,
-                maxAge       : {
-                    value: 1,
-                },
-            },
-        },
+        capture: captureParticles,
     };
 };
 
-ZOR.PlayerSkins.default.meta = {
-    friendly_name: 'Smooth Shade',
-    name         : 'default',
-    preview      : 'skins/default/thumb.jpg',
-    sort         : 1,
-};

@@ -25,7 +25,7 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
     this.scene = scene;
     this.is_current_player = current || false;
     this.playerColor = config.COLORS[model.sphere.color];
-    this.skinName = model.sphere.skin;
+    this.skinName = model.sphere.skin || 'default';
 
     this.clock = new THREE.Clock();
 
@@ -35,7 +35,7 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 
     this.cameraMinDistance = config.GET_CAMERA_MIN_DISTANCE(model.sphere.scale);
 
-    this.skin = ZOR.PlayerSkins[this.skinName || 'default'](this);
+    this.skin = ZOR.SkinFactory.createSkin(this.skinName, this);
 
     playerFogCenter.copy(model.sphere.position);
 
