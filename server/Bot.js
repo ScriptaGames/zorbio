@@ -1,19 +1,24 @@
-let config   = require('../common/config.js');
-let Zorbio   = require('../common/zorbio.js');
-let UTIL     = require('../common/util.js');
-let _        = require('lodash');
-let datasets = require('datasets');
-let THREE    = require('three');
+let config      = require('../common/config.js');
+let Zorbio      = require('../common/zorbio.js');
+let UTIL        = require('../common/util.js');
+let _           = require('lodash');
+let datasets    = require('datasets');
+let THREE       = require('three');
+let SkinCatalog = require( '../common/SkinCatalog' );
 
 let Bot = function(scale, model) {
     //  Scope
     let self = this;
     self.model = model;
 
+    // Array of skins in the catalog
+    let skins = _.filter( _.values(SkinCatalog), function(o) {
+        return !o.unlock_url;  // Don't include hidden skins that have an unlock_url defined
+    });
+
     // initialized player properties
     self.colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
-    let skin_distribution = ['earth', 'boing', 'default', 'default', 'jupiter'];
-    self.skin_name = skin_distribution[UTIL.getRandomIntInclusive(0, skin_distribution.length - 1)];
+    self.skin_name = skins[UTIL.getRandomIntInclusive(0, skins.length - 1)].name;
     self.id = Zorbio.IdGenerator.get_next_id();
     self.name = 'AI ' + _.sample(Bot.prototype.names);
     self.scale = scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);
