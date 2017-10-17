@@ -35,6 +35,18 @@ ZOR.SkinCatalog = {
         texture      : 'skins/images/jupiter_texture.jpg',
         sort         : 3,
     },
+    kitten: {
+        name         : 'kitten',
+        type         : 'standard',
+        friendly_name: 'Cute Kitten',
+        color        : '#FFFFFF',
+        trail        : 'particle',
+        capture      : 'bubbles',
+        preview      : 'skins/images/kitten_thumb.png',
+        texture      : 'skins/images/kitten_texture.png',
+        unlock_url   : '?kitten',
+        sort         : 3,
+    },
     boing: {
         friendly_name: 'Boing',
         type         : 'custom',
