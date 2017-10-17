@@ -12,7 +12,7 @@ ZOR.TrailTemplates = {
                 group: {
                     scale  : Math.max(window.innerWidth, window.innerHeight),
                     texture: {
-                        value: new THREE.TextureLoader().load( 'skins/standard/trail.png' ),
+                        value: new THREE.TextureLoader().load( 'skins/images/smoke_particle.png' ),
                     },
                     maxParticleCount: 800,
                 },

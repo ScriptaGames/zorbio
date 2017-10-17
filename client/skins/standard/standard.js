@@ -9,9 +9,8 @@ global playerFogCenter:true
 ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 
 ZOR.PlayerSkins.standard = function ZORStandardSkin(playerView, metaData) {
-    const opacity   = playerView.is_current_player ? 0.2 : 0.6;
-    const color     = metaData.color;
-
+    const opacity = playerView.is_current_player ? 0.2 : 0.6;
+    const color   = metaData.color;
     const trail   = ZOR.TrailTemplates.getTrail( metaData.trail, { color: color, opacity: opacity } );
     const capture = ZOR.ParticleTemplates.getParticleEffect( metaData.capture, { color: color } );
 

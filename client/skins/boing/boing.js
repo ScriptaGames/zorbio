@@ -37,7 +37,7 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
                 scale           : Math.max(window.innerWidth, window.innerHeight),
                 maxParticleCount: 1000,
                 texture         : {
-                    value: new THREE.TextureLoader().load( 'skins/boing/trail.png' ),
+                    value: new THREE.TextureLoader().load( 'skins/boing/particle.png' ),
                 },
                 blending: THREE.AdditiveBlending,
             },
