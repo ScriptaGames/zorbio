@@ -9,12 +9,8 @@ global playerFogCenter:true
 ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 
 ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
-    const color = new THREE.Color(playerView.playerColor);
-
-    const captureParticles = ZOR.ParticleFx['bubbles'];
-
-    // customize bubble capture particles based on skin primary color
-    captureParticles.emitter.color.value = [color];
+    const playerColor = playerView.playerColor;
+    const threeColor  = new THREE.Color(playerColor);
 
     return {
         poolname: 'spheres',
@@ -22,8 +18,8 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
             uniforms: {
                 'c'            : { type: 'f',  value: 1.41803 },
                 'p'            : { type: 'f',  value: 2.71828 },
-                'color'        : { type: 'c',  value: color },
-                'colorHSL'     : { type: 'v3', value: color.getHSL() },
+                'color'        : { type: 'c',  value: threeColor },
+                'colorHSL'     : { type: 'v3', value: threeColor.getHSL() },
                 'spherePos'    : { type: 'v3', value: playerView.model.sphere.position },
                 'mainSpherePos': { type: 'v3', value: playerFogCenter },
                 'FOG_FAR'      : { type: 'f',  value: config.FOG_FAR },
@@ -36,19 +32,8 @@ ZOR.PlayerSkins.default = function ZORDefaultSkin(playerView) {
         behavior: {
             faceCamera: false, // should OTHER player's spheres face the camera?
         },
-        trail: {
-            type       : 'line',
-            customScale: 1.0,
-            lineWidth  : function lineWidth( p ) {
-                return p;
-            },
-            origins: [
-                new THREE.Vector3(0.9, 0, 0),
-                new THREE.Vector3(-0.9, 0, 0),
-            ],
-            color: color,
-        },
-        capture: captureParticles,
+        trail  : ZOR.TrailTemplates.getTrail( 'line', { color: playerColor } ),
+        capture: ZOR.ParticleTemplates.getParticleEffect( 'bubbles', { color: playerColor } ),
     };
 };
 

@@ -62,7 +62,7 @@ ZOR.SkinCatalog = {
         trail        : 'line',
         capture      : 'fiery_explosion',
         preview      : 'skins/images/reddit_thumb.png',
-        texture      : 'skins/images/reddit_texture.png',
+        texture      : 'skins/images/reddit_texture.jpg',
         unlock_url   : '?reddit',
         sort         : 0,
     },

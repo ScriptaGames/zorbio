@@ -10,7 +10,7 @@ global SPE:true
 ZOR.PlayerSkins = ZOR.PlayerSkins || {};
 
 ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
-    const color = new THREE.Color('#D71C26');
+    const color = '#D71C26';
 
     return {
         poolname: 'lowPolySpheres',
@@ -30,18 +30,7 @@ ZOR.PlayerSkins.boing = function ZORBoingSkin(playerView) {
         }),
         behavior: {
         },
-        trail: {
-            type       : 'line',
-            customScale: 1.0,
-            lineWidth  : function lineWidth( p ) {
-                return p;
-            },
-            origins: [
-                new THREE.Vector3(0.9, 0, 0),
-                new THREE.Vector3(-0.9, 0, 0),
-            ],
-            color: color,
-        },
+        trail  : ZOR.TrailTemplates.getTrail( 'line', { color: color } ),
         capture: {
             customScale: 1.0,
             group      : {
