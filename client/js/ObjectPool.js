@@ -12,73 +12,79 @@ global ZOR:true
  * @param {function} create a function which creates and returns an object to place in the pool
  * @param {*} args
  */
-ZOR.ObjectPool = function ZORObjectPool(create, ...args) {
-    this._create    = create;
-    this._args      = args;
-    this._pool      = [];
-    this._available = [];
-    this._i         = -1;
-};
-
-/**
- * Borrow an object from the pool.
- * @returns {object} an object from the pool, or undefined if none are available
- */
-ZOR.ObjectPool.prototype.borrow = function ZORObjectPoolBorrow() {
-    this._updateNextAvailable();
-    if (this._dry()) {
-        // console.log('full, adding');
-        this._add();
+ZOR.ObjectPool = class ZORObjectPool {
+    /**
+     * @constructor
+     * @param {Function} create a factory function for creating objects
+     * @param {...*} args arguments that should be passed into the create function
+     */
+    constructor(create, ...args) {
+        this._create    = create;
+        this._args      = args;
+        this._pool      = [];
+        this._available = [];
+        this._i         = -1;
     }
-    this._available[this._i] = 0;
-    return this._pool[this._i];
-};
 
-/**
- * Return an object to the pool.
- * @param {object} obj the object to return to the pool
- */
-ZOR.ObjectPool.prototype.return = function ZORObjectPoolReturn(obj) {
-    // console.log('returning object: ' + obj);
-    this._available[obj._pool_index] = 1;
-    this._updateNextAvailable(obj._pool_index);
-};
+    /**
+     * Borrow an object from the pool.
+     * @returns {object} an object from the pool, or undefined if none are available
+     */
+    borrow() {
+        this._updateNextAvailable();
+        if (this._dry()) {
+            // console.log('full, adding');
+            this._add();
+        }
+        this._available[this._i] = 0;
+        return this._pool[this._i];
+    }
 
-/**
- * Add a new object to the end of the pool.
- */
-ZOR.ObjectPool.prototype._add = function ZORObjectPoolAdd() {
-    let i = this._pool.length;
-    this._pool.push(this._create.apply({}, this._args));
-    this._pool[i]._pool_index = i;
-    this._available.push(1);
-    this._updateNextAvailable(i);
-};
+    /**
+     * Return an object to the pool.
+     * @param {object} obj the object to return to the pool
+     */
+    return(obj) {
+        // console.log('returning object: ' + obj);
+        this._available[obj._pool_index] = 1;
+        this._updateNextAvailable(obj._pool_index);
+    }
 
-/**
- * Find out if the object pool is dry (all instantiated objects are claimed).
- *
- * @return {boolean} true if all objects are claimed, false otherwise
- */
-ZOR.ObjectPool.prototype._dry = function ZORObjectPoolDry() {
-    return this._i === -1;
-};
+    /**
+     * Add a new object to the end of the pool.
+     */
+    _add() {
+        let i = this._pool.length;
+        this._pool.push(this._create.apply({}, this._args));
+        this._pool[i]._pool_index = i;
+        this._available.push(1);
+        this._updateNextAvailable(i);
+    }
 
-/**
- * Returns the index of the next available object.
- * @return {number} the index of the next available object.
- */
-ZOR.ObjectPool.prototype._nextAvailable = function ZORObjectPoolNextAvailable() {
-    return this._available.indexOf(1);
-};
+    /**
+     * Find out if the object pool is dry (all instantiated objects are claimed).
+     *
+     * @return {boolean} true if all objects are claimed, false otherwise
+     */
+    _dry() {
+        return this._i === -1;
+    }
 
-/**
- * Updates the internal reference to the next available index.
- * @param {number} [i] optionally provide a known index of an available object.
- * If not provided, one will be searched for.
- */
-ZOR.ObjectPool.prototype._updateNextAvailable = function ZORObjectPoolUpdateNextAvailable(i) {
-    this._i = i || this._nextAvailable();
-    // console.log('next available is ' + this._i);
-};
+    /**
+     * Returns the index of the next available object.
+     * @return {number} the index of the next available object.
+     */
+    _nextAvailable() {
+        return this._available.indexOf(1);
+    }
 
+    /**
+     * Updates the internal reference to the next available index.
+     * @param {number} [i] optionally provide a known index of an available object.
+     * If not provided, one will be searched for.
+     */
+    _updateNextAvailable(i) {
+        this._i = i || this._nextAvailable();
+        // console.log('next available is ' + this._i);
+    }
+}
