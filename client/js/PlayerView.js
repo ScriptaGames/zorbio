@@ -389,16 +389,16 @@ ZOR.PlayerView.prototype.removeCaptureParticles = function ZORPlayerViewRemoveCa
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove() {
     this.removeTrail();
     this.removeCaptureParticles();
-    ZOR.Pools.drainViews.return(this.drainView);
+    ZOR.Pools.drainViews.returnObj(this.drainView);
     if (this.dangerView) {
-        ZOR.Pools.dangerViews.return(this.dangerView);
+        ZOR.Pools.dangerViews.returnObj(this.dangerView);
         this.dangerView.dispose(this.scene);
         this.dangerView = undefined;
     }
     this.drainView.dispose(this.scene);
     this.drainView = undefined;
 
-    this.spherePool.return(this.mainSphere);
+    this.spherePool.returnObj(this.mainSphere);
 
     UTIL.threeFree(this.scene, this.mainSphere);
     this.mainSphere = undefined;

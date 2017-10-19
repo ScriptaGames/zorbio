@@ -44,7 +44,7 @@ ZOR.ObjectPool = class ZORObjectPool {
      * Return an object to the pool.
      * @param {object} obj the object to return to the pool
      */
-    return(obj) {
+    returnObj(obj) {
         // console.log('returning object: ' + obj);
         this._available[obj._pool_index] = 1;
         this._updateNextAvailable(obj._pool_index);
@@ -87,4 +87,4 @@ ZOR.ObjectPool = class ZORObjectPool {
         this._i = i || this._nextAvailable();
         // console.log('next available is ' + this._i);
     }
-}
+};

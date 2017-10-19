@@ -55,9 +55,10 @@ ZOR.FoodView = class ZORFoodView {
             Z = food[offset + 2];
 
             let color = foodCrayon( X, Y, Z );
-            R         = color.r;
-            G         = color.g;
-            B         = color.b;
+
+            R = color.r;
+            G = color.g;
+            B = color.b;
 
             respawning[i] = 0;
 
