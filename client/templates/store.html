@@ -1,7 +1,7 @@
 <div fade-in-out class="greybox">
     <ul id="skin-list">
         {{ #each skins:i }}
-        <li on-click="@this.fire( ACTIONS.SET_SKIN, skins[i].name )">
+        <li class="{{ selected_skin == skins[i].name ? 'selected-skin' : '' }}" on-click="@this.fire( ACTIONS.SET_SKIN, skins[i].name )">
             <h1>{{ skins[i].friendly_name }}</h1>
             <img src="{{ skins[i].preview }}" alt="thumbnail image for {{ skins[i].friendly_name }}">
         </li>

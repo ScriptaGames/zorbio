@@ -286,13 +286,25 @@ input:focus {
 #menu-ui-container #skin-list li {
   margin: 10px;
   font-size: 15px;
+  position: relative;
 }
 #menu-ui-container #skin-list li h1,
 #menu-ui-container #skin-list li button {
   font-size: inherit;
 }
-#menu-ui-container #skin-list li .selected {
-  background: #7e7f81;
+#menu-ui-container #skin-list li.selected-skin::before {
+  position: absolute;
+  content: 'SELECTED';
+  color: #f7f7f7;
+  background: black;
+  padding: 6px 6px 4px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  border: 1px dotted red;
 }
 #menu-ui-container #skin-list li img {
   border-radius: 50%;

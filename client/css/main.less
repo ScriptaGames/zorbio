@@ -277,11 +277,21 @@ input {
         li {
             margin: 10px;
             font-size: 0.5 * @font-size-base;
+            position: relative;
             h1, button {
                 font-size: inherit;
             }
-            .selected {
-                background: desaturate(@accent-color, 90%);
+            &.selected-skin::before {
+                position: absolute;
+                content: 'SELECTED';
+                color: @primary-color;
+                background: black;
+                padding: 6px 6px 4px;
+                font-size: 0.8rem;
+                border-radius: 4px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
             }
             img {
                 border-radius: 50%;
