@@ -10,6 +10,15 @@
     <!-- Tutorial button is broken right now, will fix! -->
     <!-- <button on-click="@this.fire( ACTIONS.SHOW_TUTORIAL )" class="secondary" id="tutorial-button">Tutorial</button> -->
 
+    <ul id="marquee">
+        {{ #each marquee_messages:i }}
+        {{ #if i === marquee_index }}
+        <!-- <li outro="fade" intro="fade: { delay: 0, duration: 618 }">{{{ marquee_messages[i] }}}</li> -->
+        <li fade-in="{delay: 700}" fade-out="">{{{ marquee_messages[i] }}}</li>
+        {{ /if }}
+        {{ /each }}
+    </ul>
+
     {{ > social }}
     {{ > ad }}
 </div>

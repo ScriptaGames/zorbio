@@ -12,7 +12,8 @@
 @primary-color: #f7f7f7;
 @secondary-color: #171717;
 @modal-background: darken(@secondary-color, 10%);
-@accent-color: #0B7BF4;
+@accent-color1: rgba(195,215,253,1);
+@accent-color2: rgba(98,134,251,1);
 
 // spacing
 
@@ -57,7 +58,7 @@ a {
     font-size: 1em;
     color: @primary-color;
     &:hover {
-        color: @accent-color;
+        color: @accent-color1;
     }
 }
 button, a {
@@ -71,9 +72,9 @@ img {
 
 input {
     padding    : @default-padding;
-    background : darken(@primary-color, 10%);
-    color      : @secondary-color;
-    border     : none;
+    background : darken(@secondary-color, 10%);
+    color      : @accent-color1;
+    border     : 4px dotted darken(desaturate(@accent-color1, 80%), 50%);
     outline    : none;
 
     &[type=range] {
@@ -82,7 +83,7 @@ input {
     }
 
     &:focus {
-        background: lighten(@primary-color, 10%);
+        background: @secondary-color;
     }
 }
 
@@ -128,7 +129,7 @@ input {
 }
 
 .error-text {
-    color      : @accent-color;
+    color      : @accent-color1;
     font-size  : @font-size-base * 0.7;
     text-align : center;
 }
@@ -219,19 +220,15 @@ input {
         & {
             // TODO variablize these fixed px sizes
             grid-template-columns: 0.8fr 0.2fr;
-            grid-template-rows: 67px 20px 1fr 14px;
+            grid-template-rows: 67px 1fr 14px;
         }
         & #title {
             grid-column: 1;
             grid-row: 1;
         }
-        & #marquee {
-            grid-column: 1;
-            grid-row: 2;
-        }
         & #menu {
             grid-column: 1;
-            grid-row: 3;
+            grid-row: 2;
         }
         & #tabs {
             grid-column: 2;
@@ -239,33 +236,29 @@ input {
         }
         & #copy {
             grid-column: 1;
-            grid-row: 4;
+            grid-row: 3;
         }
     }
     @media (min-height: 451px), (orientation: portrait) {
         & {
             grid-template-columns: 1fr;
-            grid-template-rows: 90px 20px 1fr 100px 22px;
+            grid-template-rows: 100px 1fr 100px 22px;
         }
         & #title {
             grid-column: 1;
             grid-row: 1;
         }
-        & #marquee {
+        & #menu {
             grid-column: 1;
             grid-row: 2;
         }
-        & #menu {
+        & #tabs {
             grid-column: 1;
             grid-row: 3;
         }
-        & #tabs {
-            grid-column: 1;
-            grid-row: 4;
-        }
         & #copy {
             grid-column: 1;
-            grid-row: 5;
+            grid-row: 4;
         }
     }
 
@@ -319,9 +312,9 @@ input {
         border-radius   : 12px;
 
         color           : @primary-color;
-        background      : fade(@modal-background, 50%) none repeat scroll 0% 0%;
+        background      : fade(@modal-background, 80%) none repeat scroll 0% 0%;
         padding         : @default-padding;
-        margin          : @default-padding;
+        margin          : 0;
 
         & > * {
             margin-bottom : @default-padding;
@@ -371,9 +364,9 @@ button {
     pointer-events: auto;
     -moz-osx-font-smoothing     : grayscale;
     -webkit-backface-visibility : hidden;
-    background                  : @accent-color;
-    border                      : none;
-    color                       : @primary-color;
+    background                  : @secondary-color;
+    border                      : 4px solid @accent-color1;
+    color                       : @accent-color1;
     overflow                    : hidden;
     padding                     : @default-padding;
     position                    : relative;
@@ -382,15 +375,12 @@ button {
         vertical-align : middle;
     }
 
-    transition: 
-        transform 0.01s ease-out,
-        color ease-in-out 0.3s,
-        background-color ease-in-out 0.3s;
+    transition: transform 0.03s ease-out;
     &:hover {
-        box-shadow: inset 0 0 0 0.8vw rgba(255,255,255,0.2);
+        // box-shadow: inset 0 0 0 0.8vw rgba(255,255,255,0.2);
     }
     &:active {
-        box-shadow: inset 0 0 0 0.8vw rgba(255,255,255,0.2);
+        // box-shadow: inset 0 0 0 0.8vw rgba(255,255,255,0.2);
         transform: scale3d(0.94, 0.94, 1);
     }
 }
@@ -484,10 +474,9 @@ button {
 }
 
 #title {
-    h1 {
-        color: white;
-        font-size: 4rem;
-        text-shadow: 0 0 40px rgba(255,255,255,0.5);
+    text-align: center;
+    img {
+        height: 100%;
     }
 }
 
@@ -498,12 +487,10 @@ button {
         top: 15px;
         margin: 6px;
         transition:
-        opacity ease-out 0.2s,
         transform ease-out 0.2s;
-        opacity: 0.8;
+        opacity: 1.0;
         &.active {
-            opacity: 0.95;
-            box-shadow: inset 0 0 0 0.8vw rgba(255,255,255,0.2);
+            background: desaturate(darken(@accent-color2, 40%), 50%);
         }
     }
 }
@@ -542,7 +529,7 @@ button {
     }
     #size-meter {
         opacity: 0.9;
-        background-color: @accent-color;
+        background-color: @accent-color1;
         transition: clip 0.2618s ease-in-out;
     }
     .milestone {
@@ -566,7 +553,7 @@ button {
     #tutorial-content {
         text-align: left;
         h2 {
-            color: @accent-color;
+            color: @accent-color1;
             text-align: left;
             margin: 1em 0 0.6em;
         }
@@ -579,7 +566,7 @@ button {
     }
 
     .key {
-        color: @accent-color;
+        color: @accent-color1;
         background-color: darken(@primary-color, 16%);
         border-radius: 3px;
         padding: 2px;
@@ -632,7 +619,6 @@ button {
     opacity: 0.7;
     li {
         width: 100%;
-        position: absolute;
         text-align: center;
     }
 }
