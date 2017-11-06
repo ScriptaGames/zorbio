@@ -279,8 +279,11 @@ input:focus {
     grid-row: 5;
   }
 }
+#menu-ui-container #skin-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
 #menu-ui-container #skin-list li {
-  float: left;
   margin: 10px;
   font-size: 15px;
 }

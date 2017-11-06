@@ -1,13 +1,9 @@
 <div fade-in-out class="greybox">
     <ul id="skin-list">
         {{ #each skins:i }}
-        <li>
+        <li on-click="@this.fire( ACTIONS.SET_SKIN, skins[i].name )">
             <h1>{{ skins[i].friendly_name }}</h1>
             <img src="{{ skins[i].preview }}" alt="thumbnail image for {{ skins[i].friendly_name }}">
-            <button
-                class="button-use-skin {{ selected_skin == skins[i].name ? 'selected' : '' }}"
-                on-click="@this.fire( ACTIONS.SET_SKIN, skins[i].name )"
-                value="{{ skins[i].name }}">Use!</button>
         </li>
         {{ /each }}
     </ul>
