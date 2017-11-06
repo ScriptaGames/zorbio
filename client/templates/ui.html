@@ -4,15 +4,15 @@
         {{ #if state.indexOf('playing') !== 0 }}
             {{ > title }}
         {{ /if }}
-        {{ #if state === STATES.MENU_GAME_SCREEN    }} {{ > menu        }} {{ /if }}
-        {{ #if state === STATES.MENU_STORE_SCREEN   }} {{ > menu        }} {{ /if }}
-        {{ #if state === STATES.MENU_CONFIG_SCREEN  }} {{ > menu        }} {{ /if }}
-        {{ #if state === STATES.MENU_CREDITS_SCREEN }} {{ > menu        }} {{ /if }}
-        {{ #if state === STATES.TUTORIAL_SCREEN     }} {{ > tutorial    }} {{ /if }}
-        {{ #if state === STATES.LEADERBOARD_SCREEN  }} {{ > leaderboard }} {{ /if }}
-        {{ #if state === STATES.RESPAWN_SCREEN      }} {{ > death       }} {{ /if }}
-        {{ #if state === STATES.KICKED_SCREEN       }} {{ > kicked      }} {{ /if }}
-        {{ #if state === STATES.GAME_INIT_ERROR     }} {{ > initerror   }} {{ /if }}
+        {{ #if state === STATES.MENU_GAME_SCREEN        }} {{ > menu      }} {{ /if }}
+        {{ #if state === STATES.MENU_STORE_SCREEN       }} {{ > menu      }} {{ /if }}
+        {{ #if state === STATES.MENU_CONFIG_SCREEN      }} {{ > menu      }} {{ /if }}
+        {{ #if state === STATES.MENU_CREDITS_SCREEN     }} {{ > menu      }} {{ /if }}
+        {{ #if state === STATES.MENU_TUTORIAL_SCREEN    }} {{ > menu      }} {{ /if }}
+        {{ #if state === STATES.MENU_LEADERBOARD_SCREEN }} {{ > menu      }} {{ /if }}
+        {{ #if state === STATES.RESPAWN_SCREEN          }} {{ > death     }} {{ /if }}
+        {{ #if state === STATES.KICKED_SCREEN           }} {{ > kicked    }} {{ /if }}
+        {{ #if state === STATES.GAME_INIT_ERROR         }} {{ > initerror }} {{ /if }}
 
         {{ #if state.indexOf('playing') !== 0
         && state !== STATES.KICKED_SCREEN

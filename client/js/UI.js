@@ -34,20 +34,20 @@ ZOR.UI = function ZORUI() {
      */
 
     let STATES = {
-        INITIAL            : 'menu-game-screen',
-        MENU_SCREEN        : 'menu-game-screen',
-        MENU_GAME_SCREEN   : 'menu-game-screen',
-        MENU_STORE_SCREEN  : 'menu-store-screen',
-        MENU_CONFIG_SCREEN : 'menu-config-screen',
-        MENU_CREDITS_SCREEN: 'menu-credits-screen',
-        PLAYING            : 'playing',
-        PLAYING_CONFIG     : 'playing-config',
-        RESPAWN_SCREEN     : 'menu-respawn-screen',
-        KICKED_SCREEN      : 'kicked-screen',
-        GAME_INIT_ERROR    : 'game-init-error',
-        SERVER_MSG_SCREEN  : 'server-msg-screen',
-        TUTORIAL_SCREEN    : 'menu-tutorial-screen',
-        LEADERBOARD_SCREEN : 'menu-leaderboard-screen',
+        INITIAL                : 'menu-game-screen',
+        MENU_SCREEN            : 'menu-game-screen',
+        MENU_GAME_SCREEN       : 'menu-game-screen',
+        MENU_STORE_SCREEN      : 'menu-store-screen',
+        MENU_CONFIG_SCREEN     : 'menu-config-screen',
+        MENU_CREDITS_SCREEN    : 'menu-credits-screen',
+        MENU_TUTORIAL_SCREEN   : 'menu-tutorial-screen',
+        MENU_LEADERBOARD_SCREEN: 'menu-leaderboard-screen',
+        PLAYING                : 'playing',
+        PLAYING_CONFIG         : 'playing-config',
+        RESPAWN_SCREEN         : 'menu-respawn-screen',
+        KICKED_SCREEN          : 'kicked-screen',
+        GAME_INIT_ERROR        : 'game-init-error',
+        SERVER_MSG_SCREEN      : 'server-msg-screen',
     };
 
     /**
@@ -60,8 +60,8 @@ ZOR.UI = function ZORUI() {
         PLAYER_RESPAWN       : 'player-respawn',
         PAGE_RELOAD          : 'page-reload',
         SHOW_MENU            : 'show-menu',
-        SHOW_TUTORIAL        : 'show-tutorial',
-        SHOW_LEADERBOARD     : 'show-leaderboard',
+        SHOW_MENU_TUTORIAL   : 'show-tutorial',
+        SHOW_MENU_LEADERBOARD: 'show-leaderboard',
         SHOW_PLAYING_CONFIG  : 'show-playing-config',
         SHOW_PREVIOUS        : 'show-previous',
 
@@ -450,8 +450,8 @@ ZOR.UI = function ZORUI() {
         on( ACTIONS.SHOW_MENU_STORE_SCREEN, stateSetter( STATES.MENU_STORE_SCREEN ) );
         on( ACTIONS.SHOW_MENU_CONFIG_SCREEN, stateSetter( STATES.MENU_CONFIG_SCREEN ) );
         on( ACTIONS.SHOW_MENU_CREDITS_SCREEN, stateSetter( STATES.MENU_CREDITS_SCREEN ) );
-        on( ACTIONS.SHOW_TUTORIAL, stateSetter( STATES.TUTORIAL_SCREEN ) );
-        on( ACTIONS.SHOW_LEADERBOARD, stateSetter( STATES.LEADERBOARD_SCREEN ) );
+        on( ACTIONS.SHOW_MENU_TUTORIAL, stateSetter( STATES.MENU_TUTORIAL_SCREEN ) );
+        on( ACTIONS.SHOW_MENU_LEADERBOARD, stateSetter( STATES.MENU_LEADERBOARD_SCREEN ) );
         on( ACTIONS.SHOW_PLAYING_CONFIG, stateSetter( STATES.PLAYING_CONFIG ) );
         on( ACTIONS.SHOW_MENU, stateSetter( STATES.MENU_SCREEN ) );
         on( ACTIONS.SHOW_PREVIOUS, function ZORShowPrevious() {
