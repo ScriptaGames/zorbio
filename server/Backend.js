@@ -1,22 +1,20 @@
-var NODEJS = typeof module !== 'undefined' && module.exports;
+let config = require('../common/config.js');
+let exec   = require('child_process').exec;
+let util   = require('util');
 
-var config = require('../common/config.js');
-var exec   = require('child_process').exec;
-var util   = require('util');
-
-// Current implmentating service: App42
-var App42 = require("./lib/app42/node_sdk/app42.js");
+// Current implementing service: App42
+let App42 = require('./lib/app42/node_sdk/app42.js');
 
 /**
  * Genetic interface for backend services such as document store, and social auth.
- * Abstraction of implementing service, so implmentation can be switched out if needed.
+ * Abstraction of implementing service, so implementation can be switched out if needed.
  * @constructor
  */
-var Backend = function () {
+let Backend = function() {
     if (!config.ENABLE_BACKEND_SERVICE) return;
 
     //  Scope
-    var self = this;
+    let self = this;
 
     App42.initialize(process.env.APP42_API_KEY, process.env.APP42_API_SECRET);
 
@@ -25,17 +23,18 @@ var Backend = function () {
 
 Backend.prototype.storageOpCallback = function BackendStorageOpCallback(object) {
     try {
-        var result_JSON = JSON.parse(object);
+        let result_JSON = JSON.parse(object);
         if (result_JSON.app42) {
             // noop
         }
         else {
-            console.error("Error storing json data in App42");
-            console.error("Error Message is: ", result_JSON.app42Fault.message);
-            console.error("Error Detail is: ", result_JSON.app42Fault.details);
-            console.error("Error Code is: ", result_JSON.app42Fault.appErrorCode);
+            console.error('Error storing json data in App42');
+            console.error('Error Message is: ', result_JSON.app42Fault.message);
+            console.error('Error Detail is: ', result_JSON.app42Fault.details);
+            console.error('Error Code is: ', result_JSON.app42Fault.appErrorCode);
         }
-    } catch (e) {
+    }
+    catch (e) {
         console.error("Error parsing return object from app42's saveOrUpdateDocumentByKeyValue, value is: ", object);
     }
 };
@@ -50,32 +49,33 @@ Backend.prototype.saveGameInstanceStatus = function BackendSaveGameInstanceStatu
 Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, score, successCallback) {
     if (!config.ENABLE_BACKEND_SERVICE) return;
 
-    var result = '';
-    var jsonResponse;
+    let result = '';
+    let jsonResponse;
 
     // Build the command
-    var command = util.format('server/lib/app42/leaderboard %s %s save %s "%s" %s',
+    let command = util.format('server/lib/app42/leaderboard %s %s save %s "%s" %s',
         process.env.APP42_API_KEY, process.env.APP42_API_SECRET, gameName, userName, score);
 
-    var child = exec(command);  // Execute command
+    let child = exec(command);  // Execute command
 
-    child.stdout.on('data', function (data) {
+    child.stdout.on('data', function(data) {
         result += data;
     });
-    child.stderr.on('data', function (data) {
+    child.stderr.on('data', function(data) {
         result += data;
     });
-    child.on('close', function () {
+    child.on('close', function() {
         try {
             jsonResponse = JSON.parse(result);
             if (jsonResponse && jsonResponse.app42.response.success === true) {
-                console.log("Successfully saved score: ", gameName, userName, score);
+                console.log('Successfully saved score: ', gameName, userName, score);
 
                 if (typeof successCallback === 'function') {
                     successCallback(jsonResponse);
                 }
             }
-        } catch (e) {
+        }
+        catch (e) {
             console.error('Caught exception parsing json response from Backend.saveScore service: ');
             console.error(result);
             console.error(e);
@@ -86,42 +86,42 @@ Backend.prototype.saveScore = function BackendSaveScore(gameName, userName, scor
 /**
  * Get the list of top players by start and end date.  Dates are in string format following this:
  * http://php.net/manual/en/function.strtotime.php  e.g. "-7 days" or "now"
- * @param gameName
- * @param limit
- * @param startDate
- * @param endDate
- * @param callback
+ * @param {string} gameName
+ * @param {number} limit
+ * @param {string} startDate
+ * @param {string} endDate
+ * @param {Function} callback
  */
-Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, limit, startDate, endDate, callback) {
+Backend.prototype.getLeadersByDate = function BackendGetLeadersByDate(gameName, limit, startDate, endDate, callback) {
     if (!config.ENABLE_BACKEND_SERVICE) return;
 
-    var result = '';
-    var jsonResponse;
+    let result = '';
+    let jsonResponse;
 
     // Build the command
-    var command = util.format('server/lib/app42/leaderboard %s %s get_leaders %s %s "%s" "%s"',
+    let command = util.format('server/lib/app42/leaderboard %s %s get_leaders %s %s "%s" "%s"',
         process.env.APP42_API_KEY, process.env.APP42_API_SECRET, gameName, limit, startDate, endDate);
 
-    var child = exec(command);  // Execute command
+    let child = exec(command);  // Execute command
 
-    child.stdout.on('data', function (data) {
+    child.stdout.on('data', function(data) {
         result += data;
     });
-    child.stderr.on('data', function (data) {
+    child.stderr.on('data', function(data) {
         result += data;
     });
-    child.on('close', function () {
+    child.on('close', function() {
         try {
             jsonResponse = JSON.parse(result);
             if (jsonResponse && jsonResponse.app42.response.success === true) {
-                var leaders = jsonResponse.app42.response.games.game.scores.score;
-                var filteredLeaders = [];
+                let leaders = jsonResponse.app42.response.games.game.scores.score;
+                let filteredLeaders = [];
 
                 if (Array.isArray(leaders)) {
                     // Filter out the meta data like date and score id, all we want is the name and the score
                     leaders.forEach(function eachLeader(leader) {
-                        var filteredLeader = {
-                            name: leader.userName,
+                        let filteredLeader = {
+                            name : leader.userName,
                             score: leader.value,
                         };
                         filteredLeaders.push(filteredLeader);
@@ -130,14 +130,15 @@ Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, 
                 else if (leaders && leaders.userName && leaders.value) {
                     // Handle 1 score for range
                     filteredLeaders.push({
-                        name: leaders.userName,
+                        name : leaders.userName,
                         score: leaders.value,
                     });
                 }
 
                 callback(filteredLeaders, true);
             }
-        } catch (e) {
+        }
+        catch (e) {
             console.error('Caught exception parsing json response from Backend.getLeadersByDate service: ');
             console.error(result);
             console.error(e);
@@ -146,4 +147,4 @@ Backend.prototype.getLeadersByDate = function BackendgetLeadersByDate(gameName, 
     });
 };
 
-if (NODEJS) module.exports = Backend;
+module.exports = Backend;

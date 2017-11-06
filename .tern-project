@@ -2,7 +2,7 @@
     "libs": [ "browser", "ecma5", "ecma6" ],
     "loadEagerly": [
         "server/*.js",
-        "skins/earth/earth.js",
+        "skins/standard/standard.js",
         "skins/default/default.js",
         "skins/techno/techno.js",
         "skins/boing/boing.js",

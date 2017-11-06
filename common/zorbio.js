@@ -1,15 +1,23 @@
-var NODEJS = typeof module !== 'undefined' && module.exports;
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global THREE:true
+global _:true
+global ZOR:true
+global UTIL:true
+*/
+
+const NODEJS_ZORBIO = typeof module !== 'undefined' && module.exports;
 
 // if we're running in nodejs, import THREE.  for browser, assume it's
 // already there.
-if (NODEJS) {
+if (NODEJS_ZORBIO) {
     global.THREE = require('three');
     global.UTIL = require('./util.js');
     global.config = require('./config.js');
     global._ = require('lodash');
 }
 
-var ZOR = ZOR || {};
 
 /**
  * ZOR.Model is a constructor that creates a new game model.  The model is
@@ -58,13 +66,13 @@ ZOR.Model.prototype.initFood = function ZORInitFood() {
      */
     this.food_respawn_ready_queue = [];
 
-    var foodMap = UTIL.getFoodMap( config.FOOD_MAP_TYPE );
+    let foodMap = UTIL.getFoodMap( config.FOOD_MAP_TYPE );
     this.food = foodMap( this.foodCount, this.foodDensity );
 };
 
 ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
     if (!actor.id) {
-        throw 'Actors must have an ID';
+        throw new Error('Actors must have an ID');
     }
 
     this.actors.push(actor);
@@ -73,31 +81,31 @@ ZOR.Model.prototype.addActor = function ZORModelAddActor(actor) {
 /**
  * Reduce the model to just what is needed to sync state between client and server.  Helps reduce size of message
  * over the wire.
- * @returns Object
+ * @returns {Object}
  */
 ZOR.Model.prototype.reduce = function ZORModelReduce() {
     // Send the bare minimum to init the game on the client
     return {
-        actors: this.reduceObjects(this.actors),
-        players: this.reduceObjects(this.players),
-        worldSize: this.worldSize,
-        food: this.food,
-        foodCount: this.foodCount,
-        foodDensity: this.foodDensity,
-        food_respawning: this.food_respawning,
+        actors                  : this.reduceObjects(this.actors),
+        players                 : this.reduceObjects(this.players),
+        worldSize               : this.worldSize,
+        food                    : this.food,
+        foodCount               : this.foodCount,
+        foodDensity             : this.foodDensity,
+        food_respawning         : this.food_respawning,
         food_respawn_ready_queue: this.food_respawn_ready_queue,
-        food_respawning_indexes: this.food_respawning_indexes,
+        food_respawning_indexes : this.food_respawning_indexes,
     };
 };
 
 /**
  * Returns reduced array
- * @param array
- * @param tiny True if should be reduced to the smallest possible object
- * @returns {Array}
+ * @param {Object[]} array
+ * @param {boolean} tiny True if should be reduced to the smallest possible object
+ * @returns {Object[]}
  */
 ZOR.Model.prototype.reduceObjects = function ZORModelReduceObjects(array, tiny) {
-    var reduced = [];
+    let reduced = [];
 
     // iterate over actors and reduce them
     array.forEach(function reduceEach(obj) {
@@ -109,8 +117,8 @@ ZOR.Model.prototype.reduceObjects = function ZORModelReduceObjects(array, tiny) 
 
 /**
  * Returns reduced actors array
- * @param tiny True if you want to reduce them to tiny actors
- * @returns {Array}
+ * @param {boolean} tiny True if you want to reduce them to tiny actors
+ * @returns {Object[]}
  */
 ZOR.Model.prototype.reduceActors = function ZORModelReduceActors(tiny) {
     return this.reduceObjects(this.actors, tiny);
@@ -118,7 +126,8 @@ ZOR.Model.prototype.reduceActors = function ZORModelReduceActors(tiny) {
 
 /**
  * Return the actor object matching id
- * @param id
+ * @param {number} id
+ * @returns {Object}
  */
 ZOR.Model.prototype.getActorById = function ZORModelGetActorById(id) {
     return this.actors[UTIL.findIndexById(this.actors, id)];
@@ -126,7 +135,8 @@ ZOR.Model.prototype.getActorById = function ZORModelGetActorById(id) {
 
 /**
  * Return the player object matching id
- * @param id
+ * @param {number} id
+ * @returns {Object}
  */
 ZOR.Model.prototype.getPlayerById = function ZORModelGetPlayersById(id) {
     return this.players[UTIL.findIndexById(this.players, id)];
@@ -134,12 +144,13 @@ ZOR.Model.prototype.getPlayerById = function ZORModelGetPlayersById(id) {
 
 /**
  * Return an array of non-bot players
+ * @returns {Object[]}
  */
 ZOR.Model.prototype.getRealPlayers = function ZORModelGetRealPlayers() {
-    var real_players = [];
+    let real_players = [];
 
-    for (var i = 0, l = this.players.length; i < l; i++) {
-        var player = this.players[i];
+    for (let i = 0, l = this.players.length; i < l; i++) {
+        let player = this.players[i];
         if (player.type === ZOR.PlayerTypes.PLAYER) {
             real_players.push( player );
         }
@@ -150,10 +161,10 @@ ZOR.Model.prototype.getRealPlayers = function ZORModelGetRealPlayers() {
 
 ZOR.Model.prototype.addPlayer = function ZORModelAddPlayer(player, replace) {
     if (!player.id) {
-        throw 'players must have an ID';
+        throw new Error('players must have an ID');
     }
 
-    var replacePlayer = replace || false;
+    let replacePlayer = replace || false;
 
     // first make sure player is not already in the model
     if (this.getPlayerById(player.id)) {
@@ -171,11 +182,13 @@ ZOR.Model.prototype.addPlayer = function ZORModelAddPlayer(player, replace) {
 };
 
 ZOR.Model.prototype.removePlayer = function ZORModelRemovePlayer(id) {
-    var playerIndex = UTIL.findIndexById(this.players, id);
-    var player = this.players[playerIndex];
+    let playerIndex = UTIL.findIndexById(this.players, id);
+    let player = this.players[playerIndex];
 
-    var actorIndex = _.findIndex(this.actors, function(o) { return o.playerId == id; });
-    var actor = this.actors[actorIndex];
+    let actorIndex = _.findIndex(this.actors, function(o) {
+        return o.playerId == id;
+    });
+    let actor = this.actors[actorIndex];
 
     if (player) {
         // check for corresponding actor
@@ -194,31 +207,32 @@ ZOR.Model.prototype.removePlayer = function ZORModelRemovePlayer(id) {
 
 /**
  * Returns the safest spawn position within a limited number of tries
- * @param num_tries
+ * @param {number} num_tries
+ * @returns {Object}
  */
 ZOR.Model.prototype.getSafeSpawnPosition = function ZORGetSafeSpawnPosition( num_tries ) {
     num_tries = num_tries || 1;
 
-    var tried_positions = [];
-    var position = UTIL.randomHorizontalPosition();
+    let tried_positions = [];
+    let position = UTIL.randomHorizontalPosition();
 
     if (this.players.length > 0) {
-        for (var i = 0; i < num_tries; i++) {
-            var nearest = this.findNearestPlayerSphere(position);
+        for (let i = 0; i < num_tries; i++) {
+            let nearest = this.findNearestPlayerSphere(position);
 
             if (this.isSafeSpawnPosition(nearest)) {
                 return position;  // safe dist from everyone, use this position
             }
             else {
                 // to close to a player try a new one
-                tried_positions.push({position: position.clone(), near_distance: nearest.dist});
+                tried_positions.push({ position: position.clone(), near_distance: nearest.dist });
                 position = UTIL.randomHorizontalPosition();
                 console.log('Not a safe spawn position, trying a new one');
             }
         }
 
         // couldn't find a safe position in the number of tries so return the one that was farthest away
-        tried_positions = _.sortBy(tried_positions, ['near_distance']);
+        tried_positions = _.sortBy(tried_positions, ['near_distance']);
         position = tried_positions[tried_positions.length - 1].position;
     }
 
@@ -227,17 +241,17 @@ ZOR.Model.prototype.getSafeSpawnPosition = function ZORGetSafeSpawnPosition( num
 
 /**
  * Returns the distance to the nearest player form this position*
- * @param position
+ * @param {Object} position
  * @returns {{sphere: null, dist: number}}
  */
 ZOR.Model.prototype.findNearestPlayerSphere = function ZORfindNearestPlayerSphere( position ) {
-    var distance = 0;
-    var min_distance = 0;
-    var nearest_sphere = {sphere: null, dist: config.WORLD_SIZE};
+    let distance = 0;
+    let min_distance = 0;
+    let nearest_sphere = { sphere: null, dist: config.WORLD_SIZE };
 
     // Iterate over players find closest one
-    for (var i = 0, l = this.players.length; i < l; i++) {
-        var player_sphere = this.players[i].sphere;
+    for (let i = 0, l = this.players.length; i < l; i++) {
+        let player_sphere = this.players[i].sphere;
 
         distance = position.distanceTo(player_sphere.position);
         min_distance = distance / 3;
@@ -253,11 +267,10 @@ ZOR.Model.prototype.findNearestPlayerSphere = function ZORfindNearestPlayerSpher
 
 /**
  * Returns true of this is a safe spawn position based on current player positions in the model
- * @param nearest
+ * @param {Object} nearest
  * @returns {boolean}
  */
 ZOR.Model.prototype.isSafeSpawnPosition = function ZORIsSafeSpawnPosition( nearest ) {
-
     if (nearest.dist < nearest.sphere.scale && nearest.sphere.scale > config.INITIAL_PLAYER_RADIUS) {
         return false;
     }
@@ -271,12 +284,12 @@ ZOR.Model.prototype.isSafeSpawnPosition = function ZORIsSafeSpawnPosition( neare
  * in Zorbio.
  */
 ZOR.ActorTypes = Object.freeze({
-    UNDEFINED     : 'UNDEFINED',
-    PLAYER_SPHERE : 'PLAYER_SPHERE',
-    FOOD          : 'FOOD',
-    PORTAL        : 'PORTAL',
-    OBSTACLE      : 'OBSTACLE',
-    SPECTATOR     : 'SPECTATOR'
+    UNDEFINED    : 'UNDEFINED',
+    PLAYER_SPHERE: 'PLAYER_SPHERE',
+    FOOD         : 'FOOD',
+    PORTAL       : 'PORTAL',
+    OBSTACLE     : 'OBSTACLE',
+    SPECTATOR    : 'SPECTATOR',
 });
 
 /**
@@ -285,8 +298,8 @@ ZOR.ActorTypes = Object.freeze({
  * world.
  */
 ZOR.Actor = function ZORActor() {
-    this.position = new THREE.Vector3(0,0,0);
-    this.velocity = new THREE.Vector3(0,0,0);
+    this.position = new THREE.Vector3(0, 0, 0);
+    this.velocity = new THREE.Vector3(0, 0, 0);
     this.scale = 1;
     this.type = ZOR.ActorTypes.UNDEFINED;
     this.recentPositions = [];
@@ -297,7 +310,6 @@ ZOR.Actor.prototype.reduce = function ZORActorReduce() {
 };
 
 ZOR.Actor.prototype.pushRecentPosition = function ZORActorPushRecentPosition(position) {
-
     // make a copy of the position
     position.position = new THREE.Vector3(position.position.x, position.position.y, position.position.z);
 
@@ -305,8 +317,8 @@ ZOR.Actor.prototype.pushRecentPosition = function ZORActorPushRecentPosition(pos
         this.recentPositions.push(position);
     }
     else {
-        var latestTime = this.recentPositions[this.recentPositions.length - 1].time;
-        var newTime = position.time;
+        let latestTime = this.recentPositions[this.recentPositions.length - 1].time;
+        let newTime = position.time;
         if (newTime > latestTime) {
             // only push on new positions to avoid duplicates
             this.recentPositions.push(position);
@@ -320,6 +332,13 @@ ZOR.Actor.prototype.pushRecentPosition = function ZORActorPushRecentPosition(pos
 
 /**
  * ZOR.PlayerSphere is a constructor for creating a player's sphere.
+ * @param {number} playerId
+ * @param {number} color
+ * @param {Object} position
+ * @param {number} scale
+ * @param {Object} velocity
+ * @param {string} skin
+ * @constructor
  */
 ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, velocity, skin) {
     // call super class constructor
@@ -334,7 +353,8 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
     if (scale) {
         this.scale = scale;
         this.expectedScale = scale;
-    } else {
+    }
+    else {
         this.scale = config.INITIAL_PLAYER_RADIUS;
         this.expectedScale = config.INITIAL_PLAYER_RADIUS;
     }
@@ -342,8 +362,9 @@ ZOR.PlayerSphere = function ZORPlayerSphere(playerId, color, position, scale, ve
     if (velocity) {
         this.velocity = velocity;
         UTIL.toVector3(this, 'velocity');
-    } else {
-        this.velocity = {x: 0, y: 0, z: 0};
+    }
+    else {
+        this.velocity = { x: 0, y: 0, z: 0 };
     }
 
     this.color = color;
@@ -364,18 +385,19 @@ ZOR.PlayerSphere.constructor = ZOR.PlayerSphere;
 
 /**
  * Returns the reduced actor with just the data important to sync between client and server
- * @returns {Object}
+ * @param {boolean} tiny
+ * @returns {{id: *, position: *, velocity: *, scale: *, drain_target_id: *, speed_boosting: *}}
  */
 ZOR.PlayerSphere.prototype.reduce = function ZORPlayerSphereReduce(tiny) {
-    var is_tiny = tiny || false;
+    let is_tiny = tiny || false;
 
-    var reducedActor = {
-        id: this.id,
-        position: this.position,
-        velocity: this.velocity,
-        scale: this.scale,
+    let reducedActor = {
+        id             : this.id,
+        position       : this.position,
+        velocity       : this.velocity,
+        scale          : this.scale,
         drain_target_id: this.drain_target_id,
-        speed_boosting: this.speed_boosting,
+        speed_boosting : this.speed_boosting,
     };
 
     if (!is_tiny) {
@@ -385,7 +407,7 @@ ZOR.PlayerSphere.prototype.reduce = function ZORPlayerSphereReduce(tiny) {
         reducedActor.playerId = this.playerId;
     }
 
-    return reducedActor
+    return reducedActor;
 };
 
 /**
@@ -399,7 +421,7 @@ ZOR.PlayerSphere.prototype.radius = function ZORPlayerSphereRadius() {
 
 /**
  * Grow the sphere an expected amount.  Returns the increase delta.
- * @param amount
+ * @param {number} amount
  * @returns {number}
  */
 ZOR.PlayerSphere.prototype.growExpected = function ZORPlayerSphereGrowExpected(amount) {
@@ -412,7 +434,7 @@ ZOR.PlayerSphere.prototype.growExpected = function ZORPlayerSphereGrowExpected(a
         this.expectedScale = config.INITIAL_PLAYER_RADIUS;
     }
 
-    var increaseDelta = this.expectedScale - this.scale;
+    let increaseDelta = this.expectedScale - this.scale;
     if (increaseDelta < 0) {
         increaseDelta = 0;
     }
@@ -426,24 +448,25 @@ ZOR.PlayerSphere.prototype.growExpected = function ZORPlayerSphereGrowExpected(a
  * ZOR.PlayerTypes Types of players
  */
 ZOR.PlayerTypes = Object.freeze({
-    SPECTATOR : 'SPECTATOR',
-    PLAYER    : 'PLAYER',
-    BOT       : 'BOT',
+    SPECTATOR: 'SPECTATOR',
+    PLAYER   : 'PLAYER',
+    BOT      : 'BOT',
 });
 
 /**
  * Zor Player model
- * @param id
- * @param name
- * @param color
- * @param type
- * @param position
- * @param scale
- * @param velocity
+ * @param {number} id
+ * @param {string} name
+ * @param {number} color
+ * @param {string} type
+ * @param {Object} position
+ * @param {number} scale
+ * @param {object} velocity
+ * @param {string} skin
  * @constructor
  */
 ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity, skin) {
-    var self = this;
+    let self = this;
     this.id = id;
     this.name = name;
     this.type = type;
@@ -453,7 +476,7 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     // Abilities
     this.abilities = {};
     this.abilities.speed_boost = new ZOR.SpeedBoostAbility(this.sphere);
-    this.abilities.speed_boost.on('deactivate', function () {
+    this.abilities.speed_boost.on('deactivate', function() {
         // start validating again at the regular speed
         self.sphere.recentPositions = [];
     });
@@ -483,21 +506,23 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
 
 /**
  * Reduce the player to the bare minimum needed to sync between client and server
+ * @returns {{id: *, name: *, type: *, sphere}}
  */
 ZOR.Player.prototype.reduce = function ZORPlayerReduce() {
     return {
-        id: this.id,
-        name: this.name,
-        type: this.type,
+        id    : this.id,
+        name  : this.name,
+        type  : this.type,
         sphere: this.sphere.reduce(),
-    }
+    };
 };
 
 /**
  * Reduce the player to the bare minimum needed to sync between client and server
+ * @returns {Object}
  */
 ZOR.Player.prototype.getMetrics = function ZORPlayerGetMetrics() {
-    var metrics = this.reduce();
+    let metrics = this.reduce();
     metrics.ping = this.ping_metric;
     metrics.fps = this.fps_metric;
     metrics.pp_send = this.pp_send_metric;
@@ -517,7 +542,7 @@ ZOR.Player.prototype.getScore = function ZORPlayerGetScore() {
  * @returns {number}
  */
 ZOR.Player.prototype.getSpeed = function ZORPlayerGetScore() {
-    var playerSpeed = config.PLAYER_GET_SPEED(this.sphere.scale);
+    let playerSpeed = config.PLAYER_GET_SPEED(this.sphere.scale);
 
     if (this.abilities.speed_boost.isActive()) {
         playerSpeed = playerSpeed * config.ABILITY_SPEED_BOOST_MULTIPLIER;
@@ -536,9 +561,9 @@ ZOR.Player.prototype.getCaptureRange = function ZORPlayerCaptureRange() {
 
 ZOR.Player.prototype.update = function ZORPlayerUpdate() {
     // call update on all definied abilities
-    var ability_names = Object.getOwnPropertyNames(this.abilities);
-    for (var i = 0, l = ability_names.length; i < l; i++) {
-        var ability = this.abilities[ability_names[i]];
+    let ability_names = Object.getOwnPropertyNames(this.abilities);
+    for (let i = 0, l = ability_names.length; i < l; i++) {
+        let ability = this.abilities[ability_names[i]];
         ability.update();
     }
 };
@@ -579,7 +604,7 @@ ZOR.Metric.prototype.add = function ZORMetricAdd(value) {
 };
 
 ZOR.Ability = function ZORAbility() {
-    var self = this;
+    let self = this;
 
     this.isActive   = undefined; // implemented by subclass
     this.activate   = undefined; // implemented by subclass
@@ -588,14 +613,14 @@ ZOR.Ability = function ZORAbility() {
     this.update     = undefined; // implemented by subclass
 
     self.events = {
-        activate: [],
+        activate  : [],
         deactivate: [],
-        update: [],
+        update    : [],
     };
 
     this.on = function ZORAbilityOn(eventName, func) {
         self.events[eventName].push(func);
-    }
+    };
 };
 
 ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
@@ -639,7 +664,7 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
         this.cooldown_delay = 1000;
 
         // iterate over event listeners and execute them
-        for (var i = 0; i < this.events.activate.length; i++) {
+        for (let i = 0; i < this.events.activate.length; i++) {
             if (typeof this.events.activate[i] === 'function') {
                 this.events.activate[i]();
             }
@@ -654,7 +679,7 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
         this.start_time = undefined;
 
         // iterate over event listeners and execute them
-        for (var i = 0; i < this.events.deactivate.length; i++) {
+        for (let i = 0; i < this.events.deactivate.length; i++) {
             if (typeof this.events.deactivate[i] === 'function') {
                 this.events.deactivate[i]();
             }
@@ -680,7 +705,7 @@ ZOR.SpeedBoostAbility = function ZORSpeedBoostAbility(sphere) {
         this.active_duration = Date.now() - this.start_time;
 
         // iterate over event listeners and execute them
-        for (var i = 0; i < this.events.update.length; i++) {
+        for (let i = 0; i < this.events.update.length; i++) {
             if (typeof this.events.update[i] === 'function') {
                 this.events.update[i]();
             }
@@ -699,15 +724,16 @@ ZOR.SpeedBoostAbility.constructor = ZOR.SpeedBoostAbility;
  */
 ZOR.lock = {};
 ZOR.expireLocks = function ZORExpireLocks() {
-    var lockIds = Object.getOwnPropertyNames(ZOR.lock);
-    for (var i = 0, l = lockIds.length; i < l; i++) {
-        var id = lockIds[i];
+    let lockIds = Object.getOwnPropertyNames(ZOR.lock);
+    for (let i = 0, l = lockIds.length; i < l; i++) {
+        let id = lockIds[i];
 
         if (ZOR.lock[id] > 0) {
-            console.log("Lock expiring in: ", id, ZOR.lock[id]);
+            console.log('Lock expiring in: ', id, ZOR.lock[id]);
             ZOR.lock[id] -= config.TICK_SLOW_INTERVAL;
-        } else {
-            console.log("lock expired:", id);
+        }
+        else {
+            console.log('lock expired:', id);
             delete ZOR.lock[id];
         }
     }
@@ -717,18 +743,21 @@ ZOR.expireLocks = function ZORExpireLocks() {
  * Static ID Generator, used to generate player IDs
  */
 ZOR.IdGenerator = function ZORIdGenerator() {
+    let next_id = 0;
 
-    var next_id = 0;
-
+    /**
+     * Returns the next id in sequence
+     * @returns {number}
+     */
     function get_next_id() {
         return ++next_id;
     }
 
     return {
-        get_next_id : get_next_id
+        get_next_id: get_next_id,
     };
 }();
 
 // if we're in nodejs, export the root ZOR object
-if (NODEJS) module.exports = ZOR;
+if (NODEJS_ZORBIO) module.exports = ZOR;
 

@@ -1,6 +1,11 @@
-var ZOR = {};
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global _:true
+*/
 
-var Zorbio = require('../common/zorbio.js');
+let ZOR = {};
+
+let Zorbio = require('../common/zorbio.js');
 
 ZOR.ZORMessageHandler = {};
 
@@ -11,7 +16,7 @@ ZOR.ZORMessageHandler.z_handle_init_game = function ZORhandleInitGame(model) {
 };
 
 ZOR.ZORMessageHandler.z_handle_welcome = function ZORhandleWelcome(msg) {
-    var model = msg.player;
+    let model = msg.player;
 
     global.player = new Zorbio.Player(model.id, model.name, model.sphere.color, model.type, model.sphere.position,
         model.sphere.scale, model.sphere.velocity, model.sphere.skin);
@@ -36,7 +41,7 @@ ZOR.ZORMessageHandler.z_handle_send_ping = function ZORhandleSendPing() {
 
 ZOR.ZORMessageHandler.z_handle_pong = function ZORhandlePong(duration) {
     global.player.ping_metric.add(duration);
-    console.log("Ping: ", duration);
+    console.log('Ping: ', duration);
 };
 
 ZOR.ZORMessageHandler.z_handleNetworkTermination = function ZORhandleNetworkTermination() {
@@ -45,7 +50,7 @@ ZOR.ZORMessageHandler.z_handleNetworkTermination = function ZORhandleNetworkTerm
     process.exit();
 };
 
-ZOR.ZORMessageHandler.z_handle_actor_updates = function ZORhandleActorUpdates(actors) {
+ZOR.ZORMessageHandler.z_handle_actor_updates = function ZORhandleActorUpdates() {
     // Headless don't really care about updating other players positions or size
 };
 
@@ -55,12 +60,12 @@ ZOR.ZORMessageHandler.z_handle_player_join = function ZORhandlePlayerJoin(newPla
     console.log('Player joined: ', newPlayer.id, newPlayer.name);
 };
 
-ZOR.ZORMessageHandler.z_handle_server_tick = function ZORHandleServerTick(data) {
+ZOR.ZORMessageHandler.z_handle_server_tick = function ZORHandleServerTick() {
     // don't care about anything in server tick slow
 };
 
 
-ZOR.ZORMessageHandler.z_handle_captured_player = function ZORHandleCapturePlayer(targetPlayerId) {
+ZOR.ZORMessageHandler.z_handle_captured_player = function ZORHandleCapturePlayer() {
     // Headless doesn't caputure players
 };
 
@@ -68,7 +73,7 @@ ZOR.ZORMessageHandler.z_handle_you_died = function ZORHandleYouDied(msg) {
     global.playerDead = true;
     global.gameStart = false;
 
-    console.log("YOU DIED! You were alive for " + msg.time_alive + " seconds. Killed by: ", msg.attacking_player_id);
+    console.log('YOU DIED! You were alive for ' + msg.time_alive + ' seconds. Killed by: ', msg.attacking_player_id);
 };
 
 ZOR.ZORMessageHandler.z_handle_player_died = function ZORHandlePlayerDied(capturedPlayerId) {
@@ -82,12 +87,12 @@ ZOR.ZORMessageHandler.z_handle_remove_player = function ZORHandleRemovePlayer(pl
 };
 
 ZOR.ZORMessageHandler.z_handle_kick = function ZORhandleKick(reason) {
-    console.log("you were kicked: ", reason);
+    console.log('you were kicked: ', reason);
     global.gameStart = false;
     global.playerDead = true;
 };
 
-ZOR.ZORMessageHandler.handle_speed_boost_res = function ZORhandleSpeedBoostRes(is_valid) {
+ZOR.ZORMessageHandler.handle_speed_boost_res = function ZORhandleSpeedBoostRes() {
     // Headless does not speedboost
 };
 
@@ -95,11 +100,11 @@ ZOR.ZORMessageHandler.z_handle_speed_boost_stop = function ZORhandleSpeedBoostSt
     // Headless does not speedboost
 };
 
-ZOR.ZORMessageHandler.z_handle_client_position_rapid = function ZORhandleClientPositionRapid(messageView) {
+ZOR.ZORMessageHandler.z_handle_client_position_rapid = function ZORhandleClientPositionRapid() {
     // dont care about updating client positions
 };
 
-ZOR.ZORMessageHandler.z_handle_leaderboard_update = function ZORHandLeaderboardUpdate(data) {
+ZOR.ZORMessageHandler.z_handle_leaderboard_update = function ZORHandLeaderboardUpdate() {
     // dont care
 };
 

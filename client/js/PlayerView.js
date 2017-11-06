@@ -1,4 +1,14 @@
-var ZOR = ZOR || {};
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global UTIL:true
+global THREE:true
+global _:true
+global playerFogCenter:true
+global SPE:true
+global camera:true
+*/
 
 /**
  * This class represents the view aspects of a player sphere.  Like how the sphere is rendered, how it looks
@@ -10,12 +20,12 @@ var ZOR = ZOR || {};
  */
 
 ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
-    var self = this;
+    let self = this;
     this.model = model;
     this.scene = scene;
     this.is_current_player = current || false;
     this.playerColor = config.COLORS[model.sphere.color];
-    this.skinName = model.sphere.skin;
+    this.skinName = model.sphere.skin || 'default';
 
     this.clock = new THREE.Clock();
 
@@ -25,7 +35,7 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 
     this.cameraMinDistance = config.GET_CAMERA_MIN_DISTANCE(model.sphere.scale);
 
-    this.skin = ZOR.PlayerSkins[this.skinName || 'default'](this);
+    this.skin = ZOR.SkinFactory.createSkin(this.skinName, this);
 
     playerFogCenter.copy(model.sphere.position);
 
@@ -131,19 +141,19 @@ ZOR.PlayerView.prototype.initParticleTrails = function ZORPlayerViewInitParticle
 ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails() {
     // Create the line material
     this.trail.material = new THREE.MeshLineMaterial( {
-        useMap: 0,
-        color: this.skin.trail.color,
-        opacity: 1,
-        resolution: new THREE.Vector2( window.innerWidth, window.innerHeight ),
+        useMap         : 0,
+        color          : this.skin.trail.color,
+        opacity        : 1,
+        resolution     : new THREE.Vector2( window.innerWidth, window.innerHeight ),
         sizeAttenuation: 1,
-        lineWidth: this.skin.trail.customScale * config.TRAIL_LINE_WIDTH,
-        near: camera.near,
-        far: camera.far,
-        depthTest: true,
-        blending: THREE.AdditiveBlending,
-        transparent: false,
-        side: THREE.DoubleSide,
-        visibility: 1,
+        lineWidth      : this.skin.trail.customScale * config.TRAIL_LINE_WIDTH,
+        near           : camera.near,
+        far            : camera.far,
+        depthTest      : true,
+        blending       : THREE.AdditiveBlending,
+        transparent    : false,
+        side           : THREE.DoubleSide,
+        visibility     : 1,
     });
 
     this.trail.origins = [];
@@ -152,7 +162,7 @@ ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails()
     this.trail.meshes = [];
 
     // for each line this skin requests...
-    for (var line_i = 0; line_i < this.skin.trail.origins.length; ++line_i) {
+    for (let line_i = 0; line_i < this.skin.trail.origins.length; ++line_i) {
         // transform the line's origins from sphere space to world space
         this.trail.origins[line_i] = this.mainSphere.localToWorld(this.skin.trail.origins[line_i].clone());
 
@@ -160,7 +170,7 @@ ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails()
         this.trail.geometries[line_i] = new THREE.Geometry();
 
         // create initial vertices for the line
-        for (var vertex_i = 0; vertex_i < config.TRAIL_LINE_LENGTH; ++vertex_i) {
+        for (let vertex_i = 0; vertex_i < config.TRAIL_LINE_LENGTH; ++vertex_i) {
             this.trail.geometries[line_i].vertices.push(this.trail.origins[line_i]);
         }
 
@@ -242,19 +252,19 @@ ZOR.PlayerView.prototype.updateTrails = function ZORPlayerViewUpdateTrail() {
 ZOR.PlayerView.prototype.updateParticleTrails = function ZORPlayerViewupdateParticleTrails() {
     if (!this.trail.initialized) return;
 
-    var newPos = this.mainSphere.position.clone();
+    let newPos = this.mainSphere.position.clone();
 
     this.trail.emitter.position._value.x = newPos.x;
     this.trail.emitter.position._value.y = newPos.y;
     this.trail.emitter.position._value.z = newPos.z;
 
-    var scale = this.mainSphere.scale.x * (this.skin.trail.customScale || 1);
+    let scale = this.mainSphere.scale.x * (this.skin.trail.customScale || 1);
     this.trail.emitter.position._spreadClamp.setX( scale );
     this.trail.emitter.position._spread.setX( scale );
     this.trail.emitter.position._radius = scale;
     this.trail.emitter.size._value =  [scale/3, scale*2/6, scale/9, 0];
 
-    var boosting = this.model.abilities.speed_boost.isActive();
+    let boosting = this.model.abilities.speed_boost.isActive();
 
     if (boosting) {
         this.trail.emitter.activeMultiplier = 1 * this.trail.visible;
@@ -274,9 +284,10 @@ ZOR.PlayerView.prototype.updateLineTrails = function ZORPlayerViewupdateLineTrai
     if (!this.trail.initialized) return;
 
     // Increase trail width based on sphere scale but prevent giant width trails
-    this.trail.material.uniforms.lineWidth.value = this.skin.trail.customScale * config.TRAIL_LINE_WIDTH * (1 + (this.mainSphere.scale.x  / 10));
+    this.trail.material.uniforms.lineWidth.value = this.skin.trail.customScale * config.TRAIL_LINE_WIDTH
+        * (1 + (this.mainSphere.scale.x  / 10));
 
-    for (var line_i = 0; line_i < this.skin.trail.origins.length; ++line_i) {
+    for (let line_i = 0; line_i < this.skin.trail.origins.length; ++line_i) {
         this.trail.lines[line_i].advance(this.mainSphere.localToWorld(this.skin.trail.origins[line_i].clone()));
     }
 };
@@ -305,7 +316,7 @@ ZOR.PlayerView.prototype.handleCapture = function ZORPlayerViewHandleCapture() {
     this.capture.emitter.position.value = this.mainSphere.position.clone();
 
     // Adjust burst size based on sphere scale
-    var scale = this.mainSphere.scale.x * (this.skin.capture.customScale || 1);
+    let scale = this.mainSphere.scale.x * (this.skin.capture.customScale || 1);
     this.capture.emitter.position.radius = scale;
     this.capture.emitter.size.value = [scale/3, scale*2/6, scale/9, 0];
 
@@ -368,7 +379,6 @@ ZOR.PlayerView.prototype.removeTrail = function ZORPlayerViewRemoveTrail() {
         }
         this.trail.initialized = false;
     }
-
 };
 
 ZOR.PlayerView.prototype.removeCaptureParticles = function ZORPlayerViewRemoveCaptureParticles() {
@@ -379,16 +389,16 @@ ZOR.PlayerView.prototype.removeCaptureParticles = function ZORPlayerViewRemoveCa
 ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove() {
     this.removeTrail();
     this.removeCaptureParticles();
-    ZOR.Pools.drainViews.return(this.drainView);
+    ZOR.Pools.drainViews.returnObj(this.drainView);
     if (this.dangerView) {
-        ZOR.Pools.dangerViews.return(this.dangerView);
+        ZOR.Pools.dangerViews.returnObj(this.dangerView);
         this.dangerView.dispose(this.scene);
         this.dangerView = undefined;
     }
     this.drainView.dispose(this.scene);
     this.drainView = undefined;
 
-    this.spherePool.return(this.mainSphere);
+    this.spherePool.returnObj(this.mainSphere);
 
     UTIL.threeFree(this.scene, this.mainSphere);
     this.mainSphere = undefined;
@@ -413,7 +423,8 @@ ZOR.PlayerView.prototype.remove = function ZORPlayerViewRemove() {
  * @returns {number}
  */
 ZOR.PlayerView.prototype.getCaptureEmitterLifetime = function ZORPlayerViewGetCaptureEmitterLifetime() {
-    return Math.floor((this.capture.emitter.maxAge.value + this.capture.emitter.maxAge.spread + this.capture.emitter.duration + 0.1) * 1000);
+    return Math.floor((this.capture.emitter.maxAge.value + this.capture.emitter.maxAge.spread
+        + this.capture.emitter.duration + 0.1) * 1000);
 };
 
 ZOR.PlayerView.prototype.setScale = function ZORPlayerViewSetScale(scale) {
@@ -430,14 +441,14 @@ ZOR.PlayerView.prototype.setCameraControls = function ZORPlayerViewSetCameraCont
 };
 
 ZOR.PlayerView.prototype.adjustCamera = function ZORPlayerViewAdjustCamera(scale) {
-    var newDist = config.GET_CAMERA_MIN_DISTANCE(scale);
+    let newDist = config.GET_CAMERA_MIN_DISTANCE(scale);
 
     this.camera_controls.minDistance = UTIL.lerp(this.camera_controls.minDistance, this.cameraMinDistance, 0.03);
 
     if (newDist != this.cameraMinDistance) {
         if (this.shouldChangeMinDist(newDist)) {
             // buffer reached, now switch. See: https://github.com/Jared-Sprague/zorbio/issues/273
-            console.log("New camera minDistance: ", newDist);
+            console.log('New camera minDistance: ', newDist);
             this.cameraMinDistance = newDist;
         }
     }
@@ -445,13 +456,13 @@ ZOR.PlayerView.prototype.adjustCamera = function ZORPlayerViewAdjustCamera(scale
 
 /**
  * Returns true if the camera min distance should change
- * @param calulatedDist
+ * @param {number} calulatedDist
  * @returns {boolean}
  */
 ZOR.PlayerView.prototype.shouldChangeMinDist = function ZORPlayerViewShouldChangeMinDist(calulatedDist) {
-    var curDist = this.cameraMinDistance;
-    var curScale = this.model.sphere.scale;
-    var currentDistanceStepRange = config.CAMERA_ZOOM_STEPS[Math.floor(curDist)];
+    let curDist = this.cameraMinDistance;
+    let curScale = this.model.sphere.scale;
+    let currentDistanceStepRange = config.CAMERA_ZOOM_STEPS[Math.floor(curDist)];
 
     if (curDist > calulatedDist) {
         // Zoom in if buffer dist met

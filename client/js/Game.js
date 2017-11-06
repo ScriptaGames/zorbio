@@ -1,35 +1,48 @@
-// this is here to prep for modularizing (de-globalifying) this file
-var ZOR = ZOR || {};
+/********************************************************************
+ * Zorbio Game.js this is the games main bootstrap and event handler
+ ********************************************************************/
+
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global UTIL:true
+global THREE:true
+global _:true
+global isMobile:true
+global ga:true
+global linodeNearLocation:true
+*/
 
 ZOR.Game = {};
 
 // Scene and canvas
-var scene;
-var canvas;
+let scene;
+let canvas;
 
 // Camera
-var camera;
-var camera_controls;
-var raycaster = new THREE.Raycaster();
+let camera;
+let camera_controls;
+let raycaster = new THREE.Raycaster();
 if (config.FOG_ENABLED) {
     raycaster.far = config.FOG_FAR;
 }
 
 // Player
-var player;
+let player;
 
-//TODO: get rid of this globals, refactor into MVC Player and Food controllers
-var playerFogCenter = new THREE.Vector3();
+// TODO: get rid of this globals, refactor into MVC Player and Food controllers
+let playerFogCenter = new THREE.Vector3();
 
 // Game state
-var gameStart = false;
-var foodController;
+let gameStart = false;
+let foodController;
 
 // Model that represents the game state shared with server
-var zorbioModel = new ZOR.Model();
+let zorbioModel = new ZOR.Model();
 
 // Game websocket client
-var zorClient = new ZOR.ZORClient(ZOR.ZORMessageHandler);
+let zorClient = new ZOR.ZORClient(ZOR.ZORMessageHandler);
 
 ZOR.Game.players = {};
 ZOR.Game.dead_players = {};  // hold dead player views while they finish death animations
@@ -37,21 +50,28 @@ ZOR.Game.dead_players = {};  // hold dead player views while they finish death a
 ZOR.Game.player_meshes = [];
 
 ZOR.Game.fullscreen = function go_fullscreen() {
-    var el = document.body;
+    let el = document.body;
     if (el.requestFullscreen) {
         el.requestFullscreen();
-    } else if (el.msRequestFullscreen) {
+    }
+    else if (el.msRequestFullscreen) {
         el.msRequestFullscreen();
-    } else if (el.mozRequestFullScreen) {
+    }
+    else if (el.mozRequestFullScreen) {
         el.mozRequestFullScreen();
-    } else if (el.webkitRequestFullscreen) {
+    }
+    else if (el.webkitRequestFullscreen) {
         el.webkitRequestFullscreen();
     }
 };
 
+/**
+ * Main bootstrap that starts game for a player
+ * @param {string} type
+ */
 function startGame(type) {
-
-    var fake_renderer, missing_extensions;
+    let fake_renderer;
+    let missing_extensions;
 
     // Before we do anything, make sure WebGL is supported by this browser
     try {
@@ -64,7 +84,8 @@ function startGame(type) {
         if (missing_extensions) {
             throw new Error('missing WebGL extensions');
         }
-    } catch (e) {
+    }
+    catch (e) {
         console.error('Failed to init game.  Possible WebGL failure.  Original error below.');
         console.error(e.message);
         ZOR.UI.state( ZOR.UI.STATES.GAME_INIT_ERROR );
@@ -78,25 +99,27 @@ function startGame(type) {
 
     if (config.MUSIC_ENABLED) {
         ZOR.Sounds.stopMusic();
-        setTimeout(function () { ZOR.Sounds.playMusic('play') }, 1000);
+        setTimeout(function() {
+            ZOR.Sounds.playMusic('play');
+        }, 1000);
     }
 
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
 
     // Assign player meta data and save to local storage
-    var colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
-    var colorHex = config.COLORS[colorCode];
-    var name = localStorage.player_name = UTIL.filterName(ZOR.UI.engine.get('player_name'));
-    var key = localStorage.alpha_key = ZOR.UI.engine.get('alpha_key');
+    let colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
+    let colorHex = config.COLORS[colorCode];
+    let name = localStorage.player_name = UTIL.filterName(ZOR.UI.engine.get('player_name'));
+    let key = localStorage.alpha_key = ZOR.UI.engine.get('alpha_key');
     ZOR.Game.playerMeta = {
         playerType: type,
         playerName: name,
-        key: key,
-        skin: localStorage.getItem('skin') || 'default',
-        color: colorCode,
+        key       : key,
+        skin      : localStorage.getItem('skin') || 'default',
+        color     : colorCode,
     };
 
-    document.querySelector("meta[name=theme-color]").content = colorHex;
+    document.querySelector('meta[name=theme-color]').content = colorHex;
 
     // Initialize player size ui element
     ZOR.UI.engine.set('player_color', colorCode);
@@ -111,20 +134,27 @@ function startGame(type) {
     zorClient.z_sendEnterGame(ZOR.Game.playerMeta);
 }
 
+/**
+ * Respawns a player
+ */
 function respawnPlayer() {
-    console.log("Respawning player: ", player.getPlayerId());
+    console.log('Respawning player: ', player.getPlayerId());
     ZOR.UI.state( ZOR.UI.STATES.PLAYING );
     ZOR.Sounds.stopMusic();
-    setTimeout(function () { ZOR.Sounds.playMusic('play') }, 1000);
+    setTimeout(function() {
+        ZOR.Sounds.playMusic('play');
+    }, 1000);
     gameStart = false;
     zorClient.z_sendRespawn();
 }
 
+/**
+ * Main function that creates the threejs scene and renders the game and starts the animate loop
+ */
 function createScene() {
-
     // a function to reveal the canvas after a few frames have been drawn.
     // turns into a noop afterwards.
-    var revealCanvas = _.after(4, function () {
+    let revealCanvas = _.after(4, function() {
         canvas.classList.add('active');
         ZOR.UI.engine.set('loading', false);
     });
@@ -134,15 +164,18 @@ function createScene() {
     try {
         init();
         animate();
-    } catch (e) {
+    }
+    catch (e) {
         console.error('Failed to init game.  Possible WebGL failure.  Original error below.');
         ZOR.UI.engine.set('loading', false);
         ZOR.UI.state( ZOR.UI.STATES.GAME_INIT_ERROR );
         throw e;
     }
 
+    /**
+     * Initialize the scene, camera, and actors
+     */
     function init() {
-
         canvas = document.getElementById('render-canvas');
         scene = new THREE.Scene();
         // scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
@@ -165,7 +198,7 @@ function createScene() {
         camera.position.set(0, 0, 0);
 
         // food
-        foodController = new FoodController(zorbioModel, camera.position, scene);
+        foodController = new ZOR.FoodController(zorbioModel, camera.position);
         foodController.drawFood(scene);
 
         // Hide currently respawning food
@@ -175,9 +208,9 @@ function createScene() {
         drawPlayers();
 
         // skybox
-        var materialArray = [];
-        var wall_texture;
-        for (var i = 0; i < 6; i++) {
+        let materialArray = [];
+        let wall_texture;
+        for (let i = 0; i < 6; i++) {
             wall_texture = new THREE.TextureLoader().load( 'textures/skybox_grid_black.png' );
             wall_texture.wrapS = wall_texture.wrapT = THREE.MirroredRepeatWrapping;
             wall_texture.repeat.set(config.WALL_GRID_SEGMENTS, config.WALL_GRID_SEGMENTS);
@@ -188,19 +221,25 @@ function createScene() {
             materialArray[i].map.magFilter = THREE.NearestFilter;
             materialArray[i].map.minFilter = THREE.LinearFilter;
         }
-        var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
-        var skyboxGeom = new THREE.BoxGeometry( zorbioModel.worldSize.x, zorbioModel.worldSize.y, zorbioModel.worldSize.z, 1, 1, 1 );
-        var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
+        let skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
+        let skyboxGeom = new THREE.BoxGeometry(
+            zorbioModel.worldSize.x,
+            zorbioModel.worldSize.y,
+            zorbioModel.worldSize.z, 1, 1, 1);
+        let skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
         skybox.renderOrder = -10;
         scene.add( skybox );
 
         // lights
-        var light = new THREE.AmbientLight( 0x222222 );
+        let light = new THREE.AmbientLight( 0x222222 );
         scene.add( light );
 
         window.addEventListener( 'resize', onWindowResize, false );
     }
 
+    /**
+     * windows resize event handler
+     */
     function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -208,15 +247,18 @@ function createScene() {
         ZOR.Game.renderer.setSize( window.innerWidth, window.innerHeight );
     }
 
+    /**
+     * Main animate loop for rendering each frame of the game
+     */
     function animate() {
         requestAnimationFrame(animate);
 
-        var ui_state = ZOR.UI.state();
+        let ui_state = ZOR.UI.state();
         if (ui_state.indexOf('menu') === 0 || ui_state === ZOR.UI.STATES.CREDITS_SCREEN ) {
             camera.rotation.y -= config.TITLE_CAMERA_SPIN_SPEED * ZOR.LagScale.get();
         }
 
-        var fogCenter;
+        let fogCenter;
 
         updateActors();
 
@@ -252,8 +294,9 @@ function createScene() {
         }
         else if (player && player.isDead) {
             fogCenter = player.model.sphere.position;
-        } else {
-            fogCenter = {x: 0, y: 0, z: 0}
+        }
+        else {
+            fogCenter = { x: 0, y: 0, z: 0 };
         }
 
         playerFogCenter.copy(fogCenter);
@@ -264,15 +307,19 @@ function createScene() {
         render();
     }
 
+    /**
+     * Sends the scene and camera to be rendered by threejs renderer
+     */
     function render() {
-
         ZOR.Game.renderer.render( scene, camera );
 
         revealCanvas();
-
     }
 }
 
+/**
+ * Initialize the camera and player when the player first enters the game or respawns
+ */
 function initCameraAndPlayer() {
     // sphere
     // Create the player view and adds the player sphere to the scene
@@ -319,26 +366,32 @@ function initCameraAndPlayer() {
     playerFogCenter.copy(player.view.mainSphere.position);
 }
 
+/**
+ * Draws other players currently in the game
+ */
 function drawPlayers() {
     // Iterate over player
     zorbioModel.players.forEach(function drawEachPlayer(playerModel) {
-        if (playerModel.type != ZOR.PlayerTypes.SPECTATOR) {
-            var id = playerModel.id;
+        if (playerModel.type !== ZOR.PlayerTypes.SPECTATOR) {
+            let id = playerModel.id;
 
             // Only draw other players
             if (!player || (id !== player.getPlayerId())) {
-                ZOR.Game.players[id] = new ZOR.PlayerController(playerModel, scene);
+                ZOR.Game.players[id] = new ZOR.PlayerController(playerModel, scene, false);
             }
         }
     });
 }
 
+/**
+ * Updates all actors currently in the game every frame
+ */
 function updateActors() {
     // Iterate over actor properties in the actors object
     zorbioModel.actors.forEach(function updateEachActor(actor) {
         if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
             if (!player || (actor.id !== player.getSphereId())) {
-                var otherPlayer = ZOR.Game.players[actor.playerId];
+                let otherPlayer = ZOR.Game.players[actor.playerId];
                 if (otherPlayer && otherPlayer.view) {
                     // update actor
                     otherPlayer.updatePosition(actor.position);
@@ -355,50 +408,60 @@ function updateActors() {
     });
 }
 
+/**
+ * When a player dies they aren't imidately removed they first have a death animation.
+ * This function updates the view for that death animation i.e. particle explosion
+ */
 function updateDeadPlayers() {
-    var dead_player_ids = Object.getOwnPropertyNames( ZOR.Game.dead_players );
-    for (var i = 0, l = dead_player_ids.length; i < l; i++) {
-        var deadPlayer = ZOR.Game.dead_players[dead_player_ids[i]];
+    let dead_player_ids = Object.getOwnPropertyNames( ZOR.Game.dead_players );
+    for (let i = 0, l = dead_player_ids.length; i < l; i++) {
+        let deadPlayer = ZOR.Game.dead_players[dead_player_ids[i]];
         if (deadPlayer && deadPlayer.view) {
             deadPlayer.view.update();  // update the dead player view for death particle effect
         }
     }
 }
 
+/**
+ * This updates the players score and size meter in the UI
+ */
 function updatePlayerSizeUI() {
-    var currentScore = player.getScore();
-    var currentSize = player.getSize();
+    let currentScore = player.getScore();
+    let currentSize = player.getSize();
 
-    if (currentScore != player.lastScore || currentSize != player.lastSize) {
+    if (currentScore !== player.lastScore || currentSize !== player.lastSize) {
         ZOR.UI.engine.set('player_score', player.getScore());
         ZOR.UI.engine.set('player_size', currentSize);
         player.lastScore = currentScore;
         player.lastSize = currentSize;
     }
 }
-var throttledUpdatePlayerSizeUI = _.throttle(updatePlayerSizeUI, 70);
+let throttledUpdatePlayerSizeUI = _.throttle(updatePlayerSizeUI, 70);
 
+/**
+ * Updates the target UI based on raycasting from the current player. The target
+ * is the name of another player sphere that they are looking at.
+ */
 function updateTargetLock() {
     // calculate objects intersecting the ray
-    var intersects = raycaster.intersectObjects( ZOR.Game.player_meshes );
+    let intersects = raycaster.intersectObjects( ZOR.Game.player_meshes );
 
     if (intersects && intersects.length > 0) {
         // looking at a player
-        var playerMesh     = intersects[0].object;
+        let playerMesh     = intersects[0].object;
 
         if (playerMesh && playerMesh.player_id > 0) {
-
-            var targeting_self = playerMesh.player_id === player.model.id;
+            let targeting_self = playerMesh.player_id === player.model.id;
 
             if (!targeting_self) {
                 // Update target locked UI
-                var pointedPlayer = ZOR.Game.players[playerMesh.player_id];
+                let pointedPlayer = ZOR.Game.players[playerMesh.player_id];
 
                 if (pointedPlayer) {
-                    var target_changed = player.getTargetLock() !== playerMesh.player_id;
-                    var currentSize = pointedPlayer.getSize();
-                    var warning = 'Caution';
-                    var warning_color = 11;
+                    let target_changed = player.getTargetLock() !== playerMesh.player_id;
+                    let currentSize = pointedPlayer.getSize();
+                    let warning = 'Caution';
+                    let warning_color = 11;
 
                     if (currentSize < player.getSize() - 10) {
                         warning = 'Can eat';
@@ -409,11 +472,11 @@ function updateTargetLock() {
                         warning_color = 14;
                     }
 
-                    var target = {
-                        name: pointedPlayer.model.name,
-                        size: currentSize,
-                        color: pointedPlayer.model.sphere.color,
-                        warning: warning,
+                    let target = {
+                        name         : pointedPlayer.model.name,
+                        size         : currentSize,
+                        color        : pointedPlayer.model.sphere.color,
+                        warning      : warning,
                         warning_color: warning_color,
                     };
 
@@ -424,7 +487,7 @@ function updateTargetLock() {
                         pointedPlayer.lastSize = currentSize;
                         clearTimeout(ZOR.UI.target_clear_timeout_id);
                     }
-                    else if (currentSize != pointedPlayer.lastSize) {
+                    else if (currentSize !== pointedPlayer.lastSize) {
                         // Update target score
                         ZOR.UI.engine.set('target', target);
                         pointedPlayer.lastSize = currentSize;
@@ -437,11 +500,14 @@ function updateTargetLock() {
         // not looking at anything so clear target name after timeout
         player.setTargetLock(0);
         ZOR.UI.target_clear_timeout_id = setTimeout(ZOR.UI.clearTarget, 4000);
-        console.log("clearing target lock");
+        console.log('clearing target lock');
     }
 }
-var throttledUpdateTargetLock = _.throttle(updateTargetLock, 100);
+let throttledUpdateTargetLock = _.throttle(updateTargetLock, 100);
 
+/**
+ * Sends the player update message to the server throttled to tick fast interval
+ */
 function sendPlayerUpdate() {
     // Make sure model is synced with view
     player.refreshSphereModel();
@@ -456,37 +522,45 @@ function sendPlayerUpdate() {
     // clear food queue
     player.food_capture_queue = [];
 }
-var throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
+let throttledSendPlayerUpdate = _.throttle(sendPlayerUpdate, config.TICK_FAST_INTERVAL);
 
+/**
+ * Handle current player capturing food
+ * @param {number} fi
+ */
 function captureFood(fi) {
     player.queueFoodCapture(fi);
     foodController.hideFood(fi);
 }
 
-window.addEventListener("keydown", handleKeydown);
-window.addEventListener("keyup", handleKeyup);
-window.addEventListener("mousedown", handleMouseDown);
-window.addEventListener("mouseup", handleMouseUp);
+window.addEventListener('keydown', handleKeydown);
+window.addEventListener('keyup', handleKeyup);
+window.addEventListener('mousedown', handleMouseDown);
+window.addEventListener('mouseup', handleMouseUp);
 
 window.onload = function homeOnload() {
     zorClient.z_connectToServer('ws://' + config.BALANCER + ':' + config.WS_PORT);
 };
 
-var KeysDown = {};
-var KeyCodes = {
-    87 : 'w',
-    83 : 's',
-    65 : 'a',
-    68 : 'd',
-    32 : 'space',
-    16 : 'shift'
+let KeysDown = {};
+let KeyCodes = {
+    87: 'w',
+    83: 's',
+    65: 'a',
+    68: 'd',
+    32: 'space',
+    16: 'shift',
 };
 
-var ListenForKeys = Object.keys(KeyCodes);
+let ListenForKeys = Object.keys(KeyCodes);
 
+/**
+ * Handle key down event
+ * @param {Object} evt
+ */
 function handleKeydown(evt) {
-    var we_care_about_this_key;
-    var already_pressed;
+    let we_care_about_this_key;
+    let already_pressed;
 
     if (!gameStart || player.isDead) return;
 
@@ -501,54 +575,79 @@ function handleKeydown(evt) {
     }
 }
 
+/**
+ * Handle key up event
+ * @param {Object} evt
+ */
 function handleKeyup(evt) {
     if (!gameStart || player.isDead) return;
 
     // if key exists in keycodes, set its 'down' state to false
-    var we_care_about_this_key = ListenForKeys.indexOf(evt.keyCode+'') !== -1;
+    let we_care_about_this_key = ListenForKeys.indexOf(evt.keyCode+'') !== -1;
     if (we_care_about_this_key) {
         keyReleased(KeyCodes[evt.keyCode]);
         KeysDown[KeyCodes[evt.keyCode]] = false;
     }
 }
 
+/**
+ * Handle mouse down event
+ * @param {Object} evt
+ */
 function handleMouseDown(evt) {
     if (!gameStart || player.isDead) return;
 
-    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
+    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any
+        && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
         if (player.isSpeedBoostReady()) {
             zorClient.z_sendSpeedBoostStart();
         }
     }
 }
 
+/**
+ * Handle mouse up event
+ * @param {Object} evt
+ */
 function handleMouseUp(evt) {
     if (!gameStart || player.isDead) return;
 
-    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
+    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any
+        && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
         player.speedBoostStop();
         zorClient.z_sendSpeedBoostStop();
     }
 }
 
+/**
+ * Handle keys down
+ */
 function handleKeysDown() {
-    for( var key in KeysDown ) {
+    for ( let key in KeysDown ) {
         if (KeysDown[key]) {
             keyDown(key);
         }
     }
 }
 
+/**
+ * Key down mapping for player controls
+ * @param {string} key
+ */
 function keyDown( key ) {
     if ( key === 'w' && !config.AUTO_RUN_ENABLED) {
         player.moveForward(camera);
     }
     else if ( key === 's' ) {
-        //TODO: refactor this to player.stop() based on autorun value
+        // TODO: refactor this to player.stop() based on auto run value
         player.moveBackward(camera);
     }
 }
 
+/**
+ * Key just pressed mapping for player controls
+ * @param {string} key
+ */
 function keyJustPressed(key) {
     if ( key === 'w' && config.AUTO_RUN_ENABLED) {
         if (player.isSpeedBoostReady()) {
@@ -557,8 +656,12 @@ function keyJustPressed(key) {
     }
 }
 
+/**
+ * Key released mapping for player controls
+ * @param {string} key
+ */
 function keyReleased(key) {
-    //console.log('key ' + key + ' released');
+    // console.log('key ' + key + ' released');
     if (key === 'w' && config.AUTO_RUN_ENABLED) {
         if (player.isSpeedBoostActive()) {
             player.speedBoostStop();
@@ -567,8 +670,13 @@ function keyReleased(key) {
     }
 }
 
+/**
+ * Completely remove a player from the game both their model and view
+ * @param {number} playerId
+ * @param {number} time
+ */
 function removePlayerFromGame(playerId, time) {
-    var deadPlayer = ZOR.Game.players[playerId];
+    let deadPlayer = ZOR.Game.players[playerId];
 
     // safe reference to dead player to finish death FX e.g. particle explosion
     ZOR.Game.dead_players[playerId] = deadPlayer;
@@ -594,12 +702,17 @@ function removePlayerFromGame(playerId, time) {
     }, time);
 }
 
+/**
+ * Handle the server tick slow this includes leaders update and other housekeeping
+ * It gets called every config.TICK_SLOW_INTERVAL milliseconds
+ * @param {Object} serverTickData
+ */
 function handleServerTick(serverTickData) {
     if (!gameStart) return;
 
     serverTickData.leaders.forEach(function eachLeader(leader) {
         // get leader name and color
-        var clientPlayer = ZOR.Game.players[leader.player_id];
+        let clientPlayer = ZOR.Game.players[leader.player_id];
         if (clientPlayer) {
             leader.name = clientPlayer.model.name;
             leader.color = clientPlayer.model.sphere.color;
@@ -625,12 +738,12 @@ function handleServerTick(serverTickData) {
 
     if (foodController && foodController.isInitialized()) {
         // handle food respawns
-        for (var i = 0, l = serverTickData.fr.length; i < l; ++i) {
+        for (let i = 0, l = serverTickData.fr.length; i < l; ++i) {
             foodController.showFood( serverTickData.fr[i] );  // Show the food index
         }
 
         // handle food captures
-        for (i = 0, l = serverTickData.fc.length; i < l; ++i) {
+        for (let i = 0, l = serverTickData.fc.length; i < l; ++i) {
             foodController.hideFood( serverTickData.fc[i] );
         }
     }
@@ -642,18 +755,23 @@ function handleServerTick(serverTickData) {
     ZOR.expireLocks();
 }
 
+/**
+ * Updates the leaderboard UI
+ * @param {Object} leaderboards
+ */
 function handleLeaderboardUpdate(leaderboards) {
-    console.log("Updating leaderboards");
+    console.log('Updating leaderboards');
     ZOR.UI.engine.set('leaderboard.data', leaderboards);
 }
 
 /**
  * Current player has captured someone.
+ * @param {number} capturedPlayerID
  */
 function handleSuccessfulPlayerCapture(capturedPlayerID) {
-    var sound = ZOR.Sounds.sfx.player_capture;
-    var capturedPlayer = ZOR.Game.players[capturedPlayerID];
-    var windDownTime = 0;
+    let sound = ZOR.Sounds.sfx.player_capture;
+    let capturedPlayer = ZOR.Game.players[capturedPlayerID];
+    let windDownTime = 0;
 
     if (capturedPlayer) {
         ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
@@ -665,13 +783,14 @@ function handleSuccessfulPlayerCapture(capturedPlayerID) {
 }
 
 /**
- * A player captured another player.  Current playre not involved.
+ * A player captured another player.  Current player not involved.
+ * @param {number} capturedPlayerID
  */
-function handleOtherPlayercapture(capturedPlayerID) {
-    var sound = ZOR.Sounds.sfx.player_capture;
-    var capturedPlayer = ZOR.Game.players[capturedPlayerID];
-    var windDownTime = 0;
-    var ear;
+function handleOtherPlayerCapture(capturedPlayerID) {
+    let sound = ZOR.Sounds.sfx.player_capture;
+    let capturedPlayer = ZOR.Game.players[capturedPlayerID];
+    let windDownTime = 0;
+    let ear;
 
     if (capturedPlayer) {
         ear = (player && player.view) ? player.view.mainSphere : camera;
@@ -680,29 +799,33 @@ function handleOtherPlayercapture(capturedPlayerID) {
         windDownTime = capturedPlayer.getWindDownTime();
     }
 
-    console.log("Player died:  ", capturedPlayerID);
+    console.log('Player died:  ', capturedPlayerID);
     removePlayerFromGame(capturedPlayerID, windDownTime);
 }
 
+/**
+ * Handle GAME OVER for the current player
+ * @param {Object} msg
+ */
 function handleDeath(msg) {
-    var attackingPlayerId = msg.attacking_player_id;
+    let attackingPlayerId = msg.attacking_player_id;
 
-    console.log("YOU DIED! You were alive for " + msg.time_alive + " seconds. Killed by: ", attackingPlayerId);
+    console.log('YOU DIED! You were alive for ' + msg.time_alive + ' seconds. Killed by: ', attackingPlayerId);
     setDeadState();
 
     ZOR.Sounds.playMusic('gameover');
 
-    var attackingPlayer = zorbioModel.getPlayerById(attackingPlayerId);
-    var attackingActor = zorbioModel.getActorById(attackingPlayer.sphere.id);
+    let attackingPlayer = zorbioModel.getPlayerById(attackingPlayerId);
+    let attackingActor = zorbioModel.getActorById(attackingPlayer.sphere.id);
     attackingPlayer.size = config.GET_PADDED_INT(attackingActor.scale);
 
-    // Set finaly data about the player from the server
-    var playerStats = {
-        drainAmount: msg.drain_ammount,
-        foodCaptures: msg.food_captures,
+    // Set finally data about the player from the server
+    let playerStats = {
+        drainAmount   : msg.drain_ammount,
+        foodCaptures  : msg.food_captures,
         playerCaptures: msg.player_captures,
-        score: msg.score,
-        size: msg.size,
+        score         : msg.score,
+        size          : msg.size,
     };
 
     // stop woosh in case player was speed boosting
@@ -713,6 +836,10 @@ function handleDeath(msg) {
     ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
 }
 
+/**
+ * Handle kicking a player from the game
+ * @param {string} reason
+ */
 function handlePlayerKick(reason) {
     setDeadState();
 
@@ -721,37 +848,43 @@ function handlePlayerKick(reason) {
     // Send server message to the UI (either real message, or undefined)
     ZOR.UI.engine.set('kicked_message', reason);
 
-    console.log("you were kicked: ", reason);
+    console.log('you were kicked: ', reason);
 }
 
+/**
+ * Sets the state on the current player to dead
+ */
 function setDeadState() {
     player.beingCaptured = false;
     player.isDead = true;
     KeysDown = {};
 }
 
+/**
+ * Sends performance metrics like fps and ping to Google Analytics
+ */
 function gaPerformanceMetrics() {
     if (gameStart && !player.isDead) {
-        var ping = player.model.ping_metric.mean;
-        var fps = player.model.fps_metric.mean;
+        let ping = player.model.ping_metric.mean;
+        let fps = player.model.fps_metric.mean;
 
         if (ping > 0) {
             ga('send', {
-                hitType: 'timing',
+                hitType       : 'timing',
                 timingCategory: 'Ping',
-                timingVar: 'ping',
-                timingValue: ping,
-                timingLabel: linodeNearLocation(),
+                timingVar     : 'ping',
+                timingValue   : ping,
+                timingLabel   : linodeNearLocation(),
             });
         }
 
         if (fps > 0) {
             ga('send', {
-                hitType: 'timing',
+                hitType       : 'timing',
                 timingCategory: 'FPS',
-                timingVar: 'fps',
-                timingValue: fps,
-                timingLabel: isMobile.any ? 'mobile' : 'desktop',
+                timingVar     : 'fps',
+                timingValue   : fps,
+                timingLabel   : isMobile.any ? 'mobile' : 'desktop',
             });
         }
     }

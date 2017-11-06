@@ -1,14 +1,6 @@
-var NODEJS = typeof module !== 'undefined' && module.exports;
+let config = require('../common/config.js');
+let ZOR    = require('../common/zorbio.js');
 
-// if we're running in nodejs, import THREE.  for browser, assume it's
-// already there.
-if (NODEJS) var THREE = require('three');
-if (NODEJS) var _ = require('lodash');
-if (NODEJS) var UTIL = require('./util.js');
-if (NODEJS) var config = require('./config.js');
-if (NODEJS) var ZOR = require('../common/zorbio.js');
-
-var ZOR = ZOR || {};
 ZOR.Drain = {};
 
 /**
@@ -18,21 +10,21 @@ ZOR.Drain = {};
  * @return {Object} an array of all player pairs within drain distance
  */
 ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
-    var players_array = players;
-    var drain = {};
-    var p1;
-    var p2;
-    var p1_scale;
-    var p2_scale;
-    var distance;
+    let players_array = players;
+    let drain = {};
+    let p1;
+    let p2;
+    let p1_scale;
+    let p2_scale;
+    let distance;
 
-    var l = players_array.length;
-    var j = 0;
+    let l = players_array.length;
+    let j = 0;
 
     // init empty arrays for each player, they will hold the id's of players
     // they are draining
-    var i = l;
-    while ( i-- ) drain[ players_array[i].id ] = [];
+    let i = l;
+    while ( i-- ) drain[players_array[i].id] = [];
 
     i = l;
     while ( i-- ) {
@@ -42,7 +34,6 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
         p1 = players_array[i];
 
         while ( j-- ) {
-
             if (i === j) continue; // don't compare player to itself
 
             // find the distance between these two players
@@ -57,17 +48,16 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
 
             // if a player is close enough and small enough, save the p2's id
             if ( distance <= config.DRAIN_MAX_DISTANCE ) {
-
                 if ( p1_scale < p2_scale ) {
                     // if new drain is better than old drain, it wins
-                    if (!drain[ p1.id ][0] || distance < drain[ p1.id ][0].dist) {
-                        drain[ p1.id ][0] = { id: p2.id, dist: distance }; // p1 drains p2
+                    if (!drain[p1.id][0] || distance < drain[p1.id][0].dist) {
+                        drain[p1.id][0] = { id: p2.id, dist: distance }; // p1 drains p2
                     }
                 }
                 else if ( p2_scale < p1_scale ) {
                     // if new drain is better than old drain, it wins
-                    if (!drain[ p2.id ][0] || distance < drain[ p2.id ][0].dist) {
-                        drain[ p2.id ][0] = { id: p1.id, dist: distance }; // p2 drains p1
+                    if (!drain[p2.id][0] || distance < drain[p2.id][0].dist) {
+                        drain[p2.id][0] = { id: p1.id, dist: distance }; // p2 drains p1
                     }
                 }
             }
@@ -86,9 +76,9 @@ ZOR.Drain.findAll = function ZORDrainFindAll( players ) {
 ZOR.Drain.amount = function ZORDrainAmount( distance ) {
     // adjust n, o. and p to balance the drain amount.
     // see https://www.desmos.com/calculator/wmiuaymrtu
-    var n = 0.007;
-    var o = 4.0;
-    var p = 0.06;
+    let n = 0.007;
+    let o = 4.0;
+    let p = 0.06;
     return p / ( (n * (distance * distance)) + o );
 };
 
@@ -102,8 +92,8 @@ ZOR.Drain.amount = function ZORDrainAmount( distance ) {
  */
 ZOR.Drain.bonusAmount = function ZORDrainBonusAmount( drainer_size, drainee_size ) {
     // https://www.desmos.com/calculator/fzrj7f2b6l
-    return config.DRAIN_SIZE_INFLUENCE * (drainee_size - drainer_size) / (config.MAX_PLAYER_RADIUS - config.INITIAL_PLAYER_RADIUS) + 1;
+    return config.DRAIN_SIZE_INFLUENCE * (drainee_size - drainer_size) / (config.MAX_PLAYER_RADIUS
+        - config.INITIAL_PLAYER_RADIUS) + 1;
 };
 
-// if we're in nodejs, export the root ZOR object
-if (NODEJS) module.exports = ZOR.Drain;
+module.exports = ZOR.Drain;

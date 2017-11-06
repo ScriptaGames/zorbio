@@ -1,39 +1,58 @@
-var ZOR = ZOR || {};
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+*/
 
-ZOR.LagScale = function ZORLagScale() {
+ZOR.LagScaleClass = class ZORLagScale {
+    /**
+     * @constructor
+     */
+    constructor() {
+        this.IDEAL_FRAME_MS = 1/60 * 1000;
 
-    var IDEAL_FRAME_MS = 1/60 * 1000;
+        this.time  = this.get_time();
+        this.scale = 1;
+        this.fps   = this.IDEAL_FRAME_MS / 1000;
+    }
 
-    var time  = get_time();
-    var scale = 1;
-    var fps   = IDEAL_FRAME_MS / 1000;
-
-    function get_time() {
+    /**
+     * Wraps Date.now()
+     * @returns {number}
+     */
+    get_time() {
         return Date.now();
     }
 
-    function update() {
+    /**
+     * Keeps a running average of the players fps
+     */
+    update() {
         if (config.LAG_SCALE_ENABLE) {
-            var new_time = get_time();
-            var time_diff = new_time - time;
-            var new_fps = 1 / (time_diff / 1000);
-            time = new_time;
-            scale = time_diff / IDEAL_FRAME_MS;
-            fps = 0.2 * new_fps + 0.8 * fps; // running average of fps
+            let new_time = this.get_time();
+            let time_diff = new_time - this.time;
+            let new_fps = 1 / (time_diff / 1000);
+            this.time = new_time;
+            this.scale = time_diff / this.IDEAL_FRAME_MS;
+            this.fps = 0.2 * new_fps + 0.8 * this.fps; // running average of fps
         }
     }
 
-    function get() {
-        return scale;
+    /**
+     * Getter for scale
+     * @returns {number}
+     */
+    get() {
+        return this.scale;
     }
 
-    function get_fps() {
-        return fps;
+    /**
+     * Getter for fps
+     * @returns {number}
+     */
+    get_fps() {
+        return this.fps;
     }
+};
 
-    return {
-        update  : update,
-        get     : get,
-        get_fps : get_fps,
-    };
-}();
+ZOR.LagScale = new ZOR.LagScaleClass();

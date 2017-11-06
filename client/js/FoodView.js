@@ -1,12 +1,29 @@
-/**
- * Thew View part of Food MVC
- * @constructor
- */
-var FoodView = function ZORFoodView() {
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global UTIL:true
+global THREE:true
+global _:true
+*/
 
-    this.initialized = false;
+ZOR.FoodView = class ZORFoodView {
+    /**
+     * Thew View part of Food MVC
+     * @constructor
+     */
+    constructor() {
+        this.initialized = false;
+    }
 
-    this.drawFood = function ZORFoodViewDrawFood(scene, food, foodCount, fogCenterPosition, octree) {
+    /**
+     * @param {Object} scene the three.js scene
+     * @param {Array} food the food positions
+     * @param {Number} foodCount how many pieces of food there are
+     * @param {Object} fogCenterPosition the player's position, used for fog dimming
+     * @param {Object} octree an octree for efficient food collision testing
+     */
+    drawFood(scene, food, foodCount, fogCenterPosition, octree) {
         this.translate = new Float32Array( foodCount * 3 );
         this.colors = new Float32Array( foodCount * 3 );
         this.respawning = new Float32Array( foodCount );
@@ -15,40 +32,46 @@ var FoodView = function ZORFoodView() {
         this.geometry.copy( new THREE.PlaneBufferGeometry( 2, 2 ) );
         // this.geometry.copy( new THREE.CircleBufferGeometry( 1, 6 ) );
 
-        var foodCrayon = UTIL.getFoodCrayon( config.FOOD_COLORING_TYPE );
+        let foodCrayon = UTIL.getFoodCrayon( config.FOOD_COLORING_TYPE );
 
-        var translate = this.translate;
-        var colors = this.colors;
-        var respawning = this.respawning;
+        let translate = this.translate;
+        let colors = this.colors;
+        let respawning = this.respawning;
 
         // copy food translate and food color values from the food array
         // into the typed arrays for the particle system
 
-        var X, Y, Z, R, G, B;
-        var offset = 0;
-        for (var i = 0, l = foodCount; i < l; i++) {
+        let X;
+        let Y;
+        let Z;
+        let R;
+        let G;
+        let B;
+        let offset = 0;
 
-            X = food[ offset     ];
-            Y = food[ offset + 1 ];
-            Z = food[ offset + 2 ];
+        for (let i = 0, l = foodCount; i < l; i++) {
+            X = food[offset];
+            Y = food[offset + 1];
+            Z = food[offset + 2];
 
-            var color = foodCrayon( X, Y, Z );
+            let color = foodCrayon( X, Y, Z );
+
             R = color.r;
             G = color.g;
             B = color.b;
 
-            respawning[ i ] = 0;
+            respawning[i] = 0;
 
-            translate[ offset     ] = X;
-            translate[ offset + 1 ] = Y;
-            translate[ offset + 2 ] = Z;
+            translate[offset]     = X;
+            translate[offset + 1] = Y;
+            translate[offset + 2] = Z;
 
-            colors[ offset     ] = R;
-            colors[ offset + 1 ] = G;
-            colors[ offset + 2 ] = B;
+            colors[offset]     = R;
+            colors[offset + 1] = G;
+            colors[offset + 2] = B;
 
             // Add this food object to the Octree
-            var foodObj = {x: X, y: Y, z: Z, radius: 1, fi: i};
+            let foodObj = { x: X, y: Y, z: Z, radius: 1, fi: i };
             octree.add( foodObj );
 
             offset += 3;
@@ -60,17 +83,17 @@ var FoodView = function ZORFoodView() {
 
         this.material = new THREE.RawShaderMaterial( {
             uniforms: {
-                map: { type: "t", value: new THREE.TextureLoader().load( "textures/soft-square.png" ) },
-                mainSpherePos              : { type : "v3", value : fogCenterPosition },
-                FOG_FAR                    : { type : "f",  value : config.FOG_FAR },
-                FOG_ENABLED                : { type : "f",  value : ~~config.FOG_ENABLED },
-                ALPHA_ENABLED              : { type : "f",  value : ~~config.FOOD_ALPHA_ENABLED },
-                FOOD_RESPAWN_ANIM_DURATION : { type : "f",  value : config.FOOD_RESPAWN_ANIM_DURATION },
+                map                       : { type: 't', value: new THREE.TextureLoader().load( 'textures/soft-square.png' ) },
+                mainSpherePos             : { type: 'v3', value: fogCenterPosition },
+                FOG_FAR                   : { type: 'f',  value: config.FOG_FAR },
+                FOG_ENABLED               : { type: 'f',  value: ~~config.FOG_ENABLED },
+                ALPHA_ENABLED             : { type: 'f',  value: ~~config.FOOD_ALPHA_ENABLED },
+                FOOD_RESPAWN_ANIM_DURATION: { type: 'f',  value: config.FOOD_RESPAWN_ANIM_DURATION },
             },
-            vertexShader: document.getElementById( 'food-vertex-shader' ).textContent,
+            vertexShader  : document.getElementById( 'food-vertex-shader' ).textContent,
             fragmentShader: document.getElementById( 'food-frag-shader' ).textContent,
-            depthTest: true,
-            depthWrite: true,
+            depthTest     : true,
+            depthWrite    : true,
             // alphaTest: 0.5,
             // transparent: true,
         } );
@@ -82,18 +105,21 @@ var FoodView = function ZORFoodView() {
         scene.add( this.mesh );
 
         this.initialized = true;
-    };
+    }
 
-    this.update = function ZORFoodViewUpdate() {
+    /**
+     * Update tick for food.
+     */
+    update() {
         // Decrement each food value
 
-        var c = this.respawning; // c = collection
-        var i = c.length;        // i = index
-        var v;                   // v = value
-        var duration = config.FOOD_RESPAWN_ANIM_DURATION;
-        var lsGet = ZOR.LagScale.get;
+        let c = this.respawning; // c = collection
+        let i = c.length;        // i = index
+        let v;                   // v = value
+        let duration = config.FOOD_RESPAWN_ANIM_DURATION;
+        let lsGet = ZOR.LagScale.get.bind(ZOR.LagScale);
 
-        while( i-- ) {
+        while ( i-- ) {
             v = c[i];
 
             if ( v <= duration ) {
@@ -102,38 +128,39 @@ var FoodView = function ZORFoodView() {
         }
 
         this.mesh.geometry.attributes.respawning.needsUpdate = true;
-    };
+    }
 
     /**
      * Checks if a food index is alive and can be eaten
-     * @param fi
+     * @param {number} fi
      * @returns {boolean}
      */
-    this.aliveFood = function ZORFoodViewAliveFood(fi) {
+    aliveFood(fi) {
         return this.respawning[fi] === 0;
-    };
+    }
 
     /**
      * Hide the food at the index.
-     * @param fi
+     * @param {number} fi
      */
-    this.hideFood = function ZORFoodViewHideFood(fi) {
+    hideFood(fi) {
         this.respawning[fi] = config.FOOD_RESPAWN_ANIM_DURATION + 1; // hide food
-    };
+    }
 
 
     /**
      * Show the food at the index
-     * @param fi
+     * @param {number} fi
      */
-    this.showFood = function ZORFoodViewShowFood(fi) {
+    showFood(fi) {
         this.respawning[fi] = config.FOOD_RESPAWN_ANIM_DURATION;
-    };
+    }
 
     /**
      * Hide multiple foods
+     * @param {Object[]} foodToHide
      */
-    this.hideFoodMultiple = function ZORFoodViewHideFoodMultiple(foodToHide) {
+    hideFoodMultiple(foodToHide) {
         _.each( foodToHide, this.hideFood.bind(this) );
-    };
+    }
 };

@@ -1,24 +1,38 @@
-var ZOR = ZOR || {};
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global ZOR:true
+global Modernizr:true
+global Howl:true
+global Wad:true
+global _:true
+*/
 
 ZOR.Sounds = (function ZORSounds() {
-
-    // A simple helper function to avoid repetition when creating Howl objects
-    // for our sfx
+    /**
+     * A simple helper function to avoid repetition when creating Howl objects for our sfx
+     * @param {string} path
+     * @param {Object} custom
+     * @returns {Howl}
+     */
     function howlSfx(path, custom) {
-        var conf = _.assign({
-            src: ['../sfx/' + path],
+        let conf = _.assign({
+            src     : ['../sfx/' + path],
             autoplay: false,
-            loop: false,
-            volume: config.VOLUME_SFX_INITIAL,
-            buffer: false,
-            preload: true,
-            volume: 0.3,
+            loop    : false,
+            volume  : config.VOLUME_SFX_INITIAL,
+            buffer  : false,
+            preload : true,
         }, custom);
         return new Howl(conf);
     }
 
-    // A simple helper function for creating Wad sounds.  If Web Audio API
-    // isn't supported, returns a mock object which plays no sounds.
+    /**
+     * A simple helper function for creating Wad sounds.  If Web Audio API
+     * isn't supported, returns a mock object which plays no sounds.
+     * @param {Object} settings
+     * @returns {Object}
+     */
     function wadSfx(settings) {
         if (Modernizr.webaudio) {
             return new Wad(settings);
@@ -28,13 +42,15 @@ ZOR.Sounds = (function ZORSounds() {
         }
     }
 
-    var sounds = {
-        musicVolume: function (vol) {
-            _.each(sounds.music, function (music) { music.volume(vol); });
+    let sounds = {
+        musicVolume: function(vol) {
+            _.each(sounds.music, function(music) {
+                music.volume(vol);
+            });
             localStorage.volume_music = vol;
             console.log(`set music volume to ${vol}`);
         },
-        sfxVolume: function (vol) {
+        sfxVolume: function(vol) {
             _.each(
                 sounds.sfx,
                 _.partial( _.invoke, _, 'setVolume', vol )
@@ -42,17 +58,19 @@ ZOR.Sounds = (function ZORSounds() {
             localStorage.volume_sfx = vol;
             console.log(`set sfx volume to ${vol}`);
         },
-        playMusic: function (name) {
+        playMusic: function(name) {
             sounds.stopMusic();
             sounds.music[name].play();
         },
-        stopMusic: function () {
-            _.forEach(sounds.music, function (music) { music.stop(); });
+        stopMusic: function() {
+            _.forEach(sounds.music, function(music) {
+                music.stop();
+            });
         },
         music: {
-            menu     : howlSfx('veus/Zorbio_MainMenu.ogg.mp3', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
-            play     : howlSfx('veus/Zorbio_GamePlay.ogg.mp3', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
-            gameover : howlSfx('veus/Zorbio_GameOver.ogg.mp3', { loop : true, volume : config.VOLUME_MUSIC_INITIAL }),
+            menu    : howlSfx('veus/Zorbio_MainMenu.ogg.mp3', { loop: true, volume: config.VOLUME_MUSIC_INITIAL }),
+            play    : howlSfx('veus/Zorbio_GamePlay.ogg.mp3', { loop: true, volume: config.VOLUME_MUSIC_INITIAL }),
+            gameover: howlSfx('veus/Zorbio_GameOver.ogg.mp3', { loop: true, volume: config.VOLUME_MUSIC_INITIAL }),
         },
         sfx: {
             // Only commented out food capture because it's worth saving the
@@ -70,30 +88,30 @@ ZOR.Sounds = (function ZORSounds() {
             // }),
 
             // a chime sound for food capture
-            food_capture: howlSfx('veus/Effects/LowPitchLazer.ogg.mp3'),
-            woosh: wadSfx({
+            food_capture: howlSfx('veus/Effects/LowPitchLazer.ogg.mp3', {}),
+            woosh       : wadSfx({
                 source: 'noise',
                 volume: 0.35,
-                env: {
-                    attack: 0.5,
-                    decay: 0.5,
+                env   : {
+                    attack : 0.5,
+                    decay  : 0.5,
                     sustain: 1,
-                    hold: 3600, // a long time... 1 hour
-                    release: .5
+                    hold   : 3600, // a long time... 1 hour
+                    release: .5,
                 },
                 filter: {
-                    type: 'lowpass',
+                    type     : 'lowpass',
                     frequency: 300,
-                    q: 1.0
+                    q        : 1.0,
                 },
             }),
-            state_change: howlSfx('food_capture/D3.mp3'),
-            player_capture: howlSfx('veus/Effects/LowPitchDrop.ogg.mp3'),
+            state_change  : howlSfx('food_capture/D3.mp3', {}),
+            player_capture: howlSfx('veus/Effects/LowPitchDrop.ogg.mp3', {}),
         },
         playFromPos: function ZORSoundsPlayFromPos(sound, earObject, soundPos) {
-            var dist = earObject.position.distanceTo(soundPos);
-            var pos = earObject.worldToLocal(soundPos).normalize().multiplyScalar(dist/config.VOLUME_FALLOFF_RATE);
-            var id = sound.play();
+            let dist = earObject.position.distanceTo(soundPos);
+            let pos = earObject.worldToLocal(soundPos).normalize().multiplyScalar(dist/config.VOLUME_FALLOFF_RATE);
+            let id = sound.play();
             sound.pos(pos.x, pos.y, pos.z, id);
         },
     };
@@ -102,15 +120,18 @@ ZOR.Sounds = (function ZORSounds() {
         sounds.music = {};
     }
 
+    /**
+     * Initialize sound fx hacks to deal with weird problems
+     */
     function initSfxHacks() {
         // The Howler sfx seem to be delayed and sound glitchy the first time
         // they're played.  This function attempts to fix that by playing them
         // once, at zero volume.
-        var sound = sounds.sfx.food_capture;
-        var id = sound.play();
+        let sound = sounds.sfx.food_capture;
+        let id = sound.play();
         sound.mute(true, id);
         sound.volume(0, id);
-        sound.pos(1,1,1,id);
+        sound.pos(1, 1, 1, id);
 
         // woosh sound from wad needs to be started and stopped
         sounds.sfx.woosh.play();
@@ -119,5 +140,4 @@ ZOR.Sounds = (function ZORSounds() {
     initSfxHacks();
 
     return sounds;
-
 })();

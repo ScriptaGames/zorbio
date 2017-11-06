@@ -83,14 +83,12 @@
 
         <!-- SKINS -->
 
-        <script src="skins/earth/sphere.vert" id="skin-earth-vertex-shader"   type="x-shader/x-vertex"></script>
-        <script src="skins/earth/sphere.frag" id="skin-earth-fragment-shader" type="x-shader/x-fragment"></script>
+        <script src="skins/standard/sphere.vert" id="skin-standard-vertex-shader" type="x-shader/x-vertex"></script>
+        <script src="skins/standard/sphere.frag" id="skin-standard-fragment-shader" type="x-shader/x-fragment"></script>
         <script src="skins/default/sphere.vert" id="skin-default-vertex-shader"   type="x-shader/x-vertex"></script>
         <script src="skins/default/sphere.frag" id="skin-default-fragment-shader" type="x-shader/x-fragment"></script>
         <script src="skins/boing/sphere.vert" id="skin-boing-vertex-shader"   type="x-shader/x-vertex"></script>
         <script src="skins/boing/sphere.frag" id="skin-boing-fragment-shader" type="x-shader/x-fragment"></script>
-        <script src="skins/reddit/sphere.vert" id="skin-reddit-vertex-shader"   type="x-shader/x-vertex"></script>
-        <script src="skins/reddit/sphere.frag" id="skin-reddit-fragment-shader" type="x-shader/x-fragment"></script>
 
         <!-- THIRD PARTY -->
         <div id="third_party">
@@ -115,11 +113,20 @@
         </div>
 
         <!-- FIRST PARTY -->
+        <script>
+            // Initialize the global ZOR object before any first party scripts This is the only 'var' in the code
+            // And was moved here so eslint doesn't error on it.
+            // This must be outside <div id="first_party"> in order for the build to work
+            var ZOR = {};
+        </script>
         <div id="first_party">
+            <script src="js/ParticleTemplates.js"></script>
+            <script src="skins/TrailTemplates.js"></script>
             <script src="skins/default/default.js"></script>
-            <script src="skins/earth/earth.js"></script>
+            <script src="skins/standard/standard.js"></script>
             <script src="skins/boing/boing.js"></script>
-            <script src="skins/reddit/reddit.js"></script>
+            <script src="lib/SkinCatalog.js"></script>
+            <script src="js/SkinFactory.js"></script>
             <script src="lib/environment.js"></script>
             <script src="js/ObjectPool.js"></script>
             <script src="js/config.js"></script>

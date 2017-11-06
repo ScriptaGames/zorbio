@@ -1,12 +1,20 @@
-var NODEJS = typeof module !== 'undefined' && module.exports;
+// ESLint global declarations: https://eslint.org/docs/rules/no-undef
+/*
+global config:true
+global THREE:true
+global _:true
+global xssFilters:true
+*/
 
-if (NODEJS) {
+const NODEJS_UTIL = typeof module !== 'undefined' && module.exports;
+
+if (NODEJS_UTIL) {
     global.config = require('./config.js');
     global._ = require('lodash');
     global.xssFilters = require('xss-filters');
 }
 
-var UTIL = {};
+let UTIL = {};
 
 /**
  * Clamps a number to a given range.
@@ -14,6 +22,7 @@ var UTIL = {};
  * @param {Number} n the number to clamp
  * @param {Number} min the range's lower bound
  * @param {Number} max the range's upper bound
+ * @returns {number}
  */
 UTIL.clamp = function UTILClamp(n, min, max) {
     if (min > max) throw new Error('invalid clamp, min is greater than max');
@@ -49,8 +58,8 @@ UTIL.getRandomArbitrary = function UTILGetRandomArbitrary(min, max) {
  * @param {String} nickname
  * @returns {Boolean}
  */
-UTIL.validNick = function UTILValidNick (nickname) {
-    var regex = /^\w*$/;
+UTIL.validNick = function UTILValidNick(nickname) {
+    let regex = /^\w*$/;
     return regex.exec(nickname) !== null;
 };
 
@@ -64,7 +73,7 @@ UTIL.validNick = function UTILValidNick (nickname) {
  */
 UTIL.getSizePercentage = function UTILGetSizePercentage(size) {
     // similar to  https://www.desmos.com/calculator/dphm84crab
-    var factor = ((size * 1) / config.MAX_PLAYER_RADIUS);
+    let factor = ((size * 1) / config.MAX_PLAYER_RADIUS);
     return factor;
 };
 
@@ -198,14 +207,12 @@ function hitzn( p, r, v, w ) {
  * @returns {Boolean} whether the wall would be hit after applying given velocity
  */
 UTIL.checkWallCollision = function UTILcheckWallCollision( p, r, v, w ) {
-
     return hitxp( p, r, v, w ) ||
         hitxn( p, r, v, w ) ||
         hityp( p, r, v, w ) ||
         hityn( p, r, v, w ) ||
         hitzp( p, r, v, w ) ||
         hitzn( p, r, v, w );
-
 };
 
 /**
@@ -219,20 +226,23 @@ UTIL.checkWallCollision = function UTILcheckWallCollision( p, r, v, w ) {
  * @returns {Vector3} the updated (or not) velocity
  */
 UTIL.adjustVelocityWallHit = function UTILadjustVelocityWallHit( p, r, v, w ) {
-    var vs = v.clone();
+    let vs = v.clone();
 
     // TODO: instead of reducing velocities to 0, reduce them just enough to
     // avoid collision.  reducing to 0 causes small, fast spheres to sometimes
     // "hit" the wall before they are visibly touching it.
 
-    if ( hitxp( p, r, v, w ) || hitxn( p, r, v, w ) )
+    if ( hitxp( p, r, v, w ) || hitxn( p, r, v, w ) ) {
         vs.x = 0;
+    }
 
-    if ( hityp( p, r, v, w ) || hityn( p, r, v, w ) )
+    if ( hityp( p, r, v, w ) || hityn( p, r, v, w ) ) {
         vs.y = 0;
+    }
 
-    if ( hitzp( p, r, v, w ) || hitzn( p, r, v, w ) )
+    if ( hitzp( p, r, v, w ) || hitzn( p, r, v, w ) ) {
         vs.z = 0;
+    }
 
     return vs;
 };
@@ -243,6 +253,7 @@ UTIL.adjustVelocityWallHit = function UTILadjustVelocityWallHit( p, r, v, w ) {
  *
  * @param {Number} r percentage distance from center of the screen, for example
  * 0.5 would mean halfway between screen center and screen edge.
+ * @returns {number}
  */
 UTIL.slopewell = function slopewell( r ) {
     return Math.max(0, ( -config.STEERING.WELL + r ) / config.STEERING.SLOPE);
@@ -251,13 +262,13 @@ UTIL.slopewell = function slopewell( r ) {
 /**
  * Get a random world coordinate which a sphere could be placed in.  Because
  * the world is a cube, the coordinate can be used on any axis.
- *
- * @returns {Number}
+ * @param {number} d
+ * @returns {number}
  */
 UTIL.safeRandomCoordinate = function UTILsafeRandomCoordinate(d) {
-    var devide = d || 1;
-    var v = Math.random();
-    var safe_size = (config.WORLD_SIZE / devide) - (2 * config.INITIAL_PLAYER_RADIUS);
+    let devide = d || 1;
+    let v = Math.random();
+    let safe_size = (config.WORLD_SIZE / devide) - (2 * config.INITIAL_PLAYER_RADIUS);
     return v * safe_size - safe_size / 2;
 };
 
@@ -269,16 +280,16 @@ UTIL.safeRandomCoordinate = function UTILsafeRandomCoordinate(d) {
  * @returns {Vector3} the position recommended for a player
  */
 UTIL.randomWorldPosition = function UTILrandomWorldPosition() {
-    var x = UTIL.safeRandomCoordinate();
-    var y = UTIL.safeRandomCoordinate();
-    var z = UTIL.safeRandomCoordinate();
+    let x = UTIL.safeRandomCoordinate();
+    let y = UTIL.safeRandomCoordinate();
+    let z = UTIL.safeRandomCoordinate();
     return new THREE.Vector3( x, y, z );
 };
 
 UTIL.randomHorizontalPosition = function UTILrandomWorldPosition() {
-    var x = UTIL.safeRandomCoordinate();
-    var y = 1;
-    var z = UTIL.safeRandomCoordinate();
+    let x = UTIL.safeRandomCoordinate();
+    let y = 1;
+    let z = UTIL.safeRandomCoordinate();
     return new THREE.Vector3( x, y, z );
 };
 
@@ -287,7 +298,7 @@ UTIL.trimPosition = function UTILTrimPosition(position, trim) {
     return {
         x: +position.x.toFixed(trim),
         y: +position.y.toFixed(trim),
-        z: +position.z.toFixed(trim)
+        z: +position.z.toFixed(trim),
     };
 };
 
@@ -309,26 +320,30 @@ UTIL.trimFloat = function UTILTrimFloat(num, trim) {
 /**
  * Utility function used to push data into the
  * array while maintaining the sort order.
+ * @param {Object[]} array
+ * @param {Object} value
+ * @param {Object} iteratee
  */
 UTIL.sortedObjectPush = function UTILSortedObjectPush( array, value, iteratee ) {
-    array.splice( _.sortedIndexBy(array, value, iteratee) , 0, value );
+    array.splice( _.sortedIndexBy(array, value, iteratee), 0, value );
 };
 
 /**
  * Given a food coloring name, returns a function for generating that food
  * coloring style.
  *
- * @param {String} name the
+ * @param {String} type the
  * @example UTIL.foodColoring('random');
  * @example UTIL.foodColoring('rgbcube');
+ * @returns {*}
  */
 UTIL.getFoodCrayon = function UTILfoodColoring( type ) {
     return foodCrayons[type];
 };
 
-var foodCrayons = {
+let foodCrayons = {
 
-    random: function foodColoringRandom() {
+    'random': function foodColoringRandom() {
         return {
             r: UTIL.getRandomIntInclusive(0, 255) / 255,
             g: UTIL.getRandomIntInclusive(0, 255) / 255,
@@ -336,11 +351,11 @@ var foodCrayons = {
         };
     },
 
-    hsl01: function foodColoringHSL01( x, y, z ) {
-        var h = ( x + y + z ) / (2*config.WORLD_SIZE);
-        var s = 1.0;
-        var l = 0.6;
-        var color = new THREE.Color().setHSL(h,s,l);
+    'hsl01': function foodColoringHSL01( x, y, z ) {
+        let h = ( x + y + z ) / (2*config.WORLD_SIZE);
+        let s = 1.0;
+        let l = 0.6;
+        let color = new THREE.Color().setHSL(h, s, l);
         return {
             r: color.r,
             g: color.g,
@@ -348,7 +363,7 @@ var foodCrayons = {
         };
     },
 
-    rgbcube: function foodColoringRgbCube( x, y, z ) {
+    'rgbcube': function foodColoringRgbCube( x, y, z ) {
         return {
             r: 0.5 + x / config.WORLD_SIZE,
             g: 0.5 + y / config.WORLD_SIZE,
@@ -365,7 +380,9 @@ var foodCrayons = {
     },
 
     'octant': function foodColoringOctant( x, y, z ) {
-        var r, g, b;
+        let r;
+        let g;
+        let b;
 
         // based on: https://en.wikipedia.org/wiki/Octant_(solid_geometry)
         if (x >= 0 && y >= 0 && z >= 0) {
@@ -412,7 +429,7 @@ var foodCrayons = {
         return {
             r: r,
             g: g,
-            b: b
+            b: b,
         };
     },
 
@@ -440,24 +457,24 @@ UTIL.getFoodMap = function getFoodMap( type ) {
     return foodMaps[type];
 };
 
-var foodMaps = {
+let foodMaps = {
     random: function foodMapRandom(count, density) {
-        var halfSize  = config.WORLD_SIZE / 2;
-        var blockSize = config.WORLD_SIZE / density;
-        var ints      = 3; // 6 for XYZ
-        var offset    = 0;
-        var positions = new Int16Array(count * 3);
+        let halfSize  = config.WORLD_SIZE / 2;
+        let blockSize = config.WORLD_SIZE / density;
+        let ints      = 3; // 6 for XYZ
+        let offset    = 0;
+        let positions = new Int16Array(count * 3);
 
-        for (var i = 1; i < density; ++i) {
-            for (var j = 1; j < density; ++j) {
-                for (var k = 1; k < density; ++k) {
+        for (let i = 1; i < density; ++i) {
+            for (let j = 1; j < density; ++j) {
+                for (let k = 1; k < density; ++k) {
                     // set food position
-                    var x = halfSize - ( i * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
-                    var y = halfSize - ( j * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
-                    var z = halfSize - ( k * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
-                    positions[ offset ]     = x;
-                    positions[ offset + 1 ] = y;
-                    positions[ offset + 2 ] = z;
+                    let x = halfSize - ( i * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
+                    let y = halfSize - ( j * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
+                    let z = halfSize - ( k * blockSize ) + UTIL.getRandomIntInclusive( -blockSize, blockSize );
+                    positions[offset]     = x;
+                    positions[offset + 1] = y;
+                    positions[offset + 2] = z;
 
                     offset += ints;
                 }
@@ -467,22 +484,22 @@ var foodMaps = {
         return positions;
     },
     grid: function foodMapGrid(count, density) {
-        var halfSize  = config.WORLD_SIZE / 2;
-        var blockSize = config.WORLD_SIZE / density;
-        var ints      = 3; // 6 for XYZ
-        var offset    = 0;
-        var positions = new Int16Array(count * 3);
+        let halfSize  = config.WORLD_SIZE / 2;
+        let blockSize = config.WORLD_SIZE / density;
+        let ints      = 3; // 6 for XYZ
+        let offset    = 0;
+        let positions = new Int16Array(count * 3);
 
-        for (var i = 1; i < density; ++i) {
-            for (var j = 1; j < density; ++j) {
-                for (var k = 1; k < density; ++k) {
+        for (let i = 1; i < density; ++i) {
+            for (let j = 1; j < density; ++j) {
+                for (let k = 1; k < density; ++k) {
                     // set food position
-                    var x = halfSize - ( i * blockSize );
-                    var y = halfSize - ( j * blockSize );
-                    var z = halfSize - ( k * blockSize );
-                    positions[ offset ]     = x;
-                    positions[ offset + 1 ] = y;
-                    positions[ offset + 2 ] = z;
+                    let x = halfSize - ( i * blockSize );
+                    let y = halfSize - ( j * blockSize );
+                    let z = halfSize - ( k * blockSize );
+                    positions[offset]     = x;
+                    positions[offset + 1] = y;
+                    positions[offset + 2] = z;
 
                     offset += ints;
                 }
@@ -501,24 +518,25 @@ var foodMaps = {
  *
  * @param {Function} f the function to wrap
  * @param {Number} n execute the function every `n` times
+ * @returns {Function}
  */
 UTIL.nth = function nth(f, n) {
-    var _i = 0;
-    var _n = Math.max(n, 0);
-    return function() {
+    let _i = 0;
+    let _n = Math.max(n, 0);
+    return function(...args) {
         if (_i === _n) {
             _i = 0;
-            return f.apply(this, arguments);
+            return f.apply(this, args);
         }
         else {
             _i++;
         }
-    }
+    };
 };
 
 /**
  * Test if a string is undefinted null or blank
- * @param str
+ * @param {string} str
  * @returns {Boolean}
  */
 UTIL.isBlank = function isBlank(str) {
@@ -527,9 +545,9 @@ UTIL.isBlank = function isBlank(str) {
 
 /**
  * pushes an element onto the front of an array and shifts the oldest element out based on max_length
- * @param arr
- * @param value
- * @param max_length
+ * @param {Object[]} arr
+ * @param {*} value
+ * @param {number} max_length
  */
 UTIL.pushShift = function UTILPushShift(arr, value, max_length) {
     arr.push(value);
@@ -540,13 +558,13 @@ UTIL.pushShift = function UTILPushShift(arr, value, max_length) {
 
 /**
  * Converts a node.js buffer to an ArrayBuffer
- * @param buffer
+ * @param {Object} buffer
  * @returns {ArrayBuffer}
  */
 UTIL.toArrayBuffer = function UTILtoArrayBuffer(buffer) {
-    var ab = new ArrayBuffer(buffer.length);
-    var view = new Uint8Array(ab);
-    for (var i = 0; i < buffer.length; ++i) {
+    let ab = new ArrayBuffer(buffer.length);
+    let view = new Uint8Array(ab);
+    for (let i = 0; i < buffer.length; ++i) {
         view[i] = buffer[i];
     }
     return ab;
@@ -554,31 +572,33 @@ UTIL.toArrayBuffer = function UTILtoArrayBuffer(buffer) {
 
 /**
  * Returns the index of the element matching given id.  used for looking up things like players in an array.
- * @param theArray
- * @param id
+ * @param {Object[]} theArray
+ * @param {number} id
  * @return {number}
  */
 UTIL.findIndexById = function UTILFindINdexById(theArray, id) {
-    return _.findIndex(theArray, function(o) { return o.id == id; });
+    return _.findIndex(theArray, function(o) {
+        return o.id == id;
+    });
 };
 
 /**
  * Returns the first byte of an array buffer
- * @param arrayBuffer
+ * @param {Object} arrayBuffer
  * @returns {number}
  */
 UTIL.readFirstByte = function UTILReadFirstByte(arrayBuffer) {
-    var view = new Uint8Array(arrayBuffer);
+    let view = new Uint8Array(arrayBuffer);
     return view[0];
 };
 
 /**
  * Returns the first float of an array buffer
- * @param arrayBuffer
+ * @param {Object} arrayBuffer
  * @returns {float}
  */
 UTIL.readFirstFloat = function UTILReadFirstByte(arrayBuffer) {
-    var view = new Float32Array(arrayBuffer);
+    let view = new Float32Array(arrayBuffer);
     return view[0];
 };
 
@@ -587,13 +607,13 @@ UTIL.logTime = function UTILLogTime(msg, start, end) {
 };
 
 UTIL.filterName = function UTILFilterName(name) {
-    var filtered_name = xssFilters.inHTMLData(name);
+    let filtered_name = xssFilters.inHTMLData(name);
 
     // now also remove quotes because they break the backend
-    filtered_name = filtered_name.replace(/["']/g, "");
+    filtered_name = filtered_name.replace(/["']/g, '');
 
     if (UTIL.isBlank(filtered_name)) {
-        filtered_name = "Guest";
+        filtered_name = 'Guest';
     }
     else if (name.length > config.MAX_PLAYER_NAME_LENGTH) {
         filtered_name = filtered_name.substr(0, config.MAX_PLAYER_NAME_LENGTH);
@@ -604,9 +624,9 @@ UTIL.filterName = function UTILFilterName(name) {
 
 /**
  * Lerp two values
- * @param v0
- * @param v1
- * @param t
+ * @param {number} v0
+ * @param {number} v1
+ * @param {number} t
  * @returns {number}
  */
 UTIL.lerp = function UTILLerp(v0, v1, t) {
@@ -638,4 +658,4 @@ UTIL.threeFree = function UTILThreeFree(scene, mesh) {
 };
 
 // if we're in nodejs, export the root UTIL object
-if (NODEJS) module.exports = UTIL;
+if (NODEJS_UTIL) module.exports = UTIL;

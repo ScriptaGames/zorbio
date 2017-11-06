@@ -1,33 +1,32 @@
 #!/bin/env node
 
-//TODO: Figure out how to turn this on without losing stack trace logging
+// TODO: Figure out how to turn this on without losing stack trace logging
 // initialize sentry error capturing
 // var Raven = require('raven');
 // var raven = new Raven.Client('https://1c4c71e0f3874af3a6ac2893d6531db5:8b37517edbeb46eab534ba15f35c0713@app.getsentry.com/94116');
 // raven.patchGlobal();
 
 //  Sample Node.js WebSocket Client-Server application
-var http            = require('http');
-var express         = require('express');
-var WebSocketServer = require('ws').Server;
-var AppProxy        = require('./AppProxy.js');
-var config          = require('../common/config.js');
-var packageJson     = require('../package.json');
-var _               = require('lodash');
-var url             = require('url');
-var validUrl        = require('valid-url');
-var uuid            = require("node-uuid");
+let http            = require('http');
+let express         = require('express');
+let WebSocketServer = require('ws').Server;
+let AppProxy        = require('./AppProxy.js');
+let config          = require('../common/config.js');
+let packageJson     = require('../package.json');
+let _               = require('lodash');
+let url             = require('url');
+let validUrl        = require('valid-url');
+let uuid            = require('node-uuid');
 
 // Patch console.x methods in order to add timestamp information
-require("console-stamp")(console, {pattern: "mm/dd/yyyy HH:MM:ss.l"});
+require('console-stamp')(console, { pattern: 'mm/dd/yyyy HH:MM:ss.l' });
 
 /**
  *  Define the sample server.
  */
-var MainServer = function () {
-
+let MainServer = function() {
     //  Scope
-    var self = this;
+    let self = this;
 
 
     /*  ================================================================  */
@@ -37,22 +36,23 @@ var MainServer = function () {
     /**
      *  Set up server env variables/defaults.
      */
-    self.setupVariables = function () {
+    self.setupVariables = function() {
         //  Set the environment variables we need.
         self.http_port = process.env.HTTP_PORT || config.HTTP_PORT;
         self.ws_port = process.env.WS_PORT || config.WS_PORT;
         self.server_label = process.env.SERVER_LABEL || uuid.v4();
 
-        console.log("http_port, ws_port, server_label", self.http_port, self.ws_port, self.server_label)
+        console.log('http_port, ws_port, server_label', self.http_port, self.ws_port, self.server_label);
     };
 
 
     /**
      *  terminator === the termination handler
      *  Terminate server on receipt of the specified signal.
+     * @param {*} sig
      */
-    self.terminator = function (sig) {
-        if (typeof sig === "string") {
+    self.terminator = function(sig) {
+        if (typeof sig === 'string') {
             console.log('Received %s - terminating sample server ...', sig);
             process.exit(1);
         }
@@ -63,14 +63,19 @@ var MainServer = function () {
     /**
      *  Setup termination handlers (for exit and a list of signals).
      */
-    self.setupTerminationHandlers = function () {
+    self.setupTerminationHandlers = function() {
         //  Process on exit and signals.
-        process.on('exit', function() { self.terminator(0); });
+        process.on('exit', function() {
+            self.terminator(0);
+        });
 
-        ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
-         'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
+        [
+            'SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
+            'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM',
         ].forEach(function(element) {
-            process.on(element, function() { self.terminator(element); });
+            process.on(element, function() {
+                self.terminator(element);
+            });
         });
     };
 
@@ -83,12 +88,12 @@ var MainServer = function () {
      *  Initialize the server (express) and create the routes and register
      *  the handlers.
      */
-    self.initializeServer = function () {
+    self.initializeServer = function() {
         self.app = express();
         self.httpServer = http.Server(self.app);
 
         // Set up WebSocket Server
-        var options = {
+        let options = {
             port: self.ws_port,
         };
 
@@ -96,15 +101,15 @@ var MainServer = function () {
             options.verifyClient = function wssVerifyClient(info, callback) {
                 // make sure the origin is one of the approved origins
                 if (validUrl.is_web_uri(info.origin)) {
-                    var origin_values = _.values(config.BALANCERS);
-                    var hostname = url.parse(info.origin).hostname;
-                    var index = origin_values.indexOf(hostname);
-                    if (index != -1 && hostname != 'localhost') {
+                    let origin_values = _.values(config.BALANCERS);
+                    let hostname = url.parse(info.origin).hostname;
+                    let index = origin_values.indexOf(hostname);
+                    if (index !== -1 && hostname !== 'localhost') {
                         callback(true);  // valid origin
                         return true;
                     }
                 }
-                console.warn("Invalid origin: ", info.origin);
+                console.warn('Invalid origin: ', info.origin);
                 callback(false);
                 return false;
             };
@@ -123,7 +128,7 @@ var MainServer = function () {
     /**
      *  Initializes the server
      */
-    self.initialize = function () {
+    self.initialize = function() {
         self.setupVariables();
         self.setupTerminationHandlers();
 
@@ -135,11 +140,11 @@ var MainServer = function () {
     /**
      *  Start the server
      */
-    self.start = function () {
+    self.start = function() {
         //  Start the app on the specific interface (and port).
         if (config.ENABLE_HTTP_SERVER) {
-            self.httpServer.listen(self.http_port, function () {
-                console.log("Zorbio v" + packageJson.version + "-" + packageJson.build + " is listening on http://localhost:" + self.http_port);
+            self.httpServer.listen(self.http_port, function() {
+                console.log('Zorbio v' + packageJson.version + '-' + packageJson.build + ' is listening on http://localhost:' + self.http_port);
             });
         }
     };
@@ -149,7 +154,7 @@ var MainServer = function () {
 /**
  *  main():  Main code.
  */
-var mainServer = new MainServer();
+let mainServer = new MainServer();
 mainServer.initialize();
 mainServer.start();
 

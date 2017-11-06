@@ -1,0 +1,111 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "google"
+    ],
+    "rules": {
+        "no-multi-spaces": "off",
+        "no-console": "off",
+        "camelcase": "off",
+        "curly": [
+            "error",
+            "multi-line",
+            "consistent"
+        ],
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ],
+        "key-spacing": [
+            "error",
+            {
+                "align": {
+                    "beforeColon": false,
+                    "afterColon": true,
+                    "on": "colon"
+                }
+            }
+        ],
+        "new-cap": [
+            "error",
+            {
+                "capIsNewExceptions": [
+                    "GET_NEAR_BALANCER",
+                    "PLAYER_CAPTURE_VALUE",
+                    "PLAYER_GET_SPEED",
+                    "GET_PADDED_INT",
+                    "FOOD_GET_VALUE",
+                    "GET_CAMERA_MIN_DISTANCE",
+                    "Server"
+                ]
+            }
+        ],
+        "spaced-comment": [
+            "error",
+            "always",
+            {
+                "line": {
+                    "exceptions": [
+                        "/"
+                    ]
+                },
+                "block": {
+                    "exceptions": [
+                        "*"
+                    ],
+                    "balanced": true
+                }
+            }
+        ],
+        "valid-jsdoc": [
+            "error",
+            {
+                "requireParamDescription": false,
+                "requireReturnDescription": false,
+                "requireReturn": false,
+                "prefer": {
+                    "returns": "returns"
+                }
+            }
+        ],
+        "quotes": [
+            "error",
+            "single",
+            {
+                "avoidEscape": true,
+                "allowTemplateLiterals": true
+            }
+        ],
+        "no-unused-vars": [
+            "error",
+            {
+                "varsIgnorePattern": "startGame|respawnPlayer|createScene|initCameraAndPlayer|handle.*"
+            }
+        ],
+        "brace-style": [
+            "error",
+            "stroustrup"
+        ],
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "max-len": [
+            "error",
+            {
+                "code": 120,
+                "ignoreUrls": true,
+                "ignoreStrings": true,
+                "ignoreTrailingComments": true
+            }
+        ]
+    }
+}
