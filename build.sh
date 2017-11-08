@@ -117,7 +117,7 @@ rpmbuild -bb SPECS/zorbio-static.spec
 ###############################################
 if [ "$1" = "--upload" ]; then
     echo "Uploading rpms..."
-    scp -P 4460 ~/rpmbuild/RPMS/x86_64/zorbio-$VERSION-$BUILD.fc24.x86_64.rpm mcp.zor.bio:/var/www/html/repo/
-    scp -P 4460 ~/rpmbuild/RPMS/x86_64/zorbio-static-$VERSION-$BUILD.fc24.x86_64.rpm mcp.zor.bio:/var/www/html/repo/
+    scp -P 4460 ~/rpmbuild/RPMS/x86_64/zorbio-$VERSION-$BUILD.fc26.x86_64.rpm mcp.zorb.io:/var/www/html/repo/
+    scp -P 4460 ~/rpmbuild/RPMS/x86_64/zorbio-static-$VERSION-$BUILD.fc26.x86_64.rpm mcp.zorb.io:/var/www/html/repo/
     echo "Done. Repo will be updated within 5 minutes. Edit: https://github.com/ScriptaGames/zorbio-version/edit/master/version.json"
 fi

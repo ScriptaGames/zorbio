@@ -85,15 +85,17 @@ servers)
 
 ## Creating a new node
 
-    ssh mcp.zor.bio -p4460
+    ssh mcp.zorb.io -p4460
     sudo su -
 
     # -l can be dallas frankfurt singapore
     # -c is cores, can be more if demand spikes quickly
     ./create_node.sh -l dallas -c 1
 
-    # when that is done (check lish or wait 3+ mins)... get node's IP and:
-    ansible-playbook -i ~/linode.py -l 45.33.14.120 ~/provision.yaml
+    # when that is done (check lish or wait 3-4 mins)... get node's IP and:
+    ansible-playbook -i ~/linode.py -l 45.33.14.120 scripta-ansible/playbooks/zorbio/provision.yaml
+
+Once ansible finishes provisioning the new node(s) then the cronjob will automatically deploy the latest zorbio build ton them on it's next run.
 
 ## Creating audio recordings of WebAudio files
 
