@@ -5,6 +5,7 @@ let _           = require('lodash');
 let datasets    = require('datasets');
 let THREE       = require('three');
 let SkinCatalog = require( '../common/SkinCatalog' );
+let Curves      = require('./lib/CurveExtras.js');
 
 let Bot = function(scale, model) {
     //  Scope
@@ -22,8 +23,20 @@ let Bot = function(scale, model) {
     self.id = Zorbio.IdGenerator.get_next_id();
     self.name = 'AI ' + _.sample(Bot.prototype.names);
     self.scale = scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);
+    self.chaseTarget = {
+        position: new THREE.Vector3(),
+    };
 
-    let position = self.model.getSafeSpawnPosition(10);
+    self.curve = new Curves.HeartCurve(10);
+
+    self.curvePoints = self.curve.getPoints(100);
+
+    // TODO: Figure out what to do with span points
+    // let position = self.model.getSafeSpawnPosition(10);
+
+    self.nextCurvePoint = 1;
+
+    let position = self.curvePoints[0];
 
     // Create the player model
     self.player = new Zorbio.Player(
@@ -111,13 +124,45 @@ let Bot = function(scale, model) {
 
             sphere.pushRecentPosition({ position: sphere.position, radius: sphere.scale, time: Date.now() });
         },
+
+        curve: function moveCurve() {
+            let sphere = self.player.sphere;
+            let nextPoint = self.curvePoints[self.nextCurvePoint];
+
+            // Check the distance
+            if (sphere.position.distanceTo(nextPoint) < 5) {
+                // reached the point, go to next
+                self.nextCurvePoint++;
+
+
+                // See if we've reached the end of the points and reset
+                if (self.nextCurvePoint === self.curvePoints.length) {
+                    self.nextCurvePoint = 1;
+                }
+
+                nextPoint = self.curvePoints[self.nextCurvePoint];
+            }
+
+            // TODO: put this in a fuction, it's duplicated from randomPoint
+            let targetPos = nextPoint.clone();
+
+            targetPos.sub(sphere.position);
+            targetPos.normalize();
+
+            let speed = self.player.getSpeed() * (config.TICK_FAST_INTERVAL / (1000/60)); // convert speed multiplier from fps to tick fast
+            targetPos.multiplyScalar( speed );
+
+            sphere.position.add(targetPos);
+
+            sphere.pushRecentPosition({ position: sphere.position, radius: sphere.scale, time: Date.now() });
+        },
     };
 
     self.setChaseTarget = function botChaseTarget(actor_id) {
         self.chaseTarget = self.model.getActorById(actor_id);
     };
 
-    self.move = self.movementPaterns.randomPoint;
+    self.move = self.movementPaterns.curve;
 };
 
 Bot.prototype.names = datasets['male-first-names-en'].concat(datasets['female-first-names-en']);

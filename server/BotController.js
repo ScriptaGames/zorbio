@@ -85,6 +85,17 @@ let BotController = function(model) {
     self.hasBots = function botHasBots() {
         return self.bots.length > 0;
     };
+
+    self.playerJoined = function botControllerPlayerJoined(player) {
+        // For any bots that have the chase movement method, set new chase target
+        for (let i = 0; i < self.bots.length; i++) {
+            let bot = self.bots[i];
+
+            if (bot.move === bot.movementPaterns.chase) {
+                bot.setChaseTarget(player.sphere.id);
+            }
+        }
+    };
 };
 
 module.exports = BotController;
