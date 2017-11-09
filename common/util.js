@@ -276,13 +276,14 @@ UTIL.safeRandomCoordinate = function UTILsafeRandomCoordinate(d) {
  * Returns a good spawning point for a player.  The point is likely to be far
  * from other players.
  *
- * @param {Array} others an array of positions of all living players
+ * @param {number} d divide the world by this number to make a small box for the coordinate
  * @returns {Vector3} the position recommended for a player
  */
-UTIL.randomWorldPosition = function UTILrandomWorldPosition() {
-    let x = UTIL.safeRandomCoordinate();
-    let y = UTIL.safeRandomCoordinate();
-    let z = UTIL.safeRandomCoordinate();
+UTIL.randomWorldPosition = function UTILrandomWorldPosition(d) {
+    let divide = d || 1;
+    let x = UTIL.safeRandomCoordinate( divide );
+    let y = UTIL.safeRandomCoordinate( divide );
+    let z = UTIL.safeRandomCoordinate( divide );
     return new THREE.Vector3( x, y, z );
 };
 

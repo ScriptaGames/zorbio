@@ -14,7 +14,7 @@ let BotController = function(model) {
 
     self.spawnBot = function botSpawnBot() {
         self.setNextSpawnCycle();
-        let scale = self.getNextSpawnScale();
+        let scale = 1; // self.getNextSpawnScale();
 
         let bot = new Bot(scale, self.model);
 

@@ -17,8 +17,10 @@ let Curves = THREE.Curves || {};
 
 // GrannyKnot
 
-function GrannyKnot() {
+function GrannyKnot( scale ) {
     THREE.Curve.call( this );
+
+    this.scale = scale || 100;
 }
 
 GrannyKnot.prototype = Object.create( THREE.Curve.prototype );
@@ -33,7 +35,7 @@ GrannyKnot.prototype.getPoint = function( t, optionalTarget ) {
     let y = - 0.1 * Math.cos( 2 * t ) - 0.27 * Math.sin( 2 * t ) + 0.38 * Math.cos( 4 * t ) + 0.46 * Math.sin( 4 * t );
     let z = 0.7 * Math.cos( 3 * t ) - 0.4 * Math.sin( 3 * t );
 
-    return point.set( x, y, z ).multiplyScalar( 20 );
+    return point.set( x, y, z ).multiplyScalar( this.scale );
 };
 
 // HeartCurve

@@ -242,8 +242,8 @@ config.PLAYER_SPHERE_POLYCOUNT           = 32; // height and width segments of t
 config.FOOD_ALPHA_ENABLED                = false;
 config.LAG_SCALE_ENABLE                  = true;
 config.REQUIRED_WEBGL_EXTENSIONS         = ['ANGLE_instanced_arrays'];
-config.TRAIL_LINE_LENGTH                 = 40;
-config.TRAIL_LINE_WIDTH                  = 0.3;
+config.TRAIL_LINE_LENGTH                 = 10000;
+config.TRAIL_LINE_WIDTH                  = 0.7;
 config.CAPTURE_PARTICLE_ATTRACTION_SPEED = 0.994;
 
 ////////////////////////////////////////////////////////////////////////
