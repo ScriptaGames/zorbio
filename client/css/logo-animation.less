@@ -1,0 +1,70 @@
+@media (max-height: 450px), (orientation: landscape) {
+    @logo-scale: 67px;
+    .logo-container {
+        .logo-container();
+    }
+}
+@media (min-height: 451px), (orientation: portrait) {
+    @logo-scale: 100px;
+    .logo-container {
+        .logo-container();
+    }
+}
+
+.logo-container() {
+    @o1-xpos: 0.69 * @logo-scale;;
+    @o2-xpos: 3.22 * @logo-scale;;
+    @spin1-speed: 1.510156571366136s;
+    @spin2-speed: 1.2081252570929089s;
+    @logo-width: @o2-xpos + @logo-scale;
+    width: @logo-width;
+    margin: 0 auto;
+    height: @logo-scale;
+    position: relative;
+
+    .zrbi, .o1box, .o2box { position: absolute; }
+    .zrbi {
+        height: @logo-scale;
+    }
+
+    .spin {
+        animation: 18s spin1 infinite linear;
+    }
+
+    .o {
+        .spin();
+        &, img {
+            // set height on the o container and img within
+            height: @logo-scale;
+            width: @logo-scale;
+        }
+    }
+
+    .o1box, .o2box {
+        .o();
+    }
+
+    // customize the first and second o's
+    .o1box {
+        animation-name: spin1;
+        animation-duration: @spin1-speed;
+        top: 0;
+        left: @o1-xpos;
+    }
+    .o2box {
+        animation-name: spin2;
+        animation-duration: @spin2-speed;
+        top: 0;
+        left: @o2-xpos;
+    }
+
+
+    @keyframes spin1 {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    } 
+    @keyframes spin2 {
+        from { transform: rotate(90deg); }
+        to { transform: rotate(450deg); }
+    }
+}

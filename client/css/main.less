@@ -182,12 +182,6 @@ input {
 
     display  : grid;
 
-    #title {
-        position: relative;
-        h1 {
-            .center-abs();
-        }
-    }
     #menu {
         overflow: hidden;
         position: relative;
@@ -473,13 +467,6 @@ button {
     top : 1vh;
 }
 
-#title {
-    text-align: center;
-    img {
-        height: 100%;
-    }
-}
-
 #tabs {
     pointer-events  : auto; // enable click/touch events on UI elements
     button {
@@ -674,3 +661,5 @@ button {
     user-select: none;
     cursor: url('../images/cursor.png') -4 -4, crosshair;
 }
+
+@import "logo-animation.less";
