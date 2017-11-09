@@ -1,11 +1,11 @@
-let config      = require('../common/config.js');
-let Zorbio      = require('../common/zorbio.js');
-let UTIL        = require('../common/util.js');
-let _           = require('lodash');
-let datasets    = require('datasets');
-let THREE       = require('three');
-let SkinCatalog = require( '../common/SkinCatalog' );
-let Curves      = require('./lib/CurveExtras.js');
+let config        = require( '../common/config.js' );
+let Zorbio        = require( '../common/zorbio.js' );
+let UTIL          = require( '../common/util.js' );
+let _             = require( 'lodash' );
+let datasets      = require( 'datasets' );
+let THREE         = require( 'three' );
+let SkinCatalog   = require( '../common/SkinCatalog' );
+let BotCurvePaths = require( './BotCurvePaths.js' );
 
 let Bot = function(scale, model) {
     //  Scope
@@ -33,40 +33,40 @@ let Bot = function(scale, model) {
     // self.curve = new Curves.FigureEightPolynomialKnot(2);
     // self.curve = new Curves.HelixCurve();
     // self.curve = new Curves.KnotCurve();
-    self.curve1 = new Curves.VivianiCurve(200);
-    self.curvePoints1 = self.curve1.getPoints(100);
-
-    self.curve2 = new Curves.GrannyKnot(150);
-    self.curvePoints2 = self.curve2.getPoints(100);
-
-    let glueCurve1 = new THREE.CubicBezierCurve3(
-        self.curvePoints1[self.curvePoints1.length - 1].clone(),
-        UTIL.randomWorldPosition(3),
-        UTIL.randomWorldPosition(3),
-        self.curvePoints2[0].clone()
-    );
-    // glueCurve1.curveType = 'chordal';
-    // glueCurve1.closed = false;
-    self.gluePoints1 = glueCurve1.getPoints(50);
-
-    let glueCurve2 = new THREE.CubicBezierCurve3(
-        self.curvePoints2[self.curvePoints2.length - 1].clone(),
-        UTIL.randomWorldPosition(3),
-        UTIL.randomWorldPosition(3),
-        self.curvePoints1[0].clone()
-    );
-    // glueCurve2.curveType = 'chordal';
-    // glueCurve2.closed = false;
-    self.gluePoints2 = glueCurve2.getPoints(50);
-
-
-    // Create a closed wavey loop
-    let catCurve = new THREE.CatmullRomCurve3( self.curvePoints1.concat( self.curvePoints2 ) );
-    catCurve.curveType = 'catmullrom';
-    catCurve.closed = true;
+    // self.curve1 = new Curves.VivianiCurve(200);
+    // self.curvePoints1 = self.curve1.getPoints(100);
+    //
+    // self.curve2 = new Curves.GrannyKnot(150);
+    // self.curvePoints2 = self.curve2.getPoints(100);
+    //
+    // let glueCurve1 = new THREE.CubicBezierCurve3(
+    //     self.curvePoints1[self.curvePoints1.length - 1].clone(),
+    //     UTIL.randomWorldPosition(3),
+    //     UTIL.randomWorldPosition(3),
+    //     self.curvePoints2[0].clone()
+    // );
+    // // glueCurve1.curveType = 'chordal';
+    // // glueCurve1.closed = false;
+    // self.gluePoints1 = glueCurve1.getPoints(50);
+    //
+    // let glueCurve2 = new THREE.CubicBezierCurve3(
+    //     self.curvePoints2[self.curvePoints2.length - 1].clone(),
+    //     UTIL.randomWorldPosition(3),
+    //     UTIL.randomWorldPosition(3),
+    //     self.curvePoints1[0].clone()
+    // );
+    // // glueCurve2.curveType = 'chordal';
+    // // glueCurve2.closed = false;
+    // self.gluePoints2 = glueCurve2.getPoints(50);
+    //
+    //
+    // // Create a closed wavey loop
+    // let catCurve = new THREE.CatmullRomCurve3( self.curvePoints1.concat( self.curvePoints2 ) );
+    // catCurve.curveType = 'catmullrom';
+    // catCurve.closed = true;
 
     // self.curvePoints = self.curvePoints1.concat(self.gluePoints1, self.curvePoints2, self.gluePoints2);
-    self.curvePoints = catCurve.getPoints(250);
+    self.curvePoints = _.sample(BotCurvePaths);
 
     // TODO: Figure out what to do with span points
     // let position = self.model.getSafeSpawnPosition(10);

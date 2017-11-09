@@ -230,7 +230,7 @@ config.MAX_NOT_IN_MODEL_ERRORS        = 100;    // How many not-in-model errors 
 //                            GFX SETTINGS                            //
 ////////////////////////////////////////////////////////////////////////
 
-config.FOG_ENABLED                       = true;
+config.FOG_ENABLED                       = !true;
 config.FOG_NEAR                          = 100;
 config.FOG_FAR                           = 1000;
 config.FOG_COLOR                         = 0x000000;

@@ -235,6 +235,31 @@ function createScene() {
         scene.add( light );
 
         window.addEventListener( 'resize', onWindowResize, false );
+
+
+        // ------ TEMP TEST DELETE ME!
+        let curve = new THREE.CatmullRomCurve3( [
+            UTIL.randomWorldPosition(),
+            UTIL.randomWorldPosition(),
+            UTIL.randomWorldPosition(),
+            UTIL.randomWorldPosition(),
+            UTIL.randomWorldPosition(),
+            UTIL.randomWorldPosition(),
+            UTIL.randomWorldPosition(),
+        ] );
+        curve.curveType = 'chordal';
+        curve.closed = true;
+
+        let points = curve.getPoints( 300 );
+        let geometry = new THREE.BufferGeometry();
+        geometry.setFromPoints( points );
+
+        let material = new THREE.LineBasicMaterial( { color: 0xffffff } );
+
+        let curveObject = new THREE.Line( geometry, material );
+
+        scene.add(curveObject);
+        // -----------------------------------------
     }
 
     /**
