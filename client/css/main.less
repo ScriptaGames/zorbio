@@ -116,15 +116,13 @@ input {
 }
 
 #loading-image {
-    .center-abs();
-    height: 200px;
-    width: 200px;
     z-index: 5;
-    img {
-        animation-duration: 2.618s;
-        animation-name: loadingSpinner;
-        animation-iteration-count: infinite;
-        animation-timing-function: linear;
+    .center-abs();
+    .loading-text {
+        .font();
+        color: @primary-color;
+        text-align: center;
+        margin-top: 40px;
     }
 }
 
@@ -164,6 +162,10 @@ input {
     width    : 100%;
     pointer-events  : none; // disable click/touch events for the overlay itself
 
+    .font();
+}
+
+.font() {
     font-family    : @primary-font;
     font-size      : @font-size-base;
     font-weight    : bold;
