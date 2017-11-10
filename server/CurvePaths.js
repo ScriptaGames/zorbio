@@ -16,7 +16,16 @@ class CurvePaths {
         self.curves = [
             'randomWander',
             'vivianiCurve',
+            'trefoilKnot',
         ];
+    }
+
+    /**
+     * Calls a random curve function of this instance returns the result
+     * @returns {*}
+     */
+    getRandomCurve() {
+        return this[_.sample( self.curves )]();
     }
 
 
@@ -29,31 +38,44 @@ class CurvePaths {
         return UTIL.randomWanderPath( 10, 1.2, 300 );
     }
 
+
     /**
      * A nice curved figure 8
      * @returns {array}
      */
     vivianiCurve() {
-        let scale  = 400 + UTIL.getRandomIntInclusive( -200, 200 );
+        let scale  = UTIL.getRandomIntInclusive( 200, 600 );
         let offset = {
             x: UTIL.getRandomIntInclusive( -200, 200 ),
             y: UTIL.getRandomIntInclusive( -200, 200 ),
-            z: UTIL.getRandomIntInclusive( -200, 200 ),
+            z: UTIL.getRandomIntInclusive( -300, 300 ),
         };
 
-        let segments = scale / 2.5;
+        let segments = Math.floor( scale / 2.75 );
 
-        let curve = new Curves.VivianiCurve( 400, offset );
+        let curve = new Curves.VivianiCurve( scale, offset );
 
-        return curve.getPoints( Math.floor( segments ) );
+        return curve.getPoints( segments );
     }
 
+
     /**
-     * Calls a random curve function of this instance returns the result
-     * @returns {*}
+     * An elegant interlocking knot
+     * @returns {array}
      */
-    getRandomCurve() {
-        return this[_.sample( self.curves )]();
+    trefoilKnot() {
+        let scale  = UTIL.getRandomIntInclusive( 50, 200 );
+        let offset = {
+            x: UTIL.getRandomIntInclusive( -150, 150 ),
+            y: UTIL.getRandomIntInclusive( -150, 150 ),
+            z: UTIL.getRandomIntInclusive( -400, 400 ),
+        };
+
+        let segments = scale;
+
+        let curve = new Curves.TrefoilKnot( scale, offset );
+
+        return curve.getPoints( segments );
     }
 }
 

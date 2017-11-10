@@ -238,9 +238,9 @@ function createScene() {
 
 
         // ------ TEMP TEST DELETE ME!
-        let curve = new THREE.Curves.VivianiCurve(200);
+        let curve = new THREE.Curves.TrefoilKnot(75);
 
-        let points = curve.getPoints( 150 );
+        let points = curve.getPoints( 100 );
         let geometry = new THREE.BufferGeometry();
         geometry.setFromPoints( points );
 

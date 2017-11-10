@@ -137,8 +137,10 @@ HelixCurve.prototype.getPoint = function( t, optionalTarget ) {
 
 // TrefoilKnot
 
-function TrefoilKnot( scale ) {
+function TrefoilKnot( scale, offset ) {
     THREE.Curve.call( this );
+
+    this.offset = offset;
 
     this.scale = ( scale === undefined ) ? 10 : scale;
 }
@@ -155,7 +157,11 @@ TrefoilKnot.prototype.getPoint = function( t, optionalTarget ) {
     let y = ( 2 + Math.cos( 3 * t ) ) * Math.sin( 2 * t );
     let z = Math.sin( 3 * t );
 
-    return point.set( x, y, z ).multiplyScalar( this.scale );
+    let scaledPoint = point.set( x, y, z ).multiplyScalar( this.scale );
+
+    scaledPoint.add(this.offset);
+
+    return scaledPoint;
 };
 
 // TorusKnot
