@@ -2,23 +2,7 @@
 
 @import (inline) url("reset.css");
 
-// fonts
-
-@primary-font: Orbitron, monospace;
-@font-size-base: 30px;
-
-// colors
-
-@primary-color: #f7f7f7;
-@secondary-color: #171717;
-@modal-background: darken(@secondary-color, 10%);
-@accent-color1: rgba(195,215,253,1);
-@accent-color2: rgba(98,134,251,1);
-
-// spacing
-
-@default-padding: 20px;
-@size-meter-height: 1.0vh;
+@import "./variables.less";
 
 //
 
@@ -31,16 +15,12 @@ html, body {
     background-color : @secondary-color;
 }
 
-.clearfix() {
-  zoom:1;
-  &:before, &:after{ content:""; display:table; }
-  &:after{ clear: both; }
-}
+@import "./clearfix.less";
 
-* {
-    margin: 0;
-    padding: 0;
-}
+// * {
+//     margin: 0;
+//     padding: 0;
+// }
 
 input, textarea, select, button {
     user-select: auto;
@@ -205,18 +185,18 @@ input {
         font-size: 12px;
         line-height: 2.2;
         background: none;
-        color: lighten(@secondary-color, 16%);
+        color: lighten(@secondary-color, 24%);
         a {
-            color: lighten(@secondary-color, 16%);
+            color: lighten(@secondary-color, 32%);
             text-decoration: underline;
         }
     }
 
-    @media (max-height: 450px), (orientation: landscape) {
+    @media (max-height: @responsive-height), (orientation: landscape) {
         & {
             // TODO variablize these fixed px sizes
             grid-template-columns: 0.8fr 0.2fr;
-            grid-template-rows: 67px 1fr 14px;
+            grid-template-rows: @logo-height-small 1fr 14px;
         }
         & #title {
             grid-column: 1;
@@ -235,10 +215,10 @@ input {
             grid-row: 3;
         }
     }
-    @media (min-height: 451px), (orientation: portrait) {
+    @media (min-height: (@responsive-height-plus-one)), (orientation: portrait) {
         & {
             grid-template-columns: 1fr;
-            grid-template-rows: 100px 1fr 100px 22px;
+            grid-template-rows: @logo-height-tall 1fr 100px 22px;
         }
         & #title {
             grid-column: 1;
@@ -299,13 +279,12 @@ input {
     height: 100%;
     max-width: 800px;
     width: 100%;
+    border-radius   : 12px;
     .greybox {
         max-width       : calc(~"100% - 10px");
 
         pointer-events  : auto; // enable click/touch events on UI elements
         overflow-y      : auto; // scroll if ya gotta
-
-        border-radius   : 12px;
 
         color           : @primary-color;
         background      : fade(@modal-background, 80%) none repeat scroll 0% 0%;
@@ -360,10 +339,10 @@ button {
     pointer-events: auto;
     -moz-osx-font-smoothing     : grayscale;
     -webkit-backface-visibility : hidden;
-    background                  : @secondary-color;
-    border                      : 4px solid @accent-color1;
+    background                  : transparent;
+    // border                      : 4px solid @accent-color1;
+    border-width                : 0;
     color                       : @accent-color1;
-    overflow                    : hidden;
     padding                     : @default-padding;
     position                    : relative;
     z-index                     : 1;
@@ -371,9 +350,39 @@ button {
         vertical-align : middle;
     }
 
-    transition: transform 0.03s ease-out;
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        border-radius : 8px;
+    }
+    &::before {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(@accent-color1, @accent-color2);
+        border-radius : 8px;
+        z-index: -2;
+        box-shadow: 0 0 8px 3px fade(@accent-color1, 25%);
+    }
+    &::after {
+        top: 4px;
+        left: 4px;
+        width: calc(~"100% - 8px");
+        height: calc(~"100% - 8px");
+        z-index: -1;
+        border-radius: 6px;
+        background-image: linear-gradient(lighten(@secondary-color, 2%), @secondary-color);
+        box-shadow: inset 0 0 14px 6px fade(@accent-color2, 14%);
+    }
+
+    transition: transform 0.04s ease-in-out;
     &:hover {
         // box-shadow: inset 0 0 0 0.8vw rgba(255,255,255,0.2);
+        &::after {
+            background-image: linear-gradient(lighten(@secondary-color, 6%), @secondary-color);
+        }
     }
     &:active {
         // box-shadow: inset 0 0 0 0.8vw rgba(255,255,255,0.2);
@@ -437,14 +446,14 @@ button {
     right      : 0;
     padding    : 0;
     width      : 40px;
-    opacity    : 0.2;
+    opacity    : 0.15 !important;
     background : none;
     margin     : 8px;
     cursor     : pointer;
     transition : opacity ease-in-out 0.1s;
     pointer-events: auto;
     &:hover {
-        opacity: 0.4;
+        opacity: 0.5 !important;
     }
 }
 
@@ -475,8 +484,6 @@ button {
         position: relative;
         top: 15px;
         margin: 6px;
-        transition:
-        transform ease-out 0.2s;
         opacity: 1.0;
         &.active {
             background: desaturate(darken(@accent-color2, 40%), 50%);

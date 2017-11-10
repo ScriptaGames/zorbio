@@ -581,7 +581,7 @@ ZOR.UI = function ZORUI() {
         let inIframe = window.frameElement && window.frameElement.nodeName === 'IFRAME';
         let indirectVisitor = inIframe || document.referrer !== '';
         if (indirectVisitor) {
-            uidata.marquee_messages.unshift('Bookmark us at <a href="http://zor.bio" target="_top">http://<strong>zor.bio</strong></a>!');
+            uidata.marquee_messages.unshift('Bookmark us at <a href="http://zorb.io" target="_top">http://<strong>zorb.io</strong></a>!');
         }
     }
 

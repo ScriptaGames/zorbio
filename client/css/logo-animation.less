@@ -1,11 +1,13 @@
-@media (max-height: 450px), (orientation: landscape) {
-    @logo-scale: 67px;
+@import "./variables.less";
+
+@media (max-height: @responsive-height), (orientation: landscape) {
+    @logo-scale: @logo-height-small;
     .logo-container {
         .logo-container();
     }
 }
-@media (min-height: 451px), (orientation: portrait) {
-    @logo-scale: 100px;
+@media (min-height: (@responsive-height-plus-one)), (orientation: portrait) {
+    @logo-scale: @logo-height-tall;
     .logo-container {
         .logo-container();
     }

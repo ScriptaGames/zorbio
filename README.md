@@ -1,4 +1,4 @@
-# Zor.bio
+# Zorbio
 
 Absorb the Orbs!
 
