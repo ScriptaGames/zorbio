@@ -1,6 +1,6 @@
-// let THREE  = require( 'three' );
 let Curves = require( './lib/CurveExtras.js' );
 let UTIL   = require( '../common/util.js' );
+let _      = require( 'lodash' );
 
 /**
  * Encapsulates a curated list of curve paths that fit in the game and look good with bots
@@ -11,6 +11,12 @@ class CurvePaths {
      * Constructor
      */
     constructor() {
+
+        // Register curves that can be randomly called in getRandomCurve()
+        self.curves = [
+            'randomWander',
+            'vivianiCurve',
+        ];
     }
 
 
@@ -20,7 +26,7 @@ class CurvePaths {
      * @returns {array}
      */
     randomWander() {
-        return UTIL.randomWanderPath(10, 1.2, 300);
+        return UTIL.randomWanderPath( 10, 1.2, 300 );
     }
 
     /**
@@ -28,23 +34,27 @@ class CurvePaths {
      * @returns {array}
      */
     vivianiCurve() {
-        let scale = 400 + UTIL.getRandomIntInclusive(-200, 200);
+        let scale  = 400 + UTIL.getRandomIntInclusive( -200, 200 );
         let offset = {
-            x: UTIL.getRandomIntInclusive(-200, 200),
-            y: UTIL.getRandomIntInclusive(-200, 200),
-            z: UTIL.getRandomIntInclusive(-200, 200),
+            x: UTIL.getRandomIntInclusive( -200, 200 ),
+            y: UTIL.getRandomIntInclusive( -200, 200 ),
+            z: UTIL.getRandomIntInclusive( -200, 200 ),
         };
-
 
         let segments = scale / 2.5;
 
-        console.log('curve scale, offset, segments', scale, offset, segments);
-
-        let curve = new Curves.VivianiCurve( 400,  offset );
+        let curve = new Curves.VivianiCurve( 400, offset );
 
         return curve.getPoints( Math.floor( segments ) );
     }
 
+    /**
+     * Calls a random curve function of this instance returns the result
+     * @returns {*}
+     */
+    getRandomCurve() {
+        return this[_.sample( self.curves )]();
+    }
 }
 
 module.exports = CurvePaths;
