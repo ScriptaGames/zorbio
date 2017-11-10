@@ -658,5 +658,29 @@ UTIL.threeFree = function UTILThreeFree(scene, mesh) {
     }
 };
 
+/**
+ * Returns the curve path of random world points
+ * @param {number} numPoints
+ * @param {number} divide
+ * @param {number} segments
+ * @returns {array}
+ */
+UTIL.randomWanderPath = function UTILRandomWanderPath(numPoints, divide, segments) {
+    let randomPositions = [];
+    divide              = divide || 1;
+    segments            = segments || 100;
+
+    for (let i = 0; i < numPoints; i++) {
+        randomPositions.push( UTIL.randomWorldPosition( divide ) );
+    }
+
+    // Random world points closed loop a large path
+    let curve       = new THREE.CatmullRomCurve3( randomPositions );
+    curve.curveType = 'chordal';
+    curve.closed    = true;
+
+    return curve.getPoints( segments );
+};
+
 // if we're in nodejs, export the root UTIL object
 if (NODEJS_UTIL) module.exports = UTIL;

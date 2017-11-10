@@ -12,6 +12,7 @@
         "no-multi-spaces": "off",
         "no-console": "off",
         "camelcase": "off",
+        "padded-blocks": "off",
         "curly": [
             "error",
             "multi-line",

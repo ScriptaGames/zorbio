@@ -1,6 +1,7 @@
 let config = require('../common/config.js');
 let Zorbio = require('../common/zorbio.js');
 let Bot    = require('./Bot.js');
+let CurvePaths = require('./CurvePaths');
 
 let BotController = function(model) {
     //  Scope
@@ -12,11 +13,13 @@ let BotController = function(model) {
 
     self.currentSpawnCycle = 0;
 
+    self.curvePaths = new CurvePaths();
+
     self.spawnBot = function botSpawnBot() {
         self.setNextSpawnCycle();
-        let scale = 1; // self.getNextSpawnScale();
+        let scale = config.INITIAL_PLAYER_RADIUS; // self.getNextSpawnScale();
 
-        let bot = new Bot(scale, self.model);
+        let bot = new Bot(scale, self.model, 'curve');
 
         self.bots.push(bot);
         self.model.players.push(bot.player);
