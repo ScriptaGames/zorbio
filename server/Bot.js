@@ -69,39 +69,11 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
             });
         },
 
-        // move the bot to 0, 0, 0
-        center: function moveCenter() {
-            let sphere = self.player.sphere;
-
-            let centerPos = new THREE.Vector3(0, 0, 0).clone();
-            centerPos.sub(sphere.position);
-            centerPos.normalize();
-
-            let speed = self.player.getSpeed();
-            centerPos.multiplyScalar( speed );
-
-            sphere.position.add(centerPos);
-
-            sphere.pushRecentPosition({ position: sphere.position, radius: sphere.scale, time: Date.now() });
-        },
-
         // chase a target actor
         chase: function moveChase() {
             if (!self.chaseTarget || !self.chaseTarget.position) return;
 
-            let sphere = self.player.sphere;
-
-            let targetPos = self.chaseTarget.position.clone();
-
-            targetPos.sub(sphere.position);
-            targetPos.normalize();
-
-            let speed = self.player.getSpeed();
-            targetPos.multiplyScalar( speed );
-
-            sphere.position.add(targetPos);
-
-            sphere.pushRecentPosition({ position: sphere.position, radius: sphere.scale, time: Date.now() });
+            self.moveTowardPoint(self.chaseTarget.position.clone());
         },
 
         // move to a random points
@@ -119,19 +91,10 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
                 self.moveToPoint = UTIL.randomWorldPosition();
             }
 
-            let targetPos = self.moveToPoint.clone();
-
-            targetPos.sub(sphere.position);
-            targetPos.normalize();
-
-            let speed = self.player.getSpeed() * (config.TICK_FAST_INTERVAL / (1000/60)); // convert speed multiplier from fps to tick fast
-            targetPos.multiplyScalar( speed );
-
-            sphere.position.add(targetPos);
-
-            sphere.pushRecentPosition({ position: sphere.position, radius: sphere.scale, time: Date.now() });
+            self.moveTowardPoint(self.moveToPoint.clone());
         },
 
+        // Move along curve path
         curve: function moveCurve() {
             let sphere = self.player.sphere;
             let nextPoint = self.curvePoints[self.nextCurvePoint];
@@ -150,19 +113,22 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
                 nextPoint = self.curvePoints[self.nextCurvePoint];
             }
 
-            // TODO: put this in a fuction, it's duplicated from randomPoint
-            let targetPos = nextPoint.clone();
-
-            targetPos.sub(sphere.position);
-            targetPos.normalize();
-
-            let speed = self.player.getSpeed() * (config.TICK_FAST_INTERVAL / (1000/60)); // convert speed multiplier from fps to tick fast
-            targetPos.multiplyScalar( speed );
-
-            sphere.position.add(targetPos);
-
-            sphere.pushRecentPosition({ position: sphere.position, radius: sphere.scale, time: Date.now() });
+            self.moveTowardPoint(nextPoint.clone());
         },
+    };
+
+    self.moveTowardPoint = function botMoveTowardPoint(point) {
+        let sphere = self.player.sphere;
+
+        point.sub(sphere.position);
+        point.normalize();
+
+        let speed = self.player.getSpeed() * (config.TICK_FAST_INTERVAL / (1000/60)); // convert speed multiplier from fps to tick fast
+        point.multiplyScalar( speed );
+
+        sphere.position.add(point);
+
+        sphere.pushRecentPosition({ position: sphere.position, radius: sphere.scale, time: Date.now() });
     };
 
     self.setChaseTarget = function botChaseTarget(actor_id) {
