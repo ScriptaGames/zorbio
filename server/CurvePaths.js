@@ -28,9 +28,21 @@ class CurvePaths {
      * @returns {array}
      */
     vivianiCurve() {
-        let curve = new Curves.VivianiCurve(400);
+        let scale = 400 + UTIL.getRandomIntInclusive(-200, 200);
+        let offset = {
+            x: UTIL.getRandomIntInclusive(-200, 200),
+            y: UTIL.getRandomIntInclusive(-200, 200),
+            z: UTIL.getRandomIntInclusive(-200, 200),
+        };
 
-        return curve.getPoints( 150 );
+
+        let segments = scale / 2.5;
+
+        console.log('curve scale, offset, segments', scale, offset, segments);
+
+        let curve = new Curves.VivianiCurve( 400,  offset );
+
+        return curve.getPoints( Math.floor( segments ) );
     }
 
 }

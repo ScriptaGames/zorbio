@@ -63,8 +63,10 @@ HeartCurve.prototype.getPoint = function( t, optionalTarget ) {
 
 // Viviani's Curve
 
-function VivianiCurve( scale ) {
+function VivianiCurve( scale, offset ) {
     THREE.Curve.call( this );
+
+    this.offset = offset;  // Vector where to center the curve in the world
 
     this.scale = ( scale === undefined ) ? 70 : scale;
 }
@@ -78,9 +80,9 @@ VivianiCurve.prototype.getPoint = function( t, optionalTarget ) {
     t = t * 4 * Math.PI; // normalized to 0..1
     let a = this.scale / 2;
 
-    let x = a * ( 1 + Math.cos( t ) );
-    let y = a * Math.sin( t );
-    let z = 2 * a * Math.sin( t / 2 );
+    let x = (a * ( 1 + Math.cos( t ) )) + this.offset.x;
+    let y = (a * Math.sin( t )) + this.offset.y;
+    let z = (2 * a * Math.sin( t / 2 )) + this.offset.z;
 
     return point.set( x, y, z );
 };
