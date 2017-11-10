@@ -19,7 +19,7 @@ let BotController = function(model) {
         self.setNextSpawnCycle();
         let scale = config.INITIAL_PLAYER_RADIUS; // self.getNextSpawnScale();
 
-        let bot = new Bot(scale, self.model, 'curve');
+        let bot = new Bot(scale, self.model, 'curve', self.curvePaths.vivianiCurve());
 
         self.bots.push(bot);
         self.model.players.push(bot.player);

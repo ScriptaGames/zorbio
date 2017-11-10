@@ -1,5 +1,5 @@
 // let THREE  = require( 'three' );
-// let Curves = require( './lib/CurveExtras.js' );
+let Curves = require( './lib/CurveExtras.js' );
 let UTIL   = require( '../common/util.js' );
 
 /**
@@ -17,11 +17,22 @@ class CurvePaths {
     /**
      * Generates an Object that contains a curated list of curve points that fit well within the Zorbio world
      * and looks good on both paths.
-     * @returns {object}
+     * @returns {array}
      */
     randomWander() {
         return UTIL.randomWanderPath(10, 1.2, 300);
     }
+
+    /**
+     * A nice curved figure 8
+     * @returns {array}
+     */
+    vivianiCurve() {
+        let curve = new Curves.VivianiCurve(400);
+
+        return curve.getPoints( 150 );
+    }
+
 }
 
 module.exports = CurvePaths;

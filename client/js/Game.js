@@ -238,19 +238,9 @@ function createScene() {
 
 
         // ------ TEMP TEST DELETE ME!
-        let curve = new THREE.CatmullRomCurve3( [
-            UTIL.randomWorldPosition(),
-            UTIL.randomWorldPosition(),
-            UTIL.randomWorldPosition(),
-            UTIL.randomWorldPosition(),
-            UTIL.randomWorldPosition(),
-            UTIL.randomWorldPosition(),
-            UTIL.randomWorldPosition(),
-        ] );
-        curve.curveType = 'chordal';
-        curve.closed = true;
+        let curve = new THREE.Curves.VivianiCurve(200);
 
-        let points = curve.getPoints( 300 );
+        let points = curve.getPoints( 150 );
         let geometry = new THREE.BufferGeometry();
         geometry.setFromPoints( points );
 
