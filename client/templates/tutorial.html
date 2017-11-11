@@ -12,10 +12,20 @@
             {{ #if !is_mobile }}
             <h2>Controls</h2>
 
-            <p>Stop with <span class="key">S</span>.  Speed boost with
-                <span class="key">W</span>{{ #if steering !== "drag" }} or
-                left mouse button{{ /if }}, but it will
-                cost you some mass.</p>
+            <table>
+                <tr>
+                    <td><span class="key">W</span> or left mouse &rarr;</td>
+                    <td> Speed boost (costs mass)</td>
+                </tr>
+                <tr>
+                    <td><span class="key">S</span> or right mouse &rarr;</td>
+                    <td> Stop moving forward</td>
+                </tr>
+                <tr>
+                    <td>Center your mouse &rarr;</td>
+                    <td>fly straight</td>
+                </tr>
+            </table>
             {{ /if }}
 
             <h2>Growing</h2>

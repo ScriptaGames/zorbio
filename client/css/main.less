@@ -546,26 +546,35 @@ button {
 
 #tutorial {
 
+    line-height: 1.4;
+
     #tutorial-content {
         text-align: left;
         h2 {
             color: @accent-color1;
-            text-align: left;
             margin: 1em 0 0.6em;
         }
 
-        p {
-            font-size: 0.7 * @font-size-base;
-            text-align: left;
+        font-size: 0.7 * @font-size-base;
+        text-align: left;
+
+        table {
+            width: 100%;
+            tr {
+                line-height: 2.0;
+            }
+            td:nth-child(2) {
+                text-align: right;
+            }
         }
 
     }
 
     .key {
         color: @accent-color1;
-        background-color: darken(@primary-color, 16%);
+        border: 2px solid darken(@primary-color, 16%);
         border-radius: 3px;
-        padding: 2px;
+        padding: 6px 3px 0;
     }
 }
 
