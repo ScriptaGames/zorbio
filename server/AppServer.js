@@ -288,7 +288,7 @@ let AppServer = function(id, app, server_label, port) {
 
                     // see if we need to remove a bot
                     if (self.botController.hasBots() && playerCount > config.MAX_BOTS) {
-                        let bot = self.botController.removeBot();
+                        let bot = self.botController.popBot();
 
                         // notify other players that this bot was removed
                         self.broadcast( JSON.stringify( { op: 'remove_player', playerId: bot.player.id } ) );
@@ -766,7 +766,7 @@ let AppServer = function(id, app, server_label, port) {
             self.savePlayerScore( targetPlayer.name, score, self.clients[self.socket_uuid_map[targetPlayerId]] );
         }
         else {
-            self.replenishBot();
+            self.captureBot(targetPlayerId);
         }
 
         self.removePlayerFromModel( targetPlayerId );
@@ -774,6 +774,15 @@ let AppServer = function(id, app, server_label, port) {
         // Inform other clients that target player died
         const msgObj = { op: 'player_died', attackingPlayerId: attackingPlayerId, targetPlayerId: targetPlayerId };
         self.broadcast( JSON.stringify( msgObj ) );
+    };
+
+    /**
+     * Captures a bot and removes it from the game, and adds another if needed
+     * @param {number} botId
+     */
+    self.captureBot = function appCaptureBot(botId) {
+        self.botController.removeBot(botId);
+        self.replenishBot();
     };
 
     self.isPlayerInGame = function appIsPlayerInGame(player_id) {

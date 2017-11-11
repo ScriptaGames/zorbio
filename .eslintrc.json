@@ -85,7 +85,7 @@
         "no-unused-vars": [
             "error",
             {
-                "varsIgnorePattern": "startGame|respawnPlayer|createScene|initCameraAndPlayer|handle.*"
+                "varsIgnorePattern": "startGame|respawnPlayer|createScene|initCameraAndPlayer|handle.*|previewCurves"
             }
         ],
         "brace-style": [

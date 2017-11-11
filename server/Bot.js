@@ -24,9 +24,6 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
     self.id = Zorbio.IdGenerator.get_next_id();
     self.name = 'AI ' + _.sample(Bot.prototype.names);
     self.scale = scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);
-    self.chaseTarget = {
-        position: new THREE.Vector3(),
-    };
 
     // curve properties
     self.curvePoints = curvePoints;
@@ -73,7 +70,8 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
         chase: function moveChase() {
             if (!self.chaseTarget || !self.chaseTarget.position) return;
 
-            self.moveTowardPoint(self.chaseTarget.position.clone());
+            // Chaser bot moves a slower otherwise it's really mean
+            self.moveTowardPoint(self.chaseTarget.position.clone(), 0.5);
         },
 
         // move to a random points
@@ -117,13 +115,17 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
         },
     };
 
-    self.moveTowardPoint = function botMoveTowardPoint(point) {
+    self.moveTowardPoint = function botMoveTowardPoint(point, speedMultiplier) {
         let sphere = self.player.sphere;
+        speedMultiplier = speedMultiplier || 1;
 
         point.sub(sphere.position);
         point.normalize();
 
-        let speed = self.player.getSpeed() * (config.TICK_FAST_INTERVAL / (1000/60)); // convert speed multiplier from fps to tick fast
+        // convert speed multiplier from fps to tick fast
+        let speed = self.player.getSpeed() * (config.TICK_FAST_INTERVAL / (1000/60));
+        speed *= speedMultiplier;
+
         point.multiplyScalar( speed );
 
         sphere.position.add(point);
@@ -131,13 +133,44 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
         sphere.pushRecentPosition({ position: sphere.position, radius: sphere.scale, time: Date.now() });
     };
 
-    self.setChaseTarget = function botChaseTarget(actor_id) {
-        self.chaseTarget = self.model.getActorById(actor_id);
+    self.setChaseTarget = function botChaseTarget(playerId) {
+        if (self.movementPattern !== 'chase') return;
+
+        let actorId;
+        let targetPlayer;
+
+        if (playerId) {
+            // look up specific player
+            targetPlayer = self.model.getPlayerById(playerId);
+            if (targetPlayer && targetPlayer.sphere) {
+                actorId = targetPlayer.sphere.id;
+            }
+        }
+        else {
+            // pick a random other player if there are any
+            targetPlayer = _.sample(self.model.players);
+            if (targetPlayer && targetPlayer.sphere && targetPlayer.id !== self.id) {
+                actorId = targetPlayer.sphere.id;
+            }
+        }
+
+        if (!targetPlayer) {
+            // no player found
+            console.log('Bot ', self.id, ' no chase target available');
+            self.chaseTarget = new THREE.Vector3();
+        }
+        else if (actorId > 0) {
+            console.log('Bot ', self.id, ' set to chase player id ', targetPlayer.id);
+            self.chaseTarget = self.model.getActorById(actorId);
+        }
     };
 
     self.setCurvePoints = function botSetCurvePoints(curvePoints) {
         self.curvePoints = curvePoints;
     };
+
+    // Initialize chase target
+    self.setChaseTarget();
 
     self.move = self.movementPaterns[self.movementPattern];
 };

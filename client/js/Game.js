@@ -236,17 +236,12 @@ function createScene() {
         scene.add( light );
 
         window.addEventListener( 'resize', onWindowResize, false );
+    }
 
-
-        // ------ TEMP TEST DELETE ME!
-        // let curve = new THREE.Curves.TrefoilKnot(75);
-        // let points = curve.getPoints( 100 );
-        // let geometry = new THREE.BufferGeometry();
-        // geometry.setFromPoints( points );
-        // let material = new THREE.LineBasicMaterial( { color: 0xffffff } );
-        // let curveObject = new THREE.Line( geometry, material );
-        // scene.add(curveObject);
-
+    /**
+     * A way to quickly visualize what curve paths look like in space
+     */
+    function previewCurves() {
         let curvePaths = new CurvePaths();
         for (let i = 0; i < 300; i++) {
             let points = curvePaths.cinquefoilKnot();
@@ -258,9 +253,6 @@ function createScene() {
             let curveObject = new THREE.Line( geometry, material );
             scene.add(curveObject);
         }
-
-
-        // -----------------------------------------
     }
 
     /**

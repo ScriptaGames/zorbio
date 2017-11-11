@@ -17,9 +17,19 @@ let BotController = function(model) {
 
     self.spawnBot = function botSpawnBot() {
         self.setNextSpawnCycle();
-        let scale = config.INITIAL_PLAYER_RADIUS; // self.getNextSpawnScale();
+        let scale = self.getNextSpawnScale();
+        let bot;
 
-        let bot = new Bot(scale, self.model, 'curve', self.curvePaths.getRandomCurve());
+        // Spawn the bot
+        if (!self.hasChaserBot() && scale < 10) {
+            console.log('Spawning chaser bot');
+            // Always have at least one medium to small size chaser bot
+            bot = new Bot(scale, self.model, 'chase');
+        }
+        else {
+            // Spawn all other bots with a random curve pattern
+            bot = new Bot(scale, self.model, 'curve', self.curvePaths.getRandomCurve());
+        }
 
         self.bots.push(bot);
         self.model.players.push(bot.player);
@@ -54,6 +64,21 @@ let BotController = function(model) {
         return num;
     };
 
+    /**
+     * Returns true if there is at least 1 chaser bot false otherwise
+     * @returns {boolean}
+     */
+    self.hasChaserBot = function botHasChaserBot() {
+        for (let i = 0; i < self.bots.length; i++) {
+            let bot = self.bots[i];
+
+            if (bot.move === bot.movementPaterns.chase) {
+                return true;
+            }
+        }
+
+        return false;
+    };
 
     /**
      * Gets the scale of the next bot to spawn based on internal counter
@@ -67,15 +92,43 @@ let BotController = function(model) {
         return (30 / (scale - 0.75)) + 3;
     };
 
-    self.removeBot = function botRemoveBot() {
+    /**
+     * Removes the latest bot spawned
+     * @returns {Bot}
+     */
+    self.popBot = function botPopBot() {
         let bot = self.bots.pop();
 
         // remove from model
         self.model.removePlayer(bot.player.id);
 
-        console.log('Removed bot: ', bot.id, bot.name, bot.scale);
+        console.log('Removed top bot: ', bot.id, bot.name, bot.scale);
 
         return bot;
+    };
+
+    /**
+     * Removes a bot by ID
+     * @param {number} id
+     */
+    self.removeBot = function botRemoveBot(id) {
+        for (let i = 0; i < self.bots.length; i++) {
+            let bot = self.bots[i];
+
+            if (bot.id === id) {
+                // found the bot with matching ID now delete it from the array
+                self.bots.splice(i, 1);
+
+                // remove from model may have already been removed but this won't hurt
+                self.model.removePlayer(bot.player.id);
+
+                console.log('Removed bot: ', bot.id, bot.name);
+
+                bot = null;
+
+                return;
+            }
+        }
     };
 
     self.update = function botUpdate() {
@@ -95,7 +148,7 @@ let BotController = function(model) {
             let bot = self.bots[i];
 
             if (bot.move === bot.movementPaterns.chase) {
-                bot.setChaseTarget(player.sphere.id);
+                bot.setChaseTarget(player.id);
             }
         }
     };
