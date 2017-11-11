@@ -11,9 +11,18 @@
  * http://prideout.net/blog/?p=44
  */
 
-let THREE = require('three');
+/*
+global THREE:true
+*/
 
-let Curves = THREE.Curves || {};
+const NODEJS_CURVES_EXTRAS = typeof module !== 'undefined' && module.exports;
+
+if (NODEJS_CURVES_EXTRAS) {
+    global.THREE = require( 'three' );
+}
+
+THREE.Curves = THREE.Curves || {};
+let Curves = THREE.Curves;
 
 // GrannyKnot
 
@@ -376,4 +385,4 @@ Curves.DecoratedTorusKnot4b = DecoratedTorusKnot4b;
 Curves.DecoratedTorusKnot5a = DecoratedTorusKnot5a;
 Curves.DecoratedTorusKnot5c = DecoratedTorusKnot5c;
 
-module.exports = Curves;
+if (NODEJS_CURVES_EXTRAS) module.exports = Curves;

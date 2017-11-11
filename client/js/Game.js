@@ -12,6 +12,7 @@ global _:true
 global isMobile:true
 global ga:true
 global linodeNearLocation:true
+global CurvePaths:true
 */
 
 ZOR.Game = {};
@@ -238,17 +239,27 @@ function createScene() {
 
 
         // ------ TEMP TEST DELETE ME!
-        let curve = new THREE.Curves.TrefoilKnot(75);
+        // let curve = new THREE.Curves.TrefoilKnot(75);
+        // let points = curve.getPoints( 100 );
+        // let geometry = new THREE.BufferGeometry();
+        // geometry.setFromPoints( points );
+        // let material = new THREE.LineBasicMaterial( { color: 0xffffff } );
+        // let curveObject = new THREE.Line( geometry, material );
+        // scene.add(curveObject);
 
-        let points = curve.getPoints( 100 );
-        let geometry = new THREE.BufferGeometry();
-        geometry.setFromPoints( points );
+        let curvePaths = new CurvePaths();
+        for (let i = 0; i < 100; i++) {
+            let points = curvePaths.trefoilKnot();
+            let geometry = new THREE.BufferGeometry();
+            geometry.setFromPoints( points );
 
-        let material = new THREE.LineBasicMaterial( { color: 0xffffff } );
+            let material = new THREE.LineBasicMaterial( { color: 0xffffff } );
 
-        let curveObject = new THREE.Line( geometry, material );
+            let curveObject = new THREE.Line( geometry, material );
+            scene.add(curveObject);
+        }
 
-        scene.add(curveObject);
+
         // -----------------------------------------
     }
 
