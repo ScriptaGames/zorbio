@@ -36,7 +36,7 @@ class CurvePaths {
         // Register curves that can be randomly called in getRandomCurve()
         self.curves = [
             'randomWander',
-            'vivianiCurve',
+            'grannyKnot',
             'trefoilKnot',
         ];
     }
@@ -46,7 +46,11 @@ class CurvePaths {
      * @returns {*}
      */
     getRandomCurve() {
-        let curvePoints = this[_.sample( self.curves )]();
+        let curveName = _.sample( self.curves );
+
+        console.log('using curve: ', curveName);
+
+        let curvePoints = this[curveName]();
 
         // 50% of the time reverse direction
         if (UTIL.getRandomIntInclusive(1, 2) === 2) curvePoints.reverse();
@@ -66,7 +70,7 @@ class CurvePaths {
 
 
     /**
-     * A nice curved figure 8
+     * A curved figure 8
      * @returns {array}
      */
     vivianiCurve() {
@@ -103,8 +107,6 @@ class CurvePaths {
         const scale  = UTIL.getRandomIntInclusive( scaleMin, scaleMax );
         const segments = Math.floor(scale * 1.5);
 
-        console.log(scale, segments);
-
         let offset = {
             x: UTIL.getRandomIntInclusive( -offsetXY, offsetXY ),
             y: UTIL.getRandomIntInclusive( -offsetXY, offsetXY ),
@@ -112,6 +114,36 @@ class CurvePaths {
         };
 
         let curve = new THREE.Curves.TrefoilKnot( scale, offset );
+
+        return curve.getPoints( segments );
+    }
+
+    /**
+     * Exactly like the name, a weird not with no pattern. It is calibrated to randomly spread bots
+     * around the whole world and adjusts based on world size.
+     * @returns {array}
+     */
+    grannyKnot() {
+
+        // Make scales and offset dynamic based on world size
+        const worldSize      = config.WORLD_SIZE;
+        const worldSizeDelta = worldSize / CALIBRATED_WORLD_SIZE;
+        const scaleMax       = 300 * worldSizeDelta;
+        const scaleMin       = 150 * worldSizeDelta;
+        const offsetX        = 425 * worldSizeDelta;
+        const offsetY        = 575 * worldSizeDelta;
+        const offsetZ        = 625 * worldSizeDelta;
+
+        const scale  = UTIL.getRandomIntInclusive( scaleMin, scaleMax );
+        const segments = Math.floor(scale * 0.9);
+
+        let offset = {
+            x: UTIL.getRandomIntInclusive( -offsetX, offsetX ),
+            y: UTIL.getRandomIntInclusive( -offsetY, offsetY ),
+            z: UTIL.getRandomIntInclusive( -offsetZ, offsetZ ),
+        };
+
+        let curve = new THREE.Curves.GrannyKnot( scale, offset );
 
         return curve.getPoints( segments );
     }

@@ -26,10 +26,11 @@ let Curves = THREE.Curves;
 
 // GrannyKnot
 
-function GrannyKnot( scale ) {
+function GrannyKnot( scale, offset ) {
     THREE.Curve.call( this );
 
     this.scale = scale || 100;
+    this.offset = offset || {x: 0, y: 0, z: 0};
 }
 
 GrannyKnot.prototype = Object.create( THREE.Curve.prototype );
@@ -44,7 +45,11 @@ GrannyKnot.prototype.getPoint = function( t, optionalTarget ) {
     let y = - 0.1 * Math.cos( 2 * t ) - 0.27 * Math.sin( 2 * t ) + 0.38 * Math.cos( 4 * t ) + 0.46 * Math.sin( 4 * t );
     let z = 0.7 * Math.cos( 3 * t ) - 0.4 * Math.sin( 3 * t );
 
-    return point.set( x, y, z ).multiplyScalar( this.scale );
+    let scaledPoint = point.set( x, y, z ).multiplyScalar( this.scale );
+
+    scaledPoint.add(this.offset);
+
+    return scaledPoint;
 };
 
 // HeartCurve
@@ -75,7 +80,7 @@ HeartCurve.prototype.getPoint = function( t, optionalTarget ) {
 function VivianiCurve( scale, offset ) {
     THREE.Curve.call( this );
 
-    this.offset = offset;  // Vector where to center the curve in the world
+    this.offset = offset || {x: 0, y: 0, z: 0}; // Vector where to center the curve in the world
 
     this.scale = ( scale === undefined ) ? 70 : scale;
 }
@@ -149,7 +154,7 @@ HelixCurve.prototype.getPoint = function( t, optionalTarget ) {
 function TrefoilKnot( scale, offset ) {
     THREE.Curve.call( this );
 
-    this.offset = offset;
+    this.offset = offset || {x: 0, y: 0, z: 0};
 
     this.scale = ( scale === undefined ) ? 10 : scale;
 }
