@@ -22,9 +22,9 @@ let BotController = function(model) {
 
         // Spawn the bot
         if (!self.hasChaserBot() && scale < 10) {
-            console.log('Spawning chaser bot');
             // Always have at least one medium to small size chaser bot
             bot = new Bot(scale, self.model, 'chase');
+            console.log('Spawning chaser bot');
         }
         else {
             // Spawn all other bots with a random curve pattern
