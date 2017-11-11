@@ -38,6 +38,7 @@ class CurvePaths {
             'randomWander',
             'grannyKnot',
             'trefoilKnot',
+            'cinquefoilKnot',
         ];
     }
 
@@ -66,26 +67,6 @@ class CurvePaths {
      */
     randomWander() {
         return UTIL.randomWanderPath( 10, 1.2, 300 );
-    }
-
-
-    /**
-     * A curved figure 8
-     * @returns {array}
-     */
-    vivianiCurve() {
-        let scale  = UTIL.getRandomIntInclusive( 200, 600 );
-        let offset = {
-            x: UTIL.getRandomIntInclusive( -200, 200 ),
-            y: UTIL.getRandomIntInclusive( -200, 200 ),
-            z: UTIL.getRandomIntInclusive( -300, 300 ),
-        };
-
-        let segments = Math.floor( scale / 2.75 );
-
-        let curve = new THREE.Curves.VivianiCurve( scale, offset );
-
-        return curve.getPoints( segments );
     }
 
 
@@ -135,7 +116,7 @@ class CurvePaths {
         const offsetZ        = 625 * worldSizeDelta;
 
         const scale  = UTIL.getRandomIntInclusive( scaleMin, scaleMax );
-        const segments = Math.floor(scale * 0.9);
+        const segments = Math.floor(scale * 1.1);
 
         let offset = {
             x: UTIL.getRandomIntInclusive( -offsetX, offsetX ),
@@ -144,6 +125,36 @@ class CurvePaths {
         };
 
         let curve = new THREE.Curves.GrannyKnot( scale, offset );
+
+        return curve.getPoints( segments );
+    }
+
+    /**
+     * A really cool wide wheel spiral. It is calibrated to randomly spread bots
+     * around the whole world and adjusts based on world size.
+     * @returns {array}
+     */
+    cinquefoilKnot() {
+
+        // Make scales and offset dynamic based on world size
+        const worldSize      = config.WORLD_SIZE;
+        const worldSizeDelta = worldSize / CALIBRATED_WORLD_SIZE;
+        const scaleMax       = 200 * worldSizeDelta;
+        const scaleMin       = 80 * worldSizeDelta;
+        const offsetX        = 350 * worldSizeDelta;
+        const offsetY        = 350 * worldSizeDelta;
+        const offsetZ        = 600 * worldSizeDelta;
+
+        const scale  = UTIL.getRandomIntInclusive( scaleMin, scaleMax );
+        const segments = Math.floor(scale * 2.5);
+
+        let offset = {
+            x: UTIL.getRandomIntInclusive( -offsetX, offsetX ),
+            y: UTIL.getRandomIntInclusive( -offsetY, offsetY ),
+            z: UTIL.getRandomIntInclusive( -offsetZ, offsetZ ),
+        };
+
+        let curve = new THREE.Curves.CinquefoilKnot( scale, offset );
 
         return curve.getPoints( segments );
     }

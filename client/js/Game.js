@@ -249,7 +249,7 @@ function createScene() {
 
         let curvePaths = new CurvePaths();
         for (let i = 0; i < 300; i++) {
-            let points = curvePaths.grannyKnot();
+            let points = curvePaths.cinquefoilKnot();
             let geometry = new THREE.BufferGeometry();
             geometry.setFromPoints( points );
 

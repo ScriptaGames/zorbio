@@ -206,10 +206,12 @@ TorusKnot.prototype.getPoint = function( t, optionalTarget ) {
 
 // CinquefoilKnot
 
-function CinquefoilKnot( scale ) {
+function CinquefoilKnot( scale, offset ) {
     THREE.Curve.call( this );
 
     this.scale = ( scale === undefined ) ? 10 : scale;
+
+    this.offset = offset || {x: 0, y: 0, z: 0};
 }
 
 CinquefoilKnot.prototype = Object.create( THREE.Curve.prototype );
@@ -227,7 +229,11 @@ CinquefoilKnot.prototype.getPoint = function( t, optionalTarget ) {
     let y = ( 2 + Math.cos( q * t ) ) * Math.sin( p * t );
     let z = Math.sin( q * t );
 
-    return point.set( x, y, z ).multiplyScalar( this.scale );
+    let scaledPoint = point.set( x, y, z ).multiplyScalar( this.scale );
+
+    scaledPoint.add( this.offset );
+
+    return scaledPoint;
 };
 
 // TrefoilPolynomialKnot
