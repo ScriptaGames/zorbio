@@ -31,6 +31,9 @@ ZOR.ZORMessageHandler.z_handle_welcome = function ZORhandleWelcome(msg) {
     // Create the first person player
     player = new ZOR.PlayerController(msg.player, null, true);
 
+    // save server filtered player name to local storage
+    localStorage.player_name = player.model.name;
+
     console.log('handle welcome');
 
     return player.model;

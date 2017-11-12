@@ -22,6 +22,7 @@
   "author": "Scripta Games, Inc.",
   "dependencies": {
     "animate.less": "2.2.0",
+    "bad-words-relaxed": "^1.6.2",
     "basic-auth": "1.1.0",
     "bufferutil": "3.0.1",
     "console-stamp": "0.2.5",
@@ -36,7 +37,6 @@
     "node-gameloop": "0.1.4",
     "node-uuid": "1.4.8",
     "performance-now": "2.1.0",
-    "profanity-censor": "1.0.5",
     "ractive": "0.9.1",
     "ractive-transitions-fade": "0.3.1",
     "raven": "2.1.0",

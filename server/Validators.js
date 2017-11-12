@@ -1,8 +1,5 @@
 let config    = require('../common/config.js');
-let _         = require('lodash');
-let alphakeys = require('./alphakeys');
 let UTIL      = require('../common/util');
-let profanity = require('./profanity');
 let THREE     = require('three');
 
 let Validators = {};
@@ -17,10 +14,6 @@ Validators.ErrorCodes = {
 };
 
 Validators.v3 = new THREE.Vector3();
-
-Validators.is_profane = function(str) {
-    return profanity.filter(str).indexOf('*') >= 0;
-};
 
 Validators.movement = function() {
     let MS_PER_FRAME = 1/60 * 1000;
@@ -243,21 +236,5 @@ Validators.playerSphereScale = function(sphere) {
 
     return 0;  // no error
 };
-
-/**
- * Checks for a valid nick
- * @param {string} key
- * @returns {boolean}
- */
-Validators.validAlphaKey = function ZORValidatorsValidAlphaKey(key) {
-    if (!config.REQUIRE_ALPHA_KEY) return true;
-
-    if (key) {
-        return _.includes(alphakeys, key.toUpperCase());
-    }
-
-    return false;
-};
-
 
 module.exports = Validators;

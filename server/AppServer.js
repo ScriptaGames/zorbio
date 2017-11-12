@@ -250,51 +250,39 @@ let AppServer = function(id, app, server_label, port) {
         function handle_msg_player_ready() {
             self.log( 'Player ' + currentPlayer.id + ' client ready' );
 
-            if (Validators.is_profane( currentPlayer.name )) {
-                console.error( 'Kicking for profane name:', currentPlayer.name, JSON.stringify( headers ) );
-                ws.send( JSON.stringify( { op: 'kick', reason: 'Invalid username' } ) );
-                ws.close( config.CLOSE_NO_RESTART, "close but don't reload client page" );
-            }
-            else if (!Validators.validAlphaKey( key )) {
-                console.error( 'ALPHA KEY INVALID' );
-                ws.send( JSON.stringify( { op: 'kick', reason: 'Invalid alpha key' } ) );
-                ws.close();
-            }
-            else {
-                // Save mapping of player_id to socket uuid
-                self.socket_uuid_map[currentPlayer.id] = socket_uuid;
+            // Save mapping of player_id to socket uuid
+            self.socket_uuid_map[currentPlayer.id] = socket_uuid;
 
-                // Set initial times
-                currentPlayer.lastHeartbeat = Date.now();
-                currentPlayer.spawnTime     = Date.now();
+            // Set initial times
+            currentPlayer.lastHeartbeat = Date.now();
+            currentPlayer.spawnTime     = Date.now();
 
-                // Pass any data to the for final setup
-                ws.send( JSON.stringify( { op: 'game_setup' } ) );
+            // Pass any data to the for final setup
+            ws.send( JSON.stringify( { op: 'game_setup' } ) );
 
-                // give the client player time to load the game before notifying other players to add them
-                setTimeout( function playerJoinDelay() {
-                    // Notify other clients that player has joined
-                    self.broadcast( JSON.stringify( { op: 'player_join', player: currentPlayer } ) );
+            // give the client player time to load the game before notifying other players to add them
+            setTimeout( function playerJoinDelay() {
+                // Notify other clients that player has joined
+                self.broadcast( JSON.stringify( { op: 'player_join', player: currentPlayer } ) );
 
-                    // Add the player to the model
-                    self.model.addPlayer( currentPlayer, true );
+                // Add the player to the model
+                self.model.addPlayer( currentPlayer, true );
 
-                    let playerCount = self.model.players.length;
-                    self.log( 'Player ' + currentPlayer.id + ' joined game!' );
-                    self.log( 'Total real players: ' + self.model.getRealPlayers().length );
+                let playerCount = self.model.players.length;
+                self.log( 'Player ' + currentPlayer.id + ' joined game!' );
+                self.log( 'Total real players: ' + self.model.getRealPlayers().length );
 
-                    // Notify bot controller that a player has joined
-                    self.botController.playerJoined(currentPlayer);
+                // Notify bot controller that a player has joined
+                self.botController.playerJoined(currentPlayer);
 
-                    // see if we need to remove a bot
-                    if (self.botController.hasBots() && playerCount > config.MAX_BOTS) {
-                        let bot = self.botController.popBot();
+                // see if we need to remove a bot
+                if (self.botController.hasBots() && playerCount > config.MAX_BOTS) {
+                    let bot = self.botController.popBot();
 
-                        // notify other players that this bot was removed
-                        self.broadcast( JSON.stringify( { op: 'remove_player', playerId: bot.player.id } ) );
-                    }
-                }, 200 );
-            }
+                    // notify other players that this bot was removed
+                    self.broadcast( JSON.stringify( { op: 'remove_player', playerId: bot.player.id } ) );
+                }
+            }, 200 );
         }
 
         /**

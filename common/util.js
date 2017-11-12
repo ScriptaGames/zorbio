@@ -4,17 +4,23 @@ global config:true
 global THREE:true
 global _:true
 global xssFilters:true
+global ProfanityFilter:true
 */
 
 const NODEJS_UTIL = typeof module !== 'undefined' && module.exports;
 
+let UTIL = {};
+
+let profanityFilter;
+
 if (NODEJS_UTIL) {
-    global.config = require('./config.js');
-    global._ = require('lodash');
-    global.xssFilters = require('xss-filters');
+    global.config          = require( './config.js' );
+    global._               = require( 'lodash' );
+    global.xssFilters      = require( 'xss-filters' );
+    global.ProfanityFilter = require( 'bad-words-relaxed' );
+    profanityFilter = new ProfanityFilter();
 }
 
-let UTIL = {};
 
 /**
  * Clamps a number to a given range.
@@ -612,6 +618,9 @@ UTIL.filterName = function UTILFilterName(name) {
 
     // now also remove quotes because they break the backend
     filtered_name = filtered_name.replace(/["']/g, '');
+
+    // now also replace any profane words with astrix
+    filtered_name = profanityFilter.clean( filtered_name );
 
     if (UTIL.isBlank(filtered_name)) {
         filtered_name = 'Guest';
