@@ -68,10 +68,13 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
 
         // chase a target actor
         chase: function moveChase() {
-            if (!self.chaseTarget || !self.chaseTarget.position) return;
+            if (!self.chasePosition ||
+                !(self.chasePosition instanceof THREE.Vector3)) {
+                return;  // no valid chase target set
+            }
 
             // Chaser bot moves a slower otherwise it's really mean
-            self.moveTowardPoint(self.chaseTarget.position.clone(), 0.5);
+            self.moveTowardPoint(self.chasePosition.clone(), 0.5);
         },
 
         // move to a random points
@@ -136,32 +139,31 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
     self.setChaseTarget = function botChaseTarget(playerId) {
         if (self.movementPattern !== 'chase') return;
 
-        let actorId;
         let targetPlayer;
+
+        // Initialize
+        self.chasePlayer = { sphere: { position: new THREE.Vector3() } };
 
         if (playerId) {
             // look up specific player
             targetPlayer = self.model.getPlayerById(playerId);
-            if (targetPlayer && targetPlayer.sphere) {
-                actorId = targetPlayer.sphere.id;
-            }
         }
         else {
             // pick a random other player if there are any
-            targetPlayer = _.sample(self.model.players);
-            if (targetPlayer && targetPlayer.sphere && targetPlayer.id !== self.id) {
-                actorId = targetPlayer.sphere.id;
-            }
+            targetPlayer = self.model.getPlayerById(self.id); // _.sample(self.model.players);
         }
 
-        if (!targetPlayer) {
-            // no player found
-            console.log('Bot ', self.id, ' no chase target available');
-            self.chaseTarget = new THREE.Vector3();
-        }
-        else if (actorId > 0) {
+        if (targetPlayer &&
+            targetPlayer.sphere &&
+            targetPlayer.sphere.position instanceof THREE.Vector3 &&
+            targetPlayer.id !== self.id) {
+            // Valid target player set to chase
             console.log('Bot ', self.id, ' set to chase player id ', targetPlayer.id);
-            self.chaseTarget = self.model.getActorById(actorId);
+            self.chasePlayer = targetPlayer;
+            self.chasePosition = self.chasePlayer.sphere.position;  // for quick lookup
+        }
+        else {
+            console.log('Bot ', self.id, ' no chase target available');
         }
     };
 
