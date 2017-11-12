@@ -156,6 +156,7 @@ ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails()
         visibility     : 1,
     });
 
+    const TRAIL_LENGTH = this.is_current_player ? config.PLAYER_TRAIL_LINE_LENGTH : config.TRAIL_LINE_LENGTH;
     this.trail.origins = [];
     this.trail.geometries = [];
     this.trail.lines = [];
@@ -170,7 +171,7 @@ ZOR.PlayerView.prototype.initLineTrails = function ZORPlayerViewInitLineTrails()
         this.trail.geometries[line_i] = new THREE.Geometry();
 
         // create initial vertices for the line
-        for (let vertex_i = 0; vertex_i < config.TRAIL_LINE_LENGTH; ++vertex_i) {
+        for (let vertex_i = 0; vertex_i < TRAIL_LENGTH; ++vertex_i) {
             this.trail.geometries[line_i].vertices.push(this.trail.origins[line_i]);
         }
 
