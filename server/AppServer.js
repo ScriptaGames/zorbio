@@ -272,9 +272,6 @@ let AppServer = function(id, app, server_label, port) {
                 self.log( 'Player ' + currentPlayer.id + ' joined game!' );
                 self.log( 'Total real players: ' + self.model.getRealPlayers().length );
 
-                // Notify bot controller that a player has joined
-                self.botController.playerJoined(currentPlayer);
-
                 // see if we need to remove a bot
                 if (self.botController.hasBots() && playerCount > config.MAX_BOTS) {
                     let bot = self.botController.popBot();

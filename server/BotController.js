@@ -143,16 +143,6 @@ let BotController = function(model) {
         return self.bots.length > 0;
     };
 
-    self.playerJoined = function botControllerPlayerJoined(player) {
-        // For any bots that have the chase movement method, set new chase target
-        for (let i = 0; i < self.bots.length; i++) {
-            let bot = self.bots[i];
-
-            if (bot.move === bot.movementPaterns.chase) {
-                bot.setChaseTarget(player.id);
-            }
-        }
-    };
 
     /**
      * Checks chase bots for to make sure their chase target is still valid

@@ -73,6 +73,12 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
                 return;  // no valid chase target set
             }
 
+            // Decrement chase duration
+            self.chaseTime -= config.TICK_FAST_INTERVAL;
+            if (self.chaseTime <= 0) {
+                self.setChaseTarget();
+            }
+
             // Chaser bot moves a slower otherwise it's really mean
             self.moveTowardPoint(self.chasePosition.clone(), 0.5);
         },
@@ -158,12 +164,16 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
             targetPlayer.sphere.position instanceof THREE.Vector3 &&
             targetPlayer.id !== self.id) {
             // Valid target player set to chase
-            console.log('Bot', self.id, 'set to chase player id', targetPlayer.id);
             self.chasePlayer = targetPlayer;
             self.chasePosition = self.chasePlayer.sphere.position;  // for quick lookup
+
+            // Set a timeout to pick a new chase target
+            self.chaseTime = UTIL.getRandomIntInclusive(config.BOT_CHASE_TIME_MIN, config.BOT_CHASE_TIME_MAX);
+
+            console.log('Bot', self.id, 'set to chase player id', targetPlayer.id, 'for', self.chaseTime / 1000, 'seconds');
         }
         else {
-            console.log('Bot', self.id, 'no chase target available');
+            console.log('Bot', self.id, 'no chase target available', targetPlayer.id);
         }
     };
 

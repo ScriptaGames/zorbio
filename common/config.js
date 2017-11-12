@@ -29,10 +29,16 @@ config.REQUIRE_ALPHA_KEY = true;
 ////////////////////////////////////////////////////////////////////////
 
 config.WORLD_SIZE       = 2000;
-config.MAX_BOTS         = 20;
-config.MAX_BOT_RADIUS   = 100;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 )
     + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ) );
+
+////////////////////////////////////////////////////////////////////////
+//                           BOT SETTINGS                             //
+////////////////////////////////////////////////////////////////////////
+config.MAX_BOTS           = 20;
+config.MAX_BOT_RADIUS     = 100;
+config.BOT_CHASE_TIME_MIN = 20000; // Min time a bot will chase a player
+config.BOT_CHASE_TIME_MAX = 50000; // Max time a bot will chase a player
 
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //
