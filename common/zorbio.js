@@ -466,12 +466,12 @@ ZOR.PlayerTypes = Object.freeze({
  * @constructor
  */
 ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity, skin) {
-    let self = this;
-    this.id = id;
-    this.name = name;
-    this.type = type;
+    let self         = this;
+    this.id          = id;
+    this.name        = name;
+    this.type        = type;
     this.createdTime = this.lastHeartbeat = Date.now();
-    this.sphere = new ZOR.PlayerSphere(this.id, color, position, scale, velocity, skin);
+    this.sphere = new ZOR.PlayerSphere( this.id, color, position, scale, velocity, skin );
 
     // Abilities
     this.abilities = {};
@@ -482,26 +482,28 @@ ZOR.Player = function ZORPlayer(id, name, color, type, position, scale, velocity
     });
 
     // Stats
-    this.score = this.sphere.scale;
-    this.foodCaptures = 0;
+    this.score          = this.sphere.scale;
+    this.foodCaptures   = 0;
     this.playerCaptures = 0;
-    this.drainAmount = 0;
-    this.spawnTime = 0;
-    this.deathTime = 0;
+    this.drainAmount    = 0;
+    this.spawnTime      = 0;
+    this.deathTime      = 0;
 
     // Infractions
-    this.infractions_food = 0;
-    this.infractions_pcap = 0;
-    this.infractions_speed = 0;
-    this.infractions_scale = 0;
+    this.infractions_food         = 0;
+    this.infractions_pcap         = 0;
+    this.infractions_scale        = 0;
+    this.infractions_speed        = [];
+    this.infractions_speed_burst  = 0;
+    this.activeSpeedBurstDetected = false;
 
     // Client Metrics
-    this.ping_metric = new ZOR.Metric(100);
-    this.fps_metric = new ZOR.Metric(20, true);
-    this.pp_send_metric = new ZOR.Metric(200);
-    this.pp_receive_metric = new ZOR.Metric(200);
-    this.au_receive_metric = new ZOR.Metric(200);
-    this.buffered_amount_metric = new ZOR.Metric(320);
+    this.ping_metric            = new ZOR.Metric( 100 );
+    this.fps_metric             = new ZOR.Metric( 20, true );
+    this.pp_send_metric         = new ZOR.Metric( 200 );
+    this.pp_receive_metric      = new ZOR.Metric( 200 );
+    this.au_receive_metric      = new ZOR.Metric( 200 );
+    this.buffered_amount_metric = new ZOR.Metric( 320 );
 };
 
 /**

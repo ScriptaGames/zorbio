@@ -217,20 +217,23 @@ config.FOOD_GET_VALUE = function FoodGetValue(r) {
 //                         VALIDATION SETTINGS                        //
 ////////////////////////////////////////////////////////////////////////
 
-config.ENABLE_VALIDATION              = true;   // enable validation checks on the server to prevent cheating
-config.FOOD_CAPTURE_EXTRA_TOLERANCE   = 10;     // extra distance that we'll tolerate for valid food capture
-config.PLAYER_CAPTURE_EXTRA_TOLERANCE = 1;      // extra distance that we'll tolerate for valid player capture
-config.SPEED_EXTRA_TOLERANCE          = 0.4;    // extra speed tolerance for movement validation
-config.PLAYER_SCALE_EXTRA_TOLERANCE   = 0.1;    // extra tolerance for player scale
-config.PLAYER_POSITIONS_WINDOW        = 30;     // number of recent positions to save for the player for validation rewind
-config.INFRACTION_TOLERANCE_FOOD      = 20;     // how many food infractions a player can have before they are kicked
-config.INFRACTION_TOLERANCE_PCAP      = 1;      // how many player capture infractions a player can have before they are kicked
-config.INFRACTION_TOLERANCE_SPEED     = 20;     // how many speed infractions a player can have before they are kicked
-config.INFRACTION_TOLERANCE_SCALE     = 1;      // how many scale infractions a player can have before they are kicked
-config.MOVE_VALIDATION_SAMPLE_RATE    = 10;     // How often to sample, 1 would be ever time, 10 would be every 10th check
-config.LOADING_WAIT_DURATION          = 10000;  // How many milliseconds to wait before starting to track movement validation
-config.MAX_PLAYER_NAME_LENGTH         = 15;     // How many characters can be in the player name
-config.MAX_NOT_IN_MODEL_ERRORS        = 100;    // How many not-in-model errors before kicking the client
+config.ENABLE_VALIDATION                = true;   // enable validation checks on the server to prevent cheating
+config.FOOD_CAPTURE_EXTRA_TOLERANCE     = 10;     // extra distance that we'll tolerate for valid food capture
+config.PLAYER_CAPTURE_EXTRA_TOLERANCE   = 1;      // extra distance that we'll tolerate for valid player capture
+config.SPEED_EXTRA_TOLERANCE            = 0.4;    // extra speed tolerance for movement validation
+config.PLAYER_SCALE_EXTRA_TOLERANCE     = 0.1;    // extra tolerance for player scale
+config.PLAYER_POSITIONS_WINDOW          = 30;     // number of recent positions to save for the player for validation rewind
+config.INFRACTION_TOLERANCE_FOOD        = 20;     // how many food infractions a player can have before they are kicked
+config.INFRACTION_TOLERANCE_PCAP        = 1;      // how many player capture infractions a player can have before they are kicked
+config.INFRACTION_TOLERANCE_SCALE       = 1;      // how many scale infractions a player can have before they are kicked
+config.INFRACTION_TOLERANCE_SPEED       = 15;     // how many active speed infractions a player can have before they are kicked
+config.INFRACTION_TOLERANCE_SPEED_BURST = 3;      // how many speed bursts a player can have before they are kicked
+config.MOVE_VALIDATION_SAMPLE_RATE      = 5;      // How often to sample, 1 would be ever time, 10 would be every 10th check
+config.INFRACTION_SPEED_EXPIRE          = 10000;  // How long speed infractions last before they expire
+config.SPEED_BURST_DETECTION_WINDOW     = 4;      // How many active speed infractions will trigger a burst detection but not kick player
+config.LOADING_WAIT_DURATION            = 10000;  // How many milliseconds to wait before starting to track movement validation
+config.MAX_PLAYER_NAME_LENGTH           = 15;     // How many characters can be in the player name
+config.MAX_NOT_IN_MODEL_ERRORS          = 100;    // How many not-in-model errors before kicking the client
 
 ////////////////////////////////////////////////////////////////////////
 //                            GFX SETTINGS                            //

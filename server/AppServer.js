@@ -389,10 +389,14 @@ let AppServer = function(id, app, server_label, port) {
             }
             else {
                 switch (err) {
-                    case Validators.ErrorCodes.SPEED_TO_FAST:
+                    case Validators.ErrorCodes.SPEED_TO_FAST: {
                         ws.send( JSON.stringify( { op: 'speeding_warning' } ) );
-                        self.model.getPlayerById( currentPlayer.id ).infractions_speed++;
+                        let playerObj = self.model.getPlayerById( currentPlayer.id );
+                        if (playerObj) {
+                            playerObj.infractions_speed.push(config.INFRACTION_SPEED_EXPIRE);
+                        }
                         break;
+                    }
                     case Validators.ErrorCodes.PLAYER_NOT_IN_MODEL:
                         player_not_in_model_count++;
                         if (player_not_in_model_count > config.MAX_NOT_IN_MODEL_ERRORS) {
@@ -849,6 +853,34 @@ let AppServer = function(id, app, server_label, port) {
         self.model.players.forEach( function performPlayerChecks(player) {
             let id = player.id;
 
+            // Expire speed infractions
+            let i = player.infractions_speed.length;
+            let sum = 0;
+            while (i--) {
+                player.infractions_speed[i] -= config.TICK_SLOW_INTERVAL;
+                if (player.infractions_speed[i] <= 0) {
+                    player.infractions_speed.splice(i, 1);  // remove expired speed infraction
+                }
+                else {
+                    sum += player.infractions_speed[i];
+                }
+            }
+
+            // detect speed bursts
+            let numSpeedInfractions = player.infractions_speed.length;
+            if (numSpeedInfractions >= config.SPEED_BURST_DETECTION_WINDOW && !player.activeSpeedBurstDetected) {
+                let mean = sum / numSpeedInfractions;
+                if (mean > 7000) {
+                    console.log('Speed burst detected from player id', player.id, 'mean expiry left', mean);
+                    player.infractions_speed_burst++;
+                    player.activeSpeedBurstDetected = true;
+                }
+            }
+            else if (numSpeedInfractions === 0) {
+                player.activeSpeedBurstDetected = false;
+            }
+
+
             // Check for infractions
             if (player.infractions_food > config.INFRACTION_TOLERANCE_FOOD) {
                 self.log( 'INFRACTION: Player reached food infraction tolerance:', id, player.infractions_food, config.INFRACTION_TOLERANCE_FOOD );
@@ -858,7 +890,8 @@ let AppServer = function(id, app, server_label, port) {
                 self.log( 'INFRACTION: Player reached player capture infraction tolerance:', id, player.infractions_pcap, config.INFRACTION_TOLERANCE_PCAP );
                 player.infractions_pcap = 0;
             }
-            else if (player.infractions_speed > config.INFRACTION_TOLERANCE_SPEED) {
+            else if (player.infractions_speed.length > config.INFRACTION_TOLERANCE_SPEED ||
+                player.infractions_speed_burst > config.INFRACTION_TOLERANCE_SPEED_BURST) {
                 self.kickPlayer( id, 'You were removed because you had too many speed infractions.' );
             }
             else if (player.infractions_scale > config.INFRACTION_TOLERANCE_SCALE) {
