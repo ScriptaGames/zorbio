@@ -271,11 +271,8 @@ ZOR.Model.prototype.findNearestPlayerSphere = function ZORfindNearestPlayerSpher
  * @returns {boolean}
  */
 ZOR.Model.prototype.isSafeSpawnPosition = function ZORIsSafeSpawnPosition( nearest ) {
-    if (nearest.dist < nearest.sphere.scale && nearest.sphere.scale > config.INITIAL_PLAYER_RADIUS) {
-        return false;
-    }
-
-    return true;
+    return !(nearest.dist < nearest.sphere.scale * 2
+        && nearest.sphere.scale > config.INITIAL_PLAYER_RADIUS);
 };
 
 
