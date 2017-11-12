@@ -142,7 +142,7 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
         let targetPlayer;
 
         // Initialize
-        self.chasePlayer = { sphere: { position: new THREE.Vector3() } };
+        self.chasePosition = new THREE.Vector3();
 
         if (playerId) {
             // look up specific player
@@ -150,7 +150,7 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
         }
         else {
             // pick a random other player if there are any
-            targetPlayer = self.model.getPlayerById(self.id); // _.sample(self.model.players);
+            targetPlayer = _.sample(self.model.players);
         }
 
         if (targetPlayer &&
@@ -158,12 +158,12 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
             targetPlayer.sphere.position instanceof THREE.Vector3 &&
             targetPlayer.id !== self.id) {
             // Valid target player set to chase
-            console.log('Bot ', self.id, ' set to chase player id ', targetPlayer.id);
+            console.log('Bot', self.id, 'set to chase player id', targetPlayer.id);
             self.chasePlayer = targetPlayer;
             self.chasePosition = self.chasePlayer.sphere.position;  // for quick lookup
         }
         else {
-            console.log('Bot ', self.id, ' no chase target available');
+            console.log('Bot', self.id, 'no chase target available');
         }
     };
 

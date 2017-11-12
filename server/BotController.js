@@ -2,6 +2,7 @@ let config     = require( '../common/config.js' );
 let Zorbio     = require( '../common/zorbio.js' );
 let Bot        = require( './Bot.js' );
 let CurvePaths = require( '../common/CurvePaths' );
+let THREE      = require( 'three' );
 
 let BotController = function(model) {
     //  Scope
@@ -149,6 +150,24 @@ let BotController = function(model) {
 
             if (bot.move === bot.movementPaterns.chase) {
                 bot.setChaseTarget(player.id);
+            }
+        }
+    };
+
+    /**
+     * Checks chase bots for to make sure their chase target is still valid
+     */
+    self.validateChaseTargets = function botControllerCheckChaseTargets() {
+        // For any bots that have the chase movement method, set new chase target
+        for (let i = 0; i < self.bots.length; i++) {
+            let bot = self.bots[i];
+
+            if (bot.move === bot.movementPaterns.chase) {
+                if (!self.model.getPlayerById( bot.chasePlayer.id ) ||
+                    !(bot.chasePosition instanceof THREE.Vector3)) {
+                    console.log('Bot', bot.id, 'chase player id', bot.chasePlayer.id, 'invalid, setting new target..');
+                    bot.setChaseTarget();  // Set a new random chase target
+                }
             }
         }
     };

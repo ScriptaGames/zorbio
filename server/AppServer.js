@@ -759,6 +759,9 @@ let AppServer = function(id, app, server_label, port) {
 
         self.removePlayerFromModel( targetPlayerId );
 
+        // Inform the bot controller to in case the captured player was a chase target
+        self.botController.validateChaseTargets();
+
         // Inform other clients that target player died
         const msgObj = { op: 'player_died', attackingPlayerId: attackingPlayerId, targetPlayerId: targetPlayerId };
         self.broadcast( JSON.stringify( msgObj ) );
