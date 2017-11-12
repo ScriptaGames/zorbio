@@ -150,13 +150,16 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
         // Initialize
         self.chasePosition = new THREE.Vector3();
 
+        // Set a timeout to pick a new chase target
+        self.chaseTime = UTIL.getRandomIntInclusive(config.BOT_CHASE_TIME_MIN, config.BOT_CHASE_TIME_MAX);
+
         if (playerId) {
             // look up specific player
             targetPlayer = self.model.getPlayerById(playerId);
         }
         else {
-            // pick a random other player if there are any
-            targetPlayer = _.sample(self.model.players);
+            // pick a random other player that is not this bot to chase
+            targetPlayer = _.sample(_.filter(self.model.players, (p) => p.id !== self.id));
         }
 
         if (targetPlayer &&
@@ -167,13 +170,10 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
             self.chasePlayer = targetPlayer;
             self.chasePosition = self.chasePlayer.sphere.position;  // for quick lookup
 
-            // Set a timeout to pick a new chase target
-            self.chaseTime = UTIL.getRandomIntInclusive(config.BOT_CHASE_TIME_MIN, config.BOT_CHASE_TIME_MAX);
-
             console.log('Bot', self.id, 'set to chase player id', targetPlayer.id, 'for', self.chaseTime / 1000, 'seconds');
         }
         else {
-            console.log('Bot', self.id, 'no chase target available', targetPlayer.id);
+            console.log('Bot', self.id, 'no chase target available');
         }
     };
 

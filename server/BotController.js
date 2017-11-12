@@ -153,9 +153,10 @@ let BotController = function(model) {
             let bot = self.bots[i];
 
             if (bot.move === bot.movementPaterns.chase) {
-                if (!self.model.getPlayerById( bot.chasePlayer.id ) ||
+                if (!bot.chasePlayer ||
+                    !self.model.getPlayerById( bot.chasePlayer.id ) ||
                     !(bot.chasePosition instanceof THREE.Vector3)) {
-                    console.log('Bot', bot.id, 'chase player id', bot.chasePlayer.id, 'invalid, setting new target..');
+                    console.log('Bot', bot.id, 'chase target invalid, setting new target..');
                     bot.setChaseTarget();  // Set a new random chase target
                 }
             }
