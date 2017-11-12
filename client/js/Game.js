@@ -367,6 +367,7 @@ function initCameraAndPlayer() {
         camera_controls.enableDamping = true;
         camera_controls.dampingFactor = 0.25;
         camera_controls.enableZoom = false;
+        camera_controls.enablePan = false;
         camera_controls.target = player.view.mainSphere;
     }
 
@@ -615,10 +616,14 @@ function handleKeyup(evt) {
 function handleMouseDown(evt) {
     if (!gameStart || player.isDead) return;
 
-    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any
-        && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
-        if (player.isSpeedBoostReady()) {
-            zorClient.z_sendSpeedBoostStart();
+    if (config.AUTO_RUN_ENABLED && !isMobile.any) {
+        if (evt.button === 0 && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
+            if (player.isSpeedBoostReady()) {
+                zorClient.z_sendSpeedBoostStart();
+            }
+        }
+        else if (evt.button === 2) {
+            player.holdPosition = true;
         }
     }
 }
@@ -630,10 +635,14 @@ function handleMouseDown(evt) {
 function handleMouseUp(evt) {
     if (!gameStart || player.isDead) return;
 
-    if (evt.button === 0 && config.AUTO_RUN_ENABLED && !isMobile.any
-        && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
-        player.speedBoostStop();
-        zorClient.z_sendSpeedBoostStop();
+    if (config.AUTO_RUN_ENABLED && !isMobile.any) {
+        if (evt.button === 0  && config.STEERING === config.STEERING_METHODS.MOUSE_FOLLOW) {
+            player.speedBoostStop();
+            zorClient.z_sendSpeedBoostStop();
+        }
+        else if (evt.button === 2) {
+            player.holdPosition = false;
+        }
     }
 }
 
@@ -657,8 +666,12 @@ function keyDown( key ) {
         player.moveForward(camera);
     }
     else if ( key === 's' ) {
-        // TODO: refactor this to player.stop() based on auto run value
-        player.moveBackward(camera);
+        if (config.AUTO_RUN_ENABLED) {
+            player.holdPosition = true;
+        }
+        else {
+            player.moveBackward(camera);
+        }
     }
 }
 
@@ -679,11 +692,17 @@ function keyJustPressed(key) {
  * @param {string} key
  */
 function keyReleased(key) {
-    // console.log('key ' + key + ' released');
-    if (key === 'w' && config.AUTO_RUN_ENABLED) {
-        if (player.isSpeedBoostActive()) {
-            player.speedBoostStop();
-            zorClient.z_sendSpeedBoostStop();
+    if (config.AUTO_RUN_ENABLED) {
+        switch (key) {
+            case 'w':
+                if (player.isSpeedBoostActive()) {
+                    player.speedBoostStop();
+                    zorClient.z_sendSpeedBoostStop();
+                }
+                break;
+            case 's':
+                player.holdPosition = false;
+                break;
         }
     }
 }

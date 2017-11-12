@@ -34,6 +34,8 @@ ZOR.PlayerController = class ZORPlayerController {
         this.move_forward_v = new THREE.Vector3();
         this.move_backward_v = new THREE.Vector3();
 
+        this.holdPosition = false; // Toggle forward movement
+
         this.food_capture_queue = [];
 
         if (scene) {
@@ -307,14 +309,16 @@ ZOR.PlayerController = class ZORPlayerController {
      * @param {Object} camera the three.js camera
      */
     moveForward(camera) {
-        let v = this.move_forward_v;
-        let mainSphere = this.view.mainSphere;
-        v.copy( mainSphere.position );
-        v.sub( camera.position );
-        v.multiplyScalar( -1 );
-        v.normalize();
-        v.multiplyScalar( this.getSpeed() );
-        this.model.sphere.velocity.add( v );
+        if (!this.holdPosition) {
+            let v = this.move_forward_v;
+            let mainSphere = this.view.mainSphere;
+            v.copy( mainSphere.position );
+            v.sub( camera.position );
+            v.multiplyScalar( -1 );
+            v.normalize();
+            v.multiplyScalar( this.getSpeed() );
+            this.model.sphere.velocity.add( v );
+        }
     }
 
     /**
