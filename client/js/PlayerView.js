@@ -105,7 +105,7 @@ ZOR.PlayerView.prototype.initTrails = function ZORPlayerViewInitTrails() {
 
     // Default visibility from local storage
     if (config.HIDE_OWN_TRAIL && this.is_current_player) {
-        self.hideTrails();
+        this.hideTrails();
     }
 };
 

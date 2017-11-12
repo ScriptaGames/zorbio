@@ -491,6 +491,7 @@ ZOR.UI = function ZORUI() {
         config.Y_AXIS_MULT = JSON.parse(localStorage.flip_y || 'false') ? -1 : 1;
         on( ACTIONS.TOGGLE_Y_AXIS, axisToggler('y'));
         on( ACTIONS.TOGGLE_X_AXIS, axisToggler('x'));
+        on( ACTIONS.TOGGLE_OWN_TRAIL, trailToggler);
 
         /**
          * Returns a function for toggling the Y axis
@@ -511,6 +512,22 @@ ZOR.UI = function ZORUI() {
                 }
                 localStorage[lsKey] = uidata[lsKey];
             };
+        }
+
+        /**
+         * toggles players trail based on checkbox
+         * @param {object} context
+         * @param {object} e
+         */
+        function trailToggler(context, e) {
+            if (e.target.checked) {
+                ZOR.UI.setAndSave( 'hide_own_trail', true );
+                config.HIDE_OWN_TRAIL = true;
+            }
+            else {
+                ZOR.UI.setAndSave( 'hide_own_trail', false );
+                config.HIDE_OWN_TRAIL = false;
+            }
         }
 
         on( ACTIONS.PAGE_RELOAD, location.reload.bind(location) );
