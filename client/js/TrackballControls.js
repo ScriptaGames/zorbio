@@ -125,7 +125,7 @@ THREE.TrackballControls = function( object, domElement ) {
         };
     }() );
 
-    let getMouseOnCircle = ( function() {
+    this.getMouseOnCircle = ( function() {
         let vector = new THREE.Vector2();
 
         return function getMouseOnCircle(pageX, pageY) {
@@ -364,7 +364,7 @@ THREE.TrackballControls = function( object, domElement ) {
         }
 
         if ( _state === STATE.ROTATE && ! _this.noRotate ) {
-            _moveCurr.copy( getMouseOnCircle( event.pageX, event.pageY ) );
+            _moveCurr.copy( _this.getMouseOnCircle( event.pageX, event.pageY ) );
             _movePrev.copy( _moveCurr );
         }
         else if ( _state === STATE.ZOOM && ! _this.noZoom ) {
@@ -396,7 +396,7 @@ THREE.TrackballControls = function( object, domElement ) {
 
         if ( _state === STATE.ROTATE && ! _this.noRotate || _this.follow_controls_on ) {
             _movePrev.copy( _moveCurr );
-            _moveCurr.copy( getMouseOnCircle( event.pageX, event.pageY ) );
+            _moveCurr.copy( _this.getMouseOnCircle( event.pageX, event.pageY ) );
         }
         else if ( _state === STATE.ZOOM && ! _this.noZoom ) {
             _zoomEnd.copy( getMouseOnScreen( event.pageX, event.pageY ) );
@@ -463,7 +463,7 @@ THREE.TrackballControls = function( object, domElement ) {
         switch ( event.touches.length ) {
             case 1:
                 _state = STATE.TOUCH_ROTATE;
-                _moveCurr.copy( getMouseOnCircle( event.touches[0].pageX, event.touches[0].pageY ) );
+                _moveCurr.copy( _this.getMouseOnCircle( event.touches[0].pageX, event.touches[0].pageY ) );
                 _movePrev.copy( _moveCurr );
                 break;
 
@@ -499,7 +499,7 @@ THREE.TrackballControls = function( object, domElement ) {
         switch ( event.touches.length ) {
             case 1:
                 _movePrev.copy( _moveCurr );
-                _moveCurr.copy( getMouseOnCircle(  event.touches[0].pageX, event.touches[0].pageY ) );
+                _moveCurr.copy( _this.getMouseOnCircle(  event.touches[0].pageX, event.touches[0].pageY ) );
                 break;
 
             case 2: {
@@ -527,7 +527,7 @@ THREE.TrackballControls = function( object, domElement ) {
         switch ( event.touches.length ) {
             case 1:
                 _movePrev.copy( _moveCurr );
-                _moveCurr.copy( getMouseOnCircle(  event.touches[0].pageX, event.touches[0].pageY ) );
+                _moveCurr.copy( _this.getMouseOnCircle(  event.touches[0].pageX, event.touches[0].pageY ) );
                 break;
 
             case 2: {

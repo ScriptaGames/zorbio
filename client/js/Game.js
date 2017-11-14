@@ -133,6 +133,11 @@ function startGame(type) {
     console.log('Player meta: ', ZOR.Game.playerMeta);
 
     zorClient.z_sendEnterGame(ZOR.Game.playerMeta);
+
+    setTimeout(() => {
+        avgVect.divideScalar(totalVects);
+        console.log('avg vect', avgVect);
+    }, 15000);
 }
 
 /**
@@ -556,6 +561,7 @@ window.addEventListener('keydown', handleKeydown);
 window.addEventListener('keyup', handleKeyup);
 window.addEventListener('mousedown', handleMouseDown);
 window.addEventListener('mouseup', handleMouseUp);
+window.addEventListener('mousemove', handleMouseMove, true);
 
 window.onload = function homeOnload() {
     zorClient.z_connectToServer('ws://' + config.BALANCER + ':' + config.WS_PORT);
@@ -645,6 +651,23 @@ function handleMouseUp(evt) {
         }
     }
 }
+
+let avgVect = new THREE.Vector2();
+let totalVects = 0;
+/**
+ * Handle mouse move event
+ * @param {Object} evt
+ */
+function handleMouseMove(evt) {
+    if (!gameStart || player.isDead) return;
+
+    let vector = camera_controls.getMouseOnCircle( evt.pageX, evt.pageY );
+    avgVect.add({ x: Math.abs( vector.x ), y: Math.abs( vector.y ) });
+    totalVects++;
+
+    // console.log(vector);
+}
+
 
 /**
  * Handle keys down
