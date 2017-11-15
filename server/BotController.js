@@ -29,7 +29,7 @@ let BotController = function(model) {
         }
         else {
             // Spawn all other bots with a random curve pattern
-            bot = new Bot(scale, self.model, 'curve', self.curvePaths.getRandomCurve());
+            bot = new Bot(scale, self.model, config.BOT_DEFAULT_MOVEMENT, self.curvePaths.getRandomCurve());
         }
 
         self.bots.push(bot);

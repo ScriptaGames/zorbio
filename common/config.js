@@ -35,10 +35,11 @@ config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD
 ////////////////////////////////////////////////////////////////////////
 //                           BOT SETTINGS                             //
 ////////////////////////////////////////////////////////////////////////
-config.MAX_BOTS           = 20;
-config.MAX_BOT_RADIUS     = 100;
-config.BOT_CHASE_TIME_MIN = 20000; // Min time a bot will chase a player
-config.BOT_CHASE_TIME_MAX = 45000; // Max time a bot will chase a player
+config.MAX_BOTS             = 20;
+config.MAX_BOT_RADIUS       = 100;
+config.BOT_CHASE_TIME_MIN   = 20000;   // Min time a bot will chase a player
+config.BOT_CHASE_TIME_MAX   = 45000;   // Max time a bot will chase a player
+config.BOT_DEFAULT_MOVEMENT = 'curve'; // Default movement pattern for bots
 
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //

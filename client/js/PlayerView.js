@@ -50,9 +50,9 @@ ZOR.PlayerView = function ZORPlayerView(model, scene, current) {
 
     if (!current) {
         this.setAlpha(1);
-        this.dangerView = ZOR.Pools.dangerViews.borrow();
-        this.dangerView.setPlayerView(this);
-        this.dangerView.show();
+        // this.dangerView = ZOR.Pools.dangerViews.borrow();
+        // this.dangerView.setPlayerView(this);
+        // this.dangerView.show();
     }
 
     this.drainView = ZOR.Pools.drainViews.borrow();
