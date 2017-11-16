@@ -57,6 +57,17 @@ ZOR.SkinCatalog = {
         texture      : 'skins/images/uranus-1k-oil.jpg',
         sort         : 3,
     },
+    venus: {
+        name         : 'venus',
+        type         : 'standard',
+        friendly_name: 'Planet Venus',
+        color        : '#fedd7d',
+        trail        : 'particle',
+        capture      : 'fiery_explosion',
+        preview      : 'skins/images/venus-thumb.png',
+        texture      : 'skins/images/venus-1k-oil.jpg',
+        sort         : 3,
+    },
     // kitten: {
     //     name         : 'kitten',
     //     type         : 'standard',
