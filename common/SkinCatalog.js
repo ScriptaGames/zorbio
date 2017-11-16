@@ -46,6 +46,17 @@ ZOR.SkinCatalog = {
         texture      : 'skins/images/neptune-1k-oil.jpg',
         sort         : 3,
     },
+    uranus: {
+        name         : 'uranus',
+        type         : 'standard',
+        friendly_name: 'Planet Uranus',
+        color        : '#95bccb',
+        trail        : 'line',
+        capture      : 'bubbles',
+        preview      : 'skins/images/uranus-thumb.png',
+        texture      : 'skins/images/uranus-1k-oil.jpg',
+        sort         : 3,
+    },
     // kitten: {
     //     name         : 'kitten',
     //     type         : 'standard',
