@@ -111,8 +111,21 @@ ZOR.Sounds = (function ZORSounds() {
         playFromPos: function ZORSoundsPlayFromPos(sound, earObject, soundPos) {
             let dist = earObject.position.distanceTo(soundPos);
             let pos = earObject.worldToLocal(soundPos).normalize().multiplyScalar(dist/config.VOLUME_FALLOFF_RATE);
-            let id = sound.play();
-            sound.pos(pos.x, pos.y, pos.z, id);
+            sound.pos(pos.x, pos.y, pos.z);
+            sound.play();
+        },
+        playFromDelta: function ZORSoundsPlayFromPos(sound, value1, value2) {
+            let origVolume = sound.volume();
+            let delta = (value2 - value1) / value1;
+            let modifiedVolume = Math.min(1, 1 + delta);  // volume should be between 0-1
+
+            // Set the new temporary volumn
+            sound.volume(modifiedVolume);
+
+            sound.play();  // Play the sound now at modified volume level
+
+            // reset the volume back to original
+            setTimeout(() => sound.volume(origVolume), 1250);
         },
     };
 

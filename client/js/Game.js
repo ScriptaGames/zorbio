@@ -811,7 +811,8 @@ function handleSuccessfulPlayerCapture(capturedPlayerID) {
     let windDownTime = 0;
 
     if (capturedPlayer) {
-        ZOR.Sounds.playFromPos(sound, player.view.mainSphere, capturedPlayer.model.sphere.position);
+        // Play capture sound modified volume based on size difference
+        ZOR.Sounds.playFromDelta(sound, player.radius(), capturedPlayer.model.sphere.scale);
         capturedPlayer.handleCapture();
         windDownTime = capturedPlayer.getWindDownTime();
     }
@@ -830,8 +831,16 @@ function handleOtherPlayerCapture(capturedPlayerID) {
     let ear;
 
     if (capturedPlayer) {
-        ear = (player && player.view) ? player.view.mainSphere : camera;
-        ZOR.Sounds.playFromPos(sound, ear, capturedPlayer.model.sphere.position);
+
+        if (player && capturedPlayer.getPlayerId() === player.getPlayerId()) {
+            ZOR.Sounds.sfx.player_capture.play();  // Own death sound should always be same volume
+        }
+        else {
+            // Other player death sound should be based on distance
+            ear = (player && player.view) ? player.view.mainSphere : camera;
+            ZOR.Sounds.playFromPos(sound, ear, capturedPlayer.model.sphere.position);
+        }
+
         capturedPlayer.handleCapture();
         windDownTime = capturedPlayer.getWindDownTime();
     }

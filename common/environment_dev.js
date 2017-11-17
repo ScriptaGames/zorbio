@@ -10,7 +10,7 @@ const DEV_SETTINGS = {
     MAX_BOTS              : 10,
     FOOD_DENSITY          : 10,
     INITIAL_PLAYER_RADIUS : 5,
-    FOOD_VALUE            : 1,
+    FOOD_VALUE            : 5,
     DEBUG                 : true,
     HEARTBEAT_ENABLE      : false,
     BALANCER              : 'LOCAL',

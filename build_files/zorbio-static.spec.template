@@ -6,7 +6,7 @@ Release:        BUILD%{?dist}
 Summary:        Static http files for Zorbio a multiplayer webgl game
 
 License:        Proprietary
-URL:            http://zor.bio/
+URL:            http://zorb.io/
 Source0:        zorbio.tar.gz
 
 Requires:       httpd
