@@ -9,6 +9,7 @@ const PROD_SETTINGS = {
     CHECK_ORIGIN     : true,
     CHECK_VERSION    : false,
     REQUIRE_ALPHA_KEY: false,
+    DEBUG            : false,
 };
 
 if (NODEJS_ENV_PROD) {

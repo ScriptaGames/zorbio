@@ -9,12 +9,12 @@
 </div>
 {{ #if music_enabled }}
 <div>
-    <input id="music-volume" type="range" on-mousemove="@this.fire( ACTIONS.VOLUME_MUSIC, @event )" on-change="@this.fire( ACTIONS.VOLUME_MUSIC, @event )" min="0" max="0.99" step="0.01" value="{{ volume.music }}">
+    <input id="music-volume" type="range" on-mousemove="@this.fire( ACTIONS.VOLUME_MUSIC, @event )" on-change="@this.fire( ACTIONS.VOLUME_MUSIC, @event )" min="0" max="0.9" step="0.01" value="{{ volume.music }}">
     <label for="music-volume">Music volume</label>
 </div>
 {{ /if }}
 <div>
-    <input id="sfx-volume" type="range" on-change="@this.fire( ACTIONS.VOLUME_SFX, @event )" min="0" max="0.99" step="0.01" value="{{ volume.sfx }}">
+    <input id="sfx-volume" type="range" on-change="@this.fire( ACTIONS.VOLUME_SFX, @event )" min="0" max="0.9" step="0.01" value="{{ volume.sfx }}">
     <label for="sfx-volume">SFX volume</LABEL>
 </div>
 <div>

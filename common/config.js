@@ -352,8 +352,8 @@ config.COLORS = [
 ////////////////////////////////////////////////////////////////////////
 
 if (!NODEJS_CONFIG) {
-    config.VOLUME_MUSIC_INITIAL = localStorage.volume_music || 0.45;
-    config.VOLUME_SFX_INITIAL   = localStorage.volume_sfx || 1.0;
+    config.VOLUME_MUSIC_INITIAL = localStorage.volume_music || 0.5;
+    config.VOLUME_SFX_INITIAL   = localStorage.volume_sfx || 0.9;
 }
 config.MUSIC_ENABLED          = true;
 config.SFX_FOOD_CAPTURE_TONES = [

@@ -51,10 +51,11 @@ ZOR.Sounds = (function ZORSounds() {
             console.log(`set music volume to ${vol}`);
         },
         sfxVolume: function(vol) {
-            _.each(
-                sounds.sfx,
-                _.partial( _.invoke, _, 'setVolume', vol )
-            );
+            sounds.sfx.food_capture.volume(vol);
+            sounds.sfx.player_capture.volume(vol);
+            sounds.sfx.state_change.volume(vol);
+            sounds.sfx.woosh.setVolume(vol);
+            sounds.sfx.woosh.stop(); // For some reason woosh starts playing when volume set
             localStorage.volume_sfx = vol;
             console.log(`set sfx volume to ${vol}`);
         },
@@ -91,7 +92,7 @@ ZOR.Sounds = (function ZORSounds() {
             food_capture: howlSfx('veus/Effects/LowPitchLazer.ogg.mp3', {}),
             woosh       : wadSfx({
                 source: 'noise',
-                volume: 0.35,
+                volume: 0.5,
                 env   : {
                     attack : 0.5,
                     decay  : 0.5,
@@ -111,21 +112,31 @@ ZOR.Sounds = (function ZORSounds() {
         playFromPos: function ZORSoundsPlayFromPos(sound, earObject, soundPos) {
             let dist = earObject.position.distanceTo(soundPos);
             let pos = earObject.worldToLocal(soundPos).normalize().multiplyScalar(dist/config.VOLUME_FALLOFF_RATE);
-            sound.pos(pos.x, pos.y, pos.z);
-            sound.play();
+            let volume = localStorage.volume_sfx ? localStorage.volume_sfx : config.VOLUME_SFX_INITIAL;
+
+            // Make sure volume is set right
+            sound.volume(volume);
+
+            let id = sound.play();
+            sound.pos(pos.x, pos.y, pos.z, id);
         },
         playFromDelta: function ZORSoundsPlayFromPos(sound, value1, value2) {
-            let origVolume = sound.volume();
+            let pos = { x: 0, y: 0, z: 0 };
             let delta = (value2 - value1) / value1;
             let modifiedVolume = Math.min(1, 1 + delta);  // volume should be between 0-1
 
-            // Set the new temporary volumn
+            // apply user preference
+            modifiedVolume *= localStorage.volume_sfx ? localStorage.volume_sfx : config.VOLUME_SFX_INITIAL;
+
+            console.log('playFromDelta: value1', value1, 'value2', value2);
+            console.log('playFromDelta: delta', delta, 'modifiedVolume', modifiedVolume);
+
+            // Set the new volume
             sound.volume(modifiedVolume);
 
-            sound.play();  // Play the sound now at modified volume level
-
-            // reset the volume back to original
-            setTimeout(() => sound.volume(origVolume), 1250);
+            // Play the sound now at modified volume level
+            let id = sound.play();
+            sound.pos(pos.x, pos.y, pos.z, id);
         },
     };
 
