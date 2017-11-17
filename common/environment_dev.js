@@ -6,9 +6,9 @@ global ZOR:true
 const NODEJS_ENV_DEV = typeof module !== 'undefined' && module.exports;
 
 const DEV_SETTINGS = {
-    WORLD_SIZE            : 2000,
-    MAX_BOTS              : 20,
-    FOOD_DENSITY          : 33,
+    WORLD_SIZE            : 1000,
+    MAX_BOTS              : 10,
+    FOOD_DENSITY          : 10,
     INITIAL_PLAYER_RADIUS : 5,
     FOOD_VALUE            : 1,
     DEBUG                 : true,
