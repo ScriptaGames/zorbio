@@ -1,9 +1,48 @@
 <div id='ad-login-center'>
-    <!-- zorbio medium rectangle -->
-    <ins class="adsbygoogle"
-         style="display:inline-block;width:300px;height:250px"
-         data-ad-client="ca-pub-4327388137870064"
-         data-ad-slot="9456242076"></ins>
-    {{ showAd() }}
+    <table style="width: 100%">
+        <tbody>
+        <tr>
+            <td>
+
+                <div id="leaderboard">
+                    <table border="0" cellspacing="10" cellpadding="0">
+                        <tbody>
+                        <tr>
+                            <td colspan="2">High Scores Today</td>
+                        </tr>
+
+                        {{ #each leaderboard.data[leaderboard.activeBoard].slice(0, 10) as leader }}
+                        <tr>
+                            <td class="leaderboard-name">{{ leader.name }}</td>
+                            <td class="leaderboard-score">{{ numberCommas(leader.score) }}</td>
+                        </tr>
+                        {{ /each }}
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </td>
+
+            <td>
+
+                <!--&lt;!&ndash; zorbio medium rectangle &ndash;&gt;-->
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:300px;height:250px"
+                     data-ad-client="ca-pub-4327388137870064"
+                     data-ad-slot="9456242076"></ins>
+                {{ showAd() }}
+
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
+
+
+
+
+
     <p><a href="http://iogames.space" target="_blank" rel="noopener noreferrer referer">More .io games</a></p>
 </div>

@@ -4,7 +4,6 @@ let UTIL          = require( '../common/util.js' );
 let _             = require( 'lodash' );
 let datasets      = require( 'datasets' );
 let THREE         = require( 'three' );
-let SkinCatalog   = require( '../common/SkinCatalog' );
 
 let Bot = function(scale, model, movementPattern, curvePoints) {
     //  Scope
@@ -13,14 +12,25 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
 
     self.movementPattern = movementPattern || 'curve';  // default movement pattern is curve
 
-    // Array of skins in the catalog
-    let skins = _.filter( _.values(SkinCatalog), function(o) {
-        return !o.unlock_url;  // Don't include hidden skins that have an unlock_url defined
-    });
+    // Array of skin names with duplicates to balance which one will be picked
+    // I like line trail type bots because I think they look prettier, default, and neptune have line trails
+    let skins = [
+        'default',
+        'default',
+        'default',
+        'default',
+        'default',
+        'neptune',
+        'earth',
+        'venus',
+        'jupiter',
+        'boing',
+        'mars',
+    ];
 
     // initialized bot properties
     self.colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
-    self.skin_name = skins[UTIL.getRandomIntInclusive(0, skins.length - 1)].name;
+    self.skin_name = skins[UTIL.getRandomIntInclusive(0, skins.length - 1)];
     self.id = Zorbio.IdGenerator.get_next_id();
     self.name = 'AI ' + _.sample(Bot.prototype.names);
     self.scale = scale || UTIL.getRandomIntInclusive(config.INITIAL_PLAYER_RADIUS, config.MAX_PLAYER_RADIUS);

@@ -7,8 +7,9 @@ const NODEJS_ENV_PROD = typeof module !== 'undefined' && module.exports;
 
 const PROD_SETTINGS = {
     CHECK_ORIGIN     : true,
-    CHECK_VERSION    : false,
+    CHECK_VERSION    : true,
     REQUIRE_ALPHA_KEY: false,
+    DEBUG            : false,
 };
 
 if (NODEJS_ENV_PROD) {

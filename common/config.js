@@ -35,10 +35,11 @@ config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD
 ////////////////////////////////////////////////////////////////////////
 //                           BOT SETTINGS                             //
 ////////////////////////////////////////////////////////////////////////
-config.MAX_BOTS           = 20;
-config.MAX_BOT_RADIUS     = 100;
-config.BOT_CHASE_TIME_MIN = 20000; // Min time a bot will chase a player
-config.BOT_CHASE_TIME_MAX = 45000; // Max time a bot will chase a player
+config.MAX_BOTS             = 20;
+config.MAX_BOT_RADIUS       = 100;
+config.BOT_CHASE_TIME_MIN   = 20000;   // Min time a bot will chase a player
+config.BOT_CHASE_TIME_MAX   = 45000;   // Max time a bot will chase a player
+config.BOT_DEFAULT_MOVEMENT = 'curve'; // Default movement pattern for bots
 
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //
@@ -351,8 +352,8 @@ config.COLORS = [
 ////////////////////////////////////////////////////////////////////////
 
 if (!NODEJS_CONFIG) {
-    config.VOLUME_MUSIC_INITIAL = localStorage.volume_music || 0.45;
-    config.VOLUME_SFX_INITIAL   = localStorage.volume_sfx || 1.0;
+    config.VOLUME_MUSIC_INITIAL = localStorage.volume_music || 0.4;
+    config.VOLUME_SFX_INITIAL   = localStorage.volume_sfx || 0.9;
 }
 config.MUSIC_ENABLED          = true;
 config.SFX_FOOD_CAPTURE_TONES = [

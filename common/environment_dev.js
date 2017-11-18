@@ -21,6 +21,7 @@ const DEV_SETTINGS = {
     NUM_GAME_INSTANCES    : 1,
     ENABLE_HTTP_SERVER    : true,
     ENABLE_BACKEND_SERVICE: false,
+    BOT_DEFAULT_MOVEMENT  : 'curve',
 };
 
 if (NODEJS_ENV_DEV) {
