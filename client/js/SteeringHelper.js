@@ -3,6 +3,7 @@ global ZOR:true
 global gameStart:true
 global player:true
 global camera_controls:true
+global config:true
  */
 
 ZOR.SteeringHelper = class ZORSteeringHelper {
@@ -13,9 +14,9 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
     constructor() {
         this._timeInCenter = 0;     // ms is mouse in center zone
         this._centerTimer  = null;  // handle to setInterval center zone timer
-        this._timerTick    = 50;    // ms interval center zone timer checks
-        this._lingerTime   = 600;   // min time that cursor spent in center zone to consider linger
         this._canSteer     = false; // flag on weather we think this player can steer
+        this._timerTick    = config.STEERING_HELPER_TIMER_TICK;    // ms interval center zone timer checks
+        this._lingerTime   = config.STEERING_HELPER_LINGER_TIME;   // min time that cursor spent in center zone to consider linger
     }
 
 
@@ -36,7 +37,7 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
             else {
                 console.log('[SteeringHelper] player can steer');
             }
-        }, 10000);
+        }, config.STEERING_HELPER_DETECT_DURATION);
     }
 
 

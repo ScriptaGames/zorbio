@@ -178,6 +178,13 @@ config.X_AXIS_MULT = 1;
 config.HIDE_OWN_TRAIL = false;
 
 ////////////////////////////////////////////////////////////////////////
+//                          STEERING HELPER                           //
+////////////////////////////////////////////////////////////////////////
+config.STEERING_HELPER_TIMER_TICK      = 50;     // ms tick of center zone timer
+config.STEERING_HELPER_LINGER_TIME     = 600;    // ms duration to consider mouse lingering in center
+config.STEERING_HELPER_DETECT_DURATION = 10000;  // how long to spend detecting if player can steer
+
+////////////////////////////////////////////////////////////////////////
 //                           ABILITY SETTINGS                         //
 ////////////////////////////////////////////////////////////////////////
 
