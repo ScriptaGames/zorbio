@@ -421,6 +421,10 @@ button {
     }
 }
 
+
+//--------------------------------------------------------
+// Steering toast animation and styles
+//--------------------------------------------------------
 @keyframes circle {
     from {
         transform: scale(6)
@@ -442,17 +446,33 @@ button {
     margin-left: -50px;
 }
 .one {
-    animation: circle 4s infinite linear;
+    animation: circle 3s infinite linear;
+    transform: scale(6);
 }
 .two {
     animation: circle 3s infinite linear;
+    animation-delay: 600ms;
+    transform: scale(6);
 }
 .three {
-    animation: circle 2s infinite linear;
+    animation: circle 3s infinite linear;
+    animation-delay: 1200ms;
+    transform: scale(6);
+}
+.four {
+    animation: circle 3s infinite linear;
+    animation-delay: 1800ms;
+    transform: scale(6);
+}
+.five {
+    animation: circle 3s infinite linear;
+    animation-delay: 2400ms;
+    transform: scale(6);
 }
 #steering-toast {
     display: none;
 }
+// End steering toast ---------------------------------------
 
 #server-message, #steering-toast-message {
     position  : absolute;

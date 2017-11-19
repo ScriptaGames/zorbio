@@ -50,6 +50,8 @@ ZOR.Game.dead_players = {};  // hold dead player views while they finish death a
 
 ZOR.Game.player_meshes = [];
 
+ZOR.Game.steeringHelper = new ZOR.SteeringHelper();
+
 ZOR.Game.fullscreen = function go_fullscreen() {
     let el = document.body;
     if (el.requestFullscreen) {
@@ -134,14 +136,8 @@ function startGame(type) {
 
     zorClient.z_sendEnterGame(ZOR.Game.playerMeta);
 
-    setTimeout(() => {
-        if (!canSteer) {
-            // display toast
-            console.log('player cant steer');
-            let el = document.getElementById('steering-toast');
-            el.style.display = 'block';
-        }
-    }, 10000);
+    // Start detecting if a player can fly strait
+    ZOR.Game.steeringHelper.detectStrait();
 }
 
 /**
@@ -565,7 +561,6 @@ window.addEventListener('keydown', handleKeydown);
 window.addEventListener('keyup', handleKeyup);
 window.addEventListener('mousedown', handleMouseDown);
 window.addEventListener('mouseup', handleMouseUp);
-window.addEventListener('mousemove', handleMouseMove, true);
 
 window.onload = function homeOnload() {
     zorClient.z_connectToServer('ws://' + config.BALANCER + ':' + config.WS_PORT);
@@ -655,64 +650,6 @@ function handleMouseUp(evt) {
         }
     }
 }
-
-
-let timeInCenter = 0;
-let centerTimer;
-let timerTick = 50;
-let lingerTime = 600;
-let canSteer = false;
-/**
- * Handle mouse move event
- * @param {Object} evt
- */
-function handleMouseMove(evt) {
-    if (!gameStart || player.isDead) return;
-
-    let vector = camera_controls.getMouseOnCircle( evt.pageX, evt.pageY );
-
-    if (isMouseInCenterZone(vector)) {
-        if (!centerTimer) {
-            // Start countdown to see how long the mouse is in center zone
-            centerTimer = setInterval(() => {
-                timeInCenter += timerTick;
-                if (timeInCenter >= lingerTime) {
-                    console.log('In center for: ', timeInCenter);
-                    canSteer = true;
-                    clearInterval(centerTimer);
-                    centerTimer = null;
-                    window.removeEventListener('mousemove', handleMouseMove, true);
-                    let el = document.getElementById('steering-toast');
-                    el.style.display = 'none';
-                }
-                else {
-                    console.log('timeInCenter', timeInCenter);
-                }
-            }, timerTick);
-        }
-    }
-    else {
-        // clear countdown
-        timeInCenter = 0;
-        if (centerTimer) {
-            console.log('clearing timer');
-            clearInterval(centerTimer);
-            centerTimer = null;
-        }
-    }
-}
-
-/**
- * Returns true of mouse is in the center zone of screen
- * @param {Vector2} vector
- * @returns {boolean}
- */
-function isMouseInCenterZone(vector) {
-    let x = Math.abs(vector.x.toFixed(1));
-    let y = Math.abs(vector.y.toFixed(1));
-    return (x <= 0.1 && y <= 0.1);
-}
-
 
 /**
  * Handle keys down
