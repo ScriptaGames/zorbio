@@ -135,9 +135,13 @@ function startGame(type) {
     zorClient.z_sendEnterGame(ZOR.Game.playerMeta);
 
     setTimeout(() => {
-        avgVect.divideScalar(totalVects);
-        console.log('avg vect', avgVect);
-    }, 15000);
+        if (!canSteer) {
+            // display toast
+            console.log('player cant steer');
+            let el = document.getElementById('steering-toast');
+            el.style.display = 'block';
+        }
+    }, 10000);
 }
 
 /**
@@ -652,8 +656,12 @@ function handleMouseUp(evt) {
     }
 }
 
-let avgVect = new THREE.Vector2();
-let totalVects = 0;
+
+let timeInCenter = 0;
+let centerTimer;
+let timerTick = 50;
+let lingerTime = 600;
+let canSteer = false;
 /**
  * Handle mouse move event
  * @param {Object} evt
@@ -662,10 +670,47 @@ function handleMouseMove(evt) {
     if (!gameStart || player.isDead) return;
 
     let vector = camera_controls.getMouseOnCircle( evt.pageX, evt.pageY );
-    avgVect.add({ x: Math.abs( vector.x ), y: Math.abs( vector.y ) });
-    totalVects++;
 
-    // console.log(vector);
+    if (isMouseInCenterZone(vector)) {
+        if (!centerTimer) {
+            // Start countdown to see how long the mouse is in center zone
+            centerTimer = setInterval(() => {
+                timeInCenter += timerTick;
+                if (timeInCenter >= lingerTime) {
+                    console.log('In center for: ', timeInCenter);
+                    canSteer = true;
+                    clearInterval(centerTimer);
+                    centerTimer = null;
+                    window.removeEventListener('mousemove', handleMouseMove, true);
+                    let el = document.getElementById('steering-toast');
+                    el.style.display = 'none';
+                }
+                else {
+                    console.log('timeInCenter', timeInCenter);
+                }
+            }, timerTick);
+        }
+    }
+    else {
+        // clear countdown
+        timeInCenter = 0;
+        if (centerTimer) {
+            console.log('clearing timer');
+            clearInterval(centerTimer);
+            centerTimer = null;
+        }
+    }
+}
+
+/**
+ * Returns true of mouse is in the center zone of screen
+ * @param {Vector2} vector
+ * @returns {boolean}
+ */
+function isMouseInCenterZone(vector) {
+    let x = Math.abs(vector.x.toFixed(1));
+    let y = Math.abs(vector.y.toFixed(1));
+    return (x <= 0.1 && y <= 0.1);
 }
 
 

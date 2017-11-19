@@ -421,8 +421,40 @@ button {
     }
 }
 
+@keyframes circle {
+    from {
+        transform: scale(6)
+    }
+    to {
+        transform: scale(0)
+    }
+}
+.circle {
+    margin: 0 auto;
+    width: 100px;
+    height: 100px;
+    border: 1px dashed #fff;
+    border-radius: 50%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -50px;
+    margin-left: -50px;
+}
+.one {
+    animation: circle 4s infinite linear;
+}
+.two {
+    animation: circle 3s infinite linear;
+}
+.three {
+    animation: circle 2s infinite linear;
+}
+#steering-toast {
+    display: none;
+}
 
-#server-message {
+#server-message, #steering-toast-message {
     position  : absolute;
     left      : 50%;
     transform : translateX(-50%);
