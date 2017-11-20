@@ -154,6 +154,11 @@ function respawnPlayer() {
     }, 1000);
     gameStart = false;
     zorClient.z_sendRespawn();
+
+    if (!isMobile.any) {
+        // Start detecting if a player can fly strait
+        ZOR.Game.steeringHelper.detectStraight();
+    }
 }
 
 /**
@@ -889,6 +894,9 @@ function handleDeath(msg) {
     ZOR.UI.engine.set('attacker', attackingPlayer);
     ZOR.UI.engine.set('player', playerStats);
     ZOR.UI.state( ZOR.UI.STATES.RESPAWN_SCREEN );
+
+    // Stop the steering helper
+    ZOR.Game.steeringHelper.stop();
 }
 
 /**
@@ -904,6 +912,9 @@ function handlePlayerKick(reason) {
     ZOR.UI.engine.set('kicked_message', reason);
 
     console.log('you were kicked: ', reason);
+
+    // Stop the steering helper
+    ZOR.Game.steeringHelper.stop();
 }
 
 /**

@@ -13,23 +13,37 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
      * @constructor
      */
     constructor() {
-        this._timeInCenter = 0;     // ms is mouse in center zone
-        this._centerTimer  = null;  // handle to setInterval center zone timer
-        this._canSteer     = false; // flag on weather we think this player can steer
-        this._timerTick    = config.STEERING_HELPER_TIMER_TICK;    // ms interval center zone timer checks
-        this._lingerTime   = config.STEERING_HELPER_LINGER_TIME;   // min time that cursor spent in center zone to consider linger
-        this._toastActive  = false; // is toast currently showing
+        this.init();
     }
 
+
+    /**
+     * initialize state
+     */
+    init() {
+        console.log('[SteeringHelper] init state');
+        this._timeInCenter           = 0;     // ms is mouse in center zone
+        this._centerTimer            = null;  // handle to setInterval center zone timer
+        this._canSteer               = false; // flag on weather we think this player can steer
+        this._timerTick              = config.STEERING_HELPER_TIMER_TICK;    // ms interval center zone timer checks
+        this._lingerTime             = config.STEERING_HELPER_LINGER_TIME;   // min time that cursor spent in center zone to consider linger
+        this._toastActive            = false; // is toast currently showing
+        this._detectTimeoutHandle    = null;  // reference to the setTimeout for detection handler
+        this._autoClearTimeoutHandle = null;  // reference to auto clear setTimeout
+    }
 
     /**
      * Start detecting if a player can fly straight
      */
     detectStraight() {
+        if (this._canSteer) return;  // Player has already passed this session, detection not required
+
         this._listener = this._handleMouseMove.bind(this);
         window.addEventListener('mousemove', this._listener, true);
 
-        setTimeout(() => {
+        this._detectTimeoutHandle = setTimeout(() => {
+            if (!gameStart || player.isDead) return;
+
             if (!this._canSteer) {
                 // display toast
                 console.log("[SteeringHelper] player can't steer");
@@ -48,7 +62,7 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
                 });
 
                 // Clear the toast after a max time showing in case they just don't get it
-                setTimeout(() => {
+                this._autoClearTimeoutHandle = setTimeout(() => {
                     ZOR.UI.engine.set('steering_toast_message_visible', false);
                     ZOR.UI.engine.set('steering_toast_circles_visible', false);
                     window.removeEventListener('mousemove', this._listener, true);
@@ -150,6 +164,42 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
                 clearInterval(this._centerTimer);
                 this._centerTimer = null;
             }
+        }
+    }
+
+    /**
+     * Stop doing everything
+     */
+    stop() {
+        console.log('[SteeringHelper] shutting down');
+
+        if (this._detectTimeoutHandle) {
+            // clear detection setTimeout
+            clearTimeout(this._detectTimeoutHandle);
+            this._detectTimeoutHandle = null;
+            console.log('[SteeringHelper] cleared detect handler');
+        }
+
+        if (this._autoClearTimeoutHandle) {
+            // clear setTimeout for auto clearing the toast
+            clearTimeout(this._autoClearTimeoutHandle);
+            this._autoClearTimeoutHandle = null;
+            console.log('[SteeringHelper] cleared auto clear handler');
+        }
+
+        // hide UI
+        ZOR.UI.engine.set('steering_toast_message_visible', false);
+        ZOR.UI.engine.set('steering_toast_circles_visible', false);
+        window.removeEventListener('mousemove', this._listener, true);
+        this._toastActive = false;
+
+        console.log('[SteeringHelper] hide ui and removed mouse listener');
+
+        // If timer is running stop it
+        if (this._centerTimer) {
+            console.log('[SteeringHelper] clearing timer');
+            clearInterval(this._centerTimer);
+            this._centerTimer = null;
         }
     }
 
