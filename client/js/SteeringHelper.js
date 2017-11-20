@@ -4,6 +4,7 @@ global gameStart:true
 global player:true
 global camera_controls:true
 global config:true
+global ga:true
  */
 
 ZOR.SteeringHelper = class ZORSteeringHelper {
@@ -36,14 +37,43 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
                 steeringToast.style.display = 'block';
                 this._toastActive = true;
 
+                // Send event to google analytics that toast was displayed
+                ga('send', {
+                    hitType      : 'event',
+                    eventCategory: 'steering_toast',
+                    eventAction  : 'display_toast',
+                    eventLabel   : 'detect_straight',
+                });
+
                 // Clear the toast after a max time showing in case they just don't get it
                 setTimeout(() => {
                     steeringToast.style.display = 'none';
                     window.removeEventListener('mousemove', this._listener, true);
+
+                    if (this._toastActive) {
+                        this._toastActive = false;
+
+                        // Send event to google analytics that toast auto-removed
+                        ga('send', {
+                            hitType      : 'event',
+                            eventCategory: 'steering_toast',
+                            eventAction  : 'clear_toast',
+                            eventLabel   : 'auto',
+                        });
+                    }
+
                 }, config.STEERING_HELPER_MAX_TOAST_TIME);
             }
             else {
                 console.log('[SteeringHelper] player can steer');
+
+                // Send event to google analytics that no toast required because player can steer
+                ga('send', {
+                    hitType      : 'event',
+                    eventCategory: 'steering_toast',
+                    eventAction  : 'no_toast_required',
+                    eventLabel   : 'detect_straight',
+                });
             }
         }, config.STEERING_HELPER_DETECT_DURATION);
     }
@@ -84,9 +114,19 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
 
                         if (this._toastActive) {
 
+                            this._toastActive = false;
+
                             // Toast was showing replace with reward message
                             let toastText = document.getElementById('steering-toast-message');
                             toastText.innerHTML = 'Nice!';
+
+                            // Send event to google analytics that toast cleared by player
+                            ga('send', {
+                                hitType      : 'event',
+                                eventCategory: 'steering_toast',
+                                eventAction  : 'clear_toast',
+                                eventLabel   : 'by_player',
+                            });
 
                             // Remove the reward message after a few seconds
                             setTimeout(() => {
