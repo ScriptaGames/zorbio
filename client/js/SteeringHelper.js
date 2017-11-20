@@ -38,6 +38,8 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
     detectStraight() {
         if (this._canSteer) return;  // Player has already passed this session, detection not required
 
+        console.log('[SteeringHelper] detecting straight steering');
+
         this._listener = this._handleMouseMove.bind(this);
         window.addEventListener('mousemove', this._listener, true);
 
