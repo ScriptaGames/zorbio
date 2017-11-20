@@ -19,7 +19,6 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
         'default',
         'default',
         'default',
-        'default',
         'neptune',
         'earth',
         'venus',
