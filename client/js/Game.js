@@ -136,8 +136,10 @@ function startGame(type) {
 
     zorClient.z_sendEnterGame(ZOR.Game.playerMeta);
 
-    // Start detecting if a player can fly strait
-    ZOR.Game.steeringHelper.detectStrait();
+    if (!isMobile.any) {
+        // Start detecting if a player can fly strait
+        ZOR.Game.steeringHelper.detectStraight();
+    }
 }
 
 /**

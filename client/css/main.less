@@ -427,14 +427,13 @@ button {
 //--------------------------------------------------------
 @keyframes circle {
     from {
-        transform: scale(6)
+        transform: scale(5)
     }
     to {
         transform: scale(0)
     }
 }
 .circle {
-    margin: 0 auto;
     width: 100px;
     height: 100px;
     border: 1px dashed #fff;
@@ -447,30 +446,47 @@ button {
 }
 .one {
     animation: circle 3s infinite linear;
-    transform: scale(6);
+    transform: scale(5);
 }
 .two {
     animation: circle 3s infinite linear;
     animation-delay: 600ms;
-    transform: scale(6);
+    transform: scale(5);
 }
 .three {
     animation: circle 3s infinite linear;
     animation-delay: 1200ms;
-    transform: scale(6);
+    transform: scale(5);
 }
 .four {
     animation: circle 3s infinite linear;
     animation-delay: 1800ms;
-    transform: scale(6);
+    transform: scale(5);
 }
 .five {
     animation: circle 3s infinite linear;
     animation-delay: 2400ms;
-    transform: scale(6);
+    transform: scale(5);
 }
 #steering-toast {
     display: none;
+}
+// Make circles smaller on small screen height so they don't overlap message
+@media screen and (max-height: 599px) {
+    .circle {
+        width: 50px;
+        height: 50px;
+        margin-top: -25px;
+        margin-left: -25px;
+    }
+}
+@media screen and (max-height: 800px) and (min-height: 600px) {
+    .circle {
+        width: 80px;
+        height: 80px;
+        margin-top: -40px;
+        margin-left: -40px;
+    }
 }
 // End steering toast ---------------------------------------
 

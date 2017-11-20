@@ -21,9 +21,9 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
 
 
     /**
-     * Start detecting if a player can fly strait
+     * Start detecting if a player can fly straight
      */
-    detectStrait() {
+    detectStraight() {
         this._listener = this._handleMouseMove.bind(this);
         window.addEventListener('mousemove', this._listener, true);
 
