@@ -22,8 +22,8 @@ global config:true
         let cameraRollMatrix = new THREE.Matrix4();
 
         // replace makeFrustum
-        let oldMakeFrustum = camera.projectionMatrix.makeFrustum.bind(camera.projectionMatrix);
-        camera.projectionMatrix.makeFrustum = function(left, right, bottom, top, near, far) {
+        let oldMakeFrustum = camera.projectionMatrix.makePerspective.bind(camera.projectionMatrix);
+        camera.projectionMatrix.makePerspective = function(left, right, bottom, top, near, far) {
             return oldMakeFrustum(left, right, bottom, top, near, far).multiply(cameraRollMatrix);
         };
 
