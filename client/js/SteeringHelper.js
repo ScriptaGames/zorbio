@@ -33,8 +33,10 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
             if (!this._canSteer) {
                 // display toast
                 console.log("[SteeringHelper] player can't steer");
-                let steeringToast = document.getElementById('steering-toast');
-                steeringToast.style.display = 'block';
+
+                ZOR.UI.engine.set('steering_toast_message_visible', true);
+                ZOR.UI.engine.set('steering_toast_circles_visible', true);
+
                 this._toastActive = true;
 
                 // Send event to google analytics that toast was displayed
@@ -47,7 +49,8 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
 
                 // Clear the toast after a max time showing in case they just don't get it
                 setTimeout(() => {
-                    steeringToast.style.display = 'none';
+                    ZOR.UI.engine.set('steering_toast_message_visible', false);
+                    ZOR.UI.engine.set('steering_toast_circles_visible', false);
                     window.removeEventListener('mousemove', this._listener, true);
 
                     if (this._toastActive) {
@@ -105,8 +108,7 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
                         this._centerTimer = null;
 
                         // Hide the toast circles
-                        let toastCircles           = document.getElementById( 'toast-circles' );
-                        toastCircles.style.display = 'none';
+                        ZOR.UI.engine.set('steering_toast_circles_visible', false);
 
                         // Remove the event listener for performance
                         window.removeEventListener('mousemove', this._listener, true);
@@ -130,8 +132,7 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
 
                             // Remove the reward message after a few seconds
                             setTimeout(() => {
-                                let toastContent = document.getElementById('steering-toast');
-                                toastContent.style.display = 'none';
+                                ZOR.UI.engine.set('steering_toast_message_visible', false);
                             }, 3000);
                         }
                     }

@@ -37,19 +37,23 @@
         {{ /if }}
 
         {{ #if server_message }}
-        <div id="server-message"> {{ server_message }} </div>
+            <div id="server-message"> {{ server_message }} </div>
         {{ /if }}
 
-        <div fade-in-out id="steering-toast">
-            <div id="steering-toast-message">Center mouse to fly straight</div>
-            <div id='toast-circles'>
+        {{ #if steering_toast_message_visible }}
+            <div fade-in-out id="steering-toast-message">Center mouse to fly straight</div>
+        {{ /if }}
+
+        {{ #if steering_toast_circles_visible }}
+            <div fade-in-out id='toast-circles'>
                 <div class="circle one"></div>
                 <div class="circle two"></div>
                 <div class="circle three"></div>
                 <div class="circle four"></div>
                 <div class="circle five"></div>
             </div>
-        </div>
+        {{ /if }}
+
     </div>
     {{ /if }}
 {{ /if }}
