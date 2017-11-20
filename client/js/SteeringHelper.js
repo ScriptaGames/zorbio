@@ -17,6 +17,7 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
         this._canSteer     = false; // flag on weather we think this player can steer
         this._timerTick    = config.STEERING_HELPER_TIMER_TICK;    // ms interval center zone timer checks
         this._lingerTime   = config.STEERING_HELPER_LINGER_TIME;   // min time that cursor spent in center zone to consider linger
+        this._toastActive  = false; // is toast currently showing
     }
 
 
@@ -31,8 +32,15 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
             if (!this._canSteer) {
                 // display toast
                 console.log("[SteeringHelper] player can't steer");
-                let el = document.getElementById('steering-toast');
-                el.style.display = 'block';
+                let steeringToast = document.getElementById('steering-toast');
+                steeringToast.style.display = 'block';
+                this._toastActive = true;
+
+                // Clear the toast after a max time showing in case they just don't get it
+                setTimeout(() => {
+                    steeringToast.style.display = 'none';
+                    window.removeEventListener('mousemove', this._listener, true);
+                }, config.STEERING_HELPER_MAX_TOAST_TIME);
             }
             else {
                 console.log('[SteeringHelper] player can steer');
@@ -52,18 +60,40 @@ ZOR.SteeringHelper = class ZORSteeringHelper {
 
         if (ZOR.SteeringHelper.isMouseInCenterZone(vector)) {
             if (!this._centerTimer) {
+
                 // Start countdown to see how long the mouse is in center zone
                 this._centerTimer = setInterval(() => {
-                    this._timeInCenter += this._timerTick;
+
+                    this._timeInCenter += this._timerTick; // Increment the timer
+
                     if (this._timeInCenter >= this._lingerTime) {
                         console.log('[SteeringHelper] In center for: ', this._timeInCenter);
-                        this._canSteer = true;
+                        this._canSteer = true;  // Yay player knows how to steer now!
+
+                        // Stop the timer
                         clearInterval(this._centerTimer);
                         this._centerTimer = null;
-                        let el = document.getElementById('steering-toast');
-                        el.style.display = 'none';
+
+                        // Hide the toast circles
+                        let toastCircles           = document.getElementById( 'toast-circles' );
+                        toastCircles.style.display = 'none';
+
+                        // Remove the event listener for performance
                         window.removeEventListener('mousemove', this._listener, true);
                         console.log('[SteeringHelper] removed toast UI and mousemove listener');
+
+                        if (this._toastActive) {
+
+                            // Toast was showing replace with reward message
+                            let toastText = document.getElementById('steering-toast-message');
+                            toastText.innerHTML = 'Nice!';
+
+                            // Remove the reward message after a few seconds
+                            setTimeout(() => {
+                                let toastContent = document.getElementById('steering-toast');
+                                toastContent.style.display = 'none';
+                            }, 3000);
+                        }
                     }
                     else {
                         console.log('[SteeringHelper] timeInCenter', this._timeInCenter);
