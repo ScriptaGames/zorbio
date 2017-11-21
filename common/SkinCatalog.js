@@ -44,7 +44,7 @@ ZOR.SkinCatalog = {
         capture      : 'bubbles',
         preview      : 'skins/images/neptune-thumb.png',
         texture      : 'skins/images/neptune-1k-oil.jpg',
-        sort         : 3,
+        sort         : 4,
     },
     uranus: {
         name         : 'uranus',
@@ -55,7 +55,7 @@ ZOR.SkinCatalog = {
         capture      : 'bubbles',
         preview      : 'skins/images/uranus-thumb.png',
         texture      : 'skins/images/uranus-1k-oil.jpg',
-        sort         : 3,
+        sort         : 7,
     },
     venus: {
         name         : 'venus',
@@ -66,7 +66,7 @@ ZOR.SkinCatalog = {
         capture      : 'fiery_explosion',
         preview      : 'skins/images/venus-thumb.png',
         texture      : 'skins/images/venus-1k-oil.jpg',
-        sort         : 3,
+        sort         : 6,
     },
     mars: {
         name         : 'mars',
@@ -77,7 +77,7 @@ ZOR.SkinCatalog = {
         capture      : 'fiery_explosion',
         preview      : 'skins/images/mars-thumb.png',
         texture      : 'skins/images/mars-1k-oil.jpg',
-        sort         : 3,
+        sort         : 5,
     },
     kitten: {
         name         : 'kitten',
@@ -89,14 +89,14 @@ ZOR.SkinCatalog = {
         preview      : 'skins/images/kitten_thumb.png',
         texture      : 'skins/images/kitten_texture.png',
         unlock_url   : '?kitten',
-        sort         : 3,
+        sort         : 0,
     },
     boing: {
         friendly_name: 'Boing',
         type         : 'custom',
         name         : 'boing',
         preview      : 'skins/boing/thumb.jpg',
-        sort         : 4,
+        sort         : 8,
     },
     reddit: {
         name         : 'reddit',
