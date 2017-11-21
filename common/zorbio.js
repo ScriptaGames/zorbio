@@ -586,7 +586,7 @@ ZOR.Metric.prototype.add = function ZORMetricAdd(value) {
 
     this.last = value;
 
-    this.mean = +_.mean(this.series).toFixed(3);
+    this.mean = Math.round(_.mean(this.series) * 1000) / 1000;  // super fast way to truncate decimals
     this.max = _.max(this.series);
     this.min = _.min(this.series);
 

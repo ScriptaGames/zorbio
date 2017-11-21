@@ -28,7 +28,7 @@ Validators.movement = function() {
     let point_a = new THREE.Vector3();
     let point_b = new THREE.Vector3();
 
-    return function(sphere, actor, model) {
+    return function validateMovement(sphere, actor, model) {
         if (!config.ENABLE_VALIDATION) return 0;
 
         // Give the player a grace period while they are loading before validating movement.

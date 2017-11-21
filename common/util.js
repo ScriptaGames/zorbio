@@ -301,14 +301,6 @@ UTIL.randomHorizontalPosition = function UTILrandomWorldPosition() {
 };
 
 
-UTIL.trimPosition = function UTILTrimPosition(position, trim) {
-    return {
-        x: +position.x.toFixed(trim),
-        y: +position.y.toFixed(trim),
-        z: +position.z.toFixed(trim),
-    };
-};
-
 /**
  * Given a number n, increase n until it's a multiple of four.  For example,
  * `fourPad(9)` would return 12 and `fourPad(20)` would return 20.
@@ -320,9 +312,6 @@ UTIL.fourPad = function UTILFourPad(n) {
     return n + ( 4 - n % 4 );
 };
 
-UTIL.trimFloat = function UTILTrimFloat(num, trim) {
-    return +num.toFixed(trim);
-};
 
 /**
  * Utility function used to push data into the
