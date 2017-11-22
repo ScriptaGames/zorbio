@@ -186,9 +186,6 @@ let AppServer = function(id, app, server_label, port) {
                     console.error('[AppServer] Caught exception in ws.on("message") handling binary Buffer', e);
                 }
             }
-            else {
-                console.warn('[AppServer] unknown ws message type', typeof msg);
-            }
         } );
 
         ws.on( 'close', function wsClose() {
