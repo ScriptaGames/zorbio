@@ -139,7 +139,7 @@ let AppServer = function(id, app, server_label, port) {
                 }
                 catch (e) {
                     if (config.DEBUG) {
-                        console.error( 'error parsing json on message in wss: ', e );
+                        console.error( '[AppServer] error parsing json on message in wss: ', e );
                     }
                     return;  // ignore
                 }
@@ -165,21 +165,29 @@ let AppServer = function(id, app, server_label, port) {
                         break;
                 }
             }
-            else {
-                // Read firs byte from buffer
-                let op = msg.readUInt8( 0 );
-                if (op === Schemas.ops.PLAYER_UPDATE) {
-                    handle_msg_player_update( msg );
-                }
-                else if (op === Schemas.ops.LEADERBOARDS_REQUEST) {
-                    handle_leaderboard_request();
-                }
-                else {
-                    op = msg.readFloatLE( 0 );
-                    if (op === Schemas.ops.CLIENT_POSITION_RAPID) {
-                        handle_client_position_rapid( msg );
+            else if (msg.readUInt8 /* faster than instanceof Buffer */) {
+                try {
+                    // Read firs byte from buffer
+                    let op = msg.readUInt8( 0 );
+                    if (op === Schemas.ops.PLAYER_UPDATE) {
+                        handle_msg_player_update( msg );
+                    }
+                    else if (op === Schemas.ops.LEADERBOARDS_REQUEST) {
+                        handle_leaderboard_request();
+                    }
+                    else {
+                        op = msg.readFloatLE( 0 );
+                        if (op === Schemas.ops.CLIENT_POSITION_RAPID) {
+                            handle_client_position_rapid( msg );
+                        }
                     }
                 }
+                catch (e) {
+                    console.error('[AppServer] Caught exception in ws.on("message") handling binary Buffer', e);
+                }
+            }
+            else {
+                console.warn('[AppServer] unknown ws message type', typeof msg);
             }
         } );
 
