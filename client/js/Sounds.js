@@ -144,5 +144,17 @@ ZOR.Sounds = (function ZORSounds() {
         sounds.music = {};
     }
 
+    /**
+     * Initialize sound fx hacks to deal with weird problems
+     */
+    function initSfxHacks() {
+        // woosh sound from wad needs to be started and stopped
+        // otherwise causes an error on mobile devices on death
+        // TODO: figure out why this is
+        sounds.sfx.woosh.play();
+        sounds.sfx.woosh.stop();
+    }
+    initSfxHacks();
+
     return sounds;
 })();
