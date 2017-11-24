@@ -106,7 +106,7 @@ ZOR.Sounds = (function ZORSounds() {
                     q        : 1.0,
                 },
             }),
-            state_change  : howlSfx('food_capture/D3.mp3', {}),
+            state_change  : howlSfx('state_change.mp3', {}),
             player_capture: howlSfx('veus/Effects/LowPitchDrop.ogg.mp3', {}),
         },
         playFromPos: function ZORSoundsPlayFromPos(sound, earObject, soundPos) {
