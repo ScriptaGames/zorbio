@@ -3,6 +3,7 @@ global UTIL:true
 global _:true
 global THREE:true
 global config:true
+global ZOR:true
 */
 
 const NODEJS_CURVES = typeof module !== 'undefined' && module.exports;
@@ -26,7 +27,7 @@ const CALIBRATED_WORLD_SIZE = 2000;
 /**
  * Encapsulates a curated list of curve paths that fit in the game and look good with bots
  */
-class CurvePaths {
+ZOR.CurvePaths = class CurvePaths {
 
     /**
      * Constructor
@@ -158,7 +159,7 @@ class CurvePaths {
 
         return curve.getPoints( segments );
     }
-}
+};
 
-if (NODEJS_CURVES) module.exports = CurvePaths;
+if (NODEJS_CURVES) module.exports = ZOR.CurvePaths;
 

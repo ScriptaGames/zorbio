@@ -5,6 +5,7 @@ global THREE:true
 global _:true
 global xssFilters:true
 global ProfanityFilter:true
+global CurvePaths:true
 */
 
 const NODEJS_UTIL = typeof module !== 'undefined' && module.exports;
@@ -18,6 +19,7 @@ if (NODEJS_UTIL) {
     global._               = require( 'lodash' );
     global.xssFilters      = require( 'xss-filters' );
     global.ProfanityFilter = require( 'bad-words-relaxed' );
+    global.CurvePaths      = require( './CurvePaths.js' );
     profanityFilter = new ProfanityFilter();
 }
 
@@ -500,6 +502,36 @@ let foodMaps = {
                     offset += ints;
                 }
             }
+        }
+
+        return positions;
+    },
+    curves: function foodMapCurves(count, density) {
+        // start with random food positions
+        let positions = foodMaps.random(count, density);
+        let ints       = 3; // 6 for XYZ
+
+        let randomRatio = 0.9; // the percentage of food particles that should be positioned randomly, ie not in a curve
+        let startIndex  = Math.floor(positions.length * randomRatio);
+        startIndex -= startIndex % ints; // make sure startIndex aligns with the XYZ coordinates of the positions array
+        let pathSkip    = 0; // skip points on each curve to make them less dense.  if this is 0, use all points, if it's 1, skip every other point, etc
+        let curvePaths  = new CurvePaths();
+        let pathIndex   = 0;
+        let path        = curvePaths.getRandomCurve();
+
+        for ( let i = startIndex; i < positions.length; i += ints ) {
+            if (pathIndex >= path.length) {
+                path = curvePaths.getRandomCurve();
+                pathIndex = 0;
+            }
+
+            let point = path[pathIndex];
+
+            positions[i+0] = point.x;
+            positions[i+1] = point.y;
+            positions[i+2] = point.z;
+
+            pathIndex += pathSkip + 1;
         }
 
         return positions;
