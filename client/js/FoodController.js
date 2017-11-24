@@ -123,7 +123,7 @@ ZOR.FoodController = class ZORFoodController {
                 dist = octreeObj.position.distanceTo( mainSphere.position );
                 if ( dist <= ( sphere_radius + config.FOOD_CAPTURE_ASSIST ) ) {
                     callback( fi );
-                    if (sphere_radius < 20) {
+                    if (sphere_radius < 21.3) {
                         // only play food sounds when smaller for performance
                         ZOR.Sounds.playFromPos(ZOR.Sounds.sfx.food_capture, player.view.mainSphere,
                             octreeObj.position.clone());
