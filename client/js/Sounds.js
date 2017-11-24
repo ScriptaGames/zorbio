@@ -89,7 +89,7 @@ ZOR.Sounds = (function ZORSounds() {
             // }),
 
             // a chime sound for food capture
-            food_capture: howlSfx('food-capture.mp3', { volume: 1.0 }),
+            food_capture: howlSfx('veus/Effects/LowPitchLazer.ogg.mp3', {}),
             woosh       : wadSfx({
                 source: 'noise',
                 volume: 0.7,
