@@ -144,20 +144,5 @@ ZOR.Sounds = (function ZORSounds() {
         sounds.music = {};
     }
 
-    /**
-     * Initialize sound fx hacks to deal with weird problems
-     */
-    function initSfxHacks() {
-        // The Howler sfx seem to be delayed and sound glitchy the first time
-        // they're played.  This function attempts to fix that by playing them
-        // once, at zero volume.
-        let sound = sounds.sfx.food_capture;
-        let id = sound.play();
-        sound.mute(true, id);
-        sound.volume(0, id);
-        sound.pos(1, 1, 1, id);
-    }
-    initSfxHacks();
-
     return sounds;
 })();
