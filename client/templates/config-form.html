@@ -30,6 +30,10 @@
     <label for="hide-own-trail">Steering Method</label>
 </div>
 {{ /if }}
+{{ #if state === STATES.MENU_CONFIG_SCREEN }}
+<br>
+<button on-click="@this.fire( ACTIONS.SHOW_MENU )">Done</button>
+{{ /if }}
 {{ #if state === STATES.PLAYING_CONFIG }}
 <button on-click="@this.fire( ACTIONS.SHOW_PREVIOUS )">Done</button>
 {{ /if }}
