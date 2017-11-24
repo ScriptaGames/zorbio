@@ -213,7 +213,10 @@ ZOR.UI = function ZORUI() {
     function state( newstate ) {
         if (!newstate || newstate === uidata.state) return uidata.state;
 
-        ZOR.Sounds.sfx.state_change.play();
+        // play the state change sound, so long as this isn't the *first* state change when the game boots
+        if (uidata.state !== '') {
+            ZOR.Sounds.sfx.state_change.play();
+        }
 
         if (newstate !== uidata.prev_state) {
             uidata.prev_state = uidata.state;
