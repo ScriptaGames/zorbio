@@ -92,7 +92,7 @@ ZOR.Sounds = (function ZORSounds() {
             food_capture: howlSfx('food-capture.mp3', { volume: 1.0 }),
             woosh       : wadSfx({
                 source: 'noise',
-                volume: 0.5,
+                volume: 0.7,
                 env   : {
                     attack : 0.5,
                     decay  : 0.5,
