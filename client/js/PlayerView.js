@@ -54,7 +54,7 @@ ZOR.PlayerView = class PlayerView {
         this.mainSphere.material = this.skin.material;
 
         if (!current) {
-            this.setAlpha(1);
+            this.setAlpha(true);
             this.dangerView = ZOR.Pools.dangerViews.borrow();
             this.dangerView.setPlayerView(this);
             this.dangerView.show();
@@ -545,7 +545,7 @@ ZOR.PlayerView = class PlayerView {
 
         this.camera_controls.minDistance = UTIL.lerp(this.camera_controls.minDistance, this.cameraMinDistance, 0.03);
 
-        if (newDist != this.cameraMinDistance) {
+        if (newDist !== this.cameraMinDistance) {
             if (this.shouldChangeMinDist(newDist)) {
                 // buffer reached, now switch. See: https://github.com/Jared-Sprague/zorbio/issues/273
                 console.log('New camera minDistance: ', newDist);
@@ -556,21 +556,21 @@ ZOR.PlayerView = class PlayerView {
 
     /**
      * Returns true if the camera min distance should change
-     * @param {number} calulatedDist
+     * @param {number} calculatedDist
      * @returns {boolean}
      */
-    shouldChangeMinDist(calulatedDist) {
+    shouldChangeMinDist(calculatedDist) {
         let curDist = this.cameraMinDistance;
         let curScale = this.model.sphere.scale;
         let currentDistanceStepRange = config.CAMERA_ZOOM_STEPS[Math.floor(curDist)];
 
-        if (curDist > calulatedDist) {
+        if (curDist > calculatedDist) {
             // Zoom in if buffer dist met
             if (currentDistanceStepRange.min - curScale >= config.CAMERA_ZOOM_STEP_BUFFER) {
                 return true;
             }
         }
-        else if (curDist < calulatedDist) {
+        else if (curDist < calculatedDist) {
             // Zoom out if buffer dist met
             if (curScale - currentDistanceStepRange.max >= config.CAMERA_ZOOM_STEP_BUFFER) {
                 return true;
