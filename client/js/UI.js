@@ -586,13 +586,13 @@ ZOR.UI = function ZORUI() {
             uidata.marquee_messages.push('Place your cursor in the middle of the screen to fly straight ahead.');
         }
 
-        // uidata.marquee_messages.push('Short speed boosts are best.');
-        //
-        // uidata.marquee_messages.push('Try to predict other players\' trajectories.');
-        //
-        // uidata.marquee_messages.push('Hide behind big spheres if someone is chasing you.');
-        //
-        // uidata.marquee_messages.push('Fly near big players to absorb mass, but be careful!');
+        uidata.marquee_messages.push('Short speed boosts are best.');
+
+        uidata.marquee_messages.push('Try to predict other players\' trajectories.');
+
+        uidata.marquee_messages.push('Hide behind big spheres if someone is chasing you.');
+
+        uidata.marquee_messages.push('Fly near big players to absorb mass, but be careful!');
 
         // shuffle the messages
 
