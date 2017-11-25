@@ -354,7 +354,7 @@ button {
   background: transparent;
   border-width: 0;
   color: #bacefc;
-  padding: 20px;
+  padding: 20px 20px 14px;
   position: relative;
   z-index: 1;
   -webkit-transition: -webkit-transform 0.04s ease-in-out;
