@@ -1,1 +1,8 @@
-<img fade-in-out id="gear-btn" on-click="@this.fire( ACTIONS.SHOW_PLAYING_CONFIG )" src="images/gear.svg">
+<img
+    fade-in-out
+    id="gear-btn"
+    src="images/gear.svg"
+    on-click="@this.fire( ACTIONS.SHOW_PLAYING_CONFIG )"
+    on-mouseover="@this.fire( ACTIONS.CURSOR_ON_GEAR )"
+    on-mouseout="@this.fire( ACTIONS.CURSOR_OFF_GEAR )"
+    >

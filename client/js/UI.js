@@ -30,6 +30,18 @@ ZOR.UI = function ZORUI() {
     let REQUIRED_FEATURES = ['json', 'websockets', 'webgl', 'flexbox'];
 
     /**
+     * The types of mouse cursor.  Corresponds with image filenames.
+     */
+    const CURSOR_TYPES = {
+        pointer: 'cursor.png',
+        steer0 : 'cursor-steer0.png',
+        steer1 : 'cursor-steer1.png',
+        steer2 : 'cursor-steer2.png',
+        steer3 : 'cursor-steer3.png',
+    };
+
+
+    /**
      * An "enum" storing unique values for UI states.
      */
 
@@ -81,6 +93,9 @@ ZOR.UI = function ZORUI() {
         VOLUME_MUSIC    : 'volume-music',
         VOLUME_SFX      : 'volume-sfx',
         SET_STEERING    : 'set-steering',
+        MOUSE_MOVE      : 'mouse-move',
+        CURSOR_ON_GEAR  : 'cursor-on-gear',
+        CURSOR_OFF_GEAR : 'cursor-off-gear',
 
         SET_SKIN: 'set-skin',
     };
@@ -108,12 +123,17 @@ ZOR.UI = function ZORUI() {
             activeBoard: 'leaders_1_day',
             data       : {},
         },
-        is_mobile   : isMobile.any,
-        loading     : true,
-        screen_x    : 0,
-        screen_y    : 0,
-        player_size : 0,
-        numberCommas: function numberCommas(x) {
+        is_mobile    : isMobile.any,
+        loading      : true,
+        cursor_type  : '',
+        cursor_angle : 0,
+        cursor_offset: [0, 0],
+        mouse_x      : 0,
+        mouse_y      : 0,
+        screen_x     : 0,
+        screen_y     : 0,
+        player_size  : 0,
+        numberCommas : function numberCommas(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         },
         showAd        : showAd,
@@ -429,6 +449,42 @@ ZOR.UI = function ZORUI() {
             }
 
             engine.set('steering', value);
+        });
+
+        // mouse move handler for cursor positioning
+
+        // first, a mildly hacky way to turn the cursor back into a pointer,
+        // during gameplay, if it's over the gear
+        let cursorOnGear = false;
+        on( ACTIONS.CURSOR_ON_GEAR, () => cursorOnGear = true );
+        on( ACTIONS.CURSOR_OFF_GEAR, () => cursorOnGear = false );
+        on( ACTIONS.MOUSE_MOVE, function ZORMouseMove(context, cursor) {
+            engine.set('mouse_x', cursor.x);
+            engine.set('mouse_y', cursor.y);
+
+            if (state() === STATES.PLAYING) {
+                // angle cursor if not already centered
+                if (cursor.quantum > 0) {
+                    engine.set('cursor_angle', cursor.angle);
+                }
+                else {
+                    engine.set('cursor_angle', 0);
+                }
+                if (cursorOnGear) {
+                    engine.set('cursor_type', CURSOR_TYPES.pointer);
+                    engine.set('cursor_angle', 0);
+                    engine.set('cursor_offset', [0, 0]);
+                }
+                else {
+                    engine.set('cursor_type', CURSOR_TYPES[`steer${cursor.quantum}`]);
+                    engine.set('cursor_offset', [-20, -40]);
+                }
+            }
+            else {
+                engine.set('cursor_type', CURSOR_TYPES.pointer);
+                engine.set('cursor_angle', 0);
+                engine.set('cursor_offset', [0, 0]);
+            }
         });
 
         // state change events

@@ -357,7 +357,7 @@ THREE.TrackballControls = function( object, domElement ) {
         if ( _this.enabled === false ) return;
 
         event.preventDefault();
-        event.stopPropagation();
+        // event.stopPropagation();
 
         if ( _state === STATE.NONE ) {
             _state = event.button;
@@ -392,7 +392,7 @@ THREE.TrackballControls = function( object, domElement ) {
         if ( _this.enabled === false ) return;
 
         event.preventDefault();
-        event.stopPropagation();
+        // event.stopPropagation();
 
         if ( _state === STATE.ROTATE && ! _this.noRotate || _this.follow_controls_on ) {
             _movePrev.copy( _moveCurr );
@@ -414,7 +414,7 @@ THREE.TrackballControls = function( object, domElement ) {
         if ( _this.enabled === false ) return;
 
         event.preventDefault();
-        event.stopPropagation();
+        // event.stopPropagation();
 
         _state = STATE.NONE;
 
@@ -433,7 +433,7 @@ THREE.TrackballControls = function( object, domElement ) {
         if ( _this.enabled === false ) return;
 
         event.preventDefault();
-        event.stopPropagation();
+        // event.stopPropagation();
 
         let delta = 0;
 
@@ -494,7 +494,7 @@ THREE.TrackballControls = function( object, domElement ) {
         if ( _this.enabled === false ) return;
 
         event.preventDefault();
-        event.stopPropagation();
+        // event.stopPropagation();
 
         switch ( event.touches.length ) {
             case 1:

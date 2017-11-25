@@ -575,7 +575,7 @@ global config:true
             if ( scope.enabled === false || scope.enableZoom === false || state !== STATE.NONE ) return;
 
             event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
 
             let delta = 0;
 
@@ -687,7 +687,7 @@ global config:true
             if (scope.enabled === false) return;
 
             event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
 
             let element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
