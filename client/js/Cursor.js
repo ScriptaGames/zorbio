@@ -6,6 +6,7 @@
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
 global ZOR:true
+global UTIL:true
 */
 
 
@@ -20,7 +21,7 @@ ZOR.Cursor = function ZORUI() {
     let angle   = 0;
     let quantum = 0;
 
-    window.addEventListener('mousemove', _handleCursorMove);
+    window.addEventListener('mousemove', UTIL.nth(_handleCursorMove, 1));
 
     /**
      * Update the UI data model when the mouse cursor moves.
