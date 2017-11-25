@@ -463,21 +463,14 @@ ZOR.UI = function ZORUI() {
             engine.set('mouse_y', cursor.y);
 
             if (state() === STATES.PLAYING) {
-                // angle cursor if not already centered
-                if (cursor.quantum > 0) {
-                    engine.set('cursor_angle', cursor.angle);
-                }
-                else {
-                    engine.set('cursor_angle', 0);
-                }
+                engine.set('cursor_type', CURSOR_TYPES[`steer${cursor.quantum}`]);
+                engine.set('cursor_angle', cursor.angle);
+                engine.set('cursor_offset', [-20, -40]);
+
                 if (cursorOnGear) {
                     engine.set('cursor_type', CURSOR_TYPES.pointer);
                     engine.set('cursor_angle', 0);
                     engine.set('cursor_offset', [0, 0]);
-                }
-                else {
-                    engine.set('cursor_type', CURSOR_TYPES[`steer${cursor.quantum}`]);
-                    engine.set('cursor_offset', [-20, -40]);
                 }
             }
             else {
