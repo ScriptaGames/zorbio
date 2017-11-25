@@ -17,7 +17,7 @@
    version="1.1"
    id="svg8"
    sodipodi:docname="logo-draft-2017.svg"
-   inkscape:version="0.92+devel unknown">
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)">
   <sodipodi:namedview
      id="base"
      pagecolor="#000000"
@@ -25,18 +25,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.979899"
-     inkscape:cx="7441.402"
-     inkscape:cy="6334.2673"
+     inkscape:zoom="0.35"
+     inkscape:cx="6099.7722"
+     inkscape:cy="5821.5796"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
      showgrid="false"
      scale-x="1.1"
-     inkscape:window-width="1920"
-     inkscape:window-height="1080"
+     inkscape:window-width="2560"
+     inkscape:window-height="1413"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="27"
      inkscape:window-maximized="1"
      inkscape:snap-global="true">
     <inkscape:grid
@@ -7130,6 +7130,213 @@
         </meshpatch>
       </meshrow>
     </meshgradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4291"
+       id="radialGradient9698"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9926056,-0.12138425,-0.02610766,-0.21349231,1333.9622,-1362.6147)"
+       cx="830.28857"
+       cy="-191.28433"
+       fx="830.28857"
+       fy="-191.28433"
+       r="65.251234" />
+    <meshgradient
+       inkscape:collect="always"
+       id="meshgradient9700"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.99948339,0.03213974,0.03213974,-0.99948339,1371.5258,-1684.3284)"
+       x="761.50995"
+       y="-208.69971">
+      <meshrow
+         id="meshrow9712">
+        <meshpatch
+           id="meshpatch9710">
+          <stop
+             path="c 68.7786,3.38096  90.2959,-5.10996  134.029,3.38091"
+             style="stop-color:#4c6cff;stop-opacity:1"
+             id="stop9702" />
+          <stop
+             path="c 0,9.35627  2.01837,19.6657  2.01876,29.022"
+             style="stop-color:#f2f9ff;stop-opacity:1"
+             id="stop9704" />
+          <stop
+             path="c -42.4722,4.98726  -92.2544,2.3631  -135.754,2.36288"
+             style="stop-color:#4c6cff;stop-opacity:1"
+             id="stop9706" />
+          <stop
+             path="c -0.00367648,-9.35604  -0.297121,-25.4093  -0.29376,-34.7658"
+             style="stop-color:#f2f9ff;stop-opacity:1"
+             id="stop9708" />
+        </meshpatch>
+      </meshrow>
+    </meshgradient>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter9778"
+       x="-0.09818188"
+       width="1.1963638"
+       y="-0.056842085"
+       height="1.1136842">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.6548445"
+         id="feGaussianBlur9780" />
+    </filter>
+    <meshgradient
+       inkscape:collect="always"
+       id="meshgradient9786"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9926056,-0.12138425,-0.12138425,-0.9926056,1315.7374,-1511.6468)"
+       x="761.50995"
+       y="-208.69971">
+      <meshrow
+         id="meshrow9798">
+        <meshpatch
+           id="meshpatch9796">
+          <stop
+             id="stop9788"
+             style="stop-color:#4c6cff;stop-opacity:1"
+             path="c 68.7786,3.38096  90.2959,-5.10996  134.029,3.38091" />
+          <stop
+             id="stop9790"
+             style="stop-color:#f2f9ff;stop-opacity:1"
+             path="c 0,9.35627  2.01837,19.6657  2.01876,29.022" />
+          <stop
+             id="stop9792"
+             style="stop-color:#4c6cff;stop-opacity:1"
+             path="c -42.4722,4.98726  -92.2544,2.3631  -135.754,2.36288" />
+          <stop
+             id="stop9794"
+             style="stop-color:#f2f9ff;stop-opacity:1"
+             path="c -0.00367648,-9.35604  -0.297121,-25.4093  -0.29376,-34.7658" />
+        </meshpatch>
+      </meshrow>
+    </meshgradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4291"
+       id="radialGradient9820"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.20071424,-0.02230158,-0.02375191,-0.21376722,1996.193,-1439.6947)"
+       cx="777.37476"
+       cy="-202.56644"
+       fx="777.37476"
+       fy="-202.56644"
+       r="65.251234" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4291"
+       id="radialGradient15095"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.20071424,-0.02230158,-0.02375191,-0.21376722,2041.3045,-1439.6947)"
+       cx="777.37476"
+       cy="-202.56644"
+       fx="777.37476"
+       fy="-202.56644"
+       r="65.251234" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4291"
+       id="radialGradient15132"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.20071424,-0.02230158,-0.02375191,-0.21376722,2084.9608,-1439.6945)"
+       cx="777.37476"
+       cy="-202.56644"
+       fx="777.37476"
+       fy="-202.56644"
+       r="65.251234" />
+    <meshgradient
+       inkscape:collect="always"
+       id="meshgradient18355"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9926056,-0.12138425,-0.12138425,-0.9926056,1361.8948,-1511.6468)"
+       x="757.00684"
+       y="-204.4146">
+      <meshrow
+         id="meshrow18367">
+        <meshpatch
+           id="meshpatch18365">
+          <stop
+             id="stop18357"
+             style="stop-color:#4c6cff;stop-opacity:1"
+             path="c 68.7786,3.38094  3.19574,-8.3655  46.9289,0.125332" />
+          <stop
+             id="stop18359"
+             style="stop-color:#f2f9ff;stop-opacity:1"
+             path="c -0.000192423,9.35635  -5.98702,1.63814  -5.98575,10.9943" />
+          <stop
+             id="stop18361"
+             style="stop-color:#4c6cff;stop-opacity:1"
+             path="c -42.4716,4.98709  12.6188,4.04059  -34.4901,5.68379" />
+          <stop
+             id="stop18363"
+             style="stop-color:#f2f9ff;stop-opacity:1"
+             path="c -0.00361689,-9.3563  -4.50324,4.28473  -6.45304,-16.8035" />
+        </meshpatch>
+      </meshrow>
+    </meshgradient>
+    <meshgradient
+       inkscape:collect="always"
+       id="meshgradient18371"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.99260561,-0.12138425,-0.12138425,-0.99260561,1407.0063,-1511.6468)"
+       x="757.00684"
+       y="-204.4146">
+      <meshrow
+         id="meshrow18383">
+        <meshpatch
+           id="meshpatch18381">
+          <stop
+             id="stop18373"
+             style="stop-color:#4c6cff;stop-opacity:1"
+             path="c 68.7786,3.38094  3.19574,-8.3655  46.9289,0.125332" />
+          <stop
+             id="stop18375"
+             style="stop-color:#f2f9ff;stop-opacity:1"
+             path="c -0.000192423,9.35635  1.73358,16.8205  1.73485,26.1767" />
+          <stop
+             id="stop18377"
+             style="stop-color:#4c6cff;stop-opacity:1"
+             path="c -42.4716,4.98727  3.95236,5.10071  -43.1566,6.74364" />
+          <stop
+             id="stop18379"
+             style="stop-color:#f2f9ff;stop-opacity:1"
+             path="c -0.0036737,-9.35604  -3.55737,-11.9572  -5.50712,-33.0457" />
+        </meshpatch>
+      </meshrow>
+    </meshgradient>
+    <meshgradient
+       inkscape:collect="always"
+       id="meshgradient18387"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.99260561,-0.12138425,-0.12138425,-0.99260561,1450.6626,-1511.6466)"
+       x="757.00684"
+       y="-204.4146">
+      <meshrow
+         id="meshrow18399">
+        <meshpatch
+           id="meshpatch18397">
+          <stop
+             id="stop18389"
+             style="stop-color:#4c6cff;stop-opacity:1"
+             path="c 68.7786,3.38094  3.19574,-8.3655  46.9289,0.125332" />
+          <stop
+             id="stop18391"
+             style="stop-color:#f2f9ff;stop-opacity:1"
+             path="c -0.000192423,9.35635  1.73358,16.8205  1.73485,26.1767" />
+          <stop
+             id="stop18393"
+             style="stop-color:#4c6cff;stop-opacity:1"
+             path="c -42.4716,4.98727  2.68453,6.72201  -44.4245,8.36494" />
+          <stop
+             id="stop18395"
+             style="stop-color:#f2f9ff;stop-opacity:1"
+             path="c -0.00362772,-9.35604  -2.28949,-13.5783  -4.23928,-34.667" />
+        </meshpatch>
+      </meshrow>
+    </meshgradient>
   </defs>
   <metadata
      id="metadata5">
@@ -8716,5 +8923,93 @@
            transform="rotate(59.062956)" />
       </g>
     </g>
+    <path
+       inkscape:export-ydpi="56.60915"
+       inkscape:export-xdpi="56.60915"
+       inkscape:connector-curvature="0"
+       id="path9696"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:medium;font-family:Comfortaa;-inkscape-font-specification:'Comfortaa Bold';fill:url(#radialGradient9698);fill-opacity:1;stroke:url(#meshgradient9786);stroke-width:1.54989994;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 2098.3185,-1426.8965 19.1629,19.1177 -14.9264,8.2048 z"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/mwc/projects/zorbio/client/images/cursor.png" />
+    <path
+       inkscape:export-filename="/home/mwc/projects/zorbio/client/images/cursor.png"
+       sodipodi:nodetypes="cccc"
+       d="m 2131.8801,-1480.6689 16.0073,21.8281 -16.0073,5.8209 z"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:medium;font-family:Comfortaa;-inkscape-font-specification:'Comfortaa Bold';fill:none;fill-opacity:1;stroke:url(#meshgradient9700);stroke-width:1.54989994;stroke-miterlimit:4;stroke-dasharray:none;filter:url(#filter9778)"
+       id="path9744"
+       inkscape:connector-curvature="0"
+       inkscape:export-xdpi="56.60915"
+       inkscape:export-ydpi="56.60915"
+       transform="rotate(-8.813787,2463.9679,-1236.0393)" />
+    <text
+       xml:space="preserve"
+       style="font-size:11.64166641px;line-height:1.25;font-family:early57;-inkscape-font-specification:early57;letter-spacing:0px;word-spacing:0px;stroke-width:0.29104167"
+       x="2090.7183"
+       y="-1438.364"
+       id="text9802"><tspan
+         sodipodi:role="line"
+         id="tspan9800"
+         x="2090.7183"
+         y="-1438.364"
+         style="fill:#ffffff;fill-opacity:1;stroke-width:0.29104167">cursor</tspan></text>
+    <text
+       id="text9806"
+       y="-1438.364"
+       x="2140.1953"
+       style="font-size:11.64166641px;line-height:1.25;font-family:early57;-inkscape-font-specification:early57;letter-spacing:0px;word-spacing:0px;stroke-width:0.29104167"
+       xml:space="preserve"><tspan
+         style="fill:#ffffff;fill-opacity:1;stroke-width:0.29104167"
+         y="-1438.364"
+         x="2140.1953"
+         id="tspan9804"
+         sodipodi:role="line">steer1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11.64166641px;line-height:1.25;font-family:early57;-inkscape-font-specification:early57;letter-spacing:0px;word-spacing:0px;stroke-width:0.29104167"
+       x="2184.1477"
+       y="-1438.364"
+       id="text9810"><tspan
+         sodipodi:role="line"
+         id="tspan9808"
+         x="2184.1477"
+         y="-1438.364"
+         style="fill:#ffffff;fill-opacity:1;stroke-width:0.29104167">steer2</tspan></text>
+    <text
+       id="text9814"
+       y="-1438.364"
+       x="2228.8352"
+       style="font-size:11.64166641px;line-height:1.25;font-family:early57;-inkscape-font-specification:early57;letter-spacing:0px;word-spacing:0px;stroke-width:0.29104167"
+       xml:space="preserve"><tspan
+         style="fill:#ffffff;fill-opacity:1;stroke-width:0.29104167"
+         y="-1438.364"
+         x="2228.8352"
+         id="tspan9812"
+         sodipodi:role="line">steer3</tspan></text>
+    <path
+       inkscape:export-filename="/home/mwc/projects/zorbio/client/images/cursor-steer1.png"
+       sodipodi:nodetypes="cccc"
+       d="m 2152.6688,-1413.7293 5.8209,7.276 h -11.6417 z"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:medium;font-family:Comfortaa;-inkscape-font-specification:'Comfortaa Bold';fill:url(#radialGradient9820);fill-opacity:1;stroke:url(#meshgradient18355);stroke-width:1.54989994;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path9818"
+       inkscape:connector-curvature="0"
+       inkscape:export-xdpi="75.176651"
+       inkscape:export-ydpi="75.176651" />
+    <path
+       inkscape:connector-curvature="0"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:medium;font-family:Comfortaa;-inkscape-font-specification:'Comfortaa Bold';fill:url(#radialGradient15095);fill-opacity:1;stroke:url(#meshgradient18371);stroke-width:1.54989994;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 2197.7803,-1423.916 -5.8208,7.2761 h 11.6416 z m 0,10.1865 -5.8208,7.276 h 11.6416 z"
+       id="path15093"
+       inkscape:export-filename="/home/mwc/projects/zorbio/client/images/cursor-steer2.png"
+       inkscape:export-xdpi="75.176651"
+       inkscape:export-ydpi="75.176651" />
+    <path
+       inkscape:connector-curvature="0"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:medium;font-family:Comfortaa;-inkscape-font-specification:'Comfortaa Bold';fill:url(#radialGradient15132);fill-opacity:1;stroke:url(#meshgradient18387);stroke-width:1.54989994;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 2241.4366,-1434.1024 -5.8209,7.276 h 11.6417 z m 0,10.1864 -5.8209,7.2761 h 11.6417 z m 0,10.1865 -5.8209,7.276 h 11.6417 z"
+       id="path15130"
+       inkscape:export-filename="/home/mwc/projects/zorbio/client/images/cursor-steer3.png"
+       inkscape:export-xdpi="75.176651"
+       inkscape:export-ydpi="75.176651" />
   </g>
 </svg>

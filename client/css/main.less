@@ -43,7 +43,7 @@ a {
     }
 }
 button, a, input, select {
-    cursor: pointer;
+    // cursor: pointer;
     pointer-events: auto;
 }
 
@@ -74,9 +74,8 @@ input {
     left         : 0;
     margin       : 0;
     padding      : 0;
-    touch-action : none;
+    // touch-action : none;
     z-index      : 10;
-    cursor       : url('../images/cursor.png'), crosshair;
     opacity: 0;
     transition: opacity linear 0.3s;
     &.active {
@@ -270,7 +269,7 @@ input {
                 border-radius: 50%;
             }
             & * {
-                cursor: pointer;
+                // cursor: pointer;
             }
         }
     }
@@ -519,7 +518,7 @@ button {
     opacity    : 0.15 !important;
     background : none;
     margin     : 8px;
-    cursor     : pointer;
+    // cursor     : pointer;
     transition : opacity ease-in-out 0.1s;
     pointer-events: auto;
     &:hover {
@@ -720,7 +719,7 @@ button {
             transform: scale3d(0.94, 0.94, 1);
         }
         img {
-            cursor: pointer;
+            // cursor: pointer;
         }
     }
 
@@ -751,8 +750,17 @@ button {
 }
 
 * {
-    user-select: none;
-    cursor: url('../images/cursor.png'), crosshair;
+    user-select : none;
+    cursor      : none;
+}
+
+#cursor {
+    position: absolute;
+    z-index: 40;
+    top: -500px; // place it off-screen so it won't show on mobile devices
+    left: -500px; // place it off-screen so it won't show on mobile devices
+    pointer-events: none;
+    // transition: 0.02s ease-in left, 0.02s ease-in top;
 }
 
 @import "logo-animation.less";
