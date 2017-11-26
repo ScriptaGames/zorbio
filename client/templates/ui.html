@@ -56,12 +56,4 @@
 
     </div>
     {{ /if }}
-
-    <img id="cursor" src="images/{{cursor_type}}" style="
-    left      : {{ mouse_x }}px;
-    top       : {{ mouse_y }}px;
-    transform : translate({{ cursor_offset[0] + 'px' }}, {{ cursor_offset[1] + 'px' }}) rotate({{ cursor_angle }}rad);
-    display   : {{ is_mobile ? 'none' : 'block' }};
-    "
-    >
 {{ /if }}
