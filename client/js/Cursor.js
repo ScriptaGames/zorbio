@@ -27,6 +27,8 @@ ZOR.Cursor = function ZORUI() {
      * @param {Event} evt the mousemove event
      */
     function _handleCursorMove(evt) {
+        if (!ZOR.UI.engine) return; // Give the UI engine time to initialize
+
         x            = evt.clientX;
         y            = evt.clientY;
         [vecX, vecY] = _calculateVector(x, y);
