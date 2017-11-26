@@ -123,17 +123,12 @@ ZOR.UI = function ZORUI() {
             activeBoard: 'leaders_1_day',
             data       : {},
         },
-        is_mobile    : isMobile.any,
-        loading      : true,
-        cursor_type  : '',
-        cursor_angle : 0,
-        cursor_offset: [0, 0],
-        mouse_x      : 0,
-        mouse_y      : 0,
-        screen_x     : 0,
-        screen_y     : 0,
-        player_size  : 0,
-        numberCommas : function numberCommas(x) {
+        is_mobile   : isMobile.any,
+        loading     : true,
+        screen_x    : 0,
+        screen_y    : 0,
+        player_size : 0,
+        numberCommas: function numberCommas(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         },
         showAd        : showAd,
