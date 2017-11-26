@@ -466,6 +466,7 @@ ZOR.UI = function ZORUI() {
             let angle;
             let src;
             let transform;
+            let transformOrigin;
 
             if (state() === STATES.PLAYING) {
                 if (cursorOnGear) {
@@ -476,7 +477,7 @@ ZOR.UI = function ZORUI() {
                 else {
                     src    = CURSOR_TYPES[`steer${cursor.quantum}`];
                     angle  = cursor.angle;
-                    offset = [-20, -40];
+                    offset = [20, 60];
                 }
             }
             else {
@@ -485,13 +486,16 @@ ZOR.UI = function ZORUI() {
                 offset = [0, 0];
             }
 
-            transform = `translate(${offset[0]}px, ${offset[1]}px) rotate(${angle}rad)`;
+            // transform = `rotate(${angle}rad)`;
+            transform = `translate(-${offset[0]}px, -${offset[1]}px) rotate(${angle}rad)`;
+            transformOrigin = `${offset[0]}px ${offset[1]}px`;
 
             cursorImg.style.display   = isMobile.any ? 'none' : 'block';
             cursorImg.src             = src;
             cursorImg.style.left      = left;
             cursorImg.style.top       = top;
             cursorImg.style.transform = transform;
+            cursorImg.style.transformOrigin = transformOrigin;
         });
 
         // state change events
