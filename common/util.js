@@ -314,6 +314,17 @@ UTIL.fourPad = function UTILFourPad(n) {
     return n + ( 4 - n % 4 );
 };
 
+/**
+ * Given a number n, increase n until it's a multiple of three.  For example,
+ * `fourPad(4)` would return 6 and `fourPad(14)` would return 15.
+ *
+ * @param {Number} n a number
+ * @returns {Number} the nearest multiple of three that is greater than n
+ */
+UTIL.threePad = function UTILThreePad(n) {
+    return n + ( 3 - n % 3 );
+};
+
 
 /**
  * Utility function used to push data into the
@@ -511,13 +522,33 @@ let foodMaps = {
         let positions = foodMaps.random(count, density);
         let ints       = 3; // 6 for XYZ
 
-        let randomRatio = 0.9; // the percentage of food particles that should be positioned randomly, ie not in a curve
-        let startIndex  = Math.floor(positions.length * randomRatio);
+        let randomRatio  = 0.9; // the percentage of food particles that should be positioned randomly, ie not in a curve
+        let startIndex   = Math.floor( positions.length * randomRatio );
+        let pathSkip     = 0; // skip points on each curve to make them less dense.  if this is 0, use all points, if it's 1, skip every other point, etc
+        let curvePaths   = new CurvePaths();
+        let pathIndex    = 0;
+        let path         = curvePaths.getRandomCurve();
+        let randomPoints = []; // keep a log of the random indexes used to prevent overwriting a point from a path
+
         startIndex -= startIndex % ints; // make sure startIndex aligns with the XYZ coordinates of the positions array
-        let pathSkip    = 0; // skip points on each curve to make them less dense.  if this is 0, use all points, if it's 1, skip every other point, etc
-        let curvePaths  = new CurvePaths();
-        let pathIndex   = 0;
-        let path        = curvePaths.getRandomCurve();
+
+        /**
+         * Return a random point that hasn't already been generated.
+         * @return {Number} a new random number
+         */
+        function getRandomPoint() {
+            let randomPoint;
+
+            // generate random points until one is found that hasn't already been used
+            do {
+                randomPoint = UTIL.threePad(UTIL.getRandomIntInclusive(0, positions.length - 4));
+            }
+            while (_.includes(randomPoints, randomPoint));
+
+            randomPoints.push(randomPoint);
+
+            return randomPoint;
+        }
 
         for ( let i = startIndex; i < positions.length; i += ints ) {
             if (pathIndex >= path.length) {
@@ -527,9 +558,11 @@ let foodMaps = {
 
             let point = path[pathIndex];
 
-            positions[i+0] = point.x;
-            positions[i+1] = point.y;
-            positions[i+2] = point.z;
+            let randomPoint = getRandomPoint();
+
+            positions[randomPoint+0] = point.x;
+            positions[randomPoint+1] = point.y;
+            positions[randomPoint+2] = point.z;
 
             pathIndex += pathSkip + 1;
         }
