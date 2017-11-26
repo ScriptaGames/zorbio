@@ -33,11 +33,11 @@ ZOR.UI = function ZORUI() {
      * The types of mouse cursor.  Corresponds with image filenames.
      */
     const CURSOR_TYPES = {
-        pointer: 'cursor.png',
-        steer0 : 'cursor-steer0.png',
-        steer1 : 'cursor-steer1.png',
-        steer2 : 'cursor-steer2.png',
-        steer3 : 'cursor-steer3.png',
+        pointer: 'images/cursor.png',
+        steer0 : 'images/cursor-steer0.png',
+        steer1 : 'images/cursor-steer1.png',
+        steer2 : 'images/cursor-steer2.png',
+        steer3 : 'images/cursor-steer3.png',
     };
 
 
@@ -456,28 +456,42 @@ ZOR.UI = function ZORUI() {
         // first, a mildly hacky way to turn the cursor back into a pointer,
         // during gameplay, if it's over the gear
         let cursorOnGear = false;
+        let cursorImg = document.querySelector('#cursor');
         on( ACTIONS.CURSOR_ON_GEAR, () => cursorOnGear = true );
         on( ACTIONS.CURSOR_OFF_GEAR, () => cursorOnGear = false );
         on( ACTIONS.MOUSE_MOVE, function ZORMouseMove(context, cursor) {
-            engine.set('mouse_x', cursor.x);
-            engine.set('mouse_y', cursor.y);
+            let left = `${cursor.x}px`;
+            let top = `${cursor.y}px`;
+            let offset;
+            let angle;
+            let src;
+            let transform;
 
             if (state() === STATES.PLAYING) {
-                engine.set('cursor_type', CURSOR_TYPES[`steer${cursor.quantum}`]);
-                engine.set('cursor_angle', cursor.angle);
-                engine.set('cursor_offset', [-20, -40]);
-
                 if (cursorOnGear) {
-                    engine.set('cursor_type', CURSOR_TYPES.pointer);
-                    engine.set('cursor_angle', 0);
-                    engine.set('cursor_offset', [0, 0]);
+                    src    = CURSOR_TYPES.pointer;
+                    angle  = 0;
+                    offset = [0, 0];
+                }
+                else {
+                    src    = CURSOR_TYPES[`steer${cursor.quantum}`];
+                    angle  = cursor.angle;
+                    offset = [-20, -40];
                 }
             }
             else {
-                engine.set('cursor_type', CURSOR_TYPES.pointer);
-                engine.set('cursor_angle', 0);
-                engine.set('cursor_offset', [0, 0]);
+                src    = CURSOR_TYPES.pointer;
+                angle  = 0;
+                offset = [0, 0];
             }
+
+            transform = `translate(${offset[0]}px, ${offset[1]}px) rotate(${angle}rad)`;
+
+            cursorImg.style.display   = isMobile.any ? 'none' : 'block';
+            cursorImg.src             = src;
+            cursorImg.style.left      = left;
+            cursorImg.style.top       = top;
+            cursorImg.style.transform = transform;
         });
 
         // state change events
