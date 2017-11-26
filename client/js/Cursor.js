@@ -73,7 +73,7 @@ ZOR.Cursor = function ZORUI() {
         // scrinch in the quanta a bit
         const scrinch = Math.max(window.innerWidth / 2, window.innerHeight / 2);
         // find maximum magnitude, used to judge
-        const maxMag = 0.8 * Math.sqrt(Math.pow(window.innerWidth, 2) + Math.pow(window.innerHeight, 2)) - scrinch;
+        const maxMag = 0.7 * Math.sqrt(Math.pow(window.innerWidth, 2) + Math.pow(window.innerHeight, 2)) - scrinch;
         const quanta = Math.max(0, Math.min(STEPS - 1, Math.floor(STEPS * mag / maxMag)));
         return quanta;
     }
