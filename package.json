@@ -13,6 +13,7 @@
     "browser-sync": "browser-sync start --server --serveStatic ./client --files './client/**/*.(css|js|html)' --directory --no-notify",
     "build": "bash build.sh",
     "build-upload": "bash build.sh --upload",
+    "dist-dev": "bash build.sh --dist-dev",
     "uglify-theirs": "./node_modules/.bin/uglifyjs -o client/js/third.min.js",
     "uglify-ours": "./node_modules/.bin/uglifyjs -o client/js/first.min.js --wrap ZOR -m -c --mangle-props regex=\"/^z_|^ZOR/\"",
     "pre-commit-msg": "echo 'Running pre-commit tests...' && exit 0",

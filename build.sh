@@ -15,9 +15,14 @@ SCRIPT_DIR=$( dirname $(realpath --relative-base=../ "$0") )
 ###############################################
 # Inline and minify
 ###############################################
-# Point the common/environment.js symlink to environment_prod.js
-# Do this first, so inlined index.html get's prod config
-ln -f -s environment_prod.js common/environment.js
+
+if [ "$1" == "--dist-dev" ]; then
+    ln -f -s ./environment_dev.js common/environment.js
+else
+    # Point the common/environment.js symlink to environment_prod.js
+    # Do this first, so inlined index.html get's prod config
+    ln -f -s environment_prod.js common/environment.js
+fi
 
 # Compile ractive templates
 
@@ -61,6 +66,10 @@ GOOGLE_AD_SCRIPT='<script async src="//pagead2.googlesyndication.com/pagead/js/a
 sed -i "s,</head>,$GOOGLE_AD_SCRIPT</head>,g" dist/index.html
 
 echo "dist/index.html written"
+
+if [ "$1" = "--dist-dev" ]; then
+    exit
+fi
 
 ###############################################
 # Generate the RPM spec files
