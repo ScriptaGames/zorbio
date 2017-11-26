@@ -241,7 +241,7 @@ config.MOVE_VALIDATION_SAMPLE_RATE      = 5;      // How often to sample, 1 woul
 config.INFRACTION_SPEED_EXPIRE          = 10000;  // How long speed infractions last before they expire
 config.SPEED_BURST_DETECTION_WINDOW     = 4;      // How many active speed infractions will trigger a burst detection but not kick player
 config.LOADING_WAIT_DURATION            = 10000;  // How many milliseconds to wait before starting to track movement validation
-config.MAX_PLAYER_NAME_LENGTH           = 15;     // How many characters can be in the player name
+config.MAX_PLAYER_NAME_LENGTH           = 20;     // How many characters can be in the player name
 config.MAX_NOT_IN_MODEL_ERRORS          = 100;    // How many not-in-model errors before kicking the client
 
 ////////////////////////////////////////////////////////////////////////
