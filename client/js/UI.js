@@ -485,6 +485,10 @@ ZOR.UI = function ZORUI() {
             transform = `translate(-${offset[0]}px, -${offset[1]}px) rotate(${angle}rad)`;
             transformOrigin = `${offset[0]}px ${offset[1]}px`;
 
+            if (cursor.quantum === 0) {
+                transform += ` scale(0.5)`;
+            }
+
             cursorImg.style.display   = isMobile.any ? 'none' : 'block';
             cursorImg.src             = src;
             cursorImg.style.left      = left;
