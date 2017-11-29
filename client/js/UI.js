@@ -240,6 +240,12 @@ ZOR.UI = function ZORUI() {
         if (typeof newstate !== 'undefined' && valid_state( newstate ) ) {
             console.log('entering state ' + newstate);
             uidata.state = newstate;
+
+            // If respawn state show social share buttons
+            if (newstate === STATES.RESPAWN_SCREEN) {
+                showShareButtons();
+            }
+
             engine.update();
         }
 
@@ -410,6 +416,33 @@ ZOR.UI = function ZORUI() {
     }
 
     /**
+     * shows the social share buttons
+     */
+    function showShareButtons() {
+        // hide social share buttons
+        const shareButtons = document.getElementById('st-2');
+        if (shareButtons) shareButtons.style.display = 'block';
+    }
+
+    /**
+     * hides the social share buttons
+     */
+    function hideShareButtons() {
+        // hide social share buttons
+        const shareButtons = document.getElementById('st-2');
+        if (shareButtons) shareButtons.style.display = 'none';
+    }
+
+    /**
+     * Wrapper for global startGame() to do any UI related tasks before starting the game
+     * @param {string} playerType
+     */
+    function uiStartGame(playerType) {
+        hideShareButtons();
+        startGame(playerType);
+    }
+
+    /**
      * Initialize all the UI event handlers.
      */
     function init_events() {
@@ -541,7 +574,7 @@ ZOR.UI = function ZORUI() {
                 eventAction  : 'use_skin_button',
                 eventLabel   : skin,
             });
-            startGame(ZOR.PlayerTypes.PLAYER);
+            uiStartGame(ZOR.PlayerTypes.PLAYER);
         });
 
         on( ACTIONS.PLAYER_LOGIN, function ZORLoginHandler() {
@@ -552,7 +585,7 @@ ZOR.UI = function ZORUI() {
                 eventAction  : 'play_button',
                 eventLabel   : 'mouse_click',
             });
-            startGame(ZOR.PlayerTypes.PLAYER);
+            uiStartGame(ZOR.PlayerTypes.PLAYER);
         });
 
         config.HIDE_OWN_TRAIL = JSON.parse(localStorage.hide_own_trail || 'false') ? true : false;
@@ -613,6 +646,7 @@ ZOR.UI = function ZORUI() {
                     eventCategory: 'button',
                     eventAction  : 'respawn_button',
                 });
+                hideShareButtons();
                 respawnPlayer();
             }
         });
@@ -630,7 +664,7 @@ ZOR.UI = function ZORUI() {
                         eventAction  : 'play_button',
                         eventLabel   : 'enter_key',
                     });
-                    startGame(ZOR.PlayerTypes.PLAYER);
+                    uiStartGame(ZOR.PlayerTypes.PLAYER);
                 }
             }
         });

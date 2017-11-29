@@ -62,8 +62,13 @@ sed -i "s/{{ VERSION }}/$VERSION/g" dist/index.html
 sed -i "s/{{ BUILD }}/$BUILD/g" dist/index.html
 sed -i "s/{{ GIT_REF }}/$GIT_REF/g" dist/index.html
 
+# Inject the google adsense script after build because of inliner conflicts
 GOOGLE_AD_SCRIPT='<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>'
 sed -i "s,</head>,$GOOGLE_AD_SCRIPT</head>,g" dist/index.html
+
+# Inject the social sharring buttons
+SHARE_BUTTONS='<script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5a1ef0c73ab78300126056a6&product=sticky-share-buttons"></script>'
+sed -i "s,{{ SHARE_BUTTONS }},$SHARE_BUTTONS,g" dist/index.html
 
 echo "dist/index.html written"
 

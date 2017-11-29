@@ -13,7 +13,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="theme-color" content="#171717">
         <meta property="og:type" content="website"/>
-        <meta property="og:title" content="Zorbio - 3D Multiplayer eat-em-up Game"/>
+        <meta property="og:title" content="Zorb.io - Free 3D Multiplayer Eat-em-up Game in Space!"/>
         <meta property="og:url" content="http://zorb.io/"/>
         <meta property="og:description" content="Fly a sphere in a 3D world eating food and other spheres to get the high score in this multiplayer .io browser game!"/>
         <meta property="og:image" content="http://zorb.io/images/zorbio-thumb.png"/>
@@ -202,5 +202,24 @@
                 <li>Tip: It is much easier to capture other players by getting close to them, predicting their path, then doing a quick speed boost to intercept them</li>
             </ul>
         </div>
+
+        <div id="share-buttons">
+            <!-- Social sharing buttons through sharethis.com -->
+            <!-- uncomment for dev testing -->
+            <!--<script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5a1ef0c73ab78300126056a6&product=sticky-share-buttons"></script>-->
+            {{ SHARE_BUTTONS }}
+            <style>
+                #st-2 {
+                    z-index: 20;
+                }
+                #st-2 .st-btn {
+                    cursor: none;
+                }
+                #st-2 .st-toggle {
+                    cursor: none;
+                }
+            </style>
+        </div>
+
     </body>
 </html>
