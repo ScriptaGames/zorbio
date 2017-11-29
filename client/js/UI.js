@@ -374,6 +374,9 @@ ZOR.UI = function ZORUI() {
         // periodically advance the help marquee
         setInterval(advanceMarquee, 5432);
 
+        // Initialize the News link
+        fetch_then_init_news();
+
         // call all the registered init handlers
         _.each(init_handlers, function(f) {
             f();
@@ -671,6 +674,32 @@ ZOR.UI = function ZORUI() {
         if (indirectVisitor) {
             uidata.marquee_messages.unshift('Bookmark us at <a href="http://zorb.io" target="_top">http://<strong>zorb.io</strong></a>!');
         }
+    }
+
+    /**
+     * Fetches the news from remote scripta-news repo and sets it in the engine
+     */
+    function fetch_then_init_news() {
+        const url = 'https://raw.githubusercontent.com/ScriptaGames/scripta-news/master/news.json';
+
+        fetch(url).then((response) => {
+            if (response.status === 200) {
+                response.text().then((body) => {
+                    try {
+                        const news = JSON.parse(body);
+
+                        // TODO: In the future rotate through news articles with most recent first
+                        if (Array.isArray(news) && news[0].link && news[0].text) {
+                            engine.set('news_link', news[0].link);
+                            engine.set('news_text', news[0].text);
+                        }
+                    }
+                    catch (e) {
+                        console.error('Caught exception parsing news.json', e);
+                    }
+                });
+            }
+        });
     }
 
     /**
