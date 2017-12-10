@@ -6,8 +6,9 @@
 // var raven = new Raven.Client('https://1c4c71e0f3874af3a6ac2893d6531db5:8b37517edbeb46eab534ba15f35c0713@app.getsentry.com/94116');
 // raven.patchGlobal();
 
-//  Sample Node.js WebSocket Client-Server application
 let http            = require('http');
+let https           = require('https');
+let fs              = require('fs');
 let express         = require('express');
 let WebSocketServer = require('ws').Server;
 let AppProxy        = require('./AppProxy.js');
@@ -39,8 +40,11 @@ let MainServer = function() {
     self.setupVariables = function() {
         //  Set the environment variables we need.
         self.http_port = process.env.HTTP_PORT || config.HTTP_PORT;
+        self.https_port = process.env.HTTPS_PORT || config.HTTPS_PORT;
         self.ws_port = process.env.WS_PORT || config.WS_PORT;
         self.server_label = process.env.SERVER_LABEL || uuid.v4();
+
+        self.web_server_port = config.ENABLE_HTTPS ? self.https_port : self.http_port;
 
         console.log('http_port, ws_port, server_label', self.http_port, self.ws_port, self.server_label);
     };
@@ -89,16 +93,34 @@ let MainServer = function() {
      *  the handlers.
      */
     self.initializeServer = function() {
-        self.app = express();
-        self.httpServer = http.Server(self.app);
-
-        // Set up WebSocket Server
-        let options = {
-            port: self.ws_port,
+        const https_options = {
+            key : fs.readFileSync('/home/jsprague/keys/zorb.io.key'),
+            cert: fs.readFileSync('/home/jsprague/keys/zorb.io.pem'),
         };
 
+        self.app         = express();
+        self.webServer   = null;
+
+        if (config.ENABLE_HTTPS) {
+            self.webServer = https.createServer( https_options, self.app);
+        }
+        else {
+            self.webServer = http.createServer( self.app );
+        }
+
+        // Set up WebSocket Server
+        let wss_options = {};
+
+        if (config.ENABLE_HTTPS) {
+            // If using https the websocket server shares the same port as the https server
+            wss_options.server = self.webServer;
+        }
+        else {
+            wss_options.port = self.ws_port;
+        }
+
         if (config.CHECK_ORIGIN) {
-            options.verifyClient = function wssVerifyClient(info, callback) {
+            wss_options.verifyClient = function wssVerifyClient(info, callback) {
                 // make sure the origin is one of the approved origins
                 if (validUrl.is_web_uri(info.origin)) {
                     let origin_values = _.values(config.BALANCERS);
@@ -115,7 +137,7 @@ let MainServer = function() {
             };
         }
 
-        self.wss = new WebSocketServer(options);
+        self.wss = new WebSocketServer(wss_options);
 
         // Set up express static content root
         self.app.use(express.static(__dirname + '/../' + (process.argv[2] || 'client')));
@@ -142,9 +164,10 @@ let MainServer = function() {
      */
     self.start = function() {
         //  Start the app on the specific interface (and port).
-        if (config.ENABLE_HTTP_SERVER) {
-            self.httpServer.listen(self.http_port, function() {
-                console.log('Zorbio v' + packageJson.version + '-' + packageJson.build + ' is listening on http://localhost:' + self.http_port);
+        if (config.ENABLE_WEB_SERVER) {
+            self.webServer.listen(self.web_server_port, function() {
+                let protocol = config.ENABLE_HTTPS ? 'https' : 'http';
+                console.log('Zorbio v' + packageJson.version + '-' + packageJson.build + ' is listening on ' + protocol + '://localhost:' + self.web_server_port);
             });
         }
     };

@@ -44,9 +44,11 @@ config.BOT_DEFAULT_MOVEMENT = 'curve'; // Default movement pattern for bots
 ////////////////////////////////////////////////////////////////////////
 //                          NETWORK SETTINGS                          //
 ////////////////////////////////////////////////////////////////////////
-config.ENABLE_HTTP_SERVER           = true;   // Run a local http server
-config.HTTP_PORT                    = 8080;   // Port the server will listen on for both http and websocket server
-config.WS_PORT                      = 31000;  // Port that the WebSocket client will connect to
+config.ENABLE_WEB_SERVER            = true;   // Run a local web server, will be http unless ENABLE_HTTPS is enabled then it will be https
+config.ENABLE_HTTPS                 = true;   // Should we use https for both static and websocket requests
+config.HTTP_PORT                    = 8080;   // Port the server will listen on for http requests
+config.HTTPS_PORT                   = 8080;   // Port the server will listen on for both https and websocket server
+config.WS_PORT                      = config.ENABLE_HTTPS ? config.HTTPS_PORT : 31000;  // Port that the WebSocket client will connect to
 config.NUM_GAME_INSTANCES           = 1;      // How many game instances to spawn on the server
 config.MAX_PLAYERS_PER_INSTANCE     = 40;     // Max players per instance
 config.HEARTBEAT_ENABLE             = true;

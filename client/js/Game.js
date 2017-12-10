@@ -569,9 +569,17 @@ window.addEventListener('keyup', handleKeyup);
 window.addEventListener('mousedown', handleMouseDown);
 window.addEventListener('mouseup', handleMouseUp);
 
-window.onload = function homeOnload() {
-    zorClient.z_connectToServer('ws://' + config.BALANCER + ':' + config.WS_PORT);
-};
+/**
+ * Handler for the window.onload event.  The main thing this does is connect to the game server
+ */
+function handleOnload() {
+    // First see if we are connecting to ws or wss based on if https is enabled
+    let protocol = config.ENABLE_HTTPS ? 'wss' : 'ws';
+
+    zorClient.z_connectToServer(protocol + '://' + config.BALANCER + ':' + config.WS_PORT);
+}
+
+window.onload = handleOnload;
 
 let KeysDown = {};
 let KeyCodes = {

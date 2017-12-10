@@ -19,7 +19,7 @@ const DEV_SETTINGS = {
     REQUIRE_ALPHA_KEY     : false,
     AUTO_RUN_ENABLED      : true,
     NUM_GAME_INSTANCES    : 1,
-    ENABLE_HTTP_SERVER    : true,
+    ENABLE_WEB_SERVER     : true,
     ENABLE_BACKEND_SERVICE: false,
     BOT_DEFAULT_MOVEMENT  : 'curve',
 };
