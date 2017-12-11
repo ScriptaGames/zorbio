@@ -110,14 +110,14 @@ if (!NODEJS_CONFIG) {
 
 config.BALANCERS = Object.freeze( {
     LOCAL      : 'localhost',
-    fremont    : 'uswest.zor.bio',
-    dallas     : 'uscentral.zor.bio',
-    newark     : 'useast.zor.bio',
-    london     : 'uk.zor.bio',
-    frankfurt  : 'eu.zor.bio',
-    singapore  : 'apac.zor.bio',
-    prod       : 'zor.bio',
-    prodwww    : 'www.zor.bio',
+    fremont    : 'uswest.zorb.io',
+    dallas     : 'uscentral.zorb.io',
+    newark     : 'useast.zorb.io',
+    london     : 'uk.zorb.io',
+    frankfurt  : 'eu.zorb.io',
+    singapore  : 'apac.zorb.io',
+    zor_bio    : 'zor.bio',
+    zor_bio_www: 'www.zor.bio',
     zorb_io    : 'zorb.io',
     zorb_io_www: 'www.zorb.io',
 } );
