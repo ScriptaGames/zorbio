@@ -94,8 +94,8 @@ let MainServer = function() {
      */
     self.initializeServer = function() {
         const https_options = {
-            key : fs.readFileSync('/home/jsprague/keys/zorb.io.key'),
-            cert: fs.readFileSync('/home/jsprague/keys/zorb.io.pem'),
+            key : fs.readFileSync( config.TLS_KEY_FILE ),
+            cert: fs.readFileSync( config.TLS_CERT_FILE ),
         };
 
         self.app         = express();

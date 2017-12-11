@@ -69,6 +69,8 @@ config.CLOSE_NO_RESTART             = 4000;   // 4000-4999 application reserved 
 config.STATUS_LOG_DELAY             = 15000;  // how many milliseconds to wait between status log output
 config.ENABLE_RAPID_UPDATES         = true;   // If enabled will send and broadcast player position updates every frame
 config.ENABLE_BACKEND_SERVICE       = true;   // Enable communication with a remote api (currently app42)
+config.TLS_CERT_FILE                = '/etc/pki/tls/certs/zorb.io.pem';
+config.TLS_KEY_FILE                 = '/etc/pki/tls/private/zorb.io.key';
 
 if (!NODEJS_CONFIG) {
     // Gets the name of the nearest load balancer
