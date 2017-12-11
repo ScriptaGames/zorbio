@@ -20,6 +20,7 @@ const DEV_SETTINGS = {
     AUTO_RUN_ENABLED      : true,
     NUM_GAME_INSTANCES    : 1,
     ENABLE_WEB_SERVER     : true,
+    ENABLE_HTTPS          : false,
     ENABLE_BACKEND_SERVICE: false,
     BOT_DEFAULT_MOVEMENT  : 'curve',
 };
