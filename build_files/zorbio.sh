@@ -6,8 +6,7 @@
 
 #defaults
 NUM_NODES=1
-HTTP_PORT=8080
-WS_PORT=31000
+LISTEN_PORT=31000
 LABEL='server'
 KEY=0
 SECRET=0
@@ -17,14 +16,9 @@ if [ -v BALANCER_NODES ]; then
     NUM_NODES=${BALANCER_NODES}
 fi
 
-if [ -v HTTP_PORT_START ]; then
-    echo "Using environment variable HTTP_PORT_START: ${HTTP_PORT_START}"
-    HTTP_PORT=${HTTP_PORT_START}
-fi
-
-if [ -v WS_PORT_START ]; then
-    echo "Using environment variable WS_PORT_START: ${WS_PORT_START}"
-    WS_PORT=${WS_PORT_START}
+if [ -v LISTEN_PORT_START ]; then
+    echo "Using environment variable LISTEN_PORT_START: ${LISTEN_PORT_START}"
+    LISTEN_PORT=${LISTEN_PORT_START}
 fi
 
 if [ -v LOCAL_LINODE_LABEL ]; then
@@ -51,24 +45,22 @@ function start {
     if [ ${NUM_NODES} -gt 1 ]; then
         BAL_COUNT=0
 
-        NEXT_WS_PORT=${WS_PORT}
-        NEXT_HTTP_PORT=${HTTP_PORT}
+        NEXT_LISTEN_PORT=${LISTEN_PORT}
 
         while [ ${BAL_COUNT} -lt ${NUM_NODES} ]; do
             let NEXT_HTTP_PORT=HTTP_PORT+BAL_COUNT
-            let NEXT_WS_PORT=WS_PORT+BAL_COUNT
+            let NEXT_LISTEN_PORT=LISTEN_PORT+BAL_COUNT
 
-            echo "Starting next zorbio process on http_port: ${NEXT_HTTP_PORT}"
-            echo "Starting next zorbio process on ws_port: ${NEXT_WS_PORT}"
 
-            HTTP_PORT=${NEXT_HTTP_PORT} WS_PORT=${NEXT_WS_PORT} SERVER_LABEL=${LABEL} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-$BAL_COUNT" server/server.js -- dist
+            echo "Starting next zorbio server on port: ${NEXT_LISTEN_PORT}"
+
+            HTTPS_PORT=${NEXT_LISTEN_PORT} SERVER_LABEL=${LABEL} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-$BAL_COUNT" server/server.js -- dist
 
             let BAL_COUNT=BAL_COUNT+1
         done
     else
-        echo "Starting next zorbio process on http_port: ${HTTP_PORT}"
-        echo "Starting single zorbio process on ws port: ${WS_PORT}"
-        HTTP_PORT=${HTTP_PORT} WS_PORT=${WS_PORT} SERVER_LABEL=${LABEL} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-0" server/server.js -- dist
+        echo "Starting single zorbio server on port: ${LISTEN_PORT}"
+        HTTPS_PORT=${LISTEN_PORT} SERVER_LABEL=${LABEL} APP42_API_KEY=${KEY} APP42_API_SECRET=${SECRET} /usr/bin/pm2 start --name="zorbio-0" server/server.js -- dist
     fi
 }
 
