@@ -576,7 +576,7 @@ function handleOnload() {
     // First see if we are connecting to ws or wss based on if https is enabled
     let protocol = config.ENABLE_HTTPS ? 'wss' : 'ws';
 
-    zorClient.z_connectToServer(protocol + '://' + config.BALANCER + ':' + config.WS_PORT);
+    zorClient.z_connectToServer(protocol + '://' + config.BALANCER + ':' + config.WS_CONNECT_PORT);
 }
 
 window.onload = handleOnload;

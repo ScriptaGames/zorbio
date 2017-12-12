@@ -23,6 +23,7 @@ const DEV_SETTINGS = {
     ENABLE_HTTPS          : false,
     ENABLE_BACKEND_SERVICE: false,
     BOT_DEFAULT_MOVEMENT  : 'curve',
+    WS_CONNECT_PORT       : 31000,
 };
 
 if (NODEJS_ENV_DEV) {

@@ -41,7 +41,7 @@ let MainServer = function() {
         //  Set the environment variables we need.
         self.http_port = process.env.HTTP_PORT || config.HTTP_PORT;
         self.https_port = process.env.HTTPS_PORT || config.HTTPS_PORT;
-        self.ws_port = process.env.WS_PORT || config.WS_PORT;
+        self.ws_port = process.env.WS_LISTEN_PORT || config.WS_LISTEN_PORT;
         self.server_label = process.env.SERVER_LABEL || uuid.v4();
 
         self.web_server_port = config.ENABLE_HTTPS ? self.https_port : self.http_port;
