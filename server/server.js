@@ -93,15 +93,16 @@ let MainServer = function() {
      *  the handlers.
      */
     self.initializeServer = function() {
-        const https_options = {
-            key : fs.readFileSync( config.TLS_KEY_FILE ),
-            cert: fs.readFileSync( config.TLS_CERT_FILE ),
-        };
 
-        self.app         = express();
-        self.webServer   = null;
+        let https_options = null;
+        self.app          = express();
+        self.webServer    = null;
 
         if (config.ENABLE_HTTPS) {
+            https_options = {
+                key : fs.readFileSync( config.TLS_KEY_FILE ),
+                cert: fs.readFileSync( config.TLS_CERT_FILE ),
+            };
             self.webServer = https.createServer( https_options, self.app);
         }
         else {
