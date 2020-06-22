@@ -111,6 +111,7 @@ if (!NODEJS_CONFIG) {
 
 config.BALANCERS = Object.freeze( {
     LOCAL      : 'localhost',
+    osd        : 'zorbio-websocket-zorbio.apps.cluster-zorbio-4cff.zorbio-4cff.example.opentlc.com',
     fremont    : 'uswest.zorb.io',
     dallas     : 'uscentral.zorb.io',
     newark     : 'useast.zorb.io',

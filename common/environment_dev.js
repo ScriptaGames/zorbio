@@ -13,7 +13,7 @@ const DEV_SETTINGS = {
     FOOD_VALUE            : 5,
     DEBUG                 : true,
     HEARTBEAT_ENABLE      : false,
-    BALANCER              : 'LOCAL',
+    BALANCER              : 'osd',
     CHECK_ORIGIN          : false,
     CHECK_VERSION         : false,
     REQUIRE_ALPHA_KEY     : false,
@@ -23,7 +23,7 @@ const DEV_SETTINGS = {
     ENABLE_HTTPS          : false,
     ENABLE_BACKEND_SERVICE: false,
     BOT_DEFAULT_MOVEMENT  : 'curve',
-    WS_CONNECT_PORT       : 31000,
+    WS_CONNECT_PORT       : 80,
 };
 
 if (NODEJS_ENV_DEV) {
