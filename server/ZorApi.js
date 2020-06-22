@@ -17,25 +17,25 @@ let ZorApi = function zorApi(app, instances) {
     ///////////////////////////////////////////////////////////////////
 
     // Basic Auth
-    self.basicAuth = function appBasicAuth(req, res, next) {
-        let user = basicAuth(req);
-        // noinspection JSUnresolvedVariable
-        if (!user || !user.name || !user.pass) {
-            res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
-            res.sendStatus(401);
-            return;
-        }
-
-        // noinspection JSUnresolvedVariable
-        if (user.name === 'zoruser' && user.pass === 'Z0r-b!0') {
-            next();
-        }
-        else {
-            res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
-            res.sendStatus(401);
-        }
-    };
-    self.app.all('/api/*', self.basicAuth);
+    // self.basicAuth = function appBasicAuth(req, res, next) {
+    //     let user = basicAuth(req);
+    //     // noinspection JSUnresolvedVariable
+    //     if (!user || !user.name || !user.pass) {
+    //         res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+    //         res.sendStatus(401);
+    //         return;
+    //     }
+    //
+    //     // noinspection JSUnresolvedVariable
+    //     if (user.name === 'zoruser' && user.pass === 'Z0r-b!0') {
+    //         next();
+    //     }
+    //     else {
+    //         res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+    //         res.sendStatus(401);
+    //     }
+    // };
+    // self.app.all('/api/*', self.basicAuth);
 
     /**
      * API to return the current count of players on this server

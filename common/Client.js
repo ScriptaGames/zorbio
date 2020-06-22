@@ -40,6 +40,8 @@ ZOR.ZORClient = function ZORClient(handler) {
 ZOR.ZORClient.prototype.z_connectToServer = function ZORConnectToServer(uri) {
     let self = this;
 
+    console.log('Client attempting to connect to ws server: ', uri);
+
     this.z_ws = new WebSocket( uri );
     this.z_ws.binaryType = 'arraybuffer';
 
