@@ -24,7 +24,7 @@
     "animate.less": "2.2.0",
     "bad-words-relaxed": "^1.6.2",
     "basic-auth": "1.1.0",
-    "bufferutil": "3.0.1",
+    "bufferutil": "^4.0.1",
     "console-stamp": "0.2.5",
     "cookie": "0.3.1",
     "datasets": "0.1.0",

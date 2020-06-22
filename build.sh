@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-if [ ! -f /usr/bin/js ]; then
-    echo "ERROR: missing dependancy js. 'dnf install js-devel' to fix."
-    exit
-fi
+# I think this dependancy was replaced with util/jsawk
+#if [ ! -f /usr/bin/js ]; then
+#    echo "ERROR: missing dependancy js. 'dnf install js-devel' to fix."
+#    exit
+#fi
 
 #Gather values to replace in the templates
 VERSION="$(util/jsawk 'return this.version' < package.json)"
