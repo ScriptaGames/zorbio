@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "autoprefixer": "7.1.1",
-    "eslint": "4.8.0",
+    "eslint": "7.3.0",
     "eslint-config-google": "0.9.1",
     "git-pre-commit": "^2.1.3",
     "html-inline": "1.2.0",
