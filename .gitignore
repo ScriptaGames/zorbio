@@ -10,6 +10,4 @@ client/css/.sass-cache
 
 client/templates/*.json
 
-dist
-
 build_files/*.spec
