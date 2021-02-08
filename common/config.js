@@ -86,22 +86,17 @@ if (!NODEJS_CONFIG) {
         let linode_location = linodeNearLocation();
         console.log( 'Location near: ', linode_location );
 
-        // TODO: if all locations have active node balancers this switch is not nessicary
+        // For now all client geographicall locations will route to a single server
+	// In the future if we want to run multiple regions we can update this
         switch (linode_location) {
             case 'london':
             case 'frankfurt':
-                balancer = 'frankfurt';
-                break;
             case 'singapore':
-                balancer = 'singapore';
-                break;
             case 'fremont':
             case 'dallas':
             case 'newark':
-                balancer = 'dallas';
-                break;
             default:
-                balancer = 'dallas';
+                balancer = 'newark';
         }
 
         return balancer;
