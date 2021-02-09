@@ -71,4 +71,17 @@ Once that's done, you can run builds through docker!
 (this helps a lot if you aren't running the same Fedora release as our prod
 servers)
 
+### OpenShift 4 deployment notes
+
+Creating config maps for tls files
+
+    oc set volume deployment/zorbio --add -m /etc/pki/tls/certs/zorb.io.pem --sub-path=zorb.io.pem --configmap-name=zorbio-tls -t configmap
+    
+Mounting the configmaps on the at a path
+
+    oc set volume deployment/zorbio --add -m /etc/pki/tls/private/zorb.io.key --sub-path=zorb.io.key --configmap-name=zorbio-tls -t configmap
+    oc set volume deployment/zorbio --add -m /etc/pki/tls/certs/zorb.io.pem --sub-path=zorb.io.pem --configmap-name=zorbio-tls -t configmap    
+    
+The above pattern could be used for any configmap that you need
+
 
