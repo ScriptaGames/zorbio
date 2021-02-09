@@ -8,7 +8,7 @@ Absorb the Orbs!
 
 Install package dependancies:
 
-    dnf install nodejs fedora-packager @development-tools gcc-c++
+    dnf install nodejs fedora-packager @development-tools gcc-c++ jq
     
 Optional dependancies:
 
