@@ -11,14 +11,6 @@ SCRIPT_DIR=$( dirname $(realpath --relative-base=../ "$0") )
 # Inline and minify
 ###############################################
 
-if [ "$1" == "--dist-dev" ]; then
-    ln -f -s ./environment_dev.js common/environment.js
-else
-    # Point the common/environment.js symlink to environment_prod.js
-    # Do this first, so inlined index.html get's prod config
-    ln -f -s environment_prod.js common/environment.js
-fi
-
 # Compile ractive templates
 
 echo "Compiling Ractive templates"
@@ -57,13 +49,15 @@ sed -i "s/{{ VERSION }}/$VERSION/g" dist/index.html
 sed -i "s/{{ BUILD }}/$BUILD/g" dist/index.html
 sed -i "s/{{ GIT_REF }}/$GIT_REF/g" dist/index.html
 
+if [ "$1" != "--dist-dev" ]; then
+    # Set the window.process.env.ZOR_ENV to 'prod'
+    # So that clients load the right environmental config overrides at page load
+    sed -i "s/ZOR_ENV = 'dev'/ZOR_ENV = 'prod'/g" dist/index.html
+fi
+
 # Inject the social sharring buttons
 SHARE_BUTTONS='<script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5a1ef0c73ab78300126056a6&product=sticky-share-buttons"></script>'
 sed -i "s,{{ SHARE_BUTTONS }},$SHARE_BUTTONS,g" dist/index.html
 
 echo "dist/index.html written"
-
-# restore orig environment.js symlink back to dev
-cd common/
-ln -f -s ./environment_dev.js ./environment.js
 

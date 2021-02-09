@@ -94,6 +94,8 @@ let MainServer = function() {
      */
     self.initializeServer = function() {
 
+        console.log('ZOR_ENV:', process.env.ZOR_ENV);
+
         let https_options = null;
         self.app          = express();
         self.webServer    = null;

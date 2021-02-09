@@ -13,6 +13,7 @@ global ZOR:true
 const NODEJS_CONFIG = typeof module !== 'undefined' && module.exports;
 
 if (NODEJS_CONFIG) {
+    // noinspection JSConstantReassignment
     global.self = {}; // threejs expects there to be a global named 'self'... for some reason..
     global._    = require( 'lodash' );
     global.ZOR  = { Env: require( '../common/environment.js' ) };
@@ -22,7 +23,7 @@ let config = {};
 
 config.DEBUG             = false;
 config.AUTO_PLAY         = false;
-config.REQUIRE_ALPHA_KEY = true;
+config.REQUIRE_ALPHA_KEY = false;
 
 ////////////////////////////////////////////////////////////////////////
 //                           WORLD SETTINGS                           //
@@ -60,7 +61,7 @@ config.TICK_SLOW_INTERVAL           = 200;    // General server updates in milli
 config.TICK_FAST_INTERVAL           = 50;     // How often actors update their position in milliseconds
 config.LEADERBOARD_REFRESH_INTERVAL = 900000; // How often to refresh leaderboard on the server from backend service
 config.PENDING_PLAYER_CAPTURE_TTL   = 3000;   // how long pending player capture lives before it expires in milliseconds
-config.CHECK_VERSION                = true;   // check for latest version of the game through the zapi
+config.CHECK_VERSION                = false;   // check for latest version of the game through the zapi
 config.CHECK_VERSION_INTERVAL       = 30000;  // how often to check for new version
 config.LEADERS_LENGTH               = 10;     // How many players to include in the leaders array
 config.BIN_PP_POSITIONS_LENGTH      = 29;
@@ -86,8 +87,8 @@ if (!NODEJS_CONFIG) {
         let linode_location = linodeNearLocation();
         console.log( 'Location near: ', linode_location );
 
-        // For now all client geographicall locations will route to a single server
-	// In the future if we want to run multiple regions we can update this
+        // For now all client geographical locations will route to a single server
+        // In the future if we want to run multiple regions we can update this
         switch (linode_location) {
             case 'london':
             case 'frankfurt':
@@ -96,7 +97,7 @@ if (!NODEJS_CONFIG) {
             case 'dallas':
             case 'newark':
             default:
-                balancer = 'newark';
+                balancer = 'fremont'; // Default to US West region since that's where we are currently hosted in OSD
         }
 
         return balancer;

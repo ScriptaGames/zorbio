@@ -133,6 +133,10 @@
             // And was moved here so eslint doesn't error on it.
             // This must be outside <div id="first_party"> in order for the build to work
             var ZOR = {};
+
+            // Set the environment variable that this client is running from 'prod' or 'dev'
+            // This is used by common/environment.js to decide which environmental overrides to use
+            var ZOR_ENV = 'dev';
         </script>
         <div id="first_party">
             <script src="js/ParticleTemplates.js"></script>

@@ -6,9 +6,10 @@
   "main": "server/server.js",
   "scripts": {
     "test": "npm run eslint",
-    "start-dev": "./node_modules/.bin/supervisor --watch server,common,package.json server/server.js",
+    "start-dev": "ZOR_ENV=dev ./node_modules/.bin/supervisor --watch server,common,package.json server/server.js",
+    "start-dev-dist": "ZOR_ENV=dev ./node_modules/.bin/supervisor --watch server,common,package.json -- server/server.js dist",
     "start": "npm run start-prod",
-    "start-prod": "node server/server.js dist",
+    "start-prod": "ZOR_ENV=prod node server/server.js dist",
     "css": "./node_modules/.bin/lessc client/css/main.less client/css/main.css && node_modules/postcss-cli/bin/postcss --use autoprefixer -r client/css/main.css",
     "browser-sync": "browser-sync start --server --serveStatic ./client --files './client/**/*.(css|js|html)' --directory --no-notify",
     "build-prod": "bash build.sh",
