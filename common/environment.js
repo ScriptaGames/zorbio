@@ -45,13 +45,16 @@ if (zor_env === 'dev') {
 else if (zor_env === 'prod') {
     console.log("environment.js using prod overrides");
 
+    // TODO: set CHECK_ORIGIN to TRUE after DNS is updated to point at OSD
     ENV_OVERRIDES = {
-        CHECK_ORIGIN          : true,
+        CHECK_ORIGIN          : false,
         ENABLE_HTTPS          : true,
         ENABLE_BACKEND_SERVICE: false,
         DEBUG                 : false,
     };
 }
+
+console.log("environment.js ENV_OVERRIDES:", ENV_OVERRIDES);
 
 if (NODEJS) {
     let ZOR = {};
