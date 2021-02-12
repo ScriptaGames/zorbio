@@ -9,20 +9,20 @@ const NODEJS = typeof module !== 'undefined' && module.exports;
 let zor_env;
 
 if (NODEJS) {
-    console.log('environment.js nodejs process');
+    console.log('environment: nodejs process');
     zor_env = process.env.ZOR_ENV;
 }
 else {
-    console.log('environment.js client browser');
+    console.log('environment: client browser');
     zor_env = ZOR_ENV;
 }
 
 let ENV_OVERRIDES = {};
 
-console.log('environment.js loading:', zor_env);
+console.log('environment:', zor_env);
 
 if (zor_env === 'dev') {
-    console.log('environment.js using dev overrides');
+    console.log('environment: using dev overrides');
 
     ENV_OVERRIDES = {
         WORLD_SIZE            : 1000,
@@ -44,7 +44,7 @@ if (zor_env === 'dev') {
     };
 }
 else if (zor_env === 'prod') {
-    console.log('environment.js using prod overrides');
+    console.log('environment: using prod overrides');
 
     ENV_OVERRIDES = {
         CHECK_ORIGIN          : true,
@@ -55,7 +55,9 @@ else if (zor_env === 'prod') {
     };
 }
 
-console.log('environment.js ENV_OVERRIDES:', ENV_OVERRIDES);
+if (ENV_OVERRIDES.DEBUG) {
+    console.log('environment: ENV_OVERRIDES:', ENV_OVERRIDES);
+}
 
 if (NODEJS) {
     let ZOR = {};
