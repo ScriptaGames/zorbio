@@ -1,1 +1,1 @@
-dnf install php -y
+yum install php -y
