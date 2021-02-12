@@ -46,7 +46,7 @@ config.BOT_DEFAULT_MOVEMENT = 'curve'; // Default movement pattern for bots
 //                          NETWORK SETTINGS                          //
 ////////////////////////////////////////////////////////////////////////
 config.ENABLE_WEB_SERVER            = true;   // Run a local web server, will be http unless ENABLE_HTTPS is enabled then it will be https
-config.ENABLE_HTTPS                 = true;   // Should we use https for both static and websocket requests
+config.ENABLE_HTTPS                 = false;   // Should we use https for both static and websocket requests
 config.HTTP_PORT                    = 8080;   // Port the server will listen on for http requests
 config.HTTPS_PORT                   = 8443;  // Port the server will listen on for both https and websocket server
 config.WS_LISTEN_PORT               = config.ENABLE_HTTPS ? config.HTTPS_PORT : 31000;  // Port that the WebSocket server will listen on

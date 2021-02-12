@@ -1,4 +1,4 @@
-let basicAuth = require('basic-auth');
+// let basicAuth = require('basic-auth');
 let config    = require('../common/config.js');
 let Zorbio    = require('../common/zorbio.js');
 

@@ -1,6 +1,7 @@
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
 global ZOR:true
+global ZOR_ENV:true
 */
 
 const NODEJS = typeof module !== 'undefined' && module.exports;
@@ -18,10 +19,10 @@ else {
 
 let ENV_OVERRIDES = {};
 
-console.log("environment.js loading:", zor_env);
+console.log('environment.js loading:', zor_env);
 
 if (zor_env === 'dev') {
-    console.log("environment.js using dev overrides");
+    console.log('environment.js using dev overrides');
 
     ENV_OVERRIDES = {
         WORLD_SIZE            : 1000,
@@ -43,18 +44,17 @@ if (zor_env === 'dev') {
     };
 }
 else if (zor_env === 'prod') {
-    console.log("environment.js using prod overrides");
+    console.log('environment.js using prod overrides');
 
-    // TODO: set CHECK_ORIGIN to TRUE after DNS is updated to point at OSD
     ENV_OVERRIDES = {
-        CHECK_ORIGIN          : false,
+        CHECK_ORIGIN          : true,
         ENABLE_HTTPS          : true,
-        ENABLE_BACKEND_SERVICE: false,
+        ENABLE_BACKEND_SERVICE: true,
         DEBUG                 : false,
     };
 }
 
-console.log("environment.js ENV_OVERRIDES:", ENV_OVERRIDES);
+console.log('environment.js ENV_OVERRIDES:', ENV_OVERRIDES);
 
 if (NODEJS) {
     let ZOR = {};
