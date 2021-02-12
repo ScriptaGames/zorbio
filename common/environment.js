@@ -47,7 +47,7 @@ else if (zor_env === 'prod') {
     console.log('environment.js using prod overrides');
 
     ENV_OVERRIDES = {
-        CHECK_ORIGIN          : true,
+        CHECK_ORIGIN          : false,
         ENABLE_HTTPS          : true,
         ENABLE_BACKEND_SERVICE: false,
         DEBUG                 : false,
