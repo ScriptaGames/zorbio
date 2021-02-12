@@ -1,18 +1,27 @@
-FROM ubi8/nodejs-12
+FROM fedora
 
 USER root
 
 # Install system level dependancies
-RUN yum install php -y
+RUN yum install git nodejs npm php gcc-c++ -y
 
-# Add application sources to a directory that the assemble script expects them
-# and set permissions so that the container runs without root access
-ADD . /tmp/src
-RUN chown -R 1001:0 /tmp/src
+WORKDIR /usr/src/app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
+
+# Install the node app production only dependancies
+RUN npm ci --only=production
+
+# Add application sources to the working directory minus the stuff in .dockerignore
+COPY . .
+
+# Set permissions so that the container runs without root access
+RUN useradd -u 1001 appuser
+RUN chown -R 1001:0 .
 USER 1001
 
-# Install the node s2i app
-RUN /usr/libexec/s2i/assemble
-
 # Set the default command for the resulting image
-CMD /usr/libexec/s2i/run
+CMD npm run -d start

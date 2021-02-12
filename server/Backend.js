@@ -99,7 +99,7 @@ Backend.prototype.getLeadersByDate = function BackendGetLeadersByDate(gameName, 
     let jsonResponse;
 
     // Build the command
-    let command = util.format('server/lib/php server/lib/app42/leaderboard %s %s get_leaders %s %s "%s" "%s"',
+    let command = util.format('server/lib/app42/leaderboard %s %s get_leaders %s %s "%s" "%s"',
         process.env.APP42_API_KEY, process.env.APP42_API_SECRET, gameName, limit, startDate, endDate);
 
     let child = exec(command);  // Execute command

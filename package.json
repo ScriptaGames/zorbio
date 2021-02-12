@@ -18,7 +18,8 @@
     "uglify-ours": "./node_modules/.bin/uglifyjs -o client/js/first.min.js --wrap ZOR -m -c --mangle-props regex=\"/^z_|^ZOR/\"",
     "pre-commit-msg": "echo 'Running pre-commit tests...' && exit 0",
     "eslint": "./node_modules/.bin/eslint server client/js client/skins common tests/*.js",
-    "precommit": "npm test"
+    "precommit": "npm test",
+    "podman-build": "podman build -t node-app ."
   },
   "author": "Scripta Games, Inc.",
   "dependencies": {
