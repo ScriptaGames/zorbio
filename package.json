@@ -12,6 +12,7 @@
     "start-prod": "ZOR_ENV=prod node server/server.js dist",
     "css": "./node_modules/.bin/lessc client/css/main.less client/css/main.css && node_modules/postcss-cli/bin/postcss --use autoprefixer -r client/css/main.css",
     "browser-sync": "browser-sync start --server --serveStatic ./client --files './client/**/*.(css|js|html)' --directory --no-notify",
+    "build": "bash s2i-build.sh",
     "build-prod": "bash build.sh",
     "build-dev": "bash build.sh --dist-dev",
     "uglify-theirs": "./node_modules/.bin/uglifyjs -o client/js/third.min.js",

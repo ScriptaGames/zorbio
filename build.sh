@@ -51,7 +51,7 @@ sed -i "s/{{ GIT_REF }}/$GIT_REF/g" dist/index.html
 
 if [ "$1" != "--dist-dev" ]; then
     # Set the window.process.env.ZOR_ENV to 'prod'
-    # So that clients load the right environmental config overrides at page load
+    # So that browser clients load the right environmental config overrides at page load
     sed -i "s/ZOR_ENV = 'dev'/ZOR_ENV = 'prod'/g" dist/index.html
 fi
 
