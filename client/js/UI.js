@@ -105,21 +105,22 @@ ZOR.UI = function ZORUI() {
      */
 
     let uidata = {
-        state            : '',
-        prev_state       : STATES.INITIAL,
-        STATES           : STATES,
-        ACTIONS          : ACTIONS,
-        COLORS           : config.COLORS,
-        REQUIRE_ALPHA_KEY: config.REQUIRE_ALPHA_KEY,
-        DEBUG            : config.DEBUG,
-        MISSING_FEATURES : [],
-        MAX_PLAYER_RADIUS: config.MAX_PLAYER_RADIUS,
-        CAMERA_ZOOM_STEPS: _(config.CAMERA_ZOOM_STEPS).map('min').tail().value(),
-        AUTHORS          : ['Michael Clayton', 'Jared Sprague'],
-        skins            : _.sortBy(ZOR.SkinCatalog, 'sort'), // Sorted skin catalog array
-        selected_skin    : localStorage.skin || 'default',
-        leaders          : [],
-        leaderboard      : {
+        state                 : '',
+        prev_state            : STATES.INITIAL,
+        STATES                : STATES,
+        ACTIONS               : ACTIONS,
+        COLORS                : config.COLORS,
+        REQUIRE_ALPHA_KEY     : config.REQUIRE_ALPHA_KEY,
+        DEBUG                 : config.DEBUG,
+        ENABLE_BACKEND_SERVICE: config.ENABLE_BACKEND_SERVICE,
+        MISSING_FEATURES      : [],
+        MAX_PLAYER_RADIUS     : config.MAX_PLAYER_RADIUS,
+        CAMERA_ZOOM_STEPS     : _(config.CAMERA_ZOOM_STEPS).map('min').tail().value(),
+        AUTHORS               : ['Michael Clayton', 'Jared Sprague'],
+        skins                 : _.sortBy(ZOR.SkinCatalog, 'sort'), // Sorted skin catalog array
+        selected_skin         : localStorage.skin || 'default',
+        leaders               : [],
+        leaderboard           : {
             activeBoard: 'leaders_1_day',
             data       : {},
         },

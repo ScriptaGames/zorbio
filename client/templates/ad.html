@@ -4,23 +4,25 @@
         <tr>
             <td>
 
-                <div id="leaderboard">
-                    <table border="0" cellspacing="10" cellpadding="0">
-                        <tbody>
-                        <tr>
-                            <td colspan="2">High Scores Today</td>
-                        </tr>
+                {{#if ENABLE_BACKEND_SERVICE}}
+                    <div id="leaderboard">
+                        <table border="0" cellspacing="10" cellpadding="0">
+                            <tbody>
+                            <tr>
+                                <td colspan="2">High Scores Today</td>
+                            </tr>
 
-                        {{ #each leaderboard.data[leaderboard.activeBoard].slice(0, 10) as leader }}
-                        <tr>
-                            <td class="leaderboard-name">{{ leader.name }}</td>
-                            <td class="leaderboard-score">{{ numberCommas(leader.score) }}</td>
-                        </tr>
-                        {{ /each }}
+                            {{ #each leaderboard.data[leaderboard.activeBoard].slice(0, 10) as leader }}
+                            <tr>
+                                <td class="leaderboard-name">{{ leader.name }}</td>
+                                <td class="leaderboard-score">{{ numberCommas(leader.score) }}</td>
+                            </tr>
+                            {{ /each }}
 
-                        </tbody>
-                    </table>
-                </div>
+                            </tbody>
+                        </table>
+                    </div>
+                {{/if}}
 
             </td>
 
@@ -34,10 +36,5 @@
         </tbody>
     </table>
 
-
-
-
-
-
-    <p><a href="http://iogames.space" target="_blank" rel="noopener noreferrer referer">More .io games</a></p>
+<!--    <p><a href="http://iogames.space" target="_blank" rel="noopener noreferrer referer">More .io games</a></p>-->
 </div>
