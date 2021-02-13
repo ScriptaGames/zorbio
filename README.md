@@ -50,7 +50,7 @@ To test the minified inlined index.html run:
 6. `oc start-build zorbio-prod` to start the OpenShift builder based on the `Dockerfile` NOTE you'll have to had done an `oc login` first. You can copy the login command from the top right in the OpenShift console under Command Line Tools
 7. (optional) Cut a tag based on the version in package.json
 
-        git tag n.n.n-n
+        git tag version-build
         git push --tags
 
 ### Deploy
