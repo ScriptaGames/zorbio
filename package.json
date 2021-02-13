@@ -52,7 +52,7 @@
     "valid-url": "1.0.9",
     "web-audio-daw": "2.3.1",
     "whatwg-fetch": "2.0.3",
-    "ws": "3.0.0",
+    "ws": "3.3.1",
     "xss-filters": "1.2.7"
   },
   "devDependencies": {
