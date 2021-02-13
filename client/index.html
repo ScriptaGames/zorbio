@@ -137,6 +137,12 @@
             // Set the environment variable that this client is running from 'prod' or 'dev'
             // This is used by common/environment.js to decide which environmental overrides to use
             var ZOR_ENV = 'dev';
+
+            const ZOR_VERSION = '{{ VERSION }}-{{ BUILD }}';
+            const ZOR_REF = '{{ GIT_REF }}';
+
+            console.log('Zorbio version', ZOR_VERSION);
+            console.log('Ref', ZOR_REF);
         </script>
         <div id="first_party">
             <script src="js/ParticleTemplates.js"></script>
