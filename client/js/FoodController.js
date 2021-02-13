@@ -1,9 +1,9 @@
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global ZOR:true
-global config:true
-global THREE:true
-global player:true
+global ZOR:true,
+ config:true,
+ THREE:true,
+ player:true
 */
 
 /**

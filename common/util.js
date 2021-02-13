@@ -1,11 +1,11 @@
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global config:true
-global THREE:true
-global _:true
-global xssFilters:true
-global ProfanityFilter:true
-global CurvePaths:true
+global config:true,
+ THREE:true,
+ _:true,
+ xssFilters:true,
+ ProfanityFilter:true,
+ CurvePaths:true
 */
 
 const NODEJS_UTIL = typeof module !== 'undefined' && module.exports;

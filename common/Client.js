@@ -4,10 +4,10 @@
 
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global config:true
-global ZOR:true
-global UTIL:true
-global gameStart:true
+global config:true,
+ ZOR:true,
+ UTIL:true,
+ gameStart:true
 */
 
 const NODEJS_CLIENT = typeof module !== 'undefined' && module.exports;

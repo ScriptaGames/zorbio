@@ -4,15 +4,15 @@
 
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global config:true
-global ZOR:true
-global UTIL:true
-global THREE:true
-global _:true
-global isMobile:true
-global ga:true
-global linodeNearLocation:true
-global CurvePaths:true
+global config:true,
+ ZOR:true,
+ UTIL:true,
+ THREE:true,
+ _:true,
+ isMobile:true,
+ ga:true,
+ linodeNearLocation:true,
+ CurvePaths:true
 */
 
 ZOR.Game = {};

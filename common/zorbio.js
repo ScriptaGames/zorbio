@@ -1,10 +1,10 @@
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global config:true
-global THREE:true
-global _:true
-global ZOR:true
-global UTIL:true
+global config:true,
+ THREE:true,
+ _:true,
+ ZOR:true,
+ UTIL:true
 */
 
 const NODEJS_ZORBIO = typeof module !== 'undefined' && module.exports;

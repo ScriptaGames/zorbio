@@ -1,10 +1,10 @@
 /*
-global ZOR:true
-global gameStart:true
-global player:true
-global camera_controls:true
-global config:true
-global ga:true
+global ZOR:true,
+ gameStart:true,
+ player:true,
+ camera_controls:true,
+ config:true,
+ ga:true
  */
 
 ZOR.SteeringHelper = class ZORSteeringHelper {

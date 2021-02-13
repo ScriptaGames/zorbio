@@ -1,7 +1,7 @@
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global ZOR:true
-global ZOR_ENV:true
+global ZOR:true,
+ ZOR_ENV:true
 */
 
 const NODEJS = typeof module !== 'undefined' && module.exports;

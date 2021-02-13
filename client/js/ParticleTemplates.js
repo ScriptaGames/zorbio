@@ -1,7 +1,7 @@
 /*
-global ZOR:true
-global THREE:true
-global SPE:true
+global ZOR:true,
+ THREE:true,
+ SPE:true
 */
 
 ZOR.ParticleTemplates = {

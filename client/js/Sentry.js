@@ -1,7 +1,7 @@
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global config:true
-global Raven:true
+global config:true,
+ Raven:true
 */
 
 if (!config.DEBUG) {

@@ -1,13 +1,13 @@
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global config:true
-global ZOR:true
-global UTIL:true
-global THREE:true
-global _:true
-global playerFogCenter:true
-global SPE:true
-global camera:true
+global config:true,
+ ZOR:true,
+ UTIL:true,
+ THREE:true,
+ _:true,
+ playerFogCenter:true,
+ SPE:true,
+ camera:true
 */
 
 /**

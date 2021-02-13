@@ -5,9 +5,9 @@
 
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global linodeNearLocation:true
-global _:true
-global ZOR:true
+global linodeNearLocation:true,
+ _:true,
+ ZOR:true
 */
 
 const NODEJS_CONFIG = typeof module !== 'undefined' && module.exports;

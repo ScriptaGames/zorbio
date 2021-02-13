@@ -1,8 +1,8 @@
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global config:true
-global ZOR:true
-global THREE:true
+global config:true,
+ ZOR:true,
+ THREE:true
 */
 
 ZOR.Pools = {};

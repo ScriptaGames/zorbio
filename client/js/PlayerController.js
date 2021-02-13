@@ -1,11 +1,11 @@
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global config:true
-global ZOR:true
-global UTIL:true
-global THREE:true
-global zorbioModel:true
-global player:true
+global config:true,
+ ZOR:true,
+ UTIL:true,
+ THREE:true,
+ zorbioModel:true,
+ player:true
 */
 
 /**

@@ -1,10 +1,10 @@
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global ZOR:true
-global THREE:true
-global UTIL:true
-global player:true
-global camera:true
+global ZOR:true,
+ THREE:true,
+ UTIL:true,
+ player:true,
+ camera:true
 */
 
 ZOR.DangerView = class ZORDangerView {

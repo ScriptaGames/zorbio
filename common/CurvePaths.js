@@ -1,9 +1,9 @@
 /*
-global UTIL:true
-global _:true
-global THREE:true
-global config:true
-global ZOR:true
+global UTIL:true,
+ _:true,
+ THREE:true,
+ config:true,
+ ZOR:true
 */
 
 const NODEJS_CURVES = typeof module !== 'undefined' && module.exports;

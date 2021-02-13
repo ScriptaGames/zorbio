@@ -6,11 +6,11 @@
  * @author erich666 / http://erichaines.com
  * @author mwcz / http://palebluepixel.org
  */
-/* global THREE, console */
 
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global config:true
+global config:true,
+ THREE:true
 */
 
 ( function() {

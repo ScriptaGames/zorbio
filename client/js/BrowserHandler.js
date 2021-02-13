@@ -1,20 +1,20 @@
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global ZOR:true
-global _:true
-global player:true
-global zorbioModel:true
-global createScene:true
-global initCameraAndPlayer:true
-global gameStart:true
-global scene:true
-global handleServerTick:true
-global handleLeaderboardUpdate:true
-global handleSuccessfulPlayerCapture:true
-global handleDeath:true
-global handleOtherPlayerCapture:true
-global removePlayerFromGame:true
-global handlePlayerKick:true
+global ZOR:true,
+ _:true,
+ player:true,
+ zorbioModel:true,
+ createScene:true,
+ initCameraAndPlayer:true,
+ gameStart:true,
+ scene:true,
+ handleServerTick:true,
+ handleLeaderboardUpdate:true,
+ handleSuccessfulPlayerCapture:true,
+ handleDeath:true,
+ handleOtherPlayerCapture:true,
+ removePlayerFromGame:true,
+ handlePlayerKick:true
 */
 
 ZOR.ZORMessageHandler = {};

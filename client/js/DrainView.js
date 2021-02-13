@@ -1,10 +1,10 @@
 // ESLint global declarations: https://eslint.org/docs/rules/no-undef
 /*
-global ZOR:true
-global config:true
-global THREE:true
-global playerFogCenter:true
-global UTIL:true
+global ZOR:true,
+ config:true,
+ THREE:true,
+ playerFogCenter:true,
+ UTIL:true
 */
 
 ZOR.DrainView = class ZORDrainView {
