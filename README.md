@@ -8,7 +8,7 @@ Absorb the Orbs!
 
 Install package dependancies:
 
-    dnf install nodejs fedora-packager @development-tools gcc-c++
+    dnf install nodejs gcc-c++
     
 Optional dependancies:
 
@@ -20,58 +20,40 @@ After cloning the repository, cd into it and install dependencies:
 
     npm install
 
-Edit `common/config.js` to your heart's content.
+Configure default seetings in `common/config.js` or environmental overrides based on `dev` or `prod` in `common/environment.js` not anything in this file will override what is in `common/config.js`
 
-In order to push to production, you'll need to create a rpm build tree.
-
-    $ cd ~ && rpmdev-setuptree
 
 ## Hacking
 
-To launch a local server:
+To launch a local dev server:
 
-    npm start
+    npm run start-dev
 
-Changes to JS in `server/` requires a server restart, but changes in `client/`
-doesn't.
+To test the minified inlined index.html run:
+    
+    npm run build-dev
+    npm run start-dev-dist
 
-## Builds
+## DevOps
 
-To perform a production build:
+### Build
 
-    npm run build
+1. Update the `version` and `build` fields in package.json.
 
-To build and upload the built RPM to the prod yum repo:
+2. perform a production build:
 
-    npm run build-upload
+       npm run build-prod
+       
+3. Commit your changes to master and push.
+4. `git checkout prod` and `git merge master` to merge your changes into the `prod` branch.
+5. `git push origin prod`
+6. `oc start-build zorbio-prod` to start the OpenShift builder based on the `Dockerfile` NOTE you'll have to had done an `oc login` first. You can copy the login command from the top right in the OpenShift console under Command Line Tools
 
-Note: The above command requires you have installed your ssh pub key on mcp.zor.bio
+### Deploy
 
-This will build all the client assets into a single HTML file
-(`dist/index.html`) with all CSS and JavaScript inlined and minified.  Images
-are still loaded via HTTP requests.
+Once the OpenShift build is complete in the step above, OpenShift will automatically deploy the new image and make it live.
 
-Once a build has been performed, the server can be launched in production mode,
-which really just causes the server to serve up `dist/` instead of `client/`.
-Here's the command:
-
-    npm run start-prod
-
-### Building with docker
-
-After installing docker, build zorbio's docker "builder" image.
-
-    cd $ZORBIO_DIR
-    docker build -t mwcz/zorbio-builder .
-
-Once that's done, you can run builds through docker!
-
-    bash build-docker.sh
-
-(this helps a lot if you aren't running the same Fedora release as our prod
-servers)
-
-### OpenShift 4 deployment notes
+### OpenShift 4 config notes
 
 Creating config maps for tls files
 
@@ -83,5 +65,36 @@ Mounting the configmaps on the at a path
     oc set volume deployment/zorbio --add -m /etc/pki/tls/certs/zorb.io.pem --sub-path=zorb.io.pem --configmap-name=zorbio-tls -t configmap    
     
 The above pattern could be used for any configmap that you need
+
+Then use the config maps by updating the `Deployment` YAML using the following stanzas to create the config map volumns, mount them at the right path, and environment variables:
+
+    spec:
+      volumes:
+        - name: volume-zorbio-key
+          configMap:
+            name: zorbio-tls
+            defaultMode: 420
+        - name: volume-zorbio-pem
+          configMap:
+            name: zorbio-tls
+            defaultMode: 420
+      containers:
+        - name: zorbio-prod
+          env:
+            - name: ZOR_ENV
+              value: prod
+            - name: APP42_API_KEY
+              value: <secret>
+            - name: APP42_API_SECRET
+              value: <secret>
+          volumeMounts:
+            - name: volume-zorbio-key
+              mountPath: /etc/pki/tls/private/zorb.io.key
+              subPath: zorb.io.key
+            - name: volume-zorbio-pem
+              mountPath: /etc/pki/tls/certs/zorb.io.pem
+              subPath: zorb.io.pem
+
+
 
 
