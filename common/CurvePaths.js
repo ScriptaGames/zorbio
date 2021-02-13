@@ -50,7 +50,7 @@ ZOR.CurvePaths = class CurvePaths {
     getRandomCurve() {
         let curveName = _.sample( self.curves );
 
-        console.log('using curve: ', curveName);
+        if (config.DEBUG) console.log('using curve: ', curveName);
 
         let curvePoints = this[curveName]();
 

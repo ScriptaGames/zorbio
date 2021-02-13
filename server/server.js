@@ -41,12 +41,16 @@ let MainServer = function() {
         //  Set the environment variables we need.
         self.http_port = process.env.HTTP_PORT || config.HTTP_PORT;
         self.https_port = process.env.HTTPS_PORT || config.HTTPS_PORT;
-        self.ws_port = process.env.WS_LISTEN_PORT || config.WS_LISTEN_PORT;
         self.server_label = process.env.SERVER_LABEL || uuid.v4();
+
+        // If HTTPS is enabled then the WebSocket port will be the same as the https_port
+        const ws_port = config.ENABLE_HTTPS ? self.https_port : config.WS_LISTEN_PORT;
+        self.ws_port = process.env.WS_LISTEN_PORT || ws_port;
 
         self.web_server_port = config.ENABLE_HTTPS ? self.https_port : self.http_port;
 
-        console.log('http_port, ws_port, server_label', self.http_port, self.ws_port, self.server_label);
+        console.log(`Starting Zorbio Server v${packageJson.version}-${packageJson.build}`);
+        console.log(`web_server_port=${self.web_server_port}, ws_port=${self.ws_port}`);
     };
 
 
@@ -93,9 +97,6 @@ let MainServer = function() {
      *  the handlers.
      */
     self.initializeServer = function() {
-
-        console.log('ZOR_ENV:', process.env.ZOR_ENV);
-
         let https_options = null;
         self.app          = express();
         self.webServer    = null;
