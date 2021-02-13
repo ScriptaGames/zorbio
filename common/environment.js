@@ -49,7 +49,7 @@ else if (zor_env === 'prod') {
     ENV_OVERRIDES = {
         CHECK_ORIGIN          : true,
         ENABLE_HTTPS          : true,
-        ENABLE_BACKEND_SERVICE: false,
+        ENABLE_BACKEND_SERVICE: true,
         DEBUG                 : false,
         WS_CONNECT_PORT       : 443,
     };

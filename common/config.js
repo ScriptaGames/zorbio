@@ -61,7 +61,7 @@ config.TICK_SLOW_INTERVAL           = 200;    // General server updates in milli
 config.TICK_FAST_INTERVAL           = 50;     // How often actors update their position in milliseconds
 config.LEADERBOARD_REFRESH_INTERVAL = 900000; // How often to refresh leaderboard on the server from backend service
 config.PENDING_PLAYER_CAPTURE_TTL   = 3000;   // how long pending player capture lives before it expires in milliseconds
-config.CHECK_VERSION                = false;   // check for latest version of the game through the zapi
+config.CHECK_VERSION                = false;  // check for latest version of the game through the zapi
 config.CHECK_VERSION_INTERVAL       = 30000;  // how often to check for new version
 config.LEADERS_LENGTH               = 10;     // How many players to include in the leaders array
 config.BIN_PP_POSITIONS_LENGTH      = 29;
@@ -70,7 +70,7 @@ config.RECENT_CLIENT_DATA_LENGTH    = 100;    // how many recent data points to 
 config.CLOSE_NO_RESTART             = 4000;   // 4000-4999 application reserved close code in WebSocket spec
 config.STATUS_LOG_DELAY             = 15000;  // how many milliseconds to wait between status log output
 config.ENABLE_RAPID_UPDATES         = true;   // If enabled will send and broadcast player position updates every frame
-config.ENABLE_BACKEND_SERVICE       = false;   // Enable communication with a remote api (currently app42)
+config.ENABLE_BACKEND_SERVICE       = false;  // Enable communication with a remote api (currently app42)
 config.TLS_CERT_FILE                = '/etc/pki/tls/certs/zorb.io.pem';
 config.TLS_KEY_FILE                 = '/etc/pki/tls/private/zorb.io.key';
 
@@ -267,7 +267,7 @@ config.TRAIL_LINE_WIDTH                  = 0.3;
 config.CAPTURE_PARTICLE_ATTRACTION_SPEED = 0.994;
 
 ////////////////////////////////////////////////////////////////////////
-//                            CAMERA SETTINGS                            //
+//                            CAMERA SETTINGS                         //
 ////////////////////////////////////////////////////////////////////////
 
 config.TITLE_CAMERA_SPIN_SPEED      = 0.001;
