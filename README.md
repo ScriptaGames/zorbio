@@ -20,7 +20,7 @@ After cloning the repository, cd into it and install dependencies:
 
     npm install
 
-Configure default seetings in `common/config.js` or environmental overrides based on `dev` or `prod` in `common/environment.js` not anything in this file will override what is in `common/config.js`
+Configure default settings in `common/config.js` and environmental overrides based in `common/environment.js` note anything in this file will override what is in `common/config.js`
 
 
 ## Hacking
