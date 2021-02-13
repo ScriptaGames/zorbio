@@ -23,5 +23,8 @@ RUN useradd -u 1001 appuser
 RUN chown -R 1001:0 .
 USER 1001
 
+# Set the listen port to match the HTTPS_PORT in zorbio config.js
+EXPOSE 8443
+
 # Set the default command for the resulting image
 CMD npm run -d start
