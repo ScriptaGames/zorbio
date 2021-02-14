@@ -12,7 +12,7 @@
                                 <td colspan="2">High Scores Today</td>
                             </tr>
 
-                            {{ #each leaderboard.data[leaderboard.activeBoard].slice(0, 10) as leader }}
+                            {{ #each leaderboard.data[leaderboard.activeBoard].slice(0, 5) as leader }}
                             <tr>
                                 <td class="leaderboard-name">{{ leader.name }}</td>
                                 <td class="leaderboard-score">{{ numberCommas(leader.score) }}</td>

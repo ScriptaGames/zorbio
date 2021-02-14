@@ -105,6 +105,9 @@ ZOR.UI = function ZORUI() {
      */
 
     let uidata = {
+        VERSION               : ZOR.VERSION,
+        BUILD                 : ZOR.BUILD,
+        REF                   : ZOR.REF,
         state                 : '',
         prev_state            : STATES.INITIAL,
         STATES                : STATES,
