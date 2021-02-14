@@ -70,6 +70,8 @@ let ZorApi = function zorApi(app, instances) {
             games        : games,
         };
 
+        console.log('GET /api/games');
+
         res.setHeader('content-type', 'application/json');
         res.send( JSON.stringify(response) );
     });
@@ -132,7 +134,7 @@ let ZorApi = function zorApi(app, instances) {
     });
 
     /**
-     * API to return all the actor objects on this server
+     * API to return all the food objects on this server
      */
     self.app.get('/api/games/:game_id/food', function(req, res) {
         let instance = self.instances[req.params.game_id];
