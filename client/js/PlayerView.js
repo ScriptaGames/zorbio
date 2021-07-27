@@ -71,10 +71,10 @@ ZOR.PlayerView = class PlayerView {
 
         this.initCaptureParticles();
 
-        scene.add( this.mainSphere );
-        scene.add( this.drainView.mesh );
+        scene.add(this.mainSphere);
+        scene.add(this.drainView.mesh);
         if (this.dangerView) {
-            scene.add( this.dangerView.mesh );
+            scene.add(this.dangerView.mesh);
         }
 
         // give the meshes time to render before drawing trails
@@ -128,7 +128,7 @@ ZOR.PlayerView = class PlayerView {
         this.capture.group.mesh.renderOrder = -1;
         this.capture.active = false;
 
-        this.scene.add( this.capture.group.mesh );
+        this.scene.add(this.capture.group.mesh);
     }
 
     /**
@@ -141,10 +141,10 @@ ZOR.PlayerView = class PlayerView {
 
         this.trail.group.mesh.renderOrder = -2;
         this.trail.group.mesh.frustumCulled = false;
-        this.trail.group.addEmitter( this.trail.emitter );
+        this.trail.group.addEmitter(this.trail.emitter);
         this.trail.visible = 1;
 
-        this.scene.add( this.trail.group.mesh );
+        this.scene.add(this.trail.group.mesh);
 
         this.trail.initialized = true;
     }
@@ -154,20 +154,20 @@ ZOR.PlayerView = class PlayerView {
      */
     initLineTrails() {
         // Create the line material
-        this.trail.material = new THREE.MeshLineMaterial( {
-            useMap         : 0,
-            color          : this.skin.trail.color,
-            opacity        : 1,
-            resolution     : new THREE.Vector2( window.innerWidth, window.innerHeight ),
+        this.trail.material = new THREE.MeshLineMaterial({
+            useMap: 0,
+            color: this.skin.trail.color,
+            opacity: 1,
+            resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
             sizeAttenuation: 1,
-            lineWidth      : this.skin.trail.customScale * config.TRAIL_LINE_WIDTH,
-            near           : camera.near,
-            far            : camera.far,
-            depthTest      : true,
-            blending       : THREE.AdditiveBlending,
-            transparent    : false,
-            side           : THREE.DoubleSide,
-            visibility     : 1,
+            lineWidth: this.skin.trail.customScale * config.TRAIL_LINE_WIDTH,
+            near: camera.near,
+            far: camera.far,
+            depthTest: true,
+            blending: THREE.AdditiveBlending,
+            transparent: false,
+            side: THREE.DoubleSide,
+            visibility: 1,
         });
 
         const TRAIL_LENGTH = this.is_current_player ? config.PLAYER_TRAIL_LINE_LENGTH : config.TRAIL_LINE_LENGTH;
@@ -191,11 +191,11 @@ ZOR.PlayerView = class PlayerView {
 
             // create the line's mesh
             this.trail.lines[line_i] = new THREE.MeshLine();
-            this.trail.lines[line_i].setGeometry( this.trail.geometries[line_i], this.skin.trail.lineWidth ); // makes width taper
+            this.trail.lines[line_i].setGeometry(this.trail.geometries[line_i], this.skin.trail.lineWidth); // makes width taper
 
-            this.trail.meshes[line_i] = new THREE.Mesh( this.trail.lines[line_i].geometry, this.trail.material );
+            this.trail.meshes[line_i] = new THREE.Mesh(this.trail.lines[line_i].geometry, this.trail.material);
             this.trail.meshes[line_i].frustumCulled = false;
-            this.scene.add( this.trail.meshes[line_i] );
+            this.scene.add(this.trail.meshes[line_i]);
         }
 
         this.trail.initialized = true;
@@ -298,10 +298,10 @@ ZOR.PlayerView = class PlayerView {
         this.trail.emitter.position._value.z = newPos.z;
 
         let scale = this.mainSphere.scale.x * (this.skin.trail.customScale || 1);
-        this.trail.emitter.position._spreadClamp.setX( scale );
-        this.trail.emitter.position._spread.setX( scale );
+        this.trail.emitter.position._spreadClamp.setX(scale);
+        this.trail.emitter.position._spread.setX(scale);
         this.trail.emitter.position._radius = scale;
-        this.trail.emitter.size._value =  [scale/3, scale*2/6, scale/9, 0];
+        this.trail.emitter.size._value = [scale / 3, scale * 2 / 6, scale / 9, 0];
 
         let boosting = this.model.abilities.speed_boost.isActive();
 
@@ -316,7 +316,7 @@ ZOR.PlayerView = class PlayerView {
         this.trail.emitter.updateFlags.velocity = true;
         this.trail.emitter.updateFlags.size = true;
 
-        this.trail.group.tick( this.clock.getDelta() );
+        this.trail.group.tick(this.clock.getDelta());
     }
 
     /**
@@ -327,7 +327,7 @@ ZOR.PlayerView = class PlayerView {
 
         // Increase trail width based on sphere scale but prevent giant width trails
         this.trail.material.uniforms.lineWidth.value = this.skin.trail.customScale * config.TRAIL_LINE_WIDTH
-            * (1 + (this.mainSphere.scale.x  / 10));
+            * (1 + (this.mainSphere.scale.x / 10));
 
         for (let line_i = 0; line_i < this.skin.trail.origins.length; ++line_i) {
             this.trail.lines[line_i].advance(this.mainSphere.localToWorld(this.skin.trail.origins[line_i].clone()));
@@ -340,8 +340,8 @@ ZOR.PlayerView = class PlayerView {
      * @param {Number} amount how much the player grew
      */
     grow(amount) {
-        this.mainSphere.scale.addScalar( amount );
-        this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
+        this.mainSphere.scale.addScalar(amount);
+        this.mainSphere.scale.clampScalar(1, config.MAX_PLAYER_RADIUS);
 
         // Don't know if we need to do this every frame or at all
         // It is very expensive, accounts for 50% of the time spent in animate()
@@ -368,7 +368,7 @@ ZOR.PlayerView = class PlayerView {
         // Adjust burst size based on sphere scale
         let scale = this.mainSphere.scale.x * (this.skin.capture.customScale || 1);
         this.capture.emitter.position.radius = scale;
-        this.capture.emitter.size.value = [scale/3, scale*2/6, scale/9, 0];
+        this.capture.emitter.size.value = [scale / 3, scale * 2 / 6, scale / 9, 0];
 
         this.capture.emitter.enable();
     }
@@ -379,25 +379,28 @@ ZOR.PlayerView = class PlayerView {
      * @param {Number} scale the player's current scale
      */
     update(scale) {
-        this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
+        this.setScale(scale * 0.1 + this.mainSphere.scale.x * 0.9);
         this.updateTrails();
         if (this.dangerView) {
             this.updateDanger();
         }
         if (this.is_current_player || this.skin.behavior.faceCamera) {
-            this.updateDirection();
+            this.updateDirection(camera);
+        }
+        else if (this.skinName === "lyons" && typeof player !== "undefined") {
+            this.updateDirection(player.model.sphere);
         }
 
         if (this.capture.active) {
-            this.capture.group.tick( this.clock.getDelta() );
+            this.capture.group.tick(this.clock.getDelta());
         }
     }
 
     /**
      * Update the direction the sphere is facing.
      */
-    updateDirection() {
-        this.mainSphere.lookAt(camera.position);
+    updateDirection(target) {
+        this.mainSphere.lookAt(target.position);
         this.mainSphere.up.copy(camera.up);
     }
 
@@ -407,7 +410,7 @@ ZOR.PlayerView = class PlayerView {
      * @param {Number} drain_target_id the id of the player being drained
      */
     updateDrain(drain_target_id) {
-        this.drainView.update( drain_target_id );
+        this.drainView.update(drain_target_id);
     }
 
     /**
@@ -519,7 +522,7 @@ ZOR.PlayerView = class PlayerView {
      */
     setScale(scale) {
         this.mainSphere.scale.set(scale, scale, scale);
-        this.mainSphere.scale.clampScalar( 1, config.MAX_PLAYER_RADIUS );
+        this.mainSphere.scale.clampScalar(1, config.MAX_PLAYER_RADIUS);
 
         // Don't know if we need to do this every frame or at all
         // It is very expensive, accounts for 50% of the time spent in animate()
