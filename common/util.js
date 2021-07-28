@@ -709,10 +709,10 @@ UTIL.threeFree = function UTILThreeFree(scene, mesh) {
     }
 
     // make sure textures are freed from GPU memory
-    if (mesh.material.uniforms.sphereTexture) {
+    if (_.get('mesh.material.uniforms.sphereTexture')) {
         mesh.material.uniforms.sphereTexture.value.dispose();
     }
-    if (mesh.material.uniforms.texture) {
+    if (_.get('mesh.material.uniforms.texture')) {
         mesh.material.uniforms.texture.value.dispose();
     }
 

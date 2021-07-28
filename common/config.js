@@ -130,6 +130,9 @@ config.MAX_PLAYER_RADIUS     = 150;
 config.MAX_PLAYER_SPEED  = 2;
 config.STATIONARY_RADIUS = config.MAX_PLAYER_RADIUS + 25; // the size at which speed = 0 (hint: make it bigger than max_size or you'll get stuck when huge!)
 
+// a multiplier for the player name size
+config.PLAYER_NAME_SIZE = 20;
+
 /**
  * @param {number} r
  * @returns {number}

@@ -63,6 +63,12 @@ ZOR.PlayerView = class PlayerView {
         this.drainView = ZOR.Pools.drainViews.borrow();
         this.drainView.setPlayerView(this);
 
+        this.playerName = ZOR.Pools.playerNames.borrow();
+        this.playerName.onReady(() => {
+            scene.add(this.playerName.textMesh);
+            this.playerName.setName(this.model.name);
+            this.playerName.setColor(this.playerColor);
+        });
 
         this.setScale(model.sphere.scale);
 
@@ -335,6 +341,30 @@ ZOR.PlayerView = class PlayerView {
     }
 
     /**
+     * Update player name position.
+     */
+    updatePlayerName() {
+        if (this.playerName.textMesh) {
+            let playerScale = this.mainSphere.scale.x;
+
+            // position the player name relative to the player sphere
+            this.playerName.textMesh.position.copy(this.model.sphere.position);
+
+            // orient the player name relative to the camera
+            this.playerName.textMesh.lookAt(camera.position);
+            this.playerName.textMesh.up.copy(camera.up);
+
+            // move the player name up above the sphere
+            this.playerName.textMesh.position.add(camera.up.clone().multiplyScalar(playerScale * (1.2)));
+
+            // adjust the player name scale to be relative to the player sphere
+            const cameraDistance = camera.position.clone().sub(this.playerName.textMesh.position).length();
+            const textScale = (cameraDistance/2 + playerScale) / 100;
+            this.playerName.textMesh.scale.set(textScale, textScale, textScale );
+        }
+    }
+
+    /**
      * Grow the player's size by a given amount.  This function lerps the size of the sphere.
      *
      * @param {Number} amount how much the player grew
@@ -381,6 +411,7 @@ ZOR.PlayerView = class PlayerView {
     update(scale) {
         this.setScale( scale * 0.1 + this.mainSphere.scale.x * 0.9);
         this.updateTrails();
+        this.updatePlayerName();
         if (this.dangerView) {
             this.updateDanger();
         }
@@ -482,6 +513,10 @@ ZOR.PlayerView = class PlayerView {
         }
         this.drainView.dispose(this.scene);
         this.drainView = undefined;
+
+        ZOR.Pools.playerNames.returnObj(this.playerName);
+        this.playerName.dispose(this.scene);
+        this.playerName = undefined;
 
         this.spherePool.returnObj(this.mainSphere);
 
