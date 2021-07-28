@@ -1,11 +1,11 @@
-let config        = require( '../common/config.js' );
-let Zorbio        = require( '../common/zorbio.js' );
-let UTIL          = require( '../common/util.js' );
-let _             = require( 'lodash' );
-let datasets      = require( 'datasets' );
-let THREE         = require( 'three' );
+let config = require('../common/config.js');
+let Zorbio = require('../common/zorbio.js');
+let UTIL = require('../common/util.js');
+let _ = require('lodash');
+let datasets = require('datasets');
+let THREE = require('three');
 
-let Bot = function(scale, model, movementPattern, curvePoints) {
+let Bot = function (scale, model, movementPattern, curvePoints) {
     //  Scope
     let self = this;
     self.model = model;
@@ -15,16 +15,17 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
     // Array of skin names with duplicates to balance which one will be picked
     // I like line trail type bots because I think they look prettier, default, and neptune have line trails
     let skins = [
-        'default',
-        'default',
-        'default',
-        'default',
-        'neptune',
-        'earth',
-        'venus',
-        'jupiter',
-        'boing',
-        'mars',
+        "lyons"
+        // 'default',
+        // 'default',
+        // 'default',
+        // 'default',
+        // 'neptune',
+        // 'earth',
+        // 'venus',
+        // 'jupiter',
+        // 'boing',
+        // 'mars',
     ];
 
     // initialized bot properties
@@ -70,8 +71,8 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
             let sphere = self.player.sphere;
             self.player.sphere.pushRecentPosition({
                 position: sphere.position,
-                radius  : sphere.scale,
-                time    : Date.now(),
+                radius: sphere.scale,
+                time: Date.now(),
             });
         },
 
@@ -141,14 +142,14 @@ let Bot = function(scale, model, movementPattern, curvePoints) {
         point.normalize();
 
         // convert speed multiplier from fps to tick fast
-        let speed = self.player.getSpeed() * (config.TICK_FAST_INTERVAL / (1000/60));
+        let speed = self.player.getSpeed() * (config.TICK_FAST_INTERVAL / (1000 / 60));
         speed *= speedMultiplier;
 
-        point.multiplyScalar( speed );
+        point.multiplyScalar(speed);
 
         sphere.position.add(point);
 
-        sphere.pushRecentPosition({ position: sphere.position, radius: sphere.scale, time: Date.now() });
+        sphere.pushRecentPosition({position: sphere.position, radius: sphere.scale, time: Date.now()});
     };
 
     self.setChaseTarget = function botChaseTarget(playerId) {
