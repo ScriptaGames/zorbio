@@ -39,3 +39,7 @@ ZOR.Pools.drainViews = new ZOR.ObjectPool(function createDrainBeam() {
 ZOR.Pools.dangerViews = new ZOR.ObjectPool(function createDangerView() {
     return new ZOR.DangerView();
 });
+
+ZOR.Pools.playerNames = new ZOR.ObjectPool(function createPlayerName() {
+    return new ZOR.PlayerName();
+});
