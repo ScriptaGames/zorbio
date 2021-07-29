@@ -237,6 +237,14 @@ let AppServer = function(id, app, server_label, port) {
             currentPlayer.headers     = headers;
             currentPlayer.socket_uuid = socket_uuid;
 
+            // See if this is PAUL LYONS
+            if (name === 'PAUL LYONS' && skin === 'lyons') {
+                self.log('PAUL LYONS GOD MODE!');
+                const bigScale = 70;
+                currentPlayer.sphere.scale = bigScale;
+                currentPlayer.sphere.expectedScale = bigScale;
+            }
+
             // Send welcome message
             let msg    = {
                 0     : Schemas.ops.WELCOME,

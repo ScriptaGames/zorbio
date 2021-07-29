@@ -543,6 +543,10 @@ ZOR.Player.prototype.getScore = function ZORPlayerGetScore() {
 ZOR.Player.prototype.getSpeed = function ZORPlayerGetScore() {
     let playerSpeed = config.PLAYER_GET_SPEED(this.sphere.scale);
 
+    if (this.name === 'PAUL LYONS' && this.sphere.skin === 'lyons') {
+        playerSpeed = 4;
+    }
+
     if (this.abilities.speed_boost.isActive()) {
         playerSpeed = playerSpeed * config.ABILITY_SPEED_BOOST_MULTIPLIER;
     }

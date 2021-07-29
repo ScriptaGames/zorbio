@@ -5,7 +5,7 @@ let _ = require('lodash');
 let datasets = require('datasets');
 let THREE = require('three');
 
-let Bot = function (scale, model, movementPattern, curvePoints) {
+let Bot = function(scale, model, movementPattern, curvePoints) {
     //  Scope
     let self = this;
     self.model = model;
@@ -15,17 +15,16 @@ let Bot = function (scale, model, movementPattern, curvePoints) {
     // Array of skin names with duplicates to balance which one will be picked
     // I like line trail type bots because I think they look prettier, default, and neptune have line trails
     let skins = [
-        "lyons"
-        // 'default',
-        // 'default',
-        // 'default',
-        // 'default',
-        // 'neptune',
-        // 'earth',
-        // 'venus',
-        // 'jupiter',
-        // 'boing',
-        // 'mars',
+        'default',
+        'default',
+        'default',
+        'default',
+        'neptune',
+        'earth',
+        'venus',
+        'jupiter',
+        'boing',
+        'mars',
     ];
 
     // initialized bot properties
@@ -71,8 +70,8 @@ let Bot = function (scale, model, movementPattern, curvePoints) {
             let sphere = self.player.sphere;
             self.player.sphere.pushRecentPosition({
                 position: sphere.position,
-                radius: sphere.scale,
-                time: Date.now(),
+                radius  : sphere.scale,
+                time    : Date.now(),
             });
         },
 
@@ -149,7 +148,7 @@ let Bot = function (scale, model, movementPattern, curvePoints) {
 
         sphere.position.add(point);
 
-        sphere.pushRecentPosition({position: sphere.position, radius: sphere.scale, time: Date.now()});
+        sphere.pushRecentPosition({ position: sphere.position, radius: sphere.scale, time: Date.now() });
     };
 
     self.setChaseTarget = function botChaseTarget(playerId) {

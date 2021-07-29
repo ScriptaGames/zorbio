@@ -230,7 +230,7 @@ config.FOOD_GET_VALUE = function FoodGetValue(r) {
 //                         VALIDATION SETTINGS                        //
 ////////////////////////////////////////////////////////////////////////
 
-config.ENABLE_VALIDATION                = true;   // enable validation checks on the server to prevent cheating
+config.ENABLE_VALIDATION                = false;   // enable validation checks on the server to prevent cheating
 config.FOOD_CAPTURE_EXTRA_TOLERANCE     = 10;     // extra distance that we'll tolerate for valid food capture
 config.PLAYER_CAPTURE_EXTRA_TOLERANCE   = 1;      // extra distance that we'll tolerate for valid player capture
 config.SPEED_EXTRA_TOLERANCE            = 0.4;    // extra speed tolerance for movement validation
