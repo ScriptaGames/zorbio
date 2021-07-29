@@ -348,7 +348,7 @@ ZOR.PlayerView = class PlayerView {
             let playerScale = this.mainSphere.scale.x;
 
             // position the player name relative to the player sphere
-            this.playerName.textMesh.position.copy(this.model.sphere.position);
+            this.playerName.textMesh.position.copy(this.mainSphere.position);
 
             // orient the player name relative to the camera
             this.playerName.textMesh.lookAt(camera.position);
