@@ -41,7 +41,7 @@
         "howler": "2.0.4",
         "ismobilejs": "0.4.1",
         "linode-near-location": "1.0.0",
-        "lodash": "4.17.19",
+        "lodash": "4.17.21",
         "node-gameloop": "0.1.2",
         "node-uuid": "1.4.8",
         "performance-now": "2.1.0",
