@@ -7,7 +7,8 @@ global config:true,
  _:true,
  playerFogCenter:true,
  SPE:true,
- camera:true
+ camera:true,
+ player
 */
 
 /**
@@ -161,19 +162,19 @@ ZOR.PlayerView = class PlayerView {
     initLineTrails() {
         // Create the line material
         this.trail.material = new THREE.MeshLineMaterial({
-            useMap: 0,
-            color: this.skin.trail.color,
-            opacity: 1,
-            resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
+            useMap         : 0,
+            color          : this.skin.trail.color,
+            opacity        : 1,
+            resolution     : new THREE.Vector2(window.innerWidth, window.innerHeight),
             sizeAttenuation: 1,
-            lineWidth: this.skin.trail.customScale * config.TRAIL_LINE_WIDTH,
-            near: camera.near,
-            far: camera.far,
-            depthTest: true,
-            blending: THREE.AdditiveBlending,
-            transparent: false,
-            side: THREE.DoubleSide,
-            visibility: 1,
+            lineWidth      : this.skin.trail.customScale * config.TRAIL_LINE_WIDTH,
+            near           : camera.near,
+            far            : camera.far,
+            depthTest      : true,
+            blending       : THREE.AdditiveBlending,
+            transparent    : false,
+            side           : THREE.DoubleSide,
+            visibility     : 1,
         });
 
         const TRAIL_LENGTH = this.is_current_player ? config.PLAYER_TRAIL_LINE_LENGTH : config.TRAIL_LINE_LENGTH;
@@ -418,7 +419,7 @@ ZOR.PlayerView = class PlayerView {
         if (this.is_current_player || this.skin.behavior.faceCamera) {
             this.updateDirection(camera);
         }
-        else if (this.skinName === "lyons" && typeof player !== "undefined") {
+        else if (this.skinName === 'lyons' && typeof player !== 'undefined') {
             this.updateDirection(player.model.sphere);
         }
 
@@ -429,6 +430,8 @@ ZOR.PlayerView = class PlayerView {
 
     /**
      * Update the direction the sphere is facing.
+     *
+     * @param {Object} target target object to look at
      */
     updateDirection(target) {
         this.mainSphere.lookAt(target.position);
