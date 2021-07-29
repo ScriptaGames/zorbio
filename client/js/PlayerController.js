@@ -247,6 +247,9 @@ ZOR.PlayerController = class ZORPlayerController {
             this.view.grow(this._animated_grow_amount);
             this._animated_grow_frames--;
         }
+
+        // update player name position
+        this.view.updatePlayerName();
     }
 
     /**
