@@ -53,7 +53,7 @@
         "schemapack": "1.4.2",
         "shader-particle-engine": "git+https://git@github.com/squarefeet/ShaderParticleEngine.git",
         "three": "0.88.0",
-        "urijs": "^1.19.5",
+        "urijs": "^1.19.11",
         "utf-8-validate": "^5.0.2",
         "valid-url": "1.0.9",
         "web-audio-daw": "2.3.1",
