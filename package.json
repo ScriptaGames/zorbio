@@ -37,7 +37,7 @@
         "cookie": "0.3.1",
         "datasets": "0.1.0",
         "es6-promise": "4.1.0",
-        "express": "^4.17.1",
+        "express": "^4.17.3",
         "howler": "2.0.4",
         "ismobilejs": "0.4.1",
         "linode-near-location": "1.0.0",
