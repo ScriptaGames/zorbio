@@ -245,11 +245,6 @@ ZOR.UI = function ZORUI() {
             console.log('entering state ' + newstate);
             uidata.state = newstate;
 
-            // If respawn state show social share buttons
-            if (newstate === STATES.RESPAWN_SCREEN) {
-                showShareButtons();
-            }
-
             engine.update();
         }
 
@@ -420,29 +415,10 @@ ZOR.UI = function ZORUI() {
     }
 
     /**
-     * shows the social share buttons
-     */
-    function showShareButtons() {
-        // hide social share buttons
-        const shareButtons = document.getElementById('st-2');
-        if (shareButtons) shareButtons.style.display = 'block';
-    }
-
-    /**
-     * hides the social share buttons
-     */
-    function hideShareButtons() {
-        // hide social share buttons
-        const shareButtons = document.getElementById('st-2');
-        if (shareButtons) shareButtons.style.display = 'none';
-    }
-
-    /**
      * Wrapper for global startGame() to do any UI related tasks before starting the game
      * @param {string} playerType
      */
     function uiStartGame(playerType) {
-        hideShareButtons();
         startGame(playerType);
     }
 
@@ -650,7 +626,6 @@ ZOR.UI = function ZORUI() {
                     eventCategory: 'button',
                     eventAction  : 'respawn_button',
                 });
-                hideShareButtons();
                 respawnPlayer();
             }
         });

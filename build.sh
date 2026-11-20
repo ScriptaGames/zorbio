@@ -55,9 +55,5 @@ if [ "$1" != "--dist-dev" ]; then
     sed -i "s/ZOR_ENV = 'dev'/ZOR_ENV = 'prod'/g" dist/index.html
 fi
 
-# Inject the social sharring buttons
-SHARE_BUTTONS='<script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5a1ef0c73ab78300126056a6&product=sticky-share-buttons"></script>'
-sed -i "s,{{ SHARE_BUTTONS }},$SHARE_BUTTONS,g" dist/index.html
-
 echo "dist/index.html written"
 
