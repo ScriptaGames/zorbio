@@ -7,7 +7,7 @@ use std::collections::VecDeque;
 use rand::Rng;
 use uuid::Uuid;
 
-use crate::config::{Config, BotMovement};
+use crate::config::{BotMovement, Config};
 use crate::util::{now_ms, push_shift, Vector3};
 
 /// ZOR.PlayerTypes
@@ -53,7 +53,7 @@ static PLAYER_NAME_COUNT: std::sync::atomic::AtomicU32 = std::sync::atomic::Atom
 
 pub fn next_player_name() -> String {
     let n = PLAYER_NAME_COUNT.fetch_add(1, std::sync::atomic::Ordering::SeqCst) + 1;
-    format!("player_{}", n)
+    format!("Player {}", n)
 }
 
 /// A recorded recent position (validation rewind).
@@ -201,9 +201,7 @@ impl SpeedBoostAbility {
                 self.cooldown_delay = self.cooldown_delay.saturating_sub(cfg.tick_fast_interval);
             } else if self.active_duration > 0 {
                 // Cool down
-                self.active_duration = self
-                    .active_duration
-                    .saturating_sub(cfg.tick_fast_interval);
+                self.active_duration = self.active_duration.saturating_sub(cfg.tick_fast_interval);
             }
             return None;
         }
@@ -235,8 +233,19 @@ pub struct PlayerSphere {
 }
 
 impl PlayerSphere {
-    pub fn new(cfg: &Config, player_id: u32, color: u8, position: Vector3, scale: f64, skin: &str) -> Self {
-        let scale = if scale > 0.0 { scale } else { cfg.initial_player_radius };
+    pub fn new(
+        cfg: &Config,
+        player_id: u32,
+        color: u8,
+        position: Vector3,
+        scale: f64,
+        skin: &str,
+    ) -> Self {
+        let scale = if scale > 0.0 {
+            scale
+        } else {
+            cfg.initial_player_radius
+        };
         PlayerSphere {
             id: player_id,
             player_id,
@@ -605,7 +614,12 @@ impl Model {
     }
 
     /// ZOR.Model.getSafeSpawnPosition
-    pub fn get_safe_spawn_position(&self, cfg: &Config, _rng: &mut impl Rng, num_tries: usize) -> Vector3 {
+    pub fn get_safe_spawn_position(
+        &self,
+        cfg: &Config,
+        _rng: &mut impl Rng,
+        num_tries: usize,
+    ) -> Vector3 {
         let mut position = crate::util::random_horizontal_position(cfg);
 
         if !self.players.is_empty() {
@@ -625,7 +639,8 @@ impl Model {
 
             // couldn't find a safe position in the number of tries so return
             // the one that was farthest away
-            tried_positions.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal));
+            tried_positions
+                .sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal));
             if let Some(last) = tried_positions.last() {
                 position = last.0;
             }
