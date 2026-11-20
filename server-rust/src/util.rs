@@ -3,7 +3,6 @@
 
 use std::collections::VecDeque;
 use std::fmt;
-use std::sync::OnceLock;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use rand::Rng;
@@ -152,11 +151,6 @@ pub fn three_pad(n: i64) -> i64 {
     n + (3 - n % 3)
 }
 
-/// UTIL.isBlank
-pub fn is_blank(s: &str) -> bool {
-    s.trim().is_empty()
-}
-
 /// UTIL.pushShift - push onto array keeping max length.
 pub fn push_shift<T: Copy>(arr: &mut VecDeque<T>, value: T, max_length: usize) {
     arr.push_back(value);
@@ -180,84 +174,3 @@ pub fn median(values: &mut [f64]) -> f64 {
     }
 }
 
-static PROFANITY: OnceLock<Vec<String>> = OnceLock::new();
-
-fn profanity_list() -> &'static [String] {
-    PROFANITY.get_or_init(|| {
-        include_str!("../data/profanity.txt")
-            .lines()
-            .map(|l| l.trim().trim_matches('*').to_lowercase())
-            .filter(|l| !l.is_empty())
-            .collect()
-    })
-}
-
-/// Approximation of the bad-words-relaxed `clean()`: replace profane words
-/// (whole word or wildcard substring match) with asterisks of the same length.
-fn clean_profanity(s: &str) -> String {
-    // Split on word boundaries like JS `string.split(/\b/)` - approximate by
-    // splitting into runs of word chars and non-word chars.
-    let mut out = String::with_capacity(s.len());
-    let mut token = String::new();
-    for ch in s.chars() {
-        if ch.is_ascii_alphanumeric() || ch == '_' {
-            token.push(ch);
-        } else {
-            if !token.is_empty() {
-                out.push_str(&replace_if_profane(&token));
-                token.clear();
-            }
-            out.push(ch);
-        }
-    }
-    if !token.is_empty() {
-        out.push_str(&replace_if_profane(&token));
-    }
-    out
-}
-
-fn replace_if_profane(token: &str) -> String {
-    let lower = token.to_lowercase();
-    let is_profane = profanity_list().iter().any(|w| lower.contains(w.as_str()));
-    if is_profane {
-        "*".repeat(token.chars().count())
-    } else {
-        token.to_string()
-    }
-}
-
-/// Port of xss-filters `inHTMLData`.
-fn xss_in_html_data(s: &str) -> String {
-    let mut out = String::with_capacity(s.len());
-    for ch in s.chars() {
-        match ch {
-            '&' => out.push_str("&amp;"),
-            '<' => out.push_str("&lt;"),
-            '>' => out.push_str("&gt;"),
-            '"' => out.push_str("&quot;"),
-            '\'' => out.push_str("&#x27;"),
-            '/' => out.push_str("&#x2F;"),
-            _ => out.push(ch),
-        }
-    }
-    out
-}
-
-/// UTIL.filterName - sanitize a player name.
-pub fn filter_name(cfg: &Config, name: &str) -> String {
-    let mut filtered = xss_in_html_data(name);
-
-    // remove quotes because they break the backend
-    filtered = filtered.replace(['"', '\''], "");
-
-    // replace any profane words with asterisks
-    filtered = clean_profanity(&filtered);
-
-    if is_blank(&filtered) {
-        filtered = "Guest".to_string();
-    } else if name.chars().count() > cfg.max_player_name_length {
-        filtered = filtered.chars().take(cfg.max_player_name_length).collect();
-    }
-
-    filtered
-}

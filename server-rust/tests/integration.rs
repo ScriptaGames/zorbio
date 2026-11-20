@@ -59,11 +59,6 @@ fn f32be(buf: &mut Vec<u8>, v: f64) {
     buf.extend_from_slice(&(v as f32).to_be_bytes());
 }
 
-fn string(buf: &mut Vec<u8>, s: &str) {
-    varuint(buf, s.len() as u64);
-    buf.extend_from_slice(s.as_bytes());
-}
-
 fn recent_position(buf: &mut Vec<u8>, x: f64, y: f64, z: f64, radius: f64, time: u64) {
     // sorted keys: position, radius, time
     f32be(buf, x);
@@ -117,14 +112,26 @@ impl Drop for ServerGuard {
 }
 
 #[tokio::test]
-async fn full_client_lifecycle() {
+async fn full_client_lifecycle() -> Result<(), Box<dyn std::error::Error>> {
     let _server = ServerGuard(spawn_server());
     wait_for_server().await;
 
-    client_flow().await.unwrap();
+    // custom names are ignored; the server assigns player_1, player_2, ...
+    // from a process-lifetime monotonically increasing counter
+    client_flow("rusty", "player_1").await.unwrap();
+    client_flow("i-should-be-ignored", "player_2").await.unwrap();
+
+    // --- the server should still be alive and serving the monitoring API
+    let body = reqwest_get_json(&format!("http://127.0.0.1:{}/api/games", HTTP_PORT)).await?;
+    assert!(body.contains("total_players"), "unexpected /api/games body: {}", body);
+
+    // static file serving
+    let index = reqwest_get_text(&format!("http://127.0.0.1:{}/", HTTP_PORT)).await?;
+    assert!(index.contains("<html") || index.contains("<!DOCTYPE"), "index.html not served");
+    Ok(())
 }
 
-async fn client_flow() -> Result<(), Box<dyn std::error::Error>> {
+async fn client_flow(name: &str, expected_name: &str) -> Result<(), Box<dyn std::error::Error>> {
     let (ws, _resp) = tokio_tungstenite::connect_async(format!("ws://127.0.0.1:{}", WS_PORT))
         .await
         .expect("ws connect failed");
@@ -138,9 +145,13 @@ async fn client_flow() -> Result<(), Box<dyn std::error::Error>> {
     assert!(init.len() > 4374, "init game message suspiciously small: {}", init.len());
     eprintln!("INIT_GAME received: {} bytes", init.len());
 
-    // --- enter_game
+    // --- enter_game (the requested name must be ignored by the server)
     sink.send(Message::Text(
-        r#"{"op":"enter_game","type":"PLAYER","name":"rusty","color":3,"skin":"default","key":"x"}"#.into(),
+        format!(
+            r#"{{"op":"enter_game","type":"PLAYER","name":"{}","color":3,"skin":"default","key":"x"}}"#,
+            name
+        )
+        .into(),
     ))
     .await?;
 
@@ -157,22 +168,27 @@ async fn client_flow() -> Result<(), Box<dyn std::error::Error>> {
     assert!(setup.contains("game_setup"), "expected game_setup, got: {}", setup);
 
     // --- after ~200ms: player_join broadcast (text)
-    let join = recv_text(&mut stream, Duration::from_secs(5)).await?;
+    let join = recv_text_until(&mut stream, |t| t.contains("player_join"), Duration::from_secs(5)).await?;
     assert!(join.contains("player_join"), "expected player_join, got: {}", join);
-    assert!(join.contains("rusty"), "player_join should contain our name");
+    assert!(
+        serde_json::from_str::<serde_json::Value>(&join).unwrap()["player"]["name"] == expected_name,
+        "server should assign {} (got join: {})",
+        expected_name,
+        join
+    );
 
     // --- zor_ping -> zor_pong
     sink.send(Message::Text(r#"{"op":"zor_ping","lastPing":42,"fps":60}"#.into()))
         .await?;
-    let pong = recv_text_until(&mut stream, |t| t.contains("zor_pong"), Duration::from_secs(5))
+    let _pong = recv_text_until(&mut stream, |t| t.contains("zor_pong"), Duration::from_secs(5))
         .await?;
 
     // --- leaderboards request (binary op 8) -> LEADERBOARDS_UPDATE (op 9)
     sink.send(Message::Binary(vec![8u8].into())).await?;
-    let lb = recv_binary_until_op(&mut stream, 9, Duration::from_secs(5)).await?;
+    let _lb = recv_binary_until_op(&mut stream, 9, Duration::from_secs(5)).await?;
 
     // --- actor updates keep flowing (op 2) - bots are moving
-    let actors = recv_binary_until_op(&mut stream, 2, Duration::from_secs(2)).await?;
+    let _actors = recv_binary_until_op(&mut stream, 2, Duration::from_secs(2)).await?;
 
     // --- send a few rapid position updates + player updates like the game loop
     for i in 0..20u64 {
@@ -197,14 +213,6 @@ async fn client_flow() -> Result<(), Box<dyn std::error::Error>> {
     // --- close the socket; the server should clean up without crashing
     sink.close().await.ok();
     tokio::time::sleep(Duration::from_millis(300)).await;
-
-    // --- the server should still be alive and serving the monitoring API
-    let body = reqwest_get_json(&format!("http://127.0.0.1:{}/api/games", HTTP_PORT)).await?;
-    assert!(body.contains("total_players"), "unexpected /api/games body: {}", body);
-
-    // static file serving
-    let index = reqwest_get_text(&format!("http://127.0.0.1:{}/", HTTP_PORT)).await?;
-    assert!(index.contains("<html") || index.contains("<!DOCTYPE"), "index.html not served");
 
     Ok(())
 }

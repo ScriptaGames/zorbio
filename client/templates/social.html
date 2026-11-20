@@ -1,5 +1,5 @@
 <div id="social">
-    <a on-click="@this.fire( ACTIONS.SHOW_MENU_TUTORIAL )" title="How to play" target="_blank" rel="noopener noreferrer" class="tutorial-btn {{ #if !player_name }}first-visit{{ /if }}"><img src="../images/icons/guide.png"></a>
+    <a on-click="@this.fire( ACTIONS.SHOW_MENU_TUTORIAL )" title="How to play" target="_blank" rel="noopener noreferrer" class="tutorial-btn {{ #if !has_played }}first-visit{{ /if }}"><img src="../images/icons/guide.png"></a>
     <a on-click="@this.fire( ACTIONS.SHOW_MENU_LEADERBOARD )" title="Leaderboard" target="_blank" rel="noopener noreferrer" class="leaderboard-btn"><img src="../images/icons/leaderboard.png"></a>
     <a href="{{ news_link }}" title="News" target="_blank" rel="noopener noreferrer" class="news-btn"><img src="../images/icons/newspaper.png"></a>
     <a href="{{ news_link }}" title="News" target="_blank" rel="noopener noreferrer" class="news-link">{{ news_text }}</a>

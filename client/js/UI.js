@@ -429,9 +429,7 @@ ZOR.UI = function ZORUI() {
         if (localStorage.alpha_key) {
             engine.set('alpha_key', localStorage.alpha_key);
         }
-        if (localStorage.player_name) {
-            engine.set('player_name', localStorage.player_name);
-        }
+        engine.set('has_played', !!localStorage.has_played);
 
         // volume change handlers
 

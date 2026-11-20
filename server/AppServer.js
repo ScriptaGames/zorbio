@@ -15,6 +15,11 @@ let Backend       = require( './Backend.js' );
 let _             = require( 'lodash' );
 let SkinCatalog   = require( '../common/SkinCatalog' );
 
+// Process-lifetime counter for server-assigned player names.  Players cannot
+// choose custom names; the server assigns player_1, player_2, ... in the
+// order they join, for the lifetime of the process.
+let player_name_count = 0;
+
 /**
  * This module contains all of the app logic and state
  * @param {number} id
@@ -209,8 +214,9 @@ let AppServer = function(id, app, server_label, port) {
             skin      = SkinCatalog[msg.skin] ? msg.skin : 'default';  // validate skin name
             key       = msg.key;
 
-            // Sanitize player name
-            name = UTIL.filterName( name );
+            // Custom names are not allowed; assign player_N from the
+            // process-lifetime counter instead of the requested name.
+            name = 'player_' + (++player_name_count);
 
             self.log( 'Player enter request: ', player_id, type, name, color, skin, key );
 

@@ -485,7 +485,7 @@ pub fn json_player_join(player: &Player) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::model::{PlayerSphere, RecentPosition};
+    use crate::model::PlayerSphere;
 
     fn test_sphere() -> PlayerSphere {
         let cfg = crate::config::Config::default();

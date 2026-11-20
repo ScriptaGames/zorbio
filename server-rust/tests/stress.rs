@@ -224,6 +224,7 @@ async fn prod_default_config_boot() -> Result<(), Box<dyn std::error::Error>> {
 
     // INIT_GAME with density 32: 29791 particles * 3 int16 = ~178KB of food
     let deadline = Instant::now() + Duration::from_secs(20);
+    #[allow(unused_assignments)]
     let mut init_len = 0usize;
     loop {
         let msg = tokio::time::timeout(deadline.saturating_duration_since(Instant::now()), stream.next())
@@ -234,6 +235,7 @@ async fn prod_default_config_boot() -> Result<(), Box<dyn std::error::Error>> {
         if let Message::Binary(b) = msg {
             assert_eq!(b[0], 1, "expected INIT_GAME first");
             init_len = b.len();
+            let _ = init_len;
             break;
         }
     }

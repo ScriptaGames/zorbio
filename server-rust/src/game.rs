@@ -408,17 +408,19 @@ impl GameInstance {
     }
 
     /// handle_enter_game
-    fn handle_enter_game(&mut self, uuid: Uuid, player_type: String, name: String, color: u8, skin: String, key: String) {
+    fn handle_enter_game(&mut self, uuid: Uuid, player_type: String, requested_name: String, color: u8, skin: String, key: String) {
         let player_id = get_next_id();
         let type_ = player_type;
-        let name = crate::util::filter_name(&self.cfg, &name);
+        // custom names are not allowed; the server assigns player_N names from
+        // a process-lifetime monotonically increasing counter
+        let name = crate::model::next_player_name();
         // validate skin name
         let skin = if SKIN_CATALOG.contains(&skin.as_str()) { skin } else { "default".to_string() };
         let color = color.min(crate::config::COLORS.len() as u8 - 1);
 
         self.log(&format!(
-            "Player enter request: {} {} {} {} {} {}",
-            player_id, type_, name, color, skin, key
+            "Player enter request: {} {} assigned={} (requested={}) {} {} {}",
+            player_id, type_, name, requested_name, color, skin, key
         ));
 
         if let Some(state) = self.states.get_mut(&uuid) {

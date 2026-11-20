@@ -115,7 +115,9 @@ function startGame(type) {
     // Assign player meta data and save to local storage
     let colorCode = UTIL.getRandomIntInclusive(0, config.COLORS.length - 1);
     let colorHex = config.COLORS[colorCode];
-    let name = ZOR.UI.engine.get('player_name');
+    // Player names are assigned by the server (player_1, player_2, ...);
+    // the name sent here is ignored.
+    let name = '';
     let key = localStorage.alpha_key = ZOR.UI.engine.get('alpha_key');
     ZOR.Game.playerMeta = {
         playerType: type,

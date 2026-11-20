@@ -194,7 +194,6 @@ input:focus {
   position: relative;
 }
 #menu-ui-container #menu #start-button,
-#menu-ui-container #menu #input-name,
 #menu-ui-container #menu #input-alphakey,
 #menu-ui-container #menu .button-use-skin {
   display: block;

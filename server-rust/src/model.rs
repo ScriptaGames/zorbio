@@ -46,6 +46,16 @@ pub fn get_next_id() -> u32 {
     NEXT_ID.fetch_add(1, std::sync::atomic::Ordering::SeqCst) + 1
 }
 
+/// Process-lifetime counter for server-assigned player names (player_1,
+/// player_2, ...).  Players cannot choose custom names; bots keep their own
+/// AI names and do not consume this counter.
+static PLAYER_NAME_COUNT: std::sync::atomic::AtomicU32 = std::sync::atomic::AtomicU32::new(0);
+
+pub fn next_player_name() -> String {
+    let n = PLAYER_NAME_COUNT.fetch_add(1, std::sync::atomic::Ordering::SeqCst) + 1;
+    format!("player_{}", n)
+}
+
 /// A recorded recent position (validation rewind).
 #[derive(Debug, Clone, Copy)]
 pub struct RecentPosition {
