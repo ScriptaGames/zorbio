@@ -1,0 +1,29 @@
+[package]
+name = "zorbio-server"
+version = "2.2.0"
+edition = "2021"
+description = "Zorbio game server - Rust port of the original Node.js server (axum + tokio)"
+license = "MIT"
+
+[[bin]]
+name = "zorbio-server"
+path = "src/main.rs"
+
+[dependencies]
+axum = { version = "0.8", features = ["ws"] }
+axum-server = { version = "0.7", features = ["tls-rustls"] }
+tokio = { version = "1", features = ["full"] }
+tower-http = { version = "0.6", features = ["fs"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rand = { version = "0.8", features = ["small_rng"] }
+uuid = { version = "1", features = ["v4"] }
+bytes = "1"
+
+[dev-dependencies]
+tokio-tungstenite = "0.24"
+futures-util = "0.3"
+
+[profile.release]
+opt-level = 3
+lto = true

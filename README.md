@@ -34,6 +34,23 @@ To test the minified inlined index.html run:
     npm run build-dev
     npm run start-dev-dist
 
+## Rust server
+
+The Node.js game server has been ported to Rust (axum + tokio). The Rust
+server speaks the exact same wire protocol as the Node server, so the
+existing browser client works unchanged. See `server-rust/README.md` for
+full documentation.
+
+    cd server-rust
+    cargo build --release
+    ZOR_ENV=dev ./target/release/zorbio-server ../client     # dev
+    ZOR_ENV=prod ./target/release/zorbio-server ../dist      # prod
+
+The same environment variables (`ZOR_ENV`, `HTTP_PORT`, `WS_LISTEN_PORT`,
+`SERVER_LABEL`, ...) and TLS file paths are supported. When TLS cert/key
+files are not mounted, terminate TLS at the route/ingress and the server
+falls back to plain HTTP on the HTTPS port automatically.
+
 ## DevOps
 
 ### Build
