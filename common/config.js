@@ -29,15 +29,15 @@ config.REQUIRE_ALPHA_KEY = false;
 //                           WORLD SETTINGS                           //
 ////////////////////////////////////////////////////////////////////////
 
-config.WORLD_SIZE       = 2000;
+config.WORLD_SIZE       = 20000;
 config.WORLD_HYPOTENUSE = Math.sqrt( Math.pow( Math.sqrt( Math.pow( config.WORLD_SIZE, 2 )
     + Math.pow( config.WORLD_SIZE, 2 ) ), 2 ) + Math.pow( config.WORLD_SIZE, 2 ) );
 
 ////////////////////////////////////////////////////////////////////////
 //                           BOT SETTINGS                             //
 ////////////////////////////////////////////////////////////////////////
-config.MAX_BOTS             = 20;
-config.MAX_BOT_RADIUS       = 100;
+config.MAX_BOTS             = 400;
+config.MAX_BOT_RADIUS       = 300;
 config.BOT_CHASE_TIME_MIN   = 20000;   // Min time a bot will chase a player
 config.BOT_CHASE_TIME_MAX   = 45000;   // Max time a bot will chase a player
 config.BOT_DEFAULT_MOVEMENT = 'curve'; // Default movement pattern for bots
@@ -82,6 +82,14 @@ if (!NODEJS_CONFIG) {
 
         if (balancer) {
             return balancer;  // local storage is set return it
+        }
+
+        // If the game is being served from a local development server, always
+        // connect to the local game server instead of a remote load balancer.
+        // This makes local runs work no matter how the page was built (dev or
+        // prod), instead of requiring ZOR_ENV=dev to be baked in at build time.
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            return 'LOCAL';
         }
 
         let linode_location = linodeNearLocation();
@@ -259,7 +267,7 @@ config.FOG_COLOR                         = 0x000000;
 config.INITIAL_CAMERA_DISTANCE           = 50;
 config.WALL_GRID_SEGMENTS                = 20;
 config.INITIAL_FOV                       = 50;
-config.PLAYER_MOVE_LERP_WEIGHT           = 0.3;
+config.PLAYER_MOVE_LERP_WEIGHT           = 0.3; // fraction of remaining distance tweened per 1/60s of elapsed time (framerate independent)
 config.PLAYER_SPHERE_POLYCOUNT           = 32; // height and width segments of the spheres
 config.FOOD_ALPHA_ENABLED                = false;
 config.LAG_SCALE_ENABLE                  = true;
@@ -400,6 +408,20 @@ if (NODEJS_CONFIG) {
 else {
     // balancer is only used on the client
     config.BALANCER = config.BALANCERS[config.BALANCER];
+
+    // Local runs: when connecting to the local game server, use the local
+    // websocket setup, even if this page was built for prod
+    // (ENABLE_HTTPS / WS_CONNECT_PORT are baked per environment at build
+    // time otherwise).
+    if (config.BALANCER === 'localhost') {
+        config.ENABLE_HTTPS    = window.location.protocol === 'https:';
+        // https: the game servers share the web and websocket port, so use
+        //        the port the page itself was served from.
+        // http:  the websocket server listens on its own local port.
+        config.WS_CONNECT_PORT = config.ENABLE_HTTPS
+            ? (window.location.port || 443)
+            : config.WS_LISTEN_PORT;
+    }
 
     // Disable console.log on the client, in production.  This should really go
     // into a client init function, but it's here for now.
