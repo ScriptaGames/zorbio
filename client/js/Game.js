@@ -39,6 +39,9 @@ let playerFogCenter = new THREE.Vector3();
 let gameStart = false;
 let foodController;
 
+// timestamp of the last animation frame, used to compute frame delta time
+let lastFrameTime = null;
+
 // Model that represents the game state shared with server
 let zorbioModel = new ZOR.Model();
 
@@ -283,6 +286,12 @@ function createScene() {
     function animate() {
         requestAnimationFrame(animate);
 
+        // seconds since the last frame, used for framerate independent tweening
+        let now = (performance && performance.now) ? performance.now() : Date.now();
+        let dt = (lastFrameTime === null) ? (1 / 60)
+            : Math.max(0, (now - lastFrameTime) / 1000);
+        lastFrameTime = now;
+
         let ui_state = ZOR.UI.state();
         if (ui_state.indexOf('menu') === 0 || ui_state === ZOR.UI.STATES.CREDITS_SCREEN ) {
             camera.rotation.y -= config.TITLE_CAMERA_SPIN_SPEED * ZOR.LagScale.get();
@@ -290,7 +299,7 @@ function createScene() {
 
         let fogCenter;
 
-        updateActors();
+        updateActors(dt);
 
         updateDeadPlayers();
 
@@ -416,8 +425,9 @@ function drawPlayers() {
 
 /**
  * Updates all actors currently in the game every frame
+ * @param {Number} dt seconds since the last frame
  */
-function updateActors() {
+function updateActors(dt) {
     // Iterate over actor properties in the actors object
     zorbioModel.actors.forEach(function updateEachActor(actor) {
         if (actor.type === ZOR.ActorTypes.PLAYER_SPHERE) {
@@ -425,7 +435,7 @@ function updateActors() {
                 let otherPlayer = ZOR.Game.players[actor.playerId];
                 if (otherPlayer && otherPlayer.view) {
                     // update actor
-                    otherPlayer.updatePosition(actor.position);
+                    otherPlayer.updatePosition(actor.position, dt);
                     otherPlayer.updateScale(actor.scale);
                     otherPlayer.updateDrain(actor.drain_target_id);
                 }

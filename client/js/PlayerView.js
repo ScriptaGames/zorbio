@@ -470,10 +470,20 @@ ZOR.PlayerView = class PlayerView {
     /**
      * Update the position of this PlayerView.
      *
+     * Tweens the sphere toward the true position using framerate independent
+     * exponential smoothing. PLAYER_MOVE_LERP_WEIGHT is the fraction of the
+     * remaining distance covered each 1/60th of a second, so the motion
+     * matches the old per-frame lerp at 60fps but stays consistent at any
+     * framerate.
+     *
      * @param {THREE.Point} position the true position of the player
+     * @param {Number} dt seconds elapsed since the last frame
      */
-    updatePosition(position) {
-        this.mainSphere.position.lerp(position, config.PLAYER_MOVE_LERP_WEIGHT);
+    updatePosition(position, dt) {
+        dt = (typeof dt === 'number' && dt >= 0) ? dt : 1 / 60;
+
+        let alpha = 1 - Math.pow(1 - config.PLAYER_MOVE_LERP_WEIGHT, dt * 60);
+        this.mainSphere.position.lerp(position, alpha);
     }
 
     /**

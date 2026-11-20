@@ -199,10 +199,11 @@ ZOR.PlayerController = class ZORPlayerController {
     /**
      * Update this player's position.
      * @param {Object} position the player's new position
+     * @param {Number} dt seconds since the last frame
      */
-    updatePosition(position) {
+    updatePosition(position, dt) {
         this.model.sphere.position.copy(position);
-        this.view.updatePosition(position);
+        this.view.updatePosition(position, dt);
     }
 
     /**
